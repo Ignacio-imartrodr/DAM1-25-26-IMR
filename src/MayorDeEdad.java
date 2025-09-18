@@ -7,6 +7,7 @@ public class MayorDeEdad {
         String nombre = sc.nextLine();
         System.out.println("Cuantos años tienes?");
         int edad = sc.nextInt();
+        sc.close();
         final int MAYORYA_DE_EDAD = 18;
         boolean mayorDeEdad = edad>=MAYORYA_DE_EDAD;
         System.out.println(nombre+", eres mayor de edad? "+mayorDeEdad);
