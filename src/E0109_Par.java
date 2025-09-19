@@ -11,7 +11,7 @@ public class E0109_Par {
 
         //Abrimo Variables
         int num;
-        boolean par;
+        boolean esPar;
         
         //Recogemos datos
         Scanner sc = new Scanner(System.in);
@@ -20,13 +20,13 @@ public class E0109_Par {
         sc.close();
         
         //Operamos datos
-        par = num / 2 == (num / 2) - (num % 2);
+        esPar = num % 2 == 0;
 
         //Mostramos resultados
-        if (par == true) {
+        if (esPar == true) {
             System.out.println("Ese número es par");
         } else {
             System.out.println("Ese número NO es par");
         }
-     }
+    }
 }
