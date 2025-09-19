@@ -8,7 +8,7 @@ import java.util.Scanner;
  */
 public class E0109_Par {
     public static void main(String[] args) throws Exception {
-        
+
         //Abrimo Variables
         int num;
         boolean par;
@@ -20,10 +20,10 @@ public class E0109_Par {
         sc.close();
         
         //Operamos datos
-        par = num/2 == (num/2) - (num%2);
+        par = num / 2 == (num / 2) - (num % 2);
 
         //Mostramos resultados
-        if (par==true) {
+        if (par == true) {
             System.out.println("Ese número es par");
         } else {
             System.out.println("Ese número NO es par");
