@@ -4,5 +4,6 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
     ],
+    "github.copilot.nextEditSuggestions.enabled": false,
     //"java.jdt.ls.java.home": "D:\\Imartrodr\\Contornos de Desenvolvemento\\JDK\\jdk-25_windows-x64_bin\\jdk-25"
 }
