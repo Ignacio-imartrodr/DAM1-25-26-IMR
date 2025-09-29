@@ -17,7 +17,6 @@ public class AdivinaElNumero {
 
             num = Math.round(Math.random()*100);
             cont = 10;
-            System.out.println(num);
             Scanner sc = new Scanner(System.in);
 
             while (cont > 0) {
