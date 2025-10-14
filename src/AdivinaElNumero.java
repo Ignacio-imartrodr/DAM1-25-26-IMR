@@ -1,5 +1,4 @@
 import java.util.Scanner;
-
 /** 
 * Acierta un numero con 10 intentos y pistas de si es mayor o menor
 */
@@ -16,7 +15,7 @@ public class AdivinaElNumero {
             byte cont;
 
             num = Math.round(Math.random()*100);
-            cont = 10;
+            cont = 6;
             Scanner sc = new Scanner(System.in);
 
             while (cont > 0) {
