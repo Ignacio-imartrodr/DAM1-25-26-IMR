@@ -1,3 +1,4 @@
+package UD1;
 import java.util.Scanner;
 /** 
  * EP0114_Segundos. Convertir un número de horas, minutos y segundos introducidos por teclado en un número total de segundos.

@@ -1,3 +1,4 @@
+package UD1;
 import java.util.Scanner;
 /** 
  * E0109_Par. Programa que pida un número entero al usuario y que indique si es par mediante un literal booleano (true o false).

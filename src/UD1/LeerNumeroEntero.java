@@ -1,3 +1,4 @@
+package UD1;
 import java.util.Scanner;
 /** 
  * @Author Ignacio MR

@@ -12,21 +12,22 @@ public class AdivinaElNumero {
             long num;
             int res = -1;
             String mayor;
-            byte cont;
+            final byte MAX_INT = 10;
+            byte intentRest;
 
             num = Math.round(Math.random()*100);
-            cont = 6;
+            intentRest = MAX_INT;
             Scanner sc = new Scanner(System.in);
 
-            while (cont > 0) {
-                  System.out.print("Tienes " +cont+ " intentos. ");
+            while (intentRest > 0) {
+                  System.out.print("Tienes " +intentRest+ " intentos. ");
                   System.out.print("Acierta un numero del 0 al 100: ");
                   res = sc.nextInt();
                   if (res != num) {
                         System.out.println("Fallaste");
-                        mayor = res >num ? "menor" : "mayor";
+                        mayor = res > num ? "menor" : "mayor";
                         System.out.println("El número es " + mayor + " al número dado");
-                        --cont;
+                        --intentRest;
                   }else{
                         System.out.println("Acertaste");
                         break;
@@ -36,7 +37,7 @@ public class AdivinaElNumero {
             if (res != num) {
                   System.out.println("Has perdido, el número era: " + num);
             }else{
-                  System.out.println("Has ganado con " + cont + " intentos restantes");
+                  System.out.println("Has ganado con " + intentRest + " intentos restantes");
             }
       }
 }

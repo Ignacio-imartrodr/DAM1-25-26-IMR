@@ -1,3 +1,4 @@
+package UD1;
 import java.util.Scanner;
 /** 
  * E0106_Media. Crea una aplicación que calcule la media aritmética de tres notas enteras. Ten en cuenta que la media puede tener decimales.

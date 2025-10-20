@@ -1,3 +1,4 @@
+package UD1;
 import java.util.Scanner;
 /** 
  * EcuacionGrado2. La fórmula para calcular las raíces de una ecuación de segundo grado 
