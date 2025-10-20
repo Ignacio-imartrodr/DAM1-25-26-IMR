@@ -27,13 +27,14 @@ public class E0303_Num1a100 {
 
         intentRest = MAX_INT;
         Scanner sc = new Scanner(System.in);
-        /*No sale del bucle con -1*/
-        while (intentRest > 0 && !(res == num && res != -1)) {
-            System.out.print("Tienes " + intentRest + " intentos. ");
+        System.out.println("Escribe '-1' para rendirte");
+        while (intentRest > 0 && !(res == num || res == -1)) {
+            System.out.println("Tienes " + intentRest + " intentos. ");
             System.out.print("Acierta un numero del 1 al 100: ");
             res = sc.nextInt();
-            if (res != num) {
-                System.out.println("Fallaste");
+            System.out.println();
+            
+            if (res != num && res != -1) {
                 mayor = res > num ? "menor" : "mayor";
                 System.out.println("El número es " + mayor + " al número dado");
                 --intentRest;
