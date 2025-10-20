@@ -1,3 +1,4 @@
+package OTROS;
 import java.util.Scanner;
 /** 
 * Acierta un numero con 10 intentos y pistas de si es mayor o menor
