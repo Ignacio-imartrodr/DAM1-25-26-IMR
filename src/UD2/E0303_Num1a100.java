@@ -15,36 +15,30 @@ proceso termina cuando el usuario acierta o cuando se rinde (introduciendo un -1
 public class E0303_Num1a100 {
     public static void main(String[] args) throws Exception {
 
-        int num;
+        int numSecreto;
         int res = -2;
         String mayor;
-        final byte MAX_INT = 10;
-        byte intentRest;
+        byte intent;
 
         Random rnd = new Random();
-        num = rnd.nextInt(100) + 1;
-        System.out.println(num);
+        numSecreto = rnd.nextInt(100) + 1;
 
-        intentRest = MAX_INT;
+        intent = 0;
         Scanner sc = new Scanner(System.in);
+        
         System.out.println("Escribe '-1' para rendirte");
-        while (intentRest > 0 && !(res == num || res == -1)) {
-            System.out.println("Tienes " + intentRest + " intentos. ");
+        while (!(res == numSecreto || res == -1)) {
             System.out.print("Acierta un numero del 1 al 100: ");
             res = sc.nextInt();
             System.out.println();
             
-            if (res != num && res != -1) {
-                mayor = res > num ? "menor" : "mayor";
+            if (res != numSecreto && res != -1) {
+                mayor = res > numSecreto ? "menor" : "mayor";
                 System.out.println("El número es " + mayor + " al número dado");
-                --intentRest;
+                ++intent;
             }
         }
         sc.close();
-        if (res != num) {
-            System.out.println("Has perdido, el número era: " + num);
-        } else {
-            System.out.println("Has ganado con " + intentRest + " intentos restantes");
-        }
+        System.out.println(res != numSecreto ? "Has perdido tras "+ intent +" intentos, el número era: " + numSecreto : "Has ganado tras " + intent + " intentos");
     }
 }

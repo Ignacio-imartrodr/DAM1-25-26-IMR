@@ -35,10 +35,6 @@ public class AdivinaElNumero {
                   }
             }
             sc.close();
-            if (res != num) {
-                  System.out.println("Has perdido, el número era: " + num);
-            }else{
-                  System.out.println("Has ganado con " + intentRest + " intentos restantes");
-            }
+            System.out.println(res != num ? "Has perdido, el número era: " + num : "Has ganado con " + intentRest + " intentos restantes");
       }
 }
