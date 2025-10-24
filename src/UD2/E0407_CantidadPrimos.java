@@ -22,7 +22,7 @@ public class E0407_CantidadPrimos {
     }
     public static int cantPrimo(int n) {
         int cant = 0;
-        for (int i = 2; i <= n; ++i) {
+        for (int i = 2; i <= Math.abs(n); ++i) {
             if (n % i == 0 && esPrimo(i)) {
                 ++cant;
             }
