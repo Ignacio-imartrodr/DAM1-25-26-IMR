@@ -10,20 +10,24 @@ import java.util.Scanner;
  * @author Ignacio MR
  */
 public class E0405_EsVocal {
-    /* Era solo un caracter
-    public static boolean contieneVocal(String cad) {
-        char data[] = {'a', 'e', 'i', 'o', 'u'};
-        for (int i = 0; i<=length(cad); ++i){
-            if (cad.charAt(i) != data ){
-                
-            }
+    public static boolean contieneVocal(String caract) {
+        switch (caract) {
+            case "a", "e", "i", "o", "u",
+                 "A", "E", "I", "O", "U",
+                 "á", "é", "í", "ó", "ú",
+                 "Á", "É", "Í", "Ó", "Ú",
+                 "ä", "ë", "ï", "ö", "ü",
+                 "Ä", "Ë", "Ï", "Ö", "Ü":
+                return true;
+            default:
+                return false;
         }
-
-    
-        return true;
     }
     public static void main(String[] args) {
-        
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Introduce un carácter: ");
+        String caract = sc.nextLine();
+        sc.close();
+        System.out.println(contieneVocal(caract) ? "Es una vocal" : "NO es una vocal");
     }
-    */
 }
