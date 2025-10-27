@@ -1,8 +1,8 @@
 package OTROS;
 import java.util.Scanner;
 public class VocalesDeUnaCadena {
-    public static boolean contieneVocal(String cad) {
-        boolean vocal = false;
+    public static int numVocal(String cad) {
+        int vocal = 0;
         for (int i = 0; i < cad.length(); i++){
             vocal = switch (cad.charAt(i)) {
             case 'a', 'e', 'i', 'o', 'u',
@@ -11,13 +11,10 @@ public class VocalesDeUnaCadena {
                  'Á', 'É', 'Í', 'Ó', 'Ú',
                  'ä', 'ë', 'ï', 'ö', 'ü',
                  'Ä', 'Ë', 'Ï', 'Ö', 'Ü' ->{
-                yield true;}
+                yield vocal+1;}
             default->{
-                yield false;}
+                yield vocal+0;}
             };
-            if (vocal) {
-                return vocal;
-            }
         }
         return vocal;
     }
@@ -27,7 +24,9 @@ public class VocalesDeUnaCadena {
         Scanner sc = new Scanner(System.in);
         String str = sc.nextLine();
         sc.close();
-        System.out.print(contieneVocal(str)? "La cadena tiene vocales" : "La cadena NO tiene vocales");
+        int numVocal = numVocal(str);
+        String plSing = numVocal==1 ? " vocal" : " vocales";
+        System.out.print(numVocal>0 ? "La cadena tiene "+ numVocal + plSing : "La cadena NO tiene vocales");
         
     }
 }
