@@ -19,20 +19,21 @@ public class ManejoDeErroresDeEntrada {
                 System.out.println("Error: Por favor ingrese un número válido");
             }
         }
-        
+        System.out.println(numero);
         scanner.close();
     }
     public static void SpecificError() {
         //Caso más específico para números enteros
         Scanner scanner = new Scanner(System.in);
-
+        int numero = 0;
         if (scanner.hasNextInt()) {
-            int numero = scanner.nextInt();
+            numero = scanner.nextInt();
             // El input es un número entero válido
         } else {
             System.out.println("Error: Por favor ingrese un número válido");
             scanner.next(); // limpia el buffer del scanner
         }
+        System.out.println(numero);
         scanner.close();
     }
 }
