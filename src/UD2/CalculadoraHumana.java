@@ -60,20 +60,20 @@ public class CalculadoraHumana {
         int respuestaCorrecta;
         switch (oper) {
             case 1:
-                System.out.println(resAnterior + " + " +nuevoNum );
+                System.out.println(resAnterior + " + " +nuevoNum + "=");
                 respuestaCorrecta = resAnterior + nuevoNum;
                 break;
             case 2:
-                System.out.println(resAnterior + " - " +nuevoNum );
+                System.out.println(resAnterior + " - " +nuevoNum + "=");
                 respuestaCorrecta = resAnterior - nuevoNum;
                 break;
             case 3:
-                System.out.println(resAnterior + " * " +nuevoNum );
+                System.out.println(resAnterior + " * " +nuevoNum + "=");
                 respuestaCorrecta = resAnterior * nuevoNum;
                 break;
             case 4:
-                System.out.println(resAnterior + " / " +nuevoNum );
-                respuestaCorrecta = resAnterior * nuevoNum;
+                System.out.println(resAnterior + " / " +nuevoNum + "=");
+                respuestaCorrecta = resAnterior / nuevoNum;
                 break;
         }
     }
