@@ -19,6 +19,7 @@ public class E0303_Num1a100 {
         int res = -2;
         String mayor;
         byte intent;
+        boolean numeroCorrecto;
 
         Random rnd = new Random();
         numSecreto = rnd.nextInt(100) + 1;
@@ -28,9 +29,18 @@ public class E0303_Num1a100 {
         
         System.out.println("Escribe '-1' para rendirte");
         while (!(res == numSecreto || res == -1)) {
-            System.out.print("Acierta un numero del 1 al 100: ");
-            res = sc.nextInt();
-            System.out.println();
+            numeroCorrecto = false;
+            do {
+                try {
+                    System.out.print("Acierta un numero del 1 al 100: ");
+                    res = sc.nextInt();
+                    System.out.println();
+                    numeroCorrecto = true;
+                } catch (Exception e) {
+                    String entradaErronea = sc.nextLine();
+                    System.out.println("La entrada ("+ entradaErronea +") no es un número entero");
+                }
+            } while (!numeroCorrecto);
             
             if (res != numSecreto && res != -1) {
                 mayor = res > numSecreto ? "menor" : "mayor";

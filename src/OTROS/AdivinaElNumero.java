@@ -1,14 +1,25 @@
 package OTROS;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 /** 
 * Acierta un numero con 10 intentos y pistas de si es mayor o menor
-*/
-
-/** 
+*
+* 
 * @Author Ignacio MR
 */
 public class AdivinaElNumero {
-      public static void main(String[] args) throws Exception {
+      static Scanner sc = new Scanner(System.in);
+      public static int pedirNumInt(){
+            try {
+                  System.out.print("Acierta un numero del 0 al 100: ");
+                  return sc.nextInt();
+            } catch (InputMismatchException e) {
+                  System.out.println("Introduce solo números enteros");
+                  sc.nextLine();
+                  return pedirNumInt();
+            }
+      }
+      public static void main(String[] args){
 
             long num;
             int res = -1;
@@ -18,14 +29,12 @@ public class AdivinaElNumero {
 
             num = Math.round(Math.random()*100);
             intentRest = MAX_INT;
-            Scanner sc = new Scanner(System.in);
+            
 
             while (intentRest > 0) {
                   System.out.print("Tienes " +intentRest+ " intentos. ");
-                  System.out.print("Acierta un numero del 0 al 100: ");
-                  res = sc.nextInt();
+                  res = pedirNumInt();
                   if (res != num) {
-                        System.out.println("Fallaste");
                         mayor = res > num ? "menor" : "mayor";
                         System.out.println("El número es " + mayor + " al número dado");
                         --intentRest;
@@ -34,7 +43,7 @@ public class AdivinaElNumero {
                         break;
                   }
             }
-            sc.close();
+            
             System.out.println(res != num ? "Has perdido, el número era: " + num : "Has ganado con " + intentRest + " intentos restantes");
       }
 }
