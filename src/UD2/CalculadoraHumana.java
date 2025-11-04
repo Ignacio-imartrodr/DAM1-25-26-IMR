@@ -57,7 +57,7 @@ public class CalculadoraHumana {
         int resAnterior = 56; //Este número es la respuesta anterior correcta
         int oper = generarOperador(resAnterior);
         int nuevoNum = 3; //Este número se generará en función del operador
-        int respuestaCorrecta;
+        int respuestaCorrecta = -1;
         switch (oper) {
             case 1:
                 System.out.println(resAnterior + " + " +nuevoNum + "=");
@@ -74,7 +74,8 @@ public class CalculadoraHumana {
             case 4:
                 System.out.println(resAnterior + " / " +nuevoNum + "=");
                 respuestaCorrecta = resAnterior / nuevoNum;
-                break;
+                break;        
         }
+        System.out.println(respuestaCorrecta);
     }
 }
