@@ -9,7 +9,7 @@ import java.util.Scanner;
 */
 public class AdivinaElNumero {
       static Scanner sc = new Scanner(System.in);
-      public static int pedirNumInt(){
+      static int pedirNumInt(){
             try {
                   System.out.print("Acierta un numero del 0 al 100: ");
                   return sc.nextInt();

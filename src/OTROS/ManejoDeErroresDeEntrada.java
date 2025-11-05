@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 public class ManejoDeErroresDeEntrada {
     public static void GeneralError() {
-
+        // Paso de Char a String Character.toString(char)
+        // Paso de String a Int: Integer.parseInt(String)
+        // Paso de Int a String: Integer.toString(Int)
         // Caso general para números enteros
         Scanner scanner = new Scanner(System.in);
         int numero = 0;
