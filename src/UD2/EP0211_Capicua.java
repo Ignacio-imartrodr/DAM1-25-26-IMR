@@ -9,24 +9,23 @@ import java.util.Scanner;
 public class EP0211_Capicua {
     static Scanner sc = new Scanner(System.in);
 
-    public static int pedirNum() {
-        try {
-            System.out.print("Número del 100 al 9999: ");
-            return sc.nextInt();
-        } catch (InputMismatchException e) {
-            System.out.println("Introduce solo números enteros");
-            sc.nextLine();
-            return pedirNum();
-        }
-    }
-
     public static void main(String[] args) {
-        int n = pedirNum();
+        
+        int n = 0;
+        do{
+            boolean numCorrecto = false;
+            do {                
+                try {
+                System.out.print("Número del 100 al 9999: ");
+                n = sc.nextInt();
+                numCorrecto = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Introduce solo números enteros");
+                    sc.nextLine();
+                }
 
-        while (n < 100 || n > 9999) {
-            System.out.println("El número debe ser del 100 al 9999");
-            n = pedirNum();
-        }
+            } while (!numCorrecto);
+        }while (n < 100 || n > 9999);
 
         int mill = n / 1000;
         int unid = n % 10;
