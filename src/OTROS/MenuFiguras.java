@@ -48,12 +48,12 @@ public class MenuFiguras {
             System.out.print("Introduce un numero del 2 al 20: ");
             num = sc.nextInt();
             while (num < 2 || num > 20) {
-                System.out.println("Error de entrada.");
+                System.out.print("Error de entrada.");
                 System.out.print("Introduce solo numeros del 2 al 20: ");
                 num = sc.nextInt();
             }
         } catch (InputMismatchException e) {
-            System.out.println("Introduce solo numeros del 2 al 20: ");
+            System.out.print("Introduce solo numeros del 2 al 20: ");
             sc.nextLine();
             pedirValor2a20();
         }
@@ -69,7 +69,7 @@ public class MenuFiguras {
             int figura = -1;
             do {
                 try {
-                    System.out.println("Escoge la figura,: ");
+                    System.out.println("Escoge la figura: ");
                     System.out.println("===============================");
                     System.out.println("0 - salir      1 - triangulo       2 - rectangulo");
                     figura = sc.nextInt();
