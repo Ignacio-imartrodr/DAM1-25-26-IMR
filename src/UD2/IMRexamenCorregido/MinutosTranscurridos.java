@@ -1,4 +1,4 @@
-package UD2.IMRexamenResuelto;
+package UD2.IMRexamenCorregido;
 /**
  * @author Ignacio MR
 */
@@ -7,16 +7,21 @@ public class MinutosTranscurridos {
         if (((horaA < 0 || horaA > 23)||(horaB < 0 || horaB > 23))||((minutoA < 0 ||minutoA > 59)||(minutoB < 0 || minutoB > 59))) {
             return -1;
         }
-        int difMin;
-        int difHMin;
-        if (horaA >= horaB) {
+        int difMin = 0;
+        int difHMin = 0;
+        if (horaA > horaB) {
             difHMin = (horaA - horaB)*60;
             difMin = 60-((60-minutoA)+ minutoB);
-        } else {
+        }else if (horaA < horaB) {
             difHMin = (horaB - horaA)*60;
             difMin = 60-((60-minutoB)+ minutoA);
+        } else if (horaA == horaB){
+            difMin = minutoA > minutoB ? 60-((60-minutoA)+ minutoB) : 60-((60-minutoB)+ minutoA);
         }
         return difHMin + difMin;
+        /*Solución del profe (creo[era algo así, revisalo])
+        return Math.abs((horaA*60 - minutoB)-(horaB*60 - minutoA))
+        */
     }
 
     public static void main(String[] args) {
