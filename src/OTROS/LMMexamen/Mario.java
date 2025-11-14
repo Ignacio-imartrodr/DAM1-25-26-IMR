@@ -1,4 +1,4 @@
-package ud2.LMMexamen;
+package OTROS.LMMexamen;
 
 import java.util.Scanner;
 
