@@ -23,6 +23,7 @@ public class SumaDescendente {
         //Optimización propia |
         //                    V
         int res = 0;
+        n = Math.abs(n);
         for (int i = 1; i < n*10; i *= 10) {
             res += (n % i);
         }
@@ -30,7 +31,7 @@ public class SumaDescendente {
     }
 
     public static void main(String[] args) {
-        final int n = 0102;
+        final int n = -1002;
         System.out.println(sumaDescendente(n));
     }
 }
