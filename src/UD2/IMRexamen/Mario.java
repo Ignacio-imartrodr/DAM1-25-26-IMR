@@ -1,4 +1,4 @@
-package ud2.IMRexamen;
+package UD2.IMRexamen;
 
 /**
  * @author Ignacio MR
