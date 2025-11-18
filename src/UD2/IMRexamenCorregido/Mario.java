@@ -29,8 +29,7 @@ public class Mario {
         System.out.print("En que altura se encuentra Mario? ");
         int alturaActual = pedirNum();
 
-        do {
-
+        while (alturaActual >= 0) {
             System.out.println("Introduce un número negativo para finalizar el programa.");
             System.out.print("Altura del salto: ");
             alturaNextSalto = pedirNum();
@@ -40,7 +39,7 @@ public class Mario {
                 saltoDown++;
             }
             alturaActual = alturaNextSalto;
-        } while (alturaNextSalto >= 0);
+        }
         System.out.printf("Mario ha saltado %d veces hacia arriba %n", saltoUp);
         System.out.printf("Mario ha saltado %d veces hacia abajo", saltoDown);
     }
