@@ -34,7 +34,7 @@ public class EP0212_DNI {
     do {
         System.out.println("Introduce el Numero del DNI (8 números): ");
         numDni = pedirNum();
-    } while (longNum(numDni) != 8);
+    } while (longNum(numDni) != 8 || numDni < 0);
     char[] letra = {'T','R','W','A','G','M','Y','F','P','D','X','B','N','J','Z','S','Q','V','H','L','C','K','E'};
     System.out.println("La letra para ese número de DNI es: "+ letra[numDni%23]);
  }
