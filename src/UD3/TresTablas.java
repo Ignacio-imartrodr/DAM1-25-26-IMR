@@ -1,4 +1,7 @@
 package UD3;
+/**
+ * @author Ignacio MR
+*/
 public class TresTablas {
     public static void main(String[] args) {
         
