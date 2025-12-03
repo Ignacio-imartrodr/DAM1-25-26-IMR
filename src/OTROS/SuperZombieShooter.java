@@ -71,6 +71,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         weapons.add(new Weapon("Pistola 9mm", 15, 20, 1, 0, 999)); // Infinita
         weapons.add(new Weapon("Rifle Asalto", 5, 8, 1, 0.1, 120)); // Rápida
         weapons.add(new Weapon("Escopeta", 40, 18, 5, 0.3, 30));   // Dispersión
+        weapons.add(new Weapon("Lanza Cohetes", 100, 1000, 1, 0, 10)); // Lanzacohetes
 
         timer = new Timer(16, this); // ~60 FPS
         timer.start();
@@ -290,7 +291,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.drawString("Kills: " + score, 20, 30);
         g2.drawString("Horda: " + wave, 20, 50);
         g2.setColor(Color.YELLOW);
-        g2.drawString("[1] Pistola  [2] Rifle  [3] Escopeta", W-350, H-20);
+        g2.drawString("[1] Pistola  [2] Rifle  [3] Escopeta [4] Lanza Cohetes", W-350, H-20);
     }
 
     private void drawGameOver(Graphics2D g2) {
@@ -317,6 +318,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         if(k==KeyEvent.VK_1) currentWeaponIndex = 0;
         if(k==KeyEvent.VK_2) currentWeaponIndex = 1;
         if(k==KeyEvent.VK_3) currentWeaponIndex = 2;
+        if(k==KeyEvent.VK_4) currentWeaponIndex = 3;
     }
     public void keyReleased(KeyEvent e) {
         int k = e.getKeyCode();
