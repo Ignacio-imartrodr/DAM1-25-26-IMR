@@ -15,6 +15,19 @@ import java.util.Random;
  */
 
 public class E0506_Primitiva {
+    static String stringArray(int[] array) {
+        String arrayStr="[";
+            for (int i = 0; i < array.length; i++) {
+                if (i>0 && i<array.length) {
+                    arrayStr +=',';
+                }
+                arrayStr += array[i];
+                if (i == array.length - 1){
+                    arrayStr +=']';
+                }
+            }
+        return arrayStr;
+    }
     static int numAciertos(int[] apuesta, int[] ganadora){
         int aciertos = 0;
         for (int i = 0; i < ganadora.length; i++) {
@@ -41,6 +54,8 @@ public class E0506_Primitiva {
         int[] ganadora = tablaAleatoria(numInicio, numFin, longPrimitiva);
         int[] apuesta = ganadora.clone();
         Arrays.sort(ganadora);
+        System.out.println("Apuesta: " + stringArray(apuesta));
+        System.out.println("Ganadora: " + stringArray(ganadora));
         System.out.println(numAciertos(apuesta, ganadora));
     }
 

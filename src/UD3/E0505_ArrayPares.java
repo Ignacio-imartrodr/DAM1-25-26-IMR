@@ -12,11 +12,9 @@ import java.util.Random;
 
 public class E0505_ArrayPares {
     static String stringArray(int[] array) {
-        String arrayStr="";
+        String arrayStr="[";
             for (int i = 0; i < array.length; i++) {
-                if (i == 0) {
-                    arrayStr +='[';
-                } else if (i>0 && i<array.length) {
+                if (i>0 && i<array.length) {
                     arrayStr +=',';
                 }
                 arrayStr += array[i];
