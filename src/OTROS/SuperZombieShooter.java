@@ -291,7 +291,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.drawString("Kills: " + score, 20, 30);
         g2.drawString("Horda: " + wave, 20, 50);
         g2.setColor(Color.YELLOW);
-        g2.drawString("[1] Pistola  [2] Rifle  [3] Escopeta [4] Lanza Cohetes", W-350, H-20);
+        g2.drawString("[1]Pistola  [2]Rifle  [3]Escopeta  [4]Lanza Cohetes", W-475, H-20);
     }
 
     private void drawGameOver(Graphics2D g2) {

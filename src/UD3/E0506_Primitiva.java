@@ -31,7 +31,7 @@ public class E0506_Primitiva {
     static int numAciertos(int[] apuesta, int[] ganadora){
         int aciertos = 0;
         for (int i = 0; i < ganadora.length; i++) {
-            if (apuesta[i]==ganadora[i]) {
+            if (Arrays.binarySearch(ganadora, apuesta[i])>=0) {
                 aciertos++;
             }
         }
@@ -49,14 +49,14 @@ public class E0506_Primitiva {
     }
     public static void main(String[] args) {
         final int longPrimitiva = 6;
-        final int numInicio = 0;
-        final int numFin = 9;
+        final int numInicio = 1;
+        final int numFin = 49;
         int[] ganadora = tablaAleatoria(numInicio, numFin, longPrimitiva);
-        int[] apuesta = ganadora.clone();
+        int[] apuesta = tablaAleatoria(numInicio, numFin, longPrimitiva);
         Arrays.sort(ganadora);
         System.out.println("Apuesta: " + stringArray(apuesta));
         System.out.println("Ganadora: " + stringArray(ganadora));
-        System.out.println(numAciertos(apuesta, ganadora));
+        System.out.println("Aciertos: " + numAciertos(apuesta, ganadora));
     }
 
 }
