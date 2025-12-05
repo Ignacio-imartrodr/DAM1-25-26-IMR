@@ -3,6 +3,10 @@ package UD3;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author Ignacio MR
+ */
+
 public class NumerosOp {
     static int sumaDigitos(int n) {
         int suma = 0;

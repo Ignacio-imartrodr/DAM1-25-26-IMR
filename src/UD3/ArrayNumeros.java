@@ -3,6 +3,10 @@ package UD3;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * @author Ignacio MR
+ */
+
 public class ArrayNumeros {
     static Scanner sc = new Scanner(System.in);
     static int pedirNum() {

@@ -3,6 +3,10 @@ package UD3;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * @author Ignacio MR
+ */
+
 public class E0507_RndSinRepetidos {
     static String stringArray(int[] array) {
         String arrayStr="[";

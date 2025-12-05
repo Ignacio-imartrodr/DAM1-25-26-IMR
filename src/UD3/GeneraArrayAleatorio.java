@@ -1,9 +1,11 @@
 package UD3;
 
 import java.util.Random;
+
 /**
  * @author Ignacio MR
  */
+
 public class GeneraArrayAleatorio {
     static String stringArray(int[] array) {
         String arrayStr="[";

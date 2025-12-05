@@ -1,7 +1,9 @@
 package UD3;
+
  /**
   * @author Ignacio MR
   */
+ 
 public class BuscarDesde {
     static int buscarDesde(int t[], int clave, int posicion) {
         if (posicion > 0 && posicion < t.length) {

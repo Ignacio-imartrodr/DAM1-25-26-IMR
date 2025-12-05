@@ -48,11 +48,11 @@ public class E0506_Primitiva {
         return arrayRnd;
     }
     public static void main(String[] args) {
-        final int longPrimitiva = 6;
-        final int numInicio = 1;
-        final int numFin = 49;
-        int[] ganadora = tablaAleatoria(numInicio, numFin, longPrimitiva);
-        int[] apuesta = tablaAleatoria(numInicio, numFin, longPrimitiva);
+        final int LONG_PRIMITIVA = 6;
+        final int NUM_INICIO = 1;
+        final int NUM_FIN = 49;
+        int[] ganadora = tablaAleatoria(NUM_INICIO, NUM_FIN, LONG_PRIMITIVA);
+        int[] apuesta = tablaAleatoria(NUM_INICIO, NUM_FIN, LONG_PRIMITIVA);
         Arrays.sort(ganadora);
         System.out.println("Apuesta: " + stringArray(apuesta));
         System.out.println("Ganadora: " + stringArray(ganadora));

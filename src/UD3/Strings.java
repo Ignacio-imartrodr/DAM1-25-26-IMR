@@ -1,5 +1,9 @@
 package UD3;
 
+/**
+ * @author Ignacio MR
+ */
+
 public class Strings {
     public static void main(String[] args) {
         char[] string = {'N','I','G','H','T'};

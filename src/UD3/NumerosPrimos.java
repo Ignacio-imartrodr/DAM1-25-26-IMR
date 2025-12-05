@@ -1,4 +1,9 @@
 package UD3;
+
+/**
+ * @author Ignacio MR
+ */
+
 public class NumerosPrimos {
         public static boolean ePrimo(int n) {
         if (n <= 1) return false;

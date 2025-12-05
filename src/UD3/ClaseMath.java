@@ -3,6 +3,7 @@ package UD3;
 /**
  * @author Ignacio MR
 */
+
 public class ClaseMath {
     
     static double random (double min, double max) {
