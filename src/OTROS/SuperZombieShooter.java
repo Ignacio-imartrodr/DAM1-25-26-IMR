@@ -70,7 +70,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         // Inicializar Armas
         weapons.add(new Weapon("Pistola 9mm", 15, 20, 1, 0, 999)); // Infinita
         weapons.add(new Weapon("Rifle Asalto", 5, 8, 1, 0.1, 120)); // Rápida
-        weapons.add(new Weapon("Escopeta", 40, 18, 5, 0.3, 30));   // Dispersión
+        weapons.add(new Weapon("Escopeta", 25, 21, 5, 0.3, 160));   // Dispersión
         weapons.add(new Weapon("Lanza Cohetes", 100, 1000, 1, 0, 10)); // Lanzacohetes
 
         timer = new Timer(16, this); // ~60 FPS
@@ -184,14 +184,18 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
     private void fireWeapon(Weapon w) {
         w.cooldown = w.fireRate;
         if(w.maxAmmo != 999) w.ammo--;
-
-        // Retroceso
-        player.x -= Math.cos(player.angle) * 2;
-        player.y -= Math.sin(player.angle) * 2;
-
+        /* Retroceso sin considerar bullet
+        if(player.x > 0 && player.x < W) player.x -= Math.cos(player.angle) * 2;
+        if(player.y > 0 && player.y < H) player.y -= Math.sin(player.angle) * 2;
+        */
         for(int i=0; i<w.pellets; i++) {
-            // Calcular dispersión
             double spread = (rand.nextDouble() - 0.5) * w.spread;
+
+            // Retroceso por bullet
+            if(player.x > 0 && player.x < W) player.x -= Math.cos(player.angle + spread) * 2;
+            if(player.y > 0 && player.y < H) player.y -= Math.sin(player.angle + spread) * 2;
+            
+            // Calcular dispersión
             bullets.add(new Bullet(player.x, player.y, player.angle + spread, 12));
         }
     }
