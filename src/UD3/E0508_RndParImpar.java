@@ -40,6 +40,7 @@ public class E0508_RndParImpar {
         }
         return cant;
     }
+    //Sin modificar el t principal
     static int[] getPares(int[] t){
         int[] pares = new int[contar(t, true)];
         int cont = 0;
@@ -52,6 +53,7 @@ public class E0508_RndParImpar {
         Arrays.sort(pares);
         return pares;
     }
+    //Sin modificar el t principal
     static int[] getImpares(int[] t){
         int[] impares = new int[contar(t, false)];
         int cont = 0;
@@ -64,11 +66,38 @@ public class E0508_RndParImpar {
         Arrays.sort(impares);
         return impares;
     }
+    //Modificando el t principal
+    static void getParesMod(int[] t){
+        int cont = 1;
+        int cantNegativos = 0;
+        for (int i = 0; i < t.length; i++) {
+            if (t[i]%2 != 0) {
+                t[i] = -1;
+                cantNegativos++;
+            }
+        }
+        System.out.println(t);
+        for (int i = 0; i < t.length; i++) {
+            if (t[i] == -1) {
+                while (t[t.length-cont] == -1 && cont < t.length) {
+                    cont++;
+                }
+                t[i] = t[t.length-cont];
+                cont++;
+            }
+        }
+        //Solo corta el array nuevo, el dado no.(Array.CopyOfRange)
+
+        System.arraycopy(t,0, t, 0, t.length-cantNegativos);
+        Arrays.sort(t);
+    }
     public static void main(String[] args) {
         final int LONGITUD = 7;
         int[] t = arrayAleatorio(LONGITUD);
         System.out.println(stringArray(t));
         System.out.println(stringArray(getPares(t)));
         System.out.println(stringArray(getImpares(t)));
+        ;
+        System.out.println(stringArray(t));
     }
 }
