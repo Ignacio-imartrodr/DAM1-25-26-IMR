@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ManejoDeErroresDeEntrada {
     // Info útil |
-    // v
+    //           v
     // Paso de Char a String Character.toString(char)
     // Paso de String a Int: Integer.parseInt(String)
     // Paso de Int a String: Integer.toString(Int)
