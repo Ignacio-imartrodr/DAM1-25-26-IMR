@@ -49,7 +49,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
     ArrayList<ItemDrop> items = new ArrayList<>();
 
     // --- INPUT ---
-    boolean w, a, s, d, shooting;
+    boolean w, a, s, d, shooting, plantMina;
     int mouseX, mouseY;
 
     // --- LOGICA JUEGO ---
@@ -101,7 +101,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             // Logica Jugador
             player.move(w, s, a, d, W, H);
             player.lookAt(mouseX, mouseY);
-
+            
             // Disparo
             Weapon cw = weapons.get(currentWeaponIndex);
             cw.cooldown--;
@@ -259,14 +259,14 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 
     private void drawLighting(Graphics2D g2) {
         // Crea un degradado radial desde el jugador hacia afuera
-        Point2D center = new Point2D.Float((float)player.x, (float)player.y);
+       /* Point2D center = new Point2D.Float((float)player.x, (float)player.y);
         float radius = 250;
         float[] dist = {0.0f, 1.0f};
         Color[] colors = {new Color(0,0,0,0), new Color(0,0,0, 220)}; // Transparente a Negro
         
         RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
         g2.setPaint(p);
-        g2.fillRect(0, 0, W, H);
+        g2.fillRect(0, 0, W, H);*/
     }
 
     private void drawHUD(Graphics2D g2) {
@@ -296,7 +296,8 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.drawString("Kills: " + score, 20, 30);
         g2.drawString("Horda: " + wave, 20, 50);
         g2.setColor(Color.YELLOW);
-        g2.drawString("[1]Pistola  [2]Rifle  [3]Escopeta  [4]Rail Gun", W-475, H-20);
+        g2.drawString("[1] Pistola  [2] Rifle  [3] Escopeta  [4] Rail Gun", W-475, H-45);
+        g2.drawString("[M1] Disparar  [M2] Mina", W-475, H-15);
     }
 
     private void drawGameOver(Graphics2D g2) {
@@ -324,16 +325,29 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         if(k==KeyEvent.VK_2) currentWeaponIndex = 1;
         if(k==KeyEvent.VK_3) currentWeaponIndex = 2;
         if(k==KeyEvent.VK_4) currentWeaponIndex = 3;
+        if(k==KeyEvent.VK_M) { int back = currentWeaponIndex; currentWeaponIndex = 4; currentWeaponIndex = back;}//quizas está mal implementado
+        if(k==KeyEvent.VK_UP) {shooting = true; player.angle = 0;}
+        if(k==KeyEvent.VK_DOWN) {shooting = true;  player.angle = 180;}
+        if(k==KeyEvent.VK_LEFT) {shooting = true; player.angle = 270;}
+        if(k==KeyEvent.VK_RIGHT) {shooting = true; player.angle = 90;}
     }
     public void keyReleased(KeyEvent e) {
         int k = e.getKeyCode();
         if(k==KeyEvent.VK_W) w=false;
         if(k==KeyEvent.VK_S) s=false;
         if(k==KeyEvent.VK_A) a=false;
-        if(k==KeyEvent.VK_D) d=false;
+        if(k==KeyEvent.VK_DOWN) shooting = false;
+        if(k==KeyEvent.VK_LEFT) shooting = false;
+        if(k==KeyEvent.VK_RIGHT) shooting = false;
     }
-    public void mousePressed(MouseEvent e) { shooting = true; }
-    public void mouseReleased(MouseEvent e) { shooting = false; }
+    public void mousePressed(MouseEvent e) {
+        if(e.getButton() == MouseEvent.BUTTON1) shooting = true;
+        if(e.getButton() == MouseEvent.BUTTON1) plantMina = true;
+    }
+    public void mouseReleased(MouseEvent e) {
+        if(e.getButton() == MouseEvent.BUTTON1) shooting = false;
+        if(e.getButton() == MouseEvent.BUTTON1) plantMina = false;
+    }
     public void mouseMoved(MouseEvent e) { mouseX=e.getX(); mouseY=e.getY(); }
     public void mouseDragged(MouseEvent e) { mouseX=e.getX(); mouseY=e.getY(); }
     public void keyTyped(KeyEvent e) {}
@@ -411,6 +425,15 @@ class Bullet {
     }
     void update() { x += dx; y += dy; }
     boolean outOfBounds(int w, int h) { return x<0 || x>w || y<0 || y>h; }
+}
+
+class Mine{
+    double x, y;
+    int damage;
+    Mine(double x, double y) {
+        this.x = x; this.y = y;
+        this.damage = 10; // Base damage
+    }
 }
 
 class Particle {
