@@ -71,7 +71,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         weapons.add(new Weapon("Pistola 9mm", 15, 20, 1, 0, 999)); // Infinita
         weapons.add(new Weapon("Rifle Asalto", 5, 8, 1, 0.1, 120)); // Rápida
         weapons.add(new Weapon("Escopeta", 25, 21, 5, 0.3, 160));   // Dispersión
-        weapons.add(new Weapon("Lanza Cohetes", 100, 1000, 1, 0, 10)); // Lanzacohetes
+        weapons.add(new Weapon("Rail Gun", 100, 1000, 1, 0, 10)); // RailGun
 
         timer = new Timer(16, this); // ~60 FPS
         timer.start();
@@ -138,7 +138,6 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                         en.hp -= b.damage;
                         createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
                         if (currentWeaponIndex != 3) bulIt.remove();
-                        
                         if(en.hp <= 0){
                             // Drop Item chance 20%
                             if(rand.nextInt(100) < 20) {
@@ -198,7 +197,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             if(player.y > 0 && player.y < H) player.y -= Math.sin(player.angle + spread) * 2;
             
             // Calcular dispersión
-            bullets.add(new Bullet(player.x, player.y, player.angle + spread, 12));
+            bullets.add(new Bullet(player.x, player.y, player.angle + spread, currentWeaponIndex == 3 ? 25 : 12));
         }
     }
 
@@ -297,7 +296,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.drawString("Kills: " + score, 20, 30);
         g2.drawString("Horda: " + wave, 20, 50);
         g2.setColor(Color.YELLOW);
-        g2.drawString("[1]Pistola  [2]Rifle  [3]Escopeta  [4]Lanza Cohetes", W-475, H-20);
+        g2.drawString("[1]Pistola  [2]Rifle  [3]Escopeta  [4]Rail Gun", W-475, H-20);
     }
 
     private void drawGameOver(Graphics2D g2) {
