@@ -137,7 +137,8 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                     if(en.getBounds().contains(b.x, b.y)){
                         en.hp -= b.damage;
                         createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
-                        bulIt.remove();
+                        if (currentWeaponIndex != 3) bulIt.remove();
+                        
                         if(en.hp <= 0){
                             // Drop Item chance 20%
                             if(rand.nextInt(100) < 20) {
@@ -163,6 +164,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                         // Dar municion a todas las armas menos pistola
                         weapons.get(1).ammo += 60;
                         weapons.get(2).ammo += 15;
+                        weapons.get(3).ammo += 5;
                     }
                     iit.remove();
                 }
@@ -184,14 +186,14 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
     private void fireWeapon(Weapon w) {
         w.cooldown = w.fireRate;
         if(w.maxAmmo != 999) w.ammo--;
-        /* Retroceso sin considerar bullet
+        /* Retroceso sin considerar dircción bullet
         if(player.x > 0 && player.x < W) player.x -= Math.cos(player.angle) * 2;
         if(player.y > 0 && player.y < H) player.y -= Math.sin(player.angle) * 2;
         */
         for(int i=0; i<w.pellets; i++) {
             double spread = (rand.nextDouble() - 0.5) * w.spread;
 
-            // Retroceso por bullet
+            // Retroceso por dirección bullet
             if(player.x > 0 && player.x < W) player.x -= Math.cos(player.angle + spread) * 2;
             if(player.y > 0 && player.y < H) player.y -= Math.sin(player.angle + spread) * 2;
             
