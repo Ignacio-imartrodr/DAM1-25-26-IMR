@@ -31,7 +31,6 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 
     // --- CONSTANTES ---
     final int W = 800, H = 600;
-    
     // --- ESTADO ---
     boolean running = true;
     Timer timer;
@@ -73,7 +72,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         weapons.add(new Weapon("Rifle Asalto", 5, 8, 1, 0.1, 120)); // Rápida
         weapons.add(new Weapon("Escopeta", 25, 21, 5, 0.3, 160));   // Dispersión
         weapons.add(new Weapon("Rail Gun", 100, 1000, 1, 0, 10)); // RailGun
-        weapons.add(new Weapon("Mina", 50, 100, 0, 0, 10)); // Mina
+        weapons.add(new Weapon("Mina", 50, 100, 1, 0, 10)); // Mina
 
         timer = new Timer(16, this); // ~60 FPS
         timer.start();
@@ -96,7 +95,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             enemies.add(new Enemy(ex, ey, 1.5 + (wave * 0.1), 3 + wave));
         }
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (running) {
@@ -117,8 +116,12 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             }
             Weapon cw = weapons.get(currentWeaponIndex);
             cw.cooldown--;
+            if (shooting && plantMina && cw.cooldown <= 0 && cw.ammo > 0) {
+                plantMine(cw);
+            } else 
             if (shooting && cw.cooldown <= 0 && cw.ammo > 0) {
                 fireWeapon(cw);
+
             }
 
             // Actualizar Balas
@@ -127,6 +130,13 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                 Bullet b = bit.next();
                 b.update();
                 if(b.outOfBounds(W, H)) bit.remove();
+            }
+            
+            // Actualizar Minas
+            Iterator<Mine> mit = mines.iterator();
+            while(mit.hasNext()){
+                Mine m = mit.next();
+                if(m.outOfBounds(W, H)) mit.remove();
             }
 
             // Actualizar Enemigos
@@ -142,11 +152,39 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                     if(player.hp <= 0) running = false;
                 }
 
+                // Colisión Minas vs Enemigos
+                Iterator<Mine> mineIt = mines.iterator();
+                while(mineIt.hasNext()){
+                    Mine mine = mineIt.next();
+                    if(en.getBounds().intersects(mine.getBounds())){//TODO Al colisionar con una Mina lanzar 6 balas
+                        en.hp -= mine.damage;
+                        createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
+                        mineIt.remove();
+                        bullets.add(new Bullet(mine.x, mine.y, 0, 6));//Derecha
+                        bullets.add(new Bullet(mine.x, mine.y, -Math.PI / 4, 6));//Arriba derecha
+                        bullets.add(new Bullet(mine.x, mine.y, -3 * Math.PI / 4, 6));//Arriba izquierda
+                        bullets.add(new Bullet(mine.x, mine.y, Math.PI, 6));//Izquierda
+                        bullets.add(new Bullet(mine.x, mine.y, 3 * Math.PI / 4, 6));//Abajo izquierda
+                        bullets.add(new Bullet(mine.x, mine.y, Math.PI / 4, 6));//Abajo derecha
+                        if(en.hp <= 0){//Si el enemigo muere
+                            // Drop Item chance 20%
+                            if(rand.nextInt(100) < 20) {
+                                int type = rand.nextBoolean() ? 0 : 1; // 0 HP, 1 Ammo
+                                items.add(new ItemDrop(en.x, en.y, type));
+                            }
+                            score++;
+                            if(score % 15 == 0) wave++;
+                            eit.remove();
+                            break;
+                        }
+                    }
+                }
+
                 // Colisión Balas vs Enemigos
-                Iterator<Bullet> bulIt = bullets.iterator();//TODO IDEA: la colisión es con la elipse en lugar de con un punto
+                Iterator<Bullet> bulIt = bullets.iterator();
                 while(bulIt.hasNext()){
                     Bullet b = bulIt.next();
-                    if(en.getBounds().contains(b.x, b.y)){
+                    if(en.getBounds().intersects(b.getBounds())){//TODO IDEA: la colisión es con un rectangulo en lugar de con un punto
                         en.hp -= b.damage;
                         createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
                         if (currentWeaponIndex != 3) bulIt.remove();
@@ -209,8 +247,16 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             if(player.x > 0 && player.x < W) player.x -= Math.cos(player.angle + spread) * 2;
             if(player.y > 0 && player.y < H) player.y -= Math.sin(player.angle + spread) * 2;
             
-            // Calcular dispersión
+            // Calcular dispersión y dirección
             bullets.add(new Bullet(player.x, player.y, player.angle + spread, currentWeaponIndex == 3 ? 25 : 12));
+        }
+    }
+
+    private void plantMine(Weapon w) {
+        w.cooldown = w.fireRate;
+        if(w.maxAmmo != 999) w.ammo--;
+        for(int i=0; i<w.pellets; i++) {
+            mines.add(new Mine(player.x, player.y));
         }
     }
 
@@ -249,8 +295,8 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.setColor(Color.CYAN);
         g2.fillOval(-12, -12, 24, 24);
 
-        //implementar una imagen del ordenador como cuerpo del jugador
-            //TODO
+        ////TODO implementar una imagen del ordenador como cuerpo del jugador
+            
 
         // Arma
         g2.setColor(Color.GRAY);
@@ -267,7 +313,9 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 
         // Minas
         g2.setColor(new Color(200, 200, 200));
-        for(Mine m : mines) g2.fillRect((int)m.x-5, (int)m.y-5, 8, 8);
+        for(Mine m : mines) g2.fillOval((int)m.x-6, (int)m.y-6, 12, 12);
+        g2.setColor(new Color(255, 0, 0));
+        for(Mine m : mines) g2.fillRect((int)m.x-2, (int)m.y-2, 4, 4);
         
         // Efecto de Oscuridad (Linterna)
         drawLighting(g2);
@@ -318,7 +366,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.drawString("Horda: " + wave, 20, 50);
         g2.setColor(Color.YELLOW);
         g2.drawString("[1] Pistola  [2] Rifle  [3] Escopeta  [4] Rail Gun", W-475, H-45);
-        g2.drawString("[M1] Disparar  [M2] Mina", W-475, H-15);
+        g2.drawString("[M1] Disparar  [M2+M1] Mina", W-475, H-15);
     }
 
     private void drawGameOver(Graphics2D g2) {
@@ -347,9 +395,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         if(k==KeyEvent.VK_3) currentWeaponIndex = 2;
         if(k==KeyEvent.VK_4) currentWeaponIndex = 3;
         if(k==KeyEvent.VK_UP) {if (mouseOutBounds) shooting = true; up=true;}
-        if(k==KeyEvent.VK_DOWN) {if (mouseOutBounds) shooting = true; down=true;}//TODO UbicacionFlechas2
+        if(k==KeyEvent.VK_DOWN) {if (mouseOutBounds) shooting = true; down=true;}
         if(k==KeyEvent.VK_LEFT) {if (mouseOutBounds) shooting = true; left=true;}
         if(k==KeyEvent.VK_RIGHT) {if (mouseOutBounds) shooting = true; right=true;}
+        //TODO UbicacionFlechas2
     }
     public void keyReleased(KeyEvent e) {
         int k = e.getKeyCode();
@@ -381,6 +430,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 }
 
 // --- CLASES DE ENTIDADES ---
+
 
 class Player {
     double x, y, angle;
@@ -449,6 +499,7 @@ class Bullet {
     }
     void update() { x += dx; y += dy; }
     boolean outOfBounds(int w, int h) { return x<0 || x>w || y<0 || y>h; }
+    Rectangle getBounds() { return new Rectangle((int)x-3, (int)y-3, 6, 6); }//TODO
 }
 
 class Mine{
@@ -456,8 +507,10 @@ class Mine{
     int damage;
     Mine(double x, double y) {
         this.x = x; this.y = y;
-        this.damage = 10; // Base damage
+        this.damage = 5; // Base damage
     }
+    boolean outOfBounds(int w, int h) { return x<0 || x>w || y<0 || y>h; }
+    Rectangle getBounds() { return new Rectangle((int)x-6, (int)y-6, 12, 12); }
 }
 
 class Particle {
