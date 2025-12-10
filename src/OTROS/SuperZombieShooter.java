@@ -44,12 +44,13 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 
     // --- ENTIDADES ---
     ArrayList<Bullet> bullets = new ArrayList<>();
+    ArrayList<Mine> mines = new ArrayList<>();
     ArrayList<Enemy> enemies = new ArrayList<>();
     ArrayList<Particle> particles = new ArrayList<>();
     ArrayList<ItemDrop> items = new ArrayList<>();
 
     // --- INPUT ---
-    boolean w, a, s, d, shooting, plantMina;
+    boolean w, a, s, d, shooting, plantMina, up, down, left, right, mouseOutBounds=true;
     int mouseX, mouseY;
 
     // --- LOGICA JUEGO ---
@@ -72,6 +73,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         weapons.add(new Weapon("Rifle Asalto", 5, 8, 1, 0.1, 120)); // Rápida
         weapons.add(new Weapon("Escopeta", 25, 21, 5, 0.3, 160));   // Dispersión
         weapons.add(new Weapon("Rail Gun", 100, 1000, 1, 0, 10)); // RailGun
+        weapons.add(new Weapon("Mina", 50, 100, 0, 0, 10)); // Mina
 
         timer = new Timer(16, this); // ~60 FPS
         timer.start();
@@ -100,9 +102,19 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         if (running) {
             // Logica Jugador
             player.move(w, s, a, d, W, H);
-            player.lookAt(mouseX, mouseY);
-            
-            // Disparo
+            // Apuntar y disparar con teclas de flecha
+            if ((up || down || left || right) && mouseOutBounds) {//TODO UbicaciónFlechas1
+                if (up && left) {player.angle = -3 * Math.PI / 4;}
+                else if (up && right) {player.angle = -Math.PI / 4;}
+                else if (up) {player.angle = -Math.PI / 2;}
+                else if (down && left) {player.angle = 3 * Math.PI / 4;}
+                else if (down && right) {player.angle = Math.PI / 4;}
+                else if (down) {player.angle = Math.PI / 2;}
+                else if (left) {player.angle = Math.PI;}
+                else if (right) {player.angle = 0;}
+            } else if (!mouseOutBounds) {
+                player.lookAt(mouseX, mouseY);
+            }
             Weapon cw = weapons.get(currentWeaponIndex);
             cw.cooldown--;
             if (shooting && cw.cooldown <= 0 && cw.ammo > 0) {
@@ -164,6 +176,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                         weapons.get(1).ammo += 60;
                         weapons.get(2).ammo += 15;
                         weapons.get(3).ammo += 5;
+                        weapons.get(4).ammo += 2;
                     }
                     iit.remove();
                 }
@@ -235,6 +248,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         // Cuerpo
         g2.setColor(Color.CYAN);
         g2.fillOval(-12, -12, 24, 24);
+
+        //implementar una imagen del ordenador como cuerpo del jugador
+            //TODO
+
         // Arma
         g2.setColor(Color.GRAY);
         g2.fillRect(5, -4, 20, 8);
@@ -248,6 +265,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.setColor(new Color(255, 200, 0));
         for(Bullet b : bullets) g2.fillOval((int)b.x-3, (int)b.y-3, 6, 6);
 
+        // Minas
+        g2.setColor(new Color(200, 200, 200));
+        for(Mine m : mines) g2.fillRect((int)m.x-5, (int)m.y-5, 8, 8);
+        
         // Efecto de Oscuridad (Linterna)
         drawLighting(g2);
 
@@ -280,17 +301,17 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.setFont(new Font("Consolas", Font.BOLD, 16));
         Weapon w = weapons.get(currentWeaponIndex);
         g2.drawString("Arma: " + w.name, 20, H-40);
-        String ammoTxt = (w.maxAmmo > 500) ? "INF" : w.ammo + "";
+        String ammoTxt = (w.maxAmmo >= 999) ? "INF" : w.ammo + "";
         g2.drawString("Munición: " + ammoTxt, 20, H-20);
 
         // Vida
         g2.setColor(Color.RED);
-        g2.fillRect(180, H-45, 100, 10);
+        g2.fillRect(195, H-40, 100, 10);
         g2.setColor(Color.GREEN);
         int hpBar = (int)(100 * ((double)player.hp / 100));
-        g2.fillRect(180, H-45, Math.max(0, hpBar), 10);
+        g2.fillRect(195, H-40, Math.max(0, hpBar), 10);
         g2.setColor(Color.WHITE);
-        g2.drawRect(180, H-45, 100, 10);
+        g2.drawRect(195, H-40, 100, 10);
         
         // Score & Wave
         g2.drawString("Kills: " + score, 20, 30);
@@ -325,35 +346,38 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         if(k==KeyEvent.VK_2) currentWeaponIndex = 1;
         if(k==KeyEvent.VK_3) currentWeaponIndex = 2;
         if(k==KeyEvent.VK_4) currentWeaponIndex = 3;
-        if(k==KeyEvent.VK_M) { int back = currentWeaponIndex; currentWeaponIndex = 4; currentWeaponIndex = back;}//quizas está mal implementado
-        if(k==KeyEvent.VK_UP) {shooting = true; player.angle = 0;}
-        if(k==KeyEvent.VK_DOWN) {shooting = true;  player.angle = 180;}
-        if(k==KeyEvent.VK_LEFT) {shooting = true; player.angle = 270;}
-        if(k==KeyEvent.VK_RIGHT) {shooting = true; player.angle = 90;}
+        if(k==KeyEvent.VK_UP) {if (mouseOutBounds) shooting = true; up=true;}
+        if(k==KeyEvent.VK_DOWN) {if (mouseOutBounds) shooting = true; down=true;}//TODO UbicacionFlechas2
+        if(k==KeyEvent.VK_LEFT) {if (mouseOutBounds) shooting = true; left=true;}
+        if(k==KeyEvent.VK_RIGHT) {if (mouseOutBounds) shooting = true; right=true;}
     }
     public void keyReleased(KeyEvent e) {
         int k = e.getKeyCode();
         if(k==KeyEvent.VK_W) w=false;
         if(k==KeyEvent.VK_S) s=false;
         if(k==KeyEvent.VK_A) a=false;
-        if(k==KeyEvent.VK_DOWN) shooting = false;
-        if(k==KeyEvent.VK_LEFT) shooting = false;
-        if(k==KeyEvent.VK_RIGHT) shooting = false;
+        if(k==KeyEvent.VK_D) d=false;
+        if(k==KeyEvent.VK_UP) {if(!down && !left && !right) shooting = false; up=false;}
+        if(k==KeyEvent.VK_DOWN) {if(!up && !left && !right) shooting = false; down=false;}
+        if(k==KeyEvent.VK_LEFT) {if(!down && !up && !right) shooting = false; left=false;}
+        if(k==KeyEvent.VK_RIGHT) {if(!down && !left && !up) shooting = false; right=false;}
     }
+    int prevWeaponIndex;
     public void mousePressed(MouseEvent e) {
         if(e.getButton() == MouseEvent.BUTTON1) shooting = true;
-        if(e.getButton() == MouseEvent.BUTTON1) plantMina = true;
+        if(e.getButton() == MouseEvent.BUTTON3) {plantMina = true; prevWeaponIndex = currentWeaponIndex; currentWeaponIndex = 4;}
+
     }
     public void mouseReleased(MouseEvent e) {
         if(e.getButton() == MouseEvent.BUTTON1) shooting = false;
-        if(e.getButton() == MouseEvent.BUTTON1) plantMina = false;
+        if(e.getButton() == MouseEvent.BUTTON3) {plantMina = false; currentWeaponIndex = prevWeaponIndex;}
     }
     public void mouseMoved(MouseEvent e) { mouseX=e.getX(); mouseY=e.getY(); }
     public void mouseDragged(MouseEvent e) { mouseX=e.getX(); mouseY=e.getY(); }
     public void keyTyped(KeyEvent e) {}
     public void mouseClicked(MouseEvent e) {}
-    public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {mouseOutBounds = false;}
+    public void mouseExited(MouseEvent e) {mouseOutBounds = true;}
 }
 
 // --- CLASES DE ENTIDADES ---
