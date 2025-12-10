@@ -185,22 +185,22 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 
                 // Colisión Balas vs Enemigos
                 Iterator<Bullet> bulIt = bullets.iterator();
-                Iterator<Misil> misilIt = misils.iterator();
                 while(bulIt.hasNext()){
                     Bullet b = bulIt.next();
                     if(en.getBounds().intersects(b.getBounds())){//TODO IDEA: la colisión es con un rectangulo en lugar de con un punto
                         en.hp -= b.damage;
                         createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
-                        if (currentWeaponIndex != 4) bulIt.remove();
-
+                        
+                        // Si es el arma de misiles, generar explosión en el punto de impacto
                         if (currentWeaponIndex == 5){
-                            misils.add(new Misil(b.x, b.y));
-                            if (misilIt.hasNext()){
-                                Misil m = misilIt.next();                                
-                                if (en.getBounds().intersects(m.getBounds())) en.hp -= m.damage;
-                                misilIt.remove();
-                            }
+                            // Crear misil estático que daña enemigos cercanos
+                            Misil explosion = new Misil(b.x, b.y, 0); // No necesita dirección, explota en lugar
+                            misils.add(explosion);
+                            bulIt.remove();
+                        } else if (currentWeaponIndex != 4) {
+                            bulIt.remove();
                         }
+                        
                         if(en.hp <= 0){
                             // Drop Item chance 20%
                             if(rand.nextInt(100) < 20) {
@@ -212,6 +212,41 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                             eit.remove();
                             break;
                         }
+                    }
+                }
+            }
+
+            // Colisión Misiles vs Enemigos (procesado DESPUÉS de todas las balas)
+            if(!misils.isEmpty()) {
+                Iterator<Enemy> eit2 = enemies.iterator();
+                while(eit2.hasNext()){
+                    Enemy en = eit2.next();
+                    // Iterar sobre copia para evitar problemas
+                    for(Misil m : new ArrayList<>(misils)){
+                        m.update();
+                        if(en.getBounds().intersects(m.getBounds())){
+                            en.hp -= m.damage;
+                            createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
+                            if(en.hp <= 0){
+                                // Drop Item chance 20%
+                                if(rand.nextInt(100) < 20) {
+                                    int type = rand.nextBoolean() ? 0 : 1; // 0 HP, 1 Ammo
+                                    items.add(new ItemDrop(en.x, en.y, type));
+                                }
+                                score++;
+                                if(score % 15 == 0) wave++;
+                                eit2.remove();
+                                break;
+                            }
+                        }
+                    }
+                }
+                // Limpiar misiles cuya vida se ha agotado
+                Iterator<Misil> misilCleanup = misils.iterator();
+                while(misilCleanup.hasNext()){
+                    Misil m = misilCleanup.next();
+                    if(m.lifetime <= 0){
+                        misilCleanup.remove();
                     }
                 }
             }
@@ -324,9 +359,11 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         // Balas
         g2.setColor(new Color(255, 200, 0));
         for(Bullet b : bullets) g2.fillOval((int)b.x-3, (int)b.y-3, 6, 6);
+
         //Misiles
         g2.setColor(new Color(255, 200, 0));
-        for(Misil mis : misils) g2.fillOval((int)mis.x-9, (int)mis.y-9, 18, 18);
+        for(Misil mis : misils) g2.fillOval((int)mis.x-18, (int)mis.y-18, 36, 36);
+        
         // Minas
         g2.setColor(new Color(200, 200, 200));
         for(Mine m : mines) g2.fillOval((int)m.x-6, (int)m.y-6, 12, 12);
@@ -521,12 +558,15 @@ class Bullet {
 class Misil {
     double x, y;
     int damage;
-    Misil(double x, double y) {
+    int lifetime = 60; // Durará 30 frames (0.5 segundos a 60 FPS)
+    Misil(double x, double y, double angle) {
         this.x = x; this.y = y;
         this.damage = 50; // Base damage
     }
-    boolean outOfBounds(int w, int h) { return x<0 || x>w || y<0 || y>h; }
-    Rectangle getBounds() { return new Rectangle((int)x-9, (int)y-9, 18, 18); }
+    void update() {
+        lifetime--;
+    }
+    Rectangle getBounds() { return new Rectangle((int)x-18, (int)y-18, 36, 36); }
 }
 
 class Mine{
