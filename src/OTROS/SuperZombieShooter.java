@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+/**
+ * @author Moder principal: Ignacio MR
+ */
+
 public class SuperZombieShooter extends JFrame {
 
     public SuperZombieShooter() {
