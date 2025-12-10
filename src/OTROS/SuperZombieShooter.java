@@ -143,7 +143,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                 }
 
                 // Colisión Balas vs Enemigos
-                Iterator<Bullet> bulIt = bullets.iterator();
+                Iterator<Bullet> bulIt = bullets.iterator();//TODO IDEA: la colisión es con la elipse en lugar de con un punto
                 while(bulIt.hasNext()){
                     Bullet b = bulIt.next();
                     if(en.getBounds().contains(b.x, b.y)){
