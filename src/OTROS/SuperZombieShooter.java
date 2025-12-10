@@ -43,10 +43,11 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
     // --- JUGADOR ---
     Player player = new Player(W/2, H/2);
     ArrayList<Weapon> weapons = new ArrayList<>();
-    int currentWeaponIndex = 0;
+    int currentWeaponIndex = 1;
 
     // --- ENTIDADES ---
     ArrayList<Bullet> bullets = new ArrayList<>();
+    ArrayList<Misil> misils = new ArrayList<>();
     ArrayList<Mine> mines = new ArrayList<>();
     ArrayList<Enemy> enemies = new ArrayList<>();
     ArrayList<Particle> particles = new ArrayList<>();
@@ -72,11 +73,13 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         addMouseMotionListener(this);
 
         // Inicializar Armas
+        
+        weapons.add(new Weapon("Mina", 35, 5, 1, 0, 10)); // Mina
         weapons.add(new Weapon("Pistola 9mm", 15, 20, 1, 0, 999)); // Infinita
         weapons.add(new Weapon("Rifle Asalto", 5, 8, 1, 0.1, 120)); // Rápida
         weapons.add(new Weapon("Escopeta", 25, 21, 5, 0.3, 160));   // Dispersión
-        weapons.add(new Weapon("Rail Gun", 100, 1000, 1, 0, 10)); // RailGun
-        weapons.add(new Weapon("Mina", 50, 100, 1, 0, 10)); // Mina
+        weapons.add(new Weapon("Rail Gun", 40, 50, 1, 0, 10)); // RailGun
+        weapons.add(new Weapon("Lanza Cohetes", 40, 100, 1, 0, 10)); // Lanza Cohetes
 
         timer = new Timer(16, this); // ~60 FPS
         timer.start();
@@ -107,25 +110,21 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             player.move(w, s, a, d, W, H);
             // Apuntar y disparar con teclas de flecha
             if ((up || down || left || right) && mouseOutBounds) {//TODO UbicaciónFlechas1
-                if (up && left) {player.angle = -3 * Math.PI / 4;}
-                else if (up && right) {player.angle = -Math.PI / 4;}
-                else if (up) {player.angle = -Math.PI / 2;}
-                else if (down && left) {player.angle = 3 * Math.PI / 4;}
-                else if (down && right) {player.angle = Math.PI / 4;}
-                else if (down) {player.angle = Math.PI / 2;}
-                else if (left) {player.angle = Math.PI;}
-                else if (right) {player.angle = 0;}
-            } else if (!mouseOutBounds) {
-                player.lookAt(mouseX, mouseY);
-            }
+                if (up && left) {player.angle = -3 * Math.PI / 4;
+                } else if (up && right) {player.angle = -Math.PI / 4;
+                } else if (up) {player.angle = -Math.PI / 2;
+                } else if (down && left) {player.angle = 3 * Math.PI / 4;
+                } else if (down && right) {player.angle = Math.PI / 4;
+                } else if (down) {player.angle = Math.PI / 2;
+                } else if (left) {player.angle = Math.PI;
+                } else if (right) {player.angle = 0;}
+            } else if (!mouseOutBounds) player.lookAt(mouseX, mouseY);
             Weapon cw = weapons.get(currentWeaponIndex);
             cw.cooldown--;
             if (shooting && plantMina && cw.cooldown <= 0 && cw.ammo > 0) {
                 plantMine(cw);
-            } else 
-            if (shooting && cw.cooldown <= 0 && cw.ammo > 0) {
+            } else if (shooting && cw.cooldown <= 0 && cw.ammo > 0) {
                 fireWeapon(cw);
-
             }
 
             // Actualizar Balas
@@ -186,12 +185,22 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 
                 // Colisión Balas vs Enemigos
                 Iterator<Bullet> bulIt = bullets.iterator();
+                Iterator<Misil> misilIt = misils.iterator();
                 while(bulIt.hasNext()){
                     Bullet b = bulIt.next();
                     if(en.getBounds().intersects(b.getBounds())){//TODO IDEA: la colisión es con un rectangulo en lugar de con un punto
                         en.hp -= b.damage;
                         createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
-                        if (currentWeaponIndex != 3) bulIt.remove();
+                        if (currentWeaponIndex != 4) bulIt.remove();
+
+                        if (currentWeaponIndex == 5){
+                            misils.add(new Misil(b.x, b.y));
+                            if (misilIt.hasNext()){
+                                Misil m = misilIt.next();                                
+                                if (en.getBounds().intersects(m.getBounds())) en.hp -= m.damage;
+                                misilIt.remove();
+                            }
+                        }
                         if(en.hp <= 0){
                             // Drop Item chance 20%
                             if(rand.nextInt(100) < 20) {
@@ -215,10 +224,11 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                     if(item.type == 0) player.hp = Math.min(100, player.hp + 25);
                     else {
                         // Dar municion a todas las armas menos pistola
-                        weapons.get(1).ammo += 60;
-                        weapons.get(2).ammo += 15;
-                        weapons.get(3).ammo += 5;
-                        weapons.get(4).ammo += 2;
+                        weapons.get(0).ammo += 2;
+                        weapons.get(2).ammo += 60;
+                        weapons.get(3).ammo += 15;
+                        weapons.get(4).ammo += 5;
+                        weapons.get(5).ammo += 2;
                     }
                     iit.remove();
                 }
@@ -252,7 +262,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             if(player.y > 0 && player.y < H) player.y -= Math.sin(player.angle + spread) * 2;
             
             // Calcular dispersión y dirección
-            bullets.add(new Bullet(player.x, player.y, player.angle + spread, currentWeaponIndex == 3 ? 25 : 12));
+            bullets.add(new Bullet(player.x, player.y, player.angle + spread, currentWeaponIndex == 4 ? 25 : currentWeaponIndex == 5 ? 6 : 12));
         }
     }
 
@@ -314,7 +324,9 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         // Balas
         g2.setColor(new Color(255, 200, 0));
         for(Bullet b : bullets) g2.fillOval((int)b.x-3, (int)b.y-3, 6, 6);
-
+        //Misiles
+        g2.setColor(new Color(255, 200, 0));
+        for(Misil mis : misils) g2.fillOval((int)mis.x-9, (int)mis.y-9, 18, 18);
         // Minas
         g2.setColor(new Color(200, 200, 200));
         for(Mine m : mines) g2.fillOval((int)m.x-6, (int)m.y-6, 12, 12);
@@ -370,7 +382,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         g2.drawString("Horda: " + wave, 20, 50);
         g2.setColor(Color.YELLOW);
         g2.drawString("[1] Pistola  [2] Rifle  [3] Escopeta  [4] Rail Gun", W-475, H-45);
-        g2.drawString("[M1] Disparar  [M2+M1] Mina", W-475, H-15);
+        g2.drawString("[5] Lanza Cohetes  [M1] Disparar  [M2+M1] Mina", W-475, H-15);
     }
 
     private void drawGameOver(Graphics2D g2) {
@@ -394,15 +406,16 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
         if(k==KeyEvent.VK_S) s=true;
         if(k==KeyEvent.VK_A) a=true;
         if(k==KeyEvent.VK_D) d=true;
-        if(k==KeyEvent.VK_1) currentWeaponIndex = 0;
-        if(k==KeyEvent.VK_2) currentWeaponIndex = 1;
-        if(k==KeyEvent.VK_3) currentWeaponIndex = 2;
-        if(k==KeyEvent.VK_4) currentWeaponIndex = 3;
+        if(k==KeyEvent.VK_1) currentWeaponIndex = 1;
+        if(k==KeyEvent.VK_2) currentWeaponIndex = 2;
+        if(k==KeyEvent.VK_3) currentWeaponIndex = 3;
+        if(k==KeyEvent.VK_4) currentWeaponIndex = 4;
+        if(k==KeyEvent.VK_5) currentWeaponIndex = 5;//El index 0 es la Mina con M2
         if(k==KeyEvent.VK_UP) {if (mouseOutBounds) shooting = true; up=true;}
         if(k==KeyEvent.VK_DOWN) {if (mouseOutBounds) shooting = true; down=true;}
         if(k==KeyEvent.VK_LEFT) {if (mouseOutBounds) shooting = true; left=true;}
         if(k==KeyEvent.VK_RIGHT) {if (mouseOutBounds) shooting = true; right=true;}
-        //TODO UbicacionFlechas2
+        //TODO Ubicacion Keys
     }
     public void keyReleased(KeyEvent e) {
         int k = e.getKeyCode();
@@ -418,7 +431,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
     int prevWeaponIndex;
     public void mousePressed(MouseEvent e) {
         if(e.getButton() == MouseEvent.BUTTON1) shooting = true;
-        if(e.getButton() == MouseEvent.BUTTON3) {plantMina = true; prevWeaponIndex = currentWeaponIndex; currentWeaponIndex = 4;}
+        if(e.getButton() == MouseEvent.BUTTON3) {plantMina = true; prevWeaponIndex = currentWeaponIndex; currentWeaponIndex = 0;}
 
     }
     public void mouseReleased(MouseEvent e) {
@@ -503,7 +516,17 @@ class Bullet {
     }
     void update() { x += dx; y += dy; }
     boolean outOfBounds(int w, int h) { return x<0 || x>w || y<0 || y>h; }
-    Rectangle getBounds() { return new Rectangle((int)x-3, (int)y-3, 6, 6); }//TODO
+    Rectangle getBounds() { return new Rectangle((int)x-3, (int)y-3, 6, 6); }
+}
+class Misil {
+    double x, y;
+    int damage;
+    Misil(double x, double y) {
+        this.x = x; this.y = y;
+        this.damage = 50; // Base damage
+    }
+    boolean outOfBounds(int w, int h) { return x<0 || x>w || y<0 || y>h; }
+    Rectangle getBounds() { return new Rectangle((int)x-9, (int)y-9, 18, 18); }
 }
 
 class Mine{
