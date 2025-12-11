@@ -1,5 +1,4 @@
 package Extras;
-/**package OTROS;
 
 import javax.swing.*;
 import java.awt.*;
@@ -198,4 +197,3 @@ class GamePanel extends JPanel implements ActionListener {
         }
     }
 }
-*/
