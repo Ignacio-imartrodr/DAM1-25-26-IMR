@@ -1,7 +1,5 @@
-package OTROS;
-/** 
-* Acierta un numero con 10 intentos y pistas de si es mayor o menor
-*/
+package Extras;
+
 
 /**
  * @Author Ignacio MR

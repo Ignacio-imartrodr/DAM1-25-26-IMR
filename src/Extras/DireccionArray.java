@@ -1,4 +1,5 @@
-package OTROS;
+package Extras;
+
 
 public class DireccionArray {
     //La Dirección de un array es un String que empieza por el Tipo de varriables en el Array y luego tiene su la Ubicación numérica en la memoria
