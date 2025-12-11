@@ -1,4 +1,5 @@
-package OTROS;
+package Extras;
+
 /**
  * @author Ignacio MR
  */

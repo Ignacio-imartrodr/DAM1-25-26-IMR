@@ -1,4 +1,5 @@
-package OTROS;
+package Extras;
+
 import java.util.Scanner;
 public class VocalesDeUnaCadena {
     public static int numVocal(String cad) {

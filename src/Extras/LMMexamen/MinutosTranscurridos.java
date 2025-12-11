@@ -1,4 +1,4 @@
-package OTROS.LMMexamen;
+package Extras.LMMexamen;
 
 /**
  * @author Lunna Mendonça Miranda

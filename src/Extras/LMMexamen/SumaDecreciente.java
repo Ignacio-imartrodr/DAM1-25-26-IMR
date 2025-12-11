@@ -1,4 +1,4 @@
-package OTROS.LMMexamen;
+package Extras.LMMexamen;
 import java.util.Scanner;
 /**
  * @author Lunna Mendonça Miranda
