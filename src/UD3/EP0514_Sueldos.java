@@ -26,6 +26,7 @@ public class EP0514_Sueldos {
             if (i > 0 && i < array.length) {
                 arrayStr += ", ";
             }
+            arrayStr += array[i];
         }
         return arrayStr;
     }
@@ -50,7 +51,7 @@ public class EP0514_Sueldos {
         int[] sueldos = new int[0];
         do {
             System.out.print("Cual es tu sueldo actual? ('-1' para finalizar): ");
-            sueldoMin = sueldoIntrod = pedirNum(); 
+            sueldoIntrod = pedirNum(); 
             if (sueldoIntrod >= 0){
                 sueldos = Arrays.copyOf(sueldos, sueldos.length + 1);
                 sueldos[sueldos.length-1] = sueldoIntrod;
@@ -77,6 +78,9 @@ public class EP0514_Sueldos {
             sueldos[j] = aux;
         }
         System.out.println("Se introdujeron los siguentes sueldos: " + stringArray(sueldos));
-        
+        System.out.println("Sueldo Maximo: " + sueldoMax + " Sueldo Minimo: " + sueldoMin);
+        System.out.println("El sueldo medio es de: " + media);
+        System.out.println("Cantidad de sueldos por encima de la media: " + cantSueldosMayorMed);
+        System.out.println("Cantidad de sueldos por debajo de la media: " + cantSueldosMenorMed);
     }
 }
