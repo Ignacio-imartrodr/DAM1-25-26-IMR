@@ -75,7 +75,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
 
         // Inicializar Armas
         
-        weapons.add(new Weapon("Mina", 35, 5, 1, 0, 10)); // Mina
+        weapons.add(new Weapon("Mina", 35, 20, 1, 0, 10)); // Mina
         weapons.add(new Weapon("Pistola 9mm", 15, 20, 1, 0, 999)); // Infinita
         weapons.add(new Weapon("Rifle Asalto", 5, 8, 1, 0.1, 120)); // Rápida
         weapons.add(new Weapon("Escopeta", 25, 21, 5, 0.3, 160));   // Dispersión
@@ -110,7 +110,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             // Logica Jugador
             player.move(w, s, a, d, W, H);
             // Apuntar y disparar con teclas de flecha
-            if ((up || down || left || right) && mouseOutBounds) {//TODO UbicaciónFlechas1
+            if ((up || down || left || right) && mouseOutBounds) {  //TODO UbicaciónFlechas1
                 if (up && left) {player.angle = -3 * Math.PI / 4;
                 } else if (up && right) {player.angle = -Math.PI / 4;
                 } else if (up) {player.angle = -Math.PI / 2;
@@ -123,7 +123,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
             Weapon cw = weapons.get(currentWeaponIndex);
             cw.cooldown--;
             if (shooting && plantMina && cw.cooldown <= 0 && cw.ammo > 0) {
-                plantMine(cw);
+                plantMine(weapons.get(0));
             } else if (shooting && cw.cooldown <= 0 && cw.ammo > 0) {
                 fireWeapon(cw);
             }
@@ -192,7 +192,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener, MouseList
                         en.hp -= b.damage;
                         createBlood(en.x, en.y, Color.GREEN, 5); // Sangre zombie verde
                         
-                        // Si es el arma de misiles, generar explosión en el punto de impacto
+                        // Si es el arma lanza cohetes, generar explosión en el punto de impacto
                         if (currentWeaponIndex == 5){
                             // Crear misil estático que daña enemigos cercanos
                             Misil explosion = new Misil(b.x, b.y, 0); // No necesita dirección, explota en lugar
@@ -559,7 +559,7 @@ class Bullet {
 class Misil {
     double x, y;
     int damage;
-    int lifetime = 60; // Durará 30 frames (0.5 segundos a 60 FPS)
+    int lifetime = 60; // Durará 60 frames (1 segundo a 60 FPS)
     Misil(double x, double y, double angle) {
         this.x = x; this.y = y;
         this.damage = 50; // Base damage
