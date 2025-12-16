@@ -1,7 +1,9 @@
 package Extras;
 
 import java.util.Arrays;
-
+/**
+ * @author Ignacio MR
+ */
 public class Moda {
     static String stringArray(int[] array) {
         String arrayStr = "[";
