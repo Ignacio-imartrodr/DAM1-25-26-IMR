@@ -5,23 +5,6 @@ import java.util.Arrays;
  * @author Ignacio MR
  */
 public class Moda {
-    static String stringArray(int[] array) {
-        String arrayStr = "[";
-        if (array.length == 0) {
-            arrayStr += ']';
-            return arrayStr;
-        }
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0 && i < array.length) {
-                arrayStr += '|';
-            }
-            arrayStr += array[i];
-            if (i == array.length - 1) {
-                arrayStr += ']';
-            }
-        }
-        return arrayStr;
-    }
     static int contador(int t[], int clave){
         int cant = 0;
         for (int i = 0; i < t.length; i++) {
