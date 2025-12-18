@@ -2,13 +2,12 @@ package Extras;
 
 public class ArrayToString {
     static String stringArray(int[] array) {
-        String arrayStr = "";
+        String arrayStr = "[ ";
         if (array.length == 0) {
-            arrayStr += "[]";
+            arrayStr = "[]";
             return arrayStr;
         }
         for (int i = 0; i < array.length; i++) {
-            arrayStr = "[ ";
             if (i > 0 && i < array.length) {
                 arrayStr += " | ";
             }
@@ -20,7 +19,7 @@ public class ArrayToString {
         return arrayStr;
     }
     public static void main(String[] args) {
-        int[] array = new int[0];
+        int[] array =new int[4];
         System.out.println(stringArray(array));
     }
 }

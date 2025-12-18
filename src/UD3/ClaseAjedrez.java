@@ -1,6 +1,7 @@
 package UD3;
 
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * @author Ignacio MR
@@ -72,6 +73,8 @@ public class ClaseAjedrez {
     }
 
     static void mostrarTableroConLeyenda(char[][] t) {
+        System.out.println("     A  B  C  D  E  F  G  H"); // Letras de columnas
+        System.out.println();
         for (int i = 0; i < t.length; i++) {
             for (int j = 0; j < t[i].length; j++) {
                 if (j == 0) {
@@ -79,10 +82,11 @@ public class ClaseAjedrez {
                 }
                 System.out.print(t[i][j] + "  ");
             }
+            System.out.print("  " + (8 - i)); // Números de filas
             System.out.println();
         }
         System.out.println();
-        System.out.println("     A  B  C  D  E  F  G  H"); // Letras de columnas
+        System.out.println("     a  b  c  d  e  f  g  h"); // Letras de columnas
     }
 
     static int[] contarPiezasPorFila(char[][] t) {
@@ -170,7 +174,63 @@ public class ClaseAjedrez {
         
         return tAleatorio;
     }
+    static Scanner sc = new Scanner(System.in);
+    static int[] leerMovimiento() {
+        
+        char[] letras = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+        char[] numeros = {'1', '2', '3', '4', '5', '6', '7', '8'};
+        boolean letrasMal = true;
+        boolean letraOrigenValida = false; 
+        boolean letraDestinoValida = false; 
+        int[] origen = new int[2];
+        int[] destino = new int[2];
+        do {
+            System.out.print("Introduce el movimiento (formato a2 b3): ");
+            String movimiento = sc.nextLine();
+            origen[0] = movimiento.charAt(0); // Columna (letra) origen
+            origen[1] = (int) movimiento.charAt(1); // Fila (numero) origen
+            destino[0] = movimiento.charAt(3); // Columna (letra) destino
+            destino[1] = (int) movimiento.charAt(4); // Fila (letra) destino
+            for (int i = 0; i < letras.length; i++) {
+                if (origen[0] == letras[i]) { origen[0] = i; letraOrigenValida = true; }
+                if (destino[0] == letras[i]) { destino[0] = i; letraDestinoValida = true; }
+            }
+            if (letraOrigenValida && letraDestinoValida) letrasMal = false;
+            for (int i = 0; i < numeros.length; i++) {
+                if (origen[1] == numeros[i]) origen[1] = i+1;
+                if (destino[1] == numeros[i]) destino[1] = i+1;
+            }
+        } while (origen[1] > 8 || origen[1] < 1 || destino[1] > 8 || destino[1] < 1 || letrasMal);
+        int[] movConFormato = {origen[0], origen[1], destino[0], destino[1]};
+        return movConFormato;
+    }
 
+    static boolean validarMovimiento(int[] movConFormato, char[][] tablero, boolean turnoBlancas) {
+        boolean esValido = false;
+        if (movConFormato[0] == movConFormato[2] && movConFormato[1] == movConFormato[3]) {
+            return false; // Movimiento inválido: misma posición
+        }
+        if (turnoBlancas) {
+            switch (tablero[movConFormato[0]][movConFormato[1]]) {
+            case'P':
+                
+                break;
+        
+            default:
+                break;
+            }
+        } else {
+            switch (tablero[movConFormato[0]][movConFormato[1]]) {
+            case'P':
+                
+                break;
+        
+            default:
+                break;
+            }
+        }
+        return esValido;
+    }
     public static void main(String[] args) {
         /*
         mostrarTableroColoresCasillas(tableroVacio());
@@ -180,7 +240,8 @@ public class ClaseAjedrez {
         mostrarTableroConLeyenda(inicializarTablero());
          */
         char[][] tablero = inicializarTablero();
-        char[][] t = tableroAleatorio();
+        boolean turnoBlancas = true;
+        /*char[][] t = tableroAleatorio();
 
         mostrarTableroConLeyenda(tablero);
         System.out.println("Piezas por fila: " + stringArray(contarPiezasPorFila(tablero)));
@@ -189,5 +250,7 @@ public class ClaseAjedrez {
         mostrarTableroConLeyenda(t);
         System.out.println("Piezas por fila: " + stringArray(contarPiezasPorFila(t)));
         System.out.println("Piezas por columna: " + stringArray(contarPiezasPorColumnas(t)));
+        */
+       
     }
 }
