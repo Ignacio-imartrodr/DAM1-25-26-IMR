@@ -13,12 +13,12 @@ public class MatrizToString {
                 } else { Str += String.format("%n%s", "[]");}
                 
             }else{
-                Str += String.format("%n%s",  "[");
+                Str += String.format("%n%s",  "[ ");
                 for (int j = 0; j < t[i].length; j++) {
                     if (j != t[i].length - 1) {
                         Str += t[i][j] + " | ";
                     } else {
-                        Str += t[i][j] + "]";
+                        Str += t[i][j] + " ]";
                     }
                 }
             }
@@ -26,7 +26,7 @@ public class MatrizToString {
         return Str;
     }
     public static void main(String[] args) {
-        int[][] tabla = new int[2][];
+        int[][] tabla = new int[3][3];
         System.out.println(stringMatriz(tabla));
     }
 }
