@@ -37,10 +37,7 @@ public class Moda {
         int posMayor = 0;
         for (int i = 0; i < t.length-1; i++) {
             if(t[i+1] > t[i] && t[i+1] > t[0]) posMayor=i+1;
-            System.out.println("i"+i);
-            System.out.println("pos"+posMayor);
         }
-        System.out.println(posMayor);
         boolean SinRepetidos = t.length != tNumsDif(t).length ? false : true; 
         return SinRepetidos ? posMayor : -1;
     }
