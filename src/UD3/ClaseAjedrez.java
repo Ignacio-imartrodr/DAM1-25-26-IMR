@@ -176,7 +176,6 @@ public class ClaseAjedrez {
     }
     static Scanner sc = new Scanner(System.in);
     static int[] leerMovimiento() {
-        
         char[] letras = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
         char[] numeros = {'1', '2', '3', '4', '5', '6', '7', '8'};
         boolean letrasMal = true;
@@ -204,11 +203,73 @@ public class ClaseAjedrez {
         int[] movConFormato = {origen[0], origen[1], destino[0], destino[1]};
         return movConFormato;
     }
+    static boolean movimientoPeon(int[] movConFormato, char[][] tablero, boolean turnoBlancas, int[][] historial){
+        boolean movEsValido = false;
+        int columnaInicioMovAnterior = historial[historial.length-1][1];
+        int columnaFinalMovAnterior = historial[historial.length-1][3];
+        int filaMovAnterior = historial[historial.length-1][4];
+        int columnaOrigen = movConFormato[0];
+        int filaOrigen = movConFormato[1];
+        int columnaDestino = movConFormato[2];
+        int filaDestino = movConFormato[3];
+        if (turnoBlancas){
+            if (filaDestino == filaOrigen - 1 && tablero[filaDestino][columnaDestino] == '-') { //avanzar si no hay piezas delante
+                movEsValido = true;
+            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino-1] == 'p' || tablero[filaOrigen][columnaDestino+1] == 'p') && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino - 1)))){ //Capturar en diagonal y Anpasant
+            //Captura diagonal
+            //Si el peon avanza en diagonal filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
+            //Sí si hay una ficha que capturar tablero[filaDestino][columnaDestino] != '-'
+            //Anpasant
+            //O si hay un peon al lado (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino-1] == 'p' || tablero[filaOrigen][columnaDestino+1] == 'p')
+            //Y el movimiento del rival fue avanzar recto el peon de en frente a al lado (columnaInicioMovAnterior == columnaDestino && columnaMovAnterior == columnaDestino && filaMovAnterior == filaDestino + 1)
+                movEsValido = true;
+            } else if (filaOrigen==tablero.length-2 && filaDestino == filaOrigen - 2 && tablero[filaDestino][columnaDestino] == '-'){ //Doble avance inicial
+                movEsValido = true;
+            }
+        }else{
+            if (filaDestino == filaOrigen + 1 && tablero[filaDestino][columnaDestino] == '-') { //avanzar si no hay piezas delante
+                movEsValido = true;
+            } else if (filaDestino == filaOrigen + 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino-1] == 'p' || tablero[filaOrigen][columnaDestino+1] == 'p') && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino + 1)))){ //Capturar en diagonal y Anpasant
+                movEsValido = true;
+            } else if (filaOrigen==tablero.length-2 && filaDestino == filaOrigen + 2 && tablero[filaDestino][columnaDestino] == '-'){ //Doble avance inicial
+                movEsValido = true;
+            }
+        }
+        
+        return movEsValido;
+    }
+    static boolean movimientoRei(int[] movConFormato, char[][] tablero,boolean turnoBlancas, int[][] historial){
+        boolean movEsValido = false;
+        int[] movimientoRey = {5,1, 5,8};//Rey blanco, Rey negro
+        int[] movimientoTorre = {1,1 ,8,1, 1,8 ,8,8};//Torres
+        int columnaOrigen = movConFormato[0];
+        int filaOrigen = movConFormato[1];
+        int columnaDestino = movConFormato[2];
+        int filaDestino = movConFormato[3];
+        boolean reyYTorreSinMover = true;
+        for (int i = 0; i < historial.length; i++) {
+            for (int j = 0; j < historial[i].length; j++) {
+                if(historial[i]==){
+                reyYTorreSinMover=false;
+                break;
+            }
+            }
+            
+        }
+        if (filaDestino == filaOrigen - 1 || filaDestino == filaOrigen + 1 || columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) {
+            movEsValido = true;
+        } else if(columnaDestino == columnaOrigen + 2 || columnaDestino == columnaOrigen - 3){
+
+        }
+
+        return movEsValido;
+    }
+
 
     static boolean validarMovimiento(int[] movConFormato, char[][] tablero, boolean turnoBlancas) {
         boolean esValido = false;
         if (movConFormato[0] == movConFormato[2] && movConFormato[1] == movConFormato[3]) {
-            return false; // Movimiento inválido: misma posición
+            return esValido; // Misma posición
         }
         if (turnoBlancas) {
             switch (tablero[movConFormato[0]][movConFormato[1]]) {
@@ -228,7 +289,7 @@ public class ClaseAjedrez {
             default:
                 break;
             }
-        }
+        }//TODO Historial
         return esValido;
     }
     public static void main(String[] args) {
@@ -240,7 +301,8 @@ public class ClaseAjedrez {
         mostrarTableroConLeyenda(inicializarTablero());
          */
         char[][] tablero = inicializarTablero();
-        boolean turnoBlancas = true;
+        mostrarTableroConLeyenda(tablero);
+        //boolean turnoBlancas = true;
         /*char[][] t = tableroAleatorio();
 
         mostrarTableroConLeyenda(tablero);
