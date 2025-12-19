@@ -59,6 +59,16 @@ public class ClaseAjedrez {
         historialAux[historialAux.length - 1] = mov;
         return historialAux;
     }
+    static char[][] copiarTablero(char[][] tablero, char[][] tableroAux) {
+        tableroAux = new char[tablero.length][];
+        for (int i = 0; i < tablero.length; i++) {
+            tableroAux[i] = new char[tablero[i].length];
+            for (int j = 0; j < tablero[i].length; j++) {
+                tableroAux[i][j] = tablero[i][j];
+            }
+        }
+        return tableroAux;
+    }
 
     static char[][] tableroVacio() {
         char[][] t = new char[8][8];
@@ -214,7 +224,7 @@ public class ClaseAjedrez {
 
     static int[] leerMovimiento() {
         char[] letras = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
-        char[] numeros = { '1', '2', '3', '4', '5', '6', '7', '8' };
+        char[] numeros = { '8', '7', '6', '5', '4', '3', '2', '1' };
         boolean letrasMal = true;
         boolean letraOrigenValida = false;
         boolean letraDestinoValida = false;
@@ -244,11 +254,11 @@ public class ClaseAjedrez {
                 letrasMal = false;
             for (int i = 0; i < numeros.length; i++) {
                 if (origen[1] == numeros[i])
-                    origen[1] = i + 1;
+                    origen[1] = i;
                 if (destino[1] == numeros[i])
-                    destino[1] = i + 1;
+                    destino[1] = i;
             }
-        } while (origen[1] > 8 || origen[1] < 1 || destino[1] > 8 || destino[1] < 1 || letrasMal);
+        } while (origen[1] > 7 || origen[1] < 0 || destino[1] > 7 || destino[1] < 0 || letrasMal);
         int[] movConFormato = { origen[0], origen[1], destino[0], destino[1] };
         return movConFormato;
     }
@@ -302,11 +312,23 @@ public class ClaseAjedrez {
 
         return movEsValido;
     }
+    static char escogerPiezaPromocion(char[][] tablero, int[] movConFormato, boolean turnoBlancas) {
+        char piezaPromocion;
+        System.out.print("El peón ha llegado al final del tablero. Elige una pieza para promocionar (D, T, A, C): ");
+        piezaPromocion = sc.nextLine().toUpperCase().charAt(0);
+        while (piezaPromocion != 'D' && piezaPromocion != 'T' && piezaPromocion != 'A' && piezaPromocion != 'C') {
+            System.out.print("Entrada no válida. Elige una pieza para promocionar (D, T, A, C): ");
+            piezaPromocion = sc.nextLine().toUpperCase().charAt(0);
+        }
+        piezaPromocion = turnoBlancas ? piezaPromocion : Character.toLowerCase(piezaPromocion);
+        
+        return piezaPromocion;
+    }
 
     static boolean movimientoRey(int[] movConFormato, char[][] tablero, boolean turnoBlancas, int[][] historial) {
         boolean movEsValido = false;
-        int[] movimientoRey = { 5, 1, 5, 8 };// Rey blanco, Rey negro
-        int[] movimientoTorre = { 1, 1, 8, 1, 1, 8, 8, 8 };// Torres
+        int[] movimientoRey = { 4,0, 4,7 };// Rey blanco, Rey negro
+        int[] movimientoTorre = { 0,0, 7,0, 0,7, 7,7 };// Torres
         int columnaOrigen = movConFormato[0];
         int filaOrigen = movConFormato[1];
         int columnaDestino = movConFormato[2];
@@ -497,14 +519,18 @@ public class ClaseAjedrez {
             }
             if (mov[0] == mov[2] && mov[1] == mov[3]) { // Misma posición
                 esValido = false;
-            } else if (turnoBlancas && Character.isLowerCase(tablero[mov[1]][mov[0]]) || Character.isUpperCase(tablero[mov[3]][mov[2]])) { // Turno de blancas pero pieza negra o captura a blanca
+            } else if (turnoBlancas && (Character.isLowerCase(tablero[mov[1]][mov[0]]) || (Character.isUpperCase(tablero[mov[3]][mov[2]]) && tablero[mov[3]][mov[2]] != '-'))) { // Turno de blancas pero pieza negra o captura a blanca
                 esValido = false;
-            } else if (!turnoBlancas && Character.isUpperCase(tablero[mov[1]][mov[0]]) || Character.isLowerCase(tablero[mov[3]][mov[2]])) { // Turno de negras pero pieza blanca o captura a negra
+            } else if (!turnoBlancas && (Character.isUpperCase(tablero[mov[1]][mov[0]]) || (Character.isLowerCase(tablero[mov[3]][mov[2]]) && tablero[mov[3]][mov[2]] != '-'))) { // Turno de negras pero pieza blanca o captura a negra
                 esValido = false;
             } else {
                 switch (Character.toUpperCase(tablero[mov[1]][mov[0]])) {
                     case 'P':
                         esValido = movimientoPeon(mov, tablero, turnoBlancas, historial);
+                        if (esValido && ((!turnoBlancas && movConFormato[3] == 1) || (turnoBlancas && movConFormato[3] == 8))) {
+                            char piezaPromocion = escogerPiezaPromocion(tablero, movConFormato, turnoBlancas);
+                            //TODO Sustituir peón por la pieza elegida
+                        }
                         break;
                     case 'R':
                         esValido = movimientoRey(mov, tablero, turnoBlancas, historial);
@@ -542,6 +568,15 @@ public class ClaseAjedrez {
         }
         return posicionRey;
     }
+    static boolean esJaqueMate(char[][] tablero, boolean turnoBlancas, int[][] historial) {
+        boolean jaqueMate = false;
+        if (esJaque(tablero, turnoBlancas, historial)) {
+            if (esAhogado(tablero, turnoBlancas, historial)) {
+                jaqueMate = true;
+            }
+        }
+        return jaqueMate;
+    }
     static boolean esJaque(char[][] tablero, boolean turnoBlancas, int[][] historial) {
         boolean enJaque = false;
         int[] posicionRey = ubicacionRey(tablero, turnoBlancas);
@@ -556,19 +591,70 @@ public class ClaseAjedrez {
         }
         return enJaque;
     }
+    static boolean esAhogado(char[][] tablero, boolean turnoBlancas, int[][] historial) {
+        boolean ahogado = true;
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[i].length; j++) {
+                if (turnoBlancas && Character.isUpperCase(tablero[i][j]) || !turnoBlancas && Character.isLowerCase(tablero[i][j])) {
+                    for (int filaDestino = 0; filaDestino < tablero.length; filaDestino++) {
+                        for (int columnaDestino = 0; columnaDestino < tablero[filaDestino].length; columnaDestino++) {
+                            int[] mov = new int[]{j,i,columnaDestino,filaDestino};
+                            if (validarMovimiento(tablero, turnoBlancas, historial, mov)) {
+                                ahogado = false;
+                                return ahogado;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ahogado;
+    }
     static boolean matchEvents(char[][] tablero,int[] movConFormato, boolean turnoBlancas, int[][] historial) {
         boolean contininueMatch = true;
-        boolean jaqueMate = false;
         boolean tablas = false;
-        boolean ahogado = false;
 
-        // Verificar jaque mate
-        if (validarMovimiento(tablero, turnoBlancas, historial, movConFormato)) {
-            jaqueMate = true;
+        if (esJaqueMate(tablero, turnoBlancas, historial)||esAhogado(tablero, turnoBlancas, historial)||tablas) {
+            contininueMatch = false;
         }
 
         return contininueMatch;
     }
+    static char[][] actualizarTablero(char[][] tablero, int[] movConFormato, boolean turnoBlancas) {
+        char[][] tableroActualizado = new char[tablero.length][];
+        tableroActualizado = copiarTablero(tablero, tableroActualizado);
+        // Obtener las coordenadas del movimiento
+        int columnaOrigen = movConFormato[0];
+        int filaOrigen = movConFormato[1];
+        int columnaDestino = movConFormato[2];
+        int filaDestino = movConFormato[3];
+        // Mover la pieza
+        tableroActualizado[filaDestino][columnaDestino] = tableroActualizado[filaOrigen][columnaOrigen];
+        tableroActualizado[filaOrigen][columnaOrigen] = '-';
+
+        // Manejar enroque
+        if (Character.toUpperCase(tableroActualizado[filaDestino][columnaDestino]) == 'R') {
+            if (Math.abs(columnaDestino - columnaOrigen) == 2) { // Enroque corto
+                if (turnoBlancas) {
+                    tableroActualizado[7][5] = 'T'; // Mover la torre blanca
+                    tableroActualizado[7][7] = '-';
+                } else {
+                    tableroActualizado[0][5] = 't'; // Mover la torre negra
+                    tableroActualizado[0][7] = '-';
+                }
+            } else if (Math.abs(columnaDestino - columnaOrigen) == 3) { // Enroque largo
+                if (turnoBlancas) {
+                    tableroActualizado[7][3] = 'T'; // Mover la torre blanca
+                    tableroActualizado[7][0] = '-';
+                } else {
+                    tableroActualizado[0][3] = 't'; // Mover la torre negra
+                    tableroActualizado[0][0] = '-';
+                }
+            }
+        }
+        return tableroActualizado;
+    }
+
     public static void main(String[] args) {
         /*
          * mostrarTableroColoresCasillas(tableroVacio());
@@ -585,17 +671,26 @@ public class ClaseAjedrez {
          */
         int[][] historial = new int[0][];
         char[][] tablero = inicializarTablero();
+        char[][] tableroAux = new char[tablero.length][];
+        tableroAux = copiarTablero(tablero, tableroAux);
         mostrarTableroConLeyenda(tablero);
         boolean turnoBlancas = true;
         int[] mov;
         do {
-            System.out.println(turnoBlancas ? "Turno de BLANCAS" : "Turno de NEGRAS");
+            System.out.println(turnoBlancas ? "Turno de BLANCAS (Mayusculas)" : "Turno de NEGRAS (Minusculas)");
             mov = leerMovimiento();
-            while (!validarMovimiento(tablero, turnoBlancas, historial, mov) || esJaque(tablero, turnoBlancas, historial) ) {
+            tableroAux = actualizarTablero(tablero, mov, turnoBlancas);
+            while (!validarMovimiento(tablero, turnoBlancas, historial, mov) || esJaque(tableroAux, turnoBlancas, historial)) {//error tras f1 g3 - e7 e6
                 System.out.println("Movimiento no válido. Inténtalo de nuevo.");
                 mov = leerMovimiento();
+                tableroAux = copiarTablero(tablero, tableroAux);
+                tableroAux = actualizarTablero(tablero, mov, turnoBlancas);
             }
-    
+            /*if (esJaque(tableroAux, !turnoBlancas, historial)) {
+                System.out.println("Jaque al " + (!turnoBlancas ? "BLANCO" : "NEGRO") + "!");
+            }*/
+            tablero = copiarTablero(tableroAux, tablero);
+            mostrarTableroConLeyenda(tablero);
             historial = agregarAHistorial(historial, mov);
     
             // Mensaje final: ganador/a o tablas
@@ -603,6 +698,7 @@ public class ClaseAjedrez {
                 System.out.println("Las " + (turnoBlancas ? "Blancas" : "Negras") + " se han rendido.");
                 System.out.println("GANAN LAS " + (turnoBlancas ? "NEGRAS" : "BLANCAS"));
             }
+            turnoBlancas = !turnoBlancas;
         } while (matchEvents(tablero, mov, turnoBlancas, historial) && mov != null);
 
         System.out.println("Fin de la partida!");
