@@ -265,9 +265,9 @@ public class ClaseAjedrez {
 
     static boolean movimientoPeon(int[] movConFormato, char[][] tablero, boolean turnoBlancas, int[][] historial) {
         boolean movEsValido = false;
-        int columnaInicioMovAnterior = historial[historial.length - 1][1];
-        int columnaFinalMovAnterior = historial[historial.length - 1][3];
-        int filaMovAnterior = historial[historial.length - 1][4];
+        int columnaInicioMovAnterior = historial[historial.length - 1][0];
+        int columnaFinalMovAnterior = historial[historial.length - 1][2];
+        int filaMovAnterior = historial[historial.length - 1][3];
         int columnaOrigen = movConFormato[0];
         int filaOrigen = movConFormato[1];
         int columnaDestino = movConFormato[2];
@@ -275,24 +275,18 @@ public class ClaseAjedrez {
         if (turnoBlancas) {
             if (filaDestino == filaOrigen - 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
-            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'p' || tablero[filaOrigen][columnaDestino + 1] == 'p')  && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino
-                                    && filaMovAnterior == filaDestino - 1)))) { // Capturar en diagonal y Anpasant
+            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'p' || tablero[filaOrigen][columnaDestino + 1] == 'p')  && (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino - 1)))) { // Capturar en diagonal y Anpasant
                 // Captura diagonal
-                // Si el peon avanza en diagonal filaDestino == filaOrigen - 1 &&
-                // (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
-                // Sí si hay una ficha que capturar tablero[filaDestino][columnaDestino] != '-'
+                // Si el peon avanza en diagonal: filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
+                // Sí si hay una ficha que capturar: tablero[filaDestino][columnaDestino] != '-'
                 // Anpasant
-                // O si hay un peon al lado (tablero[filaDestino][columnaDestino] == '-' &&
-                // (tablero[filaOrigen][columnaDestino-1] == 'p' ||
-                // tablero[filaOrigen][columnaDestino+1] == 'p')
-                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado
-                // (columnaInicioMovAnterior == columnaDestino && columnaMovAnterior ==
-                // columnaDestino && filaMovAnterior == filaDestino + 1)
+                // O si hay un peon al lado: (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino-1] == 'p' || tablero[filaOrigen][columnaDestino+1] == 'p')
+                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaMovAnterior == columnaDestino && filaMovAnterior == filaDestino + 1)
                 movEsValido = true;
-            } else if (filaOrigen == tablero.length - 2 && filaDestino == filaOrigen - 2
-                    && tablero[filaDestino][columnaDestino] == '-') { // Doble avance inicial
+            } else if (filaOrigen == tablero.length - 2 && filaDestino == filaOrigen - 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
                 movEsValido = true;
             }
+            
         } else {
             if (filaDestino == filaOrigen + 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
@@ -304,9 +298,8 @@ public class ClaseAjedrez {
                             && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino
                                     && filaMovAnterior == filaDestino + 1)))) { // Capturar en diagonal y Anpasant
                 movEsValido = true;
-            } else if (filaOrigen == tablero.length - 2 && filaDestino == filaOrigen + 2
-                    && tablero[filaDestino][columnaDestino] == '-') { // Doble avance inicial
-                movEsValido = true;
+            } else if (filaOrigen == tablero.length - 2 && filaDestino == filaOrigen + 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino+1][columnaDestino] == '-') { // Doble avance inicial
+               movEsValido = true;
             }
         }
 
@@ -669,7 +662,7 @@ public class ClaseAjedrez {
          * System.out.println("Piezas por fila: " + stringArray(contarPiezasPorFila(tableroAleatorio())));
          * System.out.println("Piezas por columna: " + stringArray(contarPiezasPorColumnas(tableroAleatorio())));
          */
-        int[][] historial = new int[0][];
+        int[][] historial = new int[1][4];
         char[][] tablero = inicializarTablero();
         char[][] tableroAux = new char[tablero.length][];
         tableroAux = copiarTablero(tablero, tableroAux);
@@ -680,7 +673,7 @@ public class ClaseAjedrez {
             System.out.println(turnoBlancas ? "Turno de BLANCAS (Mayusculas)" : "Turno de NEGRAS (Minusculas)");
             mov = leerMovimiento();
             tableroAux = actualizarTablero(tablero, mov, turnoBlancas);
-            while (!validarMovimiento(tablero, turnoBlancas, historial, mov) || esJaque(tableroAux, turnoBlancas, historial)) {//error tras f1 g3 - e7 e6
+            while (!validarMovimiento(tablero, turnoBlancas, historial, mov) || esJaque(tableroAux, turnoBlancas, historial)) {//error tras g1 f3 - e7 e6
                 System.out.println("Movimiento no válido. Inténtalo de nuevo.");
                 mov = leerMovimiento();
                 tableroAux = copiarTablero(tablero, tableroAux);
