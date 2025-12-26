@@ -223,6 +223,7 @@ public class ClaseAjedrez {
     static Scanner sc = new Scanner(System.in);
 
     static int[] leerMovimiento() {
+        int[] movConFormato = null;
         char[] letras = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
         char[] numeros = { '8', '7', '6', '5', '4', '3', '2', '1' };
         boolean letrasMal = true;
@@ -230,36 +231,41 @@ public class ClaseAjedrez {
         boolean letraDestinoValida = false;
         int[] origen = new int[2];
         int[] destino = new int[2];
-        do {
-            System.out.print("Introduce el movimiento (formato: e1 e7): ");
-            String movimiento = sc.nextLine();
-            if (movimiento.equalsIgnoreCase("fin")) {
-                return null; // El jugador se rinde
-            }
-            origen[0] = movimiento.charAt(0); // Columna (letra) origen
-            origen[1] = (int) movimiento.charAt(1); // Fila (numero) origen
-            destino[0] = movimiento.charAt(3); // Columna (letra) destino
-            destino[1] = (int) movimiento.charAt(4); // Fila (letra) destino
-            for (int i = 0; i < letras.length; i++) {
-                if (origen[0] == letras[i]) {
-                    origen[0] = i;
-                    letraOrigenValida = true;
+        try {
+            do {
+                System.out.print("Introduce \"fin\" para rendirte o el movimiento (formato: e1 e7): ");
+                String movimiento = sc.nextLine();
+                if (movimiento.equalsIgnoreCase("fin")) {
+                    return null; // El jugador se rinde
                 }
-                if (destino[0] == letras[i]) {
-                    destino[0] = i;
-                    letraDestinoValida = true;
+                origen[0] = movimiento.charAt(0); // Columna (letra) origen
+                origen[1] = (int) movimiento.charAt(1); // Fila (numero) origen
+                destino[0] = movimiento.charAt(3); // Columna (letra) destino
+                destino[1] = (int) movimiento.charAt(4); // Fila (letra) destino
+                for (int i = 0; i < letras.length; i++) {
+                    if (origen[0] == letras[i]) {
+                        origen[0] = i;
+                        letraOrigenValida = true;
+                    }
+                    if (destino[0] == letras[i]) {
+                        destino[0] = i;
+                        letraDestinoValida = true;
+                    }
                 }
-            }
-            if (letraOrigenValida && letraDestinoValida)
-                letrasMal = false;
-            for (int i = 0; i < numeros.length; i++) {
-                if (origen[1] == numeros[i])
-                    origen[1] = i;
-                if (destino[1] == numeros[i])
-                    destino[1] = i;
-            }
-        } while (origen[1] > 7 || origen[1] < 0 || destino[1] > 7 || destino[1] < 0 || letrasMal);
-        int[] movConFormato = { origen[0], origen[1], destino[0], destino[1] };
+                if (letraOrigenValida && letraDestinoValida)
+                    letrasMal = false;
+                for (int i = 0; i < numeros.length; i++) {
+                    if (origen[1] == numeros[i])
+                        origen[1] = i;
+                    if (destino[1] == numeros[i])
+                        destino[1] = i;
+                }
+            } while (origen[1] > 7 || origen[1] < 0 || destino[1] > 7 || destino[1] < 0 || letrasMal);
+            movConFormato = new int[] { origen[0], origen[1], destino[0], destino[1] };
+        } catch (Exception e) {
+            System.err.println("Error en el formato del movimiento. Inténtalo de nuevo.");
+            return leerMovimiento();
+        }
         return movConFormato;
     }
 
@@ -273,32 +279,26 @@ public class ClaseAjedrez {
         int columnaDestino = movConFormato[2];
         int filaDestino = movConFormato[3];
         if (turnoBlancas) {
-            if (filaDestino == filaOrigen - 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
+            if (columnaOrigen == columnaDestino && filaDestino == filaOrigen - 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
-            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'p' || tablero[filaOrigen][columnaDestino + 1] == 'p')  && (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino - 1)))) { // Capturar en diagonal y Anpasant
+            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'p' || tablero[filaOrigen][columnaDestino + 1] == 'p')  && (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino - 2)))) { // Capturar en diagonal y Anpasant
                 // Captura diagonal
                 // Si el peon avanza en diagonal: filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
                 // Sí si hay una ficha que capturar: tablero[filaDestino][columnaDestino] != '-'
                 // Anpasant
                 // O si hay un peon al lado: (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino-1] == 'p' || tablero[filaOrigen][columnaDestino+1] == 'p')
-                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaMovAnterior == columnaDestino && filaMovAnterior == filaDestino + 1)
+                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino - 2)
                 movEsValido = true;
-            } else if (filaOrigen == tablero.length - 2 && filaDestino == filaOrigen - 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
+            } else if (columnaOrigen == columnaDestino && filaOrigen == tablero.length - 2 && filaDestino == filaOrigen - 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
                 movEsValido = true;
             }
             
         } else {
-            if (filaDestino == filaOrigen + 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
+            if (columnaOrigen == columnaDestino && filaDestino == filaOrigen + 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
-            } else if (filaDestino == filaOrigen + 1
-                    && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
-                    && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-'
-                            && (tablero[filaOrigen][columnaDestino - 1] == 'P'
-                                    || tablero[filaOrigen][columnaDestino + 1] == 'P')
-                            && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino
-                                    && filaMovAnterior == filaDestino + 1)))) { // Capturar en diagonal y Anpasant
+            } else if (filaDestino == filaOrigen + 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'P' || tablero[filaOrigen][columnaDestino + 1] == 'P') && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino + 2)))) { // Capturar en diagonal y Anpasant
                 movEsValido = true;
-            } else if (filaOrigen == tablero.length - 2 && filaDestino == filaOrigen + 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino+1][columnaDestino] == '-') { // Doble avance inicial
+            } else if (columnaOrigen == columnaDestino && filaOrigen == 1 && filaDestino ==  filaOrigen + 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
                movEsValido = true;
             }
         }
@@ -362,8 +362,7 @@ public class ClaseAjedrez {
         } else {
             puedeEnrocar = false;
         }
-        if (filaDestino == filaOrigen - 1 || filaDestino == filaOrigen + 1 || columnaDestino == columnaOrigen + 1
-                || columnaDestino == columnaOrigen - 1) { // Movimiento //TODO verificar que no se mueva a una casilla atacada
+        if (filaDestino == filaOrigen - 1 || filaDestino == filaOrigen + 1 || columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) { // Movimiento
             movEsValido = true;
         } else if (puedeEnrocar && ((columnaDestino == columnaOrigen + 2 || columnaDestino == columnaOrigen - 3))) { // Enroque
 
@@ -488,8 +487,7 @@ public class ClaseAjedrez {
         int filaOrigen = movConFormato[1];
         int columnaDestino = movConFormato[2];
         int filaDestino = movConFormato[3];
-        if ((Math.abs(columnaDestino - columnaOrigen) == 2 && Math.abs(filaDestino - filaOrigen) == 1)
-                || (Math.abs(columnaDestino - columnaOrigen) == 1 && Math.abs(filaDestino - filaOrigen) == 2)) {
+        if ((Math.abs(columnaDestino - columnaOrigen) == 2 && Math.abs(filaDestino - filaOrigen) == 1) || (Math.abs(columnaDestino - columnaOrigen) == 1 && Math.abs(filaDestino - filaOrigen) == 2)) {
             movEsValido = true;
         }
         return movEsValido;
@@ -520,10 +518,6 @@ public class ClaseAjedrez {
                 switch (Character.toUpperCase(tablero[mov[1]][mov[0]])) {
                     case 'P':
                         esValido = movimientoPeon(mov, tablero, turnoBlancas, historial);
-                        if (esValido && ((!turnoBlancas && movConFormato[3] == 1) || (turnoBlancas && movConFormato[3] == 8))) {
-                            char piezaPromocion = escogerPiezaPromocion(tablero, movConFormato, turnoBlancas);
-                            //TODO Sustituir peón por la pieza elegida
-                        }
                         break;
                     case 'R':
                         esValido = movimientoRey(mov, tablero, turnoBlancas, historial);
@@ -603,11 +597,49 @@ public class ClaseAjedrez {
         }
         return ahogado;
     }
+    static boolean esTablasPorRepeticion(int[][] historial) {
+        boolean tablas = false;
+        int contadorRepeticiones = 0;
+        for (int i = 0; i < historial.length; i++) {
+            for (int j = i + 1; j < historial.length; j++) {
+                if (historial[i][0] == historial[j][0] && historial[i][1] == historial[j][1]
+                        && historial[i][2] == historial[j][2] && historial[i][3] == historial[j][3]) {
+                    contadorRepeticiones++;
+                    if (contadorRepeticiones >= 2) { // Si se repite 3 veces
+                        tablas = true;
+                        return tablas;
+                    }
+                }
+            }
+        }
+        return tablas;
+    }
+    static boolean esTablasPorFaltaDeMaterial(char[][] tablero) {
+        boolean tablas = false;
+        int contadorPiezasBlancas = 0;
+        int contadorPiezasNegras = 0;
+        for (int i = 0; i < tablero.length; i++) {
+            for (int j = 0; j < tablero[i].length; j++) {
+                if (Character.isUpperCase(tablero[i][j])) {
+                    contadorPiezasBlancas++;
+                } else if (Character.isLowerCase(tablero[i][j])) {
+                    contadorPiezasNegras++;
+                }
+            }
+        }
+        if (contadorPiezasBlancas == 1 || contadorPiezasNegras == 1) {// Solo quedan un rey a alguno de los dos
+            //TODO: Completar casos de tablas por falta de material
+            tablas = true;
+        }
+        return tablas;
+    }
     static boolean matchEvents(char[][] tablero,int[] movConFormato, boolean turnoBlancas, int[][] historial) {
         boolean contininueMatch = true;
-        boolean tablas = false;
+        boolean jaqueMate = esJaqueMate(tablero, turnoBlancas, historial);
+        boolean ahogado = esAhogado(tablero, turnoBlancas, historial);
+        boolean tablas = esTablasPorRepeticion(historial);
 
-        if (esJaqueMate(tablero, turnoBlancas, historial)||esAhogado(tablero, turnoBlancas, historial)||tablas) {
+        if (jaqueMate || ahogado || tablas) {
             contininueMatch = false;
         }
 
@@ -616,11 +648,13 @@ public class ClaseAjedrez {
     static char[][] actualizarTablero(char[][] tablero, int[] movConFormato, boolean turnoBlancas) {
         char[][] tableroActualizado = new char[tablero.length][];
         tableroActualizado = copiarTablero(tablero, tableroActualizado);
+
         // Obtener las coordenadas del movimiento
         int columnaOrigen = movConFormato[0];
         int filaOrigen = movConFormato[1];
         int columnaDestino = movConFormato[2];
         int filaDestino = movConFormato[3];
+        
         // Mover la pieza
         tableroActualizado[filaDestino][columnaDestino] = tableroActualizado[filaOrigen][columnaOrigen];
         tableroActualizado[filaOrigen][columnaOrigen] = '-';
@@ -645,6 +679,25 @@ public class ClaseAjedrez {
                 }
             }
         }
+
+        // Manejar promoción de peón
+        if (Character.toUpperCase(tablero[columnaOrigen][filaOrigen]) == 'P' && ((!turnoBlancas && filaDestino == 1) || (turnoBlancas && filaDestino == 8))) { //Promoción
+            char piezaPromocion = escogerPiezaPromocion(tablero, movConFormato, turnoBlancas);
+            //Sustituir peón por la pieza elegida
+            tableroActualizado[movConFormato[2]][movConFormato[3]] = piezaPromocion;
+        }
+
+        //Manejar Ampasant
+        if (Character.toUpperCase(tablero[columnaOrigen][filaOrigen]) == 'P') {
+            if (columnaOrigen != columnaDestino && tablero[columnaDestino][filaDestino] == '-') { //Movimiento diagonal sin captura directa
+                if (turnoBlancas) {
+                    tableroActualizado[filaDestino + 1][columnaDestino] = '-'; //Eliminar peón
+                } else {
+                    tableroActualizado[filaDestino - 1][columnaDestino] = '-'; //Eliminar peón
+                }
+            }
+        }
+
         return tableroActualizado;
     }
 
@@ -673,7 +726,7 @@ public class ClaseAjedrez {
             System.out.println(turnoBlancas ? "Turno de BLANCAS (Mayusculas)" : "Turno de NEGRAS (Minusculas)");
             mov = leerMovimiento();
             tableroAux = actualizarTablero(tablero, mov, turnoBlancas);
-            while (!validarMovimiento(tablero, turnoBlancas, historial, mov) || esJaque(tableroAux, turnoBlancas, historial)) {//error tras g1 f3 - e7 e6
+            while (!validarMovimiento(tablero, turnoBlancas, historial, mov) || esJaque(tableroAux, turnoBlancas, historial)) {
                 System.out.println("Movimiento no válido. Inténtalo de nuevo.");
                 mov = leerMovimiento();
                 tableroAux = copiarTablero(tablero, tableroAux);
@@ -682,18 +735,19 @@ public class ClaseAjedrez {
             /*if (esJaque(tableroAux, !turnoBlancas, historial)) {
                 System.out.println("Jaque al " + (!turnoBlancas ? "BLANCO" : "NEGRO") + "!");
             }*/
+            
             tablero = copiarTablero(tableroAux, tablero);
             mostrarTableroConLeyenda(tablero);
             historial = agregarAHistorial(historial, mov);
-    
+            
             // Mensaje final: ganador/a o tablas
             if (mov == null) {
                 System.out.println("Las " + (turnoBlancas ? "Blancas" : "Negras") + " se han rendido.");
-                System.out.println("GANAN LAS " + (turnoBlancas ? "NEGRAS" : "BLANCAS"));
+                
             }
             turnoBlancas = !turnoBlancas;
         } while (matchEvents(tablero, mov, turnoBlancas, historial) && mov != null);
-
+        System.out.println("GANAN LAS " + (!turnoBlancas ? "NEGRAS" : "BLANCAS"));
         System.out.println("Fin de la partida!");
     }
 }
