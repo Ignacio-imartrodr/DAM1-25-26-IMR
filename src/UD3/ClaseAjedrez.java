@@ -54,6 +54,9 @@ public class ClaseAjedrez {
     }
 
     static int[][] agregarAHistorial(int[][] historial, int[] mov) {
+        if (mov == null) {
+            return historial; // El jugador se rinde
+        }
         int[][] historialAux = new int[historial.length + 1][];
         System.arraycopy(historial, 0, historialAux, 0, historial.length);
         historialAux[historialAux.length - 1] = mov;
@@ -271,23 +274,30 @@ public class ClaseAjedrez {
 
     static boolean movimientoPeon(int[] movConFormato, char[][] tablero, boolean turnoBlancas, int[][] historial) {
         boolean movEsValido = false;
+
+        // Movimiento anterior del rival
         int columnaInicioMovAnterior = historial[historial.length - 1][0];
+        int filaInicioMovAnterior = historial[historial.length - 1][1];
         int columnaFinalMovAnterior = historial[historial.length - 1][2];
-        int filaMovAnterior = historial[historial.length - 1][3];
+        int filaFinalMovAnterior = historial[historial.length - 1][3];
+
+        // Movimiento actual
         int columnaOrigen = movConFormato[0];
         int filaOrigen = movConFormato[1];
         int columnaDestino = movConFormato[2];
         int filaDestino = movConFormato[3];
+
+        // Verificación
         if (turnoBlancas) {
             if (columnaOrigen == columnaDestino && filaDestino == filaOrigen - 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
-            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'p' || tablero[filaOrigen][columnaDestino + 1] == 'p')  && (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino - 2)))) { // Capturar en diagonal y Anpasant
+            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'p' || tablero[filaOrigen][columnaDestino + 1] == 'p') && (columnaFinalMovAnterior == columnaDestino && filaFinalMovAnterior == filaInicioMovAnterior - 2)))) { // Capturar en diagonal y Ampasant //TODO Verificar (no va Ampasant)
                 // Captura diagonal
                 // Si el peon avanza en diagonal: filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
                 // Sí si hay una ficha que capturar: tablero[filaDestino][columnaDestino] != '-'
-                // Anpasant
+                // Ampasant
                 // O si hay un peon al lado: (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino-1] == 'p' || tablero[filaOrigen][columnaDestino+1] == 'p')
-                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino - 2)
+                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaInicioMovAnterior - 2)
                 movEsValido = true;
             } else if (columnaOrigen == columnaDestino && filaOrigen == tablero.length - 2 && filaDestino == filaOrigen - 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
                 movEsValido = true;
@@ -296,7 +306,7 @@ public class ClaseAjedrez {
         } else {
             if (columnaOrigen == columnaDestino && filaDestino == filaOrigen + 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
-            } else if (filaDestino == filaOrigen + 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'P' || tablero[filaOrigen][columnaDestino + 1] == 'P') && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaDestino + 2)))) { // Capturar en diagonal y Anpasant
+            } else if (filaDestino == filaOrigen + 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'P' || tablero[filaOrigen][columnaDestino + 1] == 'P') && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino && filaFinalMovAnterior == filaInicioMovAnterior + 2)))) { // Capturar en diagonal y Ampasant
                 movEsValido = true;
             } else if (columnaOrigen == columnaDestino && filaOrigen == 1 && filaDestino ==  filaOrigen + 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
                movEsValido = true;
@@ -305,17 +315,20 @@ public class ClaseAjedrez {
 
         return movEsValido;
     }
-    static char escogerPiezaPromocion(char[][] tablero, int[] movConFormato, boolean turnoBlancas) {
-        char piezaPromocion;
-        System.out.print("El peón ha llegado al final del tablero. Elige una pieza para promocionar (D, T, A, C): ");
-        piezaPromocion = sc.nextLine().toUpperCase().charAt(0);
-        while (piezaPromocion != 'D' && piezaPromocion != 'T' && piezaPromocion != 'A' && piezaPromocion != 'C') {
+    static char escogerPiezaPromocion(boolean turnoBlancas) {
+        String piezaPromocion;
+        try {
+            System.out.print("El peón ha llegado al final del tablero. Elige una pieza para promocionar (D, T, A, C): ");
+            piezaPromocion = sc.nextLine().toUpperCase();
+            while (piezaPromocion != "D" && piezaPromocion != "T" && piezaPromocion != "A" && piezaPromocion != "C") {
+                System.out.print("Entrada no válida. Elige una pieza para promocionar (D, T, A, C): ");
+                piezaPromocion = sc.nextLine().toUpperCase();
+            }
+            return turnoBlancas ? piezaPromocion.charAt(0) : Character.toLowerCase(piezaPromocion.charAt(0));
+        } catch (Exception e) {
             System.out.print("Entrada no válida. Elige una pieza para promocionar (D, T, A, C): ");
-            piezaPromocion = sc.nextLine().toUpperCase().charAt(0);
+            return escogerPiezaPromocion(turnoBlancas);
         }
-        piezaPromocion = turnoBlancas ? piezaPromocion : Character.toLowerCase(piezaPromocion);
-        
-        return piezaPromocion;
     }
 
     static boolean movimientoRey(int[] movConFormato, char[][] tablero, boolean turnoBlancas, int[][] historial) {
@@ -514,6 +527,8 @@ public class ClaseAjedrez {
                 esValido = false;
             } else if (!turnoBlancas && (Character.isUpperCase(tablero[mov[1]][mov[0]]) || (Character.isLowerCase(tablero[mov[3]][mov[2]]) && tablero[mov[3]][mov[2]] != '-'))) { // Turno de negras pero pieza blanca o captura a negra
                 esValido = false;
+            } else if (seráJaque(tablero, turnoBlancas, historial, movConFormato)) {//TODO No detecta si mueve otra pieza y queda en jaque
+                esValido = false;
             } else {
                 switch (Character.toUpperCase(tablero[mov[1]][mov[0]])) {
                     case 'P':
@@ -542,7 +557,7 @@ public class ClaseAjedrez {
         return esValido;
     }
     static int[] ubicacionRey(char[][] tablero, boolean turnoBlancas) {
-        int[] posicionRey = new int[]{-1,1};
+        int[] posicionRey = new int[]{-1,-1};
         char rey = turnoBlancas ? 'R' : 'r';
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[i].length; j++) {
@@ -557,14 +572,14 @@ public class ClaseAjedrez {
     }
     static boolean esJaqueMate(char[][] tablero, boolean turnoBlancas, int[][] historial) {
         boolean jaqueMate = false;
-        if (esJaque(tablero, turnoBlancas, historial)) {
+        if (esPosicionJaque(tablero, turnoBlancas, historial)) {
             if (esAhogado(tablero, turnoBlancas, historial)) {
                 jaqueMate = true;
             }
         }
         return jaqueMate;
     }
-    static boolean esJaque(char[][] tablero, boolean turnoBlancas, int[][] historial) {
+    static boolean esPosicionJaque(char[][] tablero, boolean turnoBlancas, int[][] historial) {
         boolean enJaque = false;
         int[] posicionRey = ubicacionRey(tablero, turnoBlancas);
         for (int i = 0; i < tablero.length; i++) {
@@ -577,6 +592,10 @@ public class ClaseAjedrez {
             }
         }
         return enJaque;
+    }
+    static boolean seráJaque(char[][] tablero, boolean turnoBlancas, int[][] historial, int[] movConFormato) {
+        tablero = actualizarTablero(tablero, movConFormato, turnoBlancas);
+        return esPosicionJaque(tablero, turnoBlancas, historial);
     }
     static boolean esAhogado(char[][] tablero, boolean turnoBlancas, int[][] historial) {
         boolean ahogado = true;
@@ -648,7 +667,9 @@ public class ClaseAjedrez {
     static char[][] actualizarTablero(char[][] tablero, int[] movConFormato, boolean turnoBlancas) {
         char[][] tableroActualizado = new char[tablero.length][];
         tableroActualizado = copiarTablero(tablero, tableroActualizado);
-
+        if (movConFormato == null) {
+            return tablero; // El jugador se rinde
+        }
         // Obtener las coordenadas del movimiento
         int columnaOrigen = movConFormato[0];
         int filaOrigen = movConFormato[1];
@@ -681,8 +702,8 @@ public class ClaseAjedrez {
         }
 
         // Manejar promoción de peón
-        if (Character.toUpperCase(tablero[columnaOrigen][filaOrigen]) == 'P' && ((!turnoBlancas && filaDestino == 1) || (turnoBlancas && filaDestino == 8))) { //Promoción
-            char piezaPromocion = escogerPiezaPromocion(tablero, movConFormato, turnoBlancas);
+        if (Character.toUpperCase(tablero[columnaOrigen][filaOrigen]) == 'P' && ((!turnoBlancas && filaDestino == 0) || (turnoBlancas && filaDestino == 7))) { //Promoción
+            char piezaPromocion = escogerPiezaPromocion(turnoBlancas);
             //Sustituir peón por la pieza elegida
             tableroActualizado[movConFormato[2]][movConFormato[3]] = piezaPromocion;
         }
@@ -717,26 +738,21 @@ public class ClaseAjedrez {
          */
         int[][] historial = new int[1][4];
         char[][] tablero = inicializarTablero();
-        char[][] tableroAux = new char[tablero.length][];
-        tableroAux = copiarTablero(tablero, tableroAux);
         mostrarTableroConLeyenda(tablero);
         boolean turnoBlancas = true;
         int[] mov;
         do {
             System.out.println(turnoBlancas ? "Turno de BLANCAS (Mayusculas)" : "Turno de NEGRAS (Minusculas)");
             mov = leerMovimiento();
-            tableroAux = actualizarTablero(tablero, mov, turnoBlancas);
-            while (!validarMovimiento(tablero, turnoBlancas, historial, mov) || esJaque(tableroAux, turnoBlancas, historial)) {
+            while (!validarMovimiento(tablero, turnoBlancas, historial, mov)) {
+                if (esPosicionJaque(tablero, !turnoBlancas, historial)) {
+                    System.out.println("Jaque al " + (!turnoBlancas ? "BLANCO" : "NEGRO") + "!");
+                }
                 System.out.println("Movimiento no válido. Inténtalo de nuevo.");
                 mov = leerMovimiento();
-                tableroAux = copiarTablero(tablero, tableroAux);
-                tableroAux = actualizarTablero(tablero, mov, turnoBlancas);
             }
-            /*if (esJaque(tableroAux, !turnoBlancas, historial)) {
-                System.out.println("Jaque al " + (!turnoBlancas ? "BLANCO" : "NEGRO") + "!");
-            }*/
             
-            tablero = copiarTablero(tableroAux, tablero);
+            tablero = actualizarTablero(tablero, mov, turnoBlancas);
             mostrarTableroConLeyenda(tablero);
             historial = agregarAHistorial(historial, mov);
             
@@ -751,3 +767,24 @@ public class ClaseAjedrez {
         System.out.println("Fin de la partida!");
     }
 }
+/*Crash: No encontró al rey porque se lo comió el peón
+Mov: f7 e8
+      a b c d e f g h
+   .-------------------.
+8  |  t - a d P a c t  |  8
+7  |  p p p - p - p p  |  7
+6  |  - - - - - - - -  |  6
+5  |  - - - - - - - -  |  5
+4  |  - - P p - - - -  |  4
+3  |  - - - c - - - -  |  3
+2  |  P P - P - P P P  |  2
+1  |  T C A D R A C T  |  1
+   '-------------------'
+      a b c d e f g h
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index -1 out of bounds for length 8
+        at UD3.ClaseAjedrez.validarMovimiento(ClaseAjedrez.java:515)
+        at UD3.ClaseAjedrez.esJaque(ClaseAjedrez.java:573)
+        at UD3.ClaseAjedrez.esJaqueMate(ClaseAjedrez.java:560)
+        at UD3.ClaseAjedrez.matchEvents(ClaseAjedrez.java:638)
+        at UD3.ClaseAjedrez.main(ClaseAjedrez.java:749)
+*/
