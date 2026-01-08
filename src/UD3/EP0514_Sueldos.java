@@ -67,7 +67,7 @@ public class EP0514_Sueldos {
         }
         Arrays.sort(sueldos);
         
-        //vuelvo sueldos decreciente
+        //devuelvo sueldos decreciente
         int mitadT=sueldos.length/2;
         int aux;
         int j = sueldos.length;
