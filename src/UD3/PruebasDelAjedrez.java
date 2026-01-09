@@ -1,7 +1,5 @@
 package UD3;
 
-import java.util.Arrays;
-
 public class PruebasDelAjedrez {
     static String stringMatriz(int[][] t) {
         String Str = "";
