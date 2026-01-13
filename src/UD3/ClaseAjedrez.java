@@ -225,6 +225,10 @@ public class ClaseAjedrez {
 
     static Scanner sc = new Scanner(System.in);
 
+    static char getPiezaMovidaPorRival(char[][] tablero, int[][] historial){
+        return tablero[historial[historial.length - 1][3]][historial[historial.length - 1][2]];
+    }
+
     static int[] leerMovimiento() {
         int[] movConFormato = null;
         char[] letras = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
@@ -276,9 +280,7 @@ public class ClaseAjedrez {
         boolean movEsValido = false;
 
         // Movimiento anterior del rival
-        int columnaInicioMovAnterior = historial[historial.length - 1][0];
         int filaInicioMovAnterior = historial[historial.length - 1][1];
-        int columnaFinalMovAnterior = historial[historial.length - 1][2];
         int filaFinalMovAnterior = historial[historial.length - 1][3];
 
         // Movimiento actual
@@ -291,13 +293,14 @@ public class ClaseAjedrez {
         if (turnoBlancas) {
             if (columnaOrigen == columnaDestino && filaDestino == filaOrigen - 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
-            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'p' || tablero[filaOrigen][columnaDestino + 1] == 'p') && (columnaFinalMovAnterior == columnaDestino && filaFinalMovAnterior == filaInicioMovAnterior - 2)))) { // Capturar en diagonal y Ampasant //TODO Verificar (no va Ampasant)
+            } else if (filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || ((getPiezaMovidaPorRival(tablero, historial) == 'p' && columnaDestino > 0 ? (tablero[filaOrigen][columnaDestino -1] == 'p') : (false) || columnaDestino < 7 ? (tablero[filaOrigen][columnaDestino + 1] == 'p') : (false)) && (filaFinalMovAnterior == filaInicioMovAnterior + 2)))) { // Capturar en diagonal y Ampasant
                 // Captura diagonal
                 // Si el peon avanza en diagonal: filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
                 // Sí si hay una ficha que capturar: tablero[filaDestino][columnaDestino] != '-'
                 // Ampasant
-                // O si hay un peon al lado: (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino-1] == 'p' || tablero[filaOrigen][columnaDestino+1] == 'p')
-                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaInicioMovAnterior - 2)
+                // O si el rival movió un peon: getPiezaMovidaPorRival(tablero, historial) == 'p'
+                // Y si hay un peon al lado: columnaDestino > 0 ? (tablero[filaOrigen][columnaDestino -1] == 'p') : (false) || columnaDestino < 7 ? (tablero[filaOrigen][columnaDestino + 1] == 'p') : (false)
+                // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaInicioMovAnterior + 2)
                 movEsValido = true;
             } else if (columnaOrigen == columnaDestino && filaOrigen == tablero.length - 2 && filaDestino == filaOrigen - 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
                 movEsValido = true;
@@ -306,7 +309,7 @@ public class ClaseAjedrez {
         } else {
             if (columnaOrigen == columnaDestino && filaDestino == filaOrigen + 1 && tablero[filaDestino][columnaDestino] == '-') { // avanzar si no hay piezas delante
                 movEsValido = true;
-            } else if (filaDestino == filaOrigen + 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || (tablero[filaDestino][columnaDestino] == '-' && (tablero[filaOrigen][columnaDestino - 1] == 'P' || tablero[filaOrigen][columnaDestino + 1] == 'P') && (columnaInicioMovAnterior == columnaDestino && columnaFinalMovAnterior == columnaDestino && filaFinalMovAnterior == filaInicioMovAnterior + 2)))) { // Capturar en diagonal y Ampasant
+            } else if (filaDestino == filaOrigen + 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1) && (tablero[filaDestino][columnaDestino] != '-' || ((getPiezaMovidaPorRival(tablero, historial) == 'P' && columnaDestino > 0 ? (tablero[filaOrigen][columnaDestino -1] == 'P') : (false) || columnaDestino < 7 ? (tablero[filaOrigen][columnaDestino + 1] == 'P') : (false)) && (filaFinalMovAnterior == filaInicioMovAnterior - 2)))) { // Capturar en diagonal y Ampasant
                 movEsValido = true;
             } else if (columnaOrigen == columnaDestino && filaOrigen == 1 && filaDestino ==  filaOrigen + 2 && tablero[filaDestino][columnaDestino] == '-' && tablero[filaDestino-1][columnaDestino] == '-') { // Doble avance inicial
                movEsValido = true;
@@ -752,7 +755,7 @@ public class ClaseAjedrez {
         System.out.println("Fin de la partida!");
     }
 }
-/*Crash: No encontró al rey porque se lo comió el peón
+/*Crash: No encontró al rey porque se lo comió el peón (Consecuencia de que no lea bien el jaque y el ahogado)
 Mov: f7 e8
       a b c d e f g h
    .-------------------.
@@ -830,50 +833,3 @@ Introduce "fin" para rendirte o el movimiento (formato: e1 e7): g8 f6
    '-------------------'
       a b c d e f g h
  */
-/*Bug, tras mover el peón se sale del limite en la comprobación del ahogado (Se sale del array en el Ampasant)
-      a b c d e f g h
-   .-------------------.
-8  |  t c a d r a c t  |  8
-7  |  p p p p p p p p  |  7
-6  |  - - - - - - - -  |  6
-5  |  - - - - - - - -  |  5
-4  |  - - - - - - - -  |  4
-3  |  - - - - - - - -  |  3
-2  |  P P P P P P P P  |  2
-1  |  T C A D R A C T  |  1
-   '-------------------'
-      a b c d e f g h
-Turno de BLANCAS (Mayusculas)
-Introduce "fin" para rendirte o el movimiento (formato: e1 e7): b2 b4
-      a b c d e f g h
-   .-------------------.
-8  |  t c a d r a c t  |  8
-7  |  p p p p p p p p  |  7
-6  |  - - - - - - - -  |  6
-5  |  - - - - - - - -  |  5
-4  |  - P - - - - - -  |  4
-3  |  - - - - - - - -  |  3
-2  |  P - P P P P P P  |  2
-1  |  T C A D R A C T  |  1
-   '-------------------'
-      a b c d e f g h
-Turno de NEGRAS (Minusculas)
-Introduce "fin" para rendirte o el movimiento (formato: e1 e7): d7 d5
-      a b c d e f g h
-   .-------------------.
-8  |  t c a d r a c t  |  8
-7  |  p p p - p p p p  |  7
-6  |  - - - - - - - -  |  6
-5  |  - - - p - - - -  |  5
-4  |  - P - - - - - -  |  4
-3  |  - - - - - - - -  |  3
-2  |  P - P P P P P P  |  2
-1  |  T C A D R A C T  |  1
-   '-------------------'
-      a b c d e f g h
-Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index -1 out of bounds for length 8
-        at UD3.ClaseAjedrez.movimientoPeon(ClaseAjedrez.java:294)
-        at UD3.ClaseAjedrez.validarMovimiento(ClaseAjedrez.java:515)
-        at UD3.ClaseAjedrez.esAhogado(ClaseAjedrez.java:590)
-        at UD3.ClaseAjedrez.matchEvents(ClaseAjedrez.java:640)
-        at UD3.ClaseAjedrez.main(ClaseAjedrez.java:747)*/
