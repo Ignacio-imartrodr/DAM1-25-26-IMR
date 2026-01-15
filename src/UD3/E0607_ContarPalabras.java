@@ -1,4 +1,4 @@
-package UD4;
+package UD3;
 
 public class E0607_ContarPalabras {
     static int contarOcurenciasExactas (String texto, String palabra){
