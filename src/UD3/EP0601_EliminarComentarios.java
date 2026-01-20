@@ -20,13 +20,15 @@ public class EP0601_EliminarComentarios {
         final String CAD_COMIENZO_COMENTARIO = "/*";
         final String CAD_FIN_COMENTARIO = "*/";
         int apertura = cadena.indexOf(CAD_COMIENZO_COMENTARIO);
-        int cierre = 0;
+        int cierre = cadena.indexOf(CAD_FIN_COMENTARIO) + 2;
         while (apertura != -1) {
-            cadSinComent += cadena.substring(cierre, apertura);
-            cierre = cadena.indexOf(CAD_FIN_COMENTARIO) + 2;
+            cadSinComent += cadena.substring(0, apertura);
             cadena = cadena.substring(cierre);
             cierre = cadena.indexOf(CAD_FIN_COMENTARIO) + 2;
             apertura = cadena.indexOf(CAD_COMIENZO_COMENTARIO);
+        }
+        if (apertura == -1 && cadena != ""){
+            cadSinComent += cadena;
         }
         return cadSinComent;
     }
