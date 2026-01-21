@@ -56,9 +56,43 @@ public class RecorridoRobot {
         }
         return direccion;
     }
-    static String[] mapaConRobot(String[] mapa, int[] posRobot, int direccion){
-        mapa[posRobot[0]] = ;
-
+    static String[] actualizarMapaConRobot(String[] mapa, int[] posRobot, int direccion){
+        mapa[posRobot[0]] = "";
+        String[] aux = new String[2];
+        switch (direccion) {
+            case 1:
+                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                mapa[posRobot[0]-1] = aux[0]+"^"+aux[1];
+                aux = new String[2];
+                aux = mapa[posRobot[0]-1].split("^");
+                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
+                break;
+            case 2:
+                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                mapa[posRobot[0]-1] = aux[0]+">"+aux[1];
+                aux = new String[2];
+                aux = mapa[posRobot[0]-1].split(">");
+                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
+                break;
+            case 3:
+                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                mapa[posRobot[0]-1] = aux[0]+"v"+aux[1];
+                aux = new String[2];
+                aux = mapa[posRobot[0]-1].split("v");
+                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
+                break;
+            case 4:
+                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                mapa[posRobot[0]-1] = aux[0]+"<"+aux[1];
+                aux = new String[2];
+                aux = mapa[posRobot[0]-1].split("<");
+                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
+                break;
+        }
         return mapa;
     }
     static int[] avanzarRobot(String[] mapa, int[] posRobot, int direccion){
@@ -85,6 +119,7 @@ public class RecorridoRobot {
     }
 
     static boolean recorridoRobot(String[] mapa, String instrucciones){
+        String[] mapaConRobot;
         boolean esPosible = false;
         final char SALIDA = 'A';
         final char FINAL = 'Z';
@@ -102,6 +137,11 @@ public class RecorridoRobot {
                         System.out.println("El robot explotó con una mina :(");
                         return esPosible;
                     } else if(posRobot == posFin) {
+                        mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion);
+                        for (int j = 0; j < mapa.length; j++) {
+                            System.out.println(mapaConRobot[j]);
+                        }
+                        //TODO añadir pausa
                         esPosible = true;
                     } else if(posRobot == FUERA_LIMITE){
                         System.out.println("El robot se cayó del mapa :(");
@@ -121,7 +161,7 @@ public class RecorridoRobot {
         return esPosible;
     }
     static String[] mapaBase(){
-        String[] mapa = {
+        String[] mapa = new String[] {
                 "  Z       ",
                 " *        ",
                 "  *  *    ",
@@ -133,7 +173,7 @@ public class RecorridoRobot {
 
     public static void main(String[] args) {
         String[] mapa = mapaBase();
-        System.out.println("Utilizando las letras \"A\", \"L\" y \"R\" escribe una cadena de texto que guíe al rebot de \"A\" hasta \"Z\".");
+        System.out.println("Utilizando las letras \"A\", \"L\" y \"R\" escribe una cadena de texto que guíe al rebot de \"A\" hasta \"Z\" evitando las minas (\"*\").");
          System.out.println("El robot comienza orientado hacia arriba.");
         System.out.println("\"A\" para avanzar");
         System.out.println("\"L\" para rotar izquierda");
@@ -141,6 +181,7 @@ public class RecorridoRobot {
         for (int i = 0; i < mapa.length; i++) {
             System.out.println(mapa[i]);
         }
+        System.out.println("Instrucciones:");
         String instruccioes = pedirInstrucciones();
         boolean victoria = recorridoRobot(mapa, instruccioes);
         do {
