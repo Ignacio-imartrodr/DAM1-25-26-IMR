@@ -8,10 +8,11 @@ public class RecorridoRobot {
     static String pedirInstrucciones() {
         String instrucciones;
         try {
-            instrucciones = sc.nextLine();
-            for (int i = 0; i < instrucciones.charAt(i); i++) {
-                if (instrucciones.charAt(i) != 'A' || instrucciones.charAt(i) != 'L' || instrucciones.charAt(i) != 'R') {
+            instrucciones = sc.nextLine().strip().replace(" ", "").toUpperCase();
+            for (int i = 0; i < instrucciones.length(); i++) {
+                if (instrucciones.charAt(i) != 'A' && instrucciones.charAt(i) != 'L' && instrucciones.charAt(i) != 'R') {
                     System.out.println("Instrucciones invalidas, vuelve a intentarlo:");
+                    sc.nextLine();
                     instrucciones = pedirInstrucciones();
                     i = 0;
                 }
@@ -21,7 +22,7 @@ public class RecorridoRobot {
             sc.nextLine();
             return pedirInstrucciones();
         }
-        return instrucciones.strip().replace(" ", "").toUpperCase();
+        return instrucciones;
     }
 
     static int[] posicionEnMapa(String[] mapa, char objetivo) {
@@ -56,43 +57,73 @@ public class RecorridoRobot {
         }
         return direccion;
     }
-    static String[] actualizarMapaConRobot(String[] mapa, int[] posRobot, int direccion){
+    static String[] actualizarMapaConRobot(String[] mapa, int[] posRobot, int direccion, char instruccion){
         mapa[posRobot[0]] = "";
         String[] aux = new String[2];
-        switch (direccion) {
-            case 1:
-                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
-                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
-                mapa[posRobot[0]-1] = aux[0]+"^"+aux[1];
-                aux = new String[2];
-                aux = mapa[posRobot[0]-1].split("^");
-                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
+
+        switch (instruccion) {
+            case 'A':
+                switch (direccion) {
+                    case 1:
+                        mapa[posRobot[0]+1] = mapa[posRobot[0]+1].replace("^"," ");
+                        aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                        aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                        mapa[posRobot[0]] = aux[0]+"^"+aux[1];
+                        break;
+                    case 2:
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace(">"," ");
+                        aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                        aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                        mapa[posRobot[0]] = aux[0]+">"+aux[1];
+                        break;
+                    case 3:
+                        mapa[posRobot[0]-1] = mapa[posRobot[0]-1].replace("v"," ");
+                        aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                        aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                        mapa[posRobot[0]] = aux[0]+"v"+aux[1];
+                        break;
+                    case 4:
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("<"," ");
+                        aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                        aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                        mapa[posRobot[0]] = aux[0]+"<"+aux[1];
+                        break;
+                }
                 break;
-            case 2:
-                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
-                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
-                mapa[posRobot[0]-1] = aux[0]+">"+aux[1];
-                aux = new String[2];
-                aux = mapa[posRobot[0]-1].split(">");
-                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
+            case 'R':
+                switch (direccion) {
+                    case 1:
+                        mapa[posRobot[0]+1] = mapa[posRobot[0]+1].replace("^",">");
+                        break;
+                    case 2:
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace(">","v");
+                        break;
+                    case 3:
+                        mapa[posRobot[0]-1] = mapa[posRobot[0]-1].replace("v","<");
+                        break;
+                    case 4:
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("<","^");
+                        break;
+                }
                 break;
-            case 3:
-                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
-                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
-                mapa[posRobot[0]-1] = aux[0]+"v"+aux[1];
-                aux = new String[2];
-                aux = mapa[posRobot[0]-1].split("v");
-                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
-                break;
-            case 4:
-                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
-                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
-                mapa[posRobot[0]-1] = aux[0]+"<"+aux[1];
-                aux = new String[2];
-                aux = mapa[posRobot[0]-1].split("<");
-                mapa[posRobot[0]-1] = aux[0]+" "+aux[1];
+            case 'L':
+                switch (direccion) {
+                    case 1:
+                        mapa[posRobot[0]+1] = mapa[posRobot[0]+1].replace("^","<");
+                        break;
+                    case 2:
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace(">","^");
+                        break;
+                    case 3:
+                        mapa[posRobot[0]-1] = mapa[posRobot[0]-1].replace("v",">");
+                        break;
+                    case 4:
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("<","v");
+                        break;
+                }
                 break;
         }
+        
         return mapa;
     }
     static int[] avanzarRobot(String[] mapa, int[] posRobot, int direccion){
@@ -127,31 +158,58 @@ public class RecorridoRobot {
         int direccion = 1;        
         int[] posRobot = posicionEnMapa(mapa, SALIDA);
         int[] posFin = posicionEnMapa(mapa, FINAL);
-        int[] posMina = posicionEnMapa(mapa, MINA);
         final int[] FUERA_LIMITE = new int[]{-1,-1};
         for (int i = 0; i < instrucciones.length(); i++) {
             switch (instrucciones.charAt(i)) {
                 case 'A':
                     posRobot = avanzarRobot(mapa, posRobot, direccion);
-                    if(posRobot == posMina){
+                    if(mapa[posRobot[0]].charAt(posRobot[1]) == MINA){
                         System.out.println("El robot explotó con una mina :(");
                         return esPosible;
                     } else if(posRobot == posFin) {
-                        mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion);
-                        for (int j = 0; j < mapa.length; j++) {
-                            System.out.println(mapaConRobot[j]);
-                        }
-                        //TODO añadir pausa
                         esPosible = true;
                     } else if(posRobot == FUERA_LIMITE){
                         System.out.println("El robot se cayó del mapa :(");
                         return esPosible;
                     }
+                    mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
+                    try {
+                        for (int j = 0; j < mapaConRobot.length; j++) {
+                            System.out.print("|");
+                            System.out.print(mapaConRobot[j]);
+                            System.out.println("|");
+                    }
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error en la pausa");
+                    }
                     break;
                 case 'R':
+                    mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
+                    try {
+                        for (int j = 0; j < mapaConRobot.length; j++) {
+                            System.out.print("|");
+                            System.out.print(mapaConRobot[j]);
+                            System.out.println("|");
+                        }
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error en la pausa");
+                    }
                     direccion = rotarRobot(direccion, instrucciones.charAt(i));
                     break;
                 case 'L':
+                    mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
+                    try {
+                        for (int j = 0; j < mapaConRobot.length; j++) {
+                            System.out.print("|");
+                            System.out.print(mapaConRobot[j]);
+                            System.out.println("|");
+                        }
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        System.out.println("Error en la pausa");
+                    }
                     direccion = rotarRobot(direccion, instrucciones.charAt(i));
                     break;
                 default:
@@ -179,7 +237,9 @@ public class RecorridoRobot {
         System.out.println("\"L\" para rotar izquierda");
         System.out.println("\"R\" para rotar derecha");
         for (int i = 0; i < mapa.length; i++) {
-            System.out.println(mapa[i]);
+            System.out.print("|");
+            System.out.print(mapa[i]);
+            System.out.println("|");
         }
         System.out.println("Instrucciones:");
         String instruccioes = pedirInstrucciones();
