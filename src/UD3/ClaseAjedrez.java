@@ -335,7 +335,7 @@ public class ClaseAjedrez {
         }
     }
 
-    static boolean movimientoRey(int[] movConFormato, char[][] tablero, boolean turnoBlancas, int[][] historial) {
+    static boolean movimientoRey(int[] movConFormato, char[][] tablero, boolean turnoBlancas, int[][] historial) { //TODO Hace enrroque cuando no puede (hay que volver a comprobar)
         boolean movEsValido = false;
         int[] posicionRey = { 7,4, 0,4 };// Rey blanco, Rey negro
         int[] posicionTorre = { 7,0, 7,7, 0,7, 0,0 };// Torres
@@ -349,27 +349,25 @@ public class ClaseAjedrez {
         if((Math.abs(columnaDestino - columnaOrigen) == 2 || Math.abs(columnaDestino - columnaOrigen) == 3) && (filaDestino - filaOrigen == 0)) { // Intento de enroque
             if ((!turnoBlancas && tablero[7][5] == '-' && tablero[7][6] == '-') || (turnoBlancas && tablero[0][5] == '-' && tablero[0][6] == '-') || ((!turnoBlancas && tablero[7][1] == '-' && tablero[7][2] == '-' && tablero[7][3] == '-') || (turnoBlancas && tablero[0][1] == '-' && tablero[0][2] == '-' && tablero[0][3] == '-'))) {
                 for (int i = 0; i < historial.length; i++) {
-                    for (int j = 0; j < historial[i].length / 2; j++) {
                         if (turnoBlancas) {
-                            if (historial[i][j] == posicionRey[j]) {
+                            if (historial[i][0] == posicionRey[1] && historial[i][1] == posicionRey[0]) {
                                 puedeEnrocar = false;
                                 break;
-                            } else if (historial[i][j] == posicionTorre[j]) {
+                            } else if (historial[i][0] == posicionTorre[1] && historial[i][1] == posicionTorre[0]) {
                                 puedeEnrocarEnLargo = false;
-                            } else if (historial[i][j] == posicionTorre[j + 2]) {
+                            } else if (historial[i][0] == posicionTorre[3] && historial[i][1] == posicionTorre[2]) {
                                 puedeEnrocarEnCorto = false;
                             }
                         } else {
-                            if (historial[i][j] == posicionRey[j + 2]) {
+                           if (historial[i][0] == posicionRey[3] && historial[i][1] == posicionRey[2]) {
                                 puedeEnrocar = false;
                                 break;
-                            } else if (historial[i][j] == posicionTorre[j + 4]) {
+                            } else if (historial[i][0] == posicionTorre[7] && historial[i][1] == posicionTorre[6]) {
                                 puedeEnrocarEnLargo = false;
-                            } else if (historial[i][j] == posicionTorre[j + 6]) {
+                            } else if (historial[i][0] == posicionTorre[5] && historial[i][1] == posicionTorre[4]) {
                                 puedeEnrocarEnCorto = false;
                             }
                         }
-                    }
                 }
             }
         } else {
@@ -668,7 +666,7 @@ public class ClaseAjedrez {
         tableroActualizado[filaDestino][columnaDestino] = tableroActualizado[filaOrigen][columnaOrigen];
         tableroActualizado[filaOrigen][columnaOrigen] = '-';
 
-        // Manejar enroque
+        // Manejar enroque //TODO No cambia la torre
         if (Character.toUpperCase(tableroActualizado[filaOrigen][columnaOrigen]) == 'R') {
             if (Math.abs(columnaDestino - columnaOrigen) == 2) { // Enroque corto
                 if (turnoBlancas) {
