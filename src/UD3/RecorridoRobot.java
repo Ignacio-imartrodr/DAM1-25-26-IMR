@@ -1,7 +1,9 @@
 package UD3;
 
 import java.util.Scanner;
-
+/**
+ * @author Ignacio MR
+ */
 public class RecorridoRobot {
     static Scanner sc = new Scanner(System.in);
     static void mostrarMapa(String[] mapa){
@@ -64,7 +66,7 @@ public class RecorridoRobot {
         }
         return direccion;
     }
-    static String[] actualizarMapaConRobot(String[] mapa, int[] posRobot, int direccion, char instruccion){
+    static String[] actualizarMapa(String[] mapa, int[] posRobot, int direccion, char instruccion, int[] posFin){
         // 1 ^    2 >    3 v    4 <   -1 Error
         String[] aux = new String[2];
         switch (instruccion) {
@@ -128,6 +130,11 @@ public class RecorridoRobot {
                         break;
                 }
                 break;
+            case 'Z':
+                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                mapa[posRobot[0]] = aux[0]+"Z"+aux[1];
+                break;
         }
         return mapa;
     }
@@ -155,7 +162,7 @@ public class RecorridoRobot {
     }
 
     static boolean recorridoRobot(String[] mapa, String instrucciones){
-        String[] mapaConRobot;
+        String leyenda = "";
         boolean esPosible = false;
         final char SALIDA = 'A';
         final char FINAL = 'Z';
@@ -165,31 +172,39 @@ public class RecorridoRobot {
         int[] posFin = posicionEnMapa(mapa, FINAL);
         final int[] FUERA_LIMITE = new int[]{-1,-1};
         for (int i = 0; i < instrucciones.length(); i++) {
+            leyenda = instrucciones.substring(0, i) + Character.toLowerCase(instrucciones.charAt(i)) + instrucciones.substring(i + 1);
             switch (instrucciones.charAt(i)) {
                 case 'A':
-                    System.out.println(instrucciones.charAt(i).toLowerCase());
                     posRobot = avanzarRobot(mapa, posRobot, direccion);
                     if (posRobot[0] == FUERA_LIMITE[0] || posRobot[1] == FUERA_LIMITE[1]){
                         System.out.println("El robot se cayó del mapa :(");
                         return esPosible;
-                    } else if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1]) {
-                        esPosible = true;
+                    } else if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1] && i == instrucciones.length()-1){
+                        System.out.println(leyenda);
+                        mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
+                        mostrarMapa(mapa);
+                        return true;
                     } else if (mapa[posRobot[0]].charAt(posRobot[1]) == MINA){
                         System.out.println("El robot explotó con una mina :(");
                         return esPosible;
                     }
-                    mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
-                    mostrarMapa(mapaConRobot);
+                    System.out.println(leyenda);
+                    mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
+                    mostrarMapa(mapa);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         System.out.println("Error en la pausa");
                     }
-                    System.out.println();
+                    if (posRobot[0] == posFin[0] && posRobot[1] == posFin[1]) {
+                        mapa = actualizarMapa(mapa, posRobot, direccion, FINAL, posFin);
+                    }
                     break;
+                    
                 case 'R':
-                    mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
-                    mostrarMapa(mapaConRobot);
+                    System.out.println(leyenda);
+                    mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
+                    mostrarMapa(mapa);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -198,8 +213,9 @@ public class RecorridoRobot {
                     direccion = rotarRobot(direccion, instrucciones.charAt(i));
                     break;
                 case 'L':
-                    mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
-                    mostrarMapa(mapaConRobot);
+                    System.out.println(leyenda);
+                    mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
+                    mostrarMapa(mapa);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -211,6 +227,7 @@ public class RecorridoRobot {
                     return esPosible;
             }
         }
+        System.out.println("El robot no llegó a la meta :(");
         return esPosible;
     }
     static String[] mapaBase(){
@@ -225,22 +242,22 @@ public class RecorridoRobot {
     }
 
     public static void main(String[] args) {
-        String[] mapa = mapaBase();
-        System.out.println("Utilizando las letras \"A\", \"L\" y \"R\" escribe una cadena de texto que guíe al rebot de \"A\" hasta \"Z\" evitando las minas (\"*\").");
+        String[] mapa;
+        String instruccioes;
+        boolean victoria;
+        System.out.println("Utilizando las letras \"A\", \"L\" y \"R\" escribe una cadena de texto que guíe al robot de \"A\" hasta \"Z\" evitando las minas (\"*\").");
          System.out.println("El robot comienza orientado hacia arriba.");
         System.out.println("\"A\" para avanzar");
-        System.out.println("\"L\" para rotar izquierda");
-        System.out.println("\"R\" para rotar derecha");
-        mostrarMapa(mapa);
-        System.out.println("Instrucciones:");
-        String instruccioes = pedirInstrucciones();
-        boolean victoria = recorridoRobot(mapa, instruccioes);
+        System.out.println("\"R\" para rotar horario");
+        System.out.println("\"L\" para rotar antihorario");
+        
         do {
-            System.out.println(victoria ? "Felicidades, el robot llegó a la meta!" : "Vuelve a intentarlo:");
-            if (!victoria){
-                instruccioes = pedirInstrucciones();
-                victoria = recorridoRobot(mapa, instruccioes);
-            }
+            mapa = mapaBase();
+            mostrarMapa(mapa);
+            System.out.println("Instrucciones:");
+            instruccioes = pedirInstrucciones();
+            victoria = recorridoRobot(mapa, instruccioes);
         } while (!victoria);
+        System.out.println("Felicidades, el robot llegó a la meta!");
     }
 }
