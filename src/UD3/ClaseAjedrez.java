@@ -297,7 +297,7 @@ public class ClaseAjedrez {
                 // Captura diagonal
                 // Si el peon avanza en diagonal: filaDestino == filaOrigen - 1 && (columnaDestino == columnaOrigen + 1 || columnaDestino == columnaOrigen - 1)
                 // Sí si hay una ficha que capturar: tablero[filaDestino][columnaDestino] != '-'
-                // Ampasant
+                // Ampasant //TODO No funciona
                 // O si el rival movió un peon: getPiezaMovidaPorRival(tablero, historial) == 'p'
                 // Y si hay un peon al lado: columnaDestino > 0 ? (tablero[filaOrigen][columnaDestino -1] == 'p') : (false) || columnaDestino < 7 ? (tablero[filaOrigen][columnaDestino + 1] == 'p') : (false)
                 // Y el movimiento del rival fue avanzar recto el peon de en frente a al lado: (columnaFinalMovAnterior == columnaDestino && filaMovAnterior == filaInicioMovAnterior + 2)
@@ -517,7 +517,7 @@ public class ClaseAjedrez {
             esValido = false;
         } else if (seráJaque(tablero, turnoBlancas, historial, movConFormato)) {//TODO No detecta si mueve otra pieza y queda en jaque (Ya devería funcionar FALTA PROBARLO)
             esValido = false;
-        } else {// TODO el caballo desapareció al peón
+        } else {
             switch (Character.toUpperCase(tablero[filaOrigen][columnaOrigen])) {
                 case 'P':
                     esValido = movimientoPeon(movConFormato, tablero, turnoBlancas, historial);
@@ -776,60 +776,3 @@ Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index -1 ou
         at UD3.ClaseAjedrez.matchEvents(ClaseAjedrez.java:638)
         at UD3.ClaseAjedrez.main(ClaseAjedrez.java:749)
 */
-/*Bug: Peon desaparece cone le movimiento del caballo
-Introduce "fin" para rendirte o el movimiento (formato: e1 e7): b2 b3
-      a b c d e f g h
-   .-------------------.
-8  |  t c a d r a c t  |  8
-7  |  p p p - p p p p  |  7
-6  |  - - - - - - - -  |  6
-5  |  - - - p - - - -  |  5
-4  |  - - - - - - P -  |  4
-3  |  - P - - - - - -  |  3
-2  |  P - P P P P - P  |  2
-1  |  T C A D R A C T  |  1
-   '-------------------'
-      a b c d e f g h
-Turno de NEGRAS (Minusculas)
-Introduce "fin" para rendirte o el movimiento (formato: e1 e7): e7 e5
-      a b c d e f g h
-   .-------------------.
-8  |  t c a d r a c t  |  8
-7  |  p p p - - p p p  |  7
-6  |  - - - - - - - -  |  6
-5  |  - - - p p - - -  |  5
-4  |  - - - - - - P -  |  4
-3  |  - P - - - - - -  |  3
-2  |  P - P P P P - P  |  2
-1  |  T C A D R A C T  |  1
-   '-------------------'
-      a b c d e f g h
-Turno de BLANCAS (Mayusculas)
-Introduce "fin" para rendirte o el movimiento (formato: e1 e7): f1 g2
-      a b c d e f g h
-   .-------------------.
-8  |  t c a d r a c t  |  8
-7  |  p p p - - p p p  |  7
-6  |  - - - - - - - -  |  6
-5  |  - - - p p - - -  |  5
-4  |  - - - - - - P -  |  4
-3  |  - P - - - - - -  |  3
-2  |  P - P P P P A P  |  2
-1  |  T C A D R - C T  |  1
-   '-------------------'
-      a b c d e f g h
-Turno de NEGRAS (Minusculas)
-Introduce "fin" para rendirte o el movimiento (formato: e1 e7): g8 f6
-      a b c d e f g h
-   .-------------------.
-8  |  t c a d r a - t  |  8
-7  |  p p p - - - p p  |  7
-6  |  - - - - - c - -  |  6
-5  |  - - - p p - - -  |  5
-4  |  - - - - - - P -  |  4
-3  |  - P - - - - - -  |  3
-2  |  P - P P P P A P  |  2
-1  |  T C A D R - C T  |  1
-   '-------------------'
-      a b c d e f g h
- */
