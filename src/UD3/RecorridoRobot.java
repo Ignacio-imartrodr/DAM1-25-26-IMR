@@ -4,7 +4,14 @@ import java.util.Scanner;
 
 public class RecorridoRobot {
     static Scanner sc = new Scanner(System.in);
-
+    static void mostrarMapa(String[] mapa){
+        for (int i = 0; i < mapa.length; i++) {
+            System.out.print("|");
+            System.out.print(mapa[i]);
+            System.out.println("|");
+        }
+        System.out.println();
+    }
     static String pedirInstrucciones() {
         String instrucciones;
         try {
@@ -58,9 +65,8 @@ public class RecorridoRobot {
         return direccion;
     }
     static String[] actualizarMapaConRobot(String[] mapa, int[] posRobot, int direccion, char instruccion){
-        mapa[posRobot[0]] = "";
+        // 1 ^    2 >    3 v    4 <   -1 Error
         String[] aux = new String[2];
-
         switch (instruccion) {
             case 'A':
                 switch (direccion) {
@@ -93,13 +99,13 @@ public class RecorridoRobot {
             case 'R':
                 switch (direccion) {
                     case 1:
-                        mapa[posRobot[0]+1] = mapa[posRobot[0]+1].replace("^",">");
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("^",">");
                         break;
                     case 2:
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace(">","v");
                         break;
                     case 3:
-                        mapa[posRobot[0]-1] = mapa[posRobot[0]-1].replace("v","<");
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("v","<");
                         break;
                     case 4:
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("<","^");
@@ -109,13 +115,13 @@ public class RecorridoRobot {
             case 'L':
                 switch (direccion) {
                     case 1:
-                        mapa[posRobot[0]+1] = mapa[posRobot[0]+1].replace("^","<");
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("^","<");
                         break;
                     case 2:
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace(">","^");
                         break;
                     case 3:
-                        mapa[posRobot[0]-1] = mapa[posRobot[0]-1].replace("v",">");
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("v",">");
                         break;
                     case 4:
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("<","v");
@@ -123,12 +129,11 @@ public class RecorridoRobot {
                 }
                 break;
         }
-        
         return mapa;
     }
     static int[] avanzarRobot(String[] mapa, int[] posRobot, int direccion){
 
-        if (posRobot[0] < mapa.length -1 && posRobot[0] > 0 && posRobot[1] < mapa[posRobot[0]].length() -1 && posRobot[1] > 0) {
+        if (posRobot[0] < mapa.length && posRobot[0] >= 0 && posRobot[1] < mapa[posRobot[0]].length() && posRobot[1] >= 0) {
             switch (direccion) {
                 case 1:
                     posRobot[0]--;
@@ -155,43 +160,37 @@ public class RecorridoRobot {
         final char SALIDA = 'A';
         final char FINAL = 'Z';
         final char MINA = '*';
-        int direccion = 1;        
+        int direccion = 1; // 1 ^    2 >    3 v    4 <   -1 Error
         int[] posRobot = posicionEnMapa(mapa, SALIDA);
         int[] posFin = posicionEnMapa(mapa, FINAL);
         final int[] FUERA_LIMITE = new int[]{-1,-1};
         for (int i = 0; i < instrucciones.length(); i++) {
             switch (instrucciones.charAt(i)) {
                 case 'A':
+                    System.out.println(instrucciones.charAt(i).toLowerCase());
                     posRobot = avanzarRobot(mapa, posRobot, direccion);
-                    if(mapa[posRobot[0]].charAt(posRobot[1]) == MINA){
-                        System.out.println("El robot explotó con una mina :(");
-                        return esPosible;
-                    } else if(posRobot == posFin) {
-                        esPosible = true;
-                    } else if(posRobot == FUERA_LIMITE){
+                    if (posRobot[0] == FUERA_LIMITE[0] || posRobot[1] == FUERA_LIMITE[1]){
                         System.out.println("El robot se cayó del mapa :(");
+                        return esPosible;
+                    } else if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1]) {
+                        esPosible = true;
+                    } else if (mapa[posRobot[0]].charAt(posRobot[1]) == MINA){
+                        System.out.println("El robot explotó con una mina :(");
                         return esPosible;
                     }
                     mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
+                    mostrarMapa(mapaConRobot);
                     try {
-                        for (int j = 0; j < mapaConRobot.length; j++) {
-                            System.out.print("|");
-                            System.out.print(mapaConRobot[j]);
-                            System.out.println("|");
-                    }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         System.out.println("Error en la pausa");
                     }
+                    System.out.println();
                     break;
                 case 'R':
                     mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
+                    mostrarMapa(mapaConRobot);
                     try {
-                        for (int j = 0; j < mapaConRobot.length; j++) {
-                            System.out.print("|");
-                            System.out.print(mapaConRobot[j]);
-                            System.out.println("|");
-                        }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         System.out.println("Error en la pausa");
@@ -200,12 +199,8 @@ public class RecorridoRobot {
                     break;
                 case 'L':
                     mapaConRobot = actualizarMapaConRobot(mapa, posRobot, direccion, instrucciones.charAt(i));
+                    mostrarMapa(mapaConRobot);
                     try {
-                        for (int j = 0; j < mapaConRobot.length; j++) {
-                            System.out.print("|");
-                            System.out.print(mapaConRobot[j]);
-                            System.out.println("|");
-                        }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         System.out.println("Error en la pausa");
@@ -236,16 +231,12 @@ public class RecorridoRobot {
         System.out.println("\"A\" para avanzar");
         System.out.println("\"L\" para rotar izquierda");
         System.out.println("\"R\" para rotar derecha");
-        for (int i = 0; i < mapa.length; i++) {
-            System.out.print("|");
-            System.out.print(mapa[i]);
-            System.out.println("|");
-        }
+        mostrarMapa(mapa);
         System.out.println("Instrucciones:");
         String instruccioes = pedirInstrucciones();
         boolean victoria = recorridoRobot(mapa, instruccioes);
         do {
-            System.out.println(victoria ? "Felicidades, el robot llegó a la meta!" : "Vuelve a intentarlo");
+            System.out.println(victoria ? "Felicidades, el robot llegó a la meta!" : "Vuelve a intentarlo:");
             if (!victoria){
                 instruccioes = pedirInstrucciones();
                 victoria = recorridoRobot(mapa, instruccioes);
