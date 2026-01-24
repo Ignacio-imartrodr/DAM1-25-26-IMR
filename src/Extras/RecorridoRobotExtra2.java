@@ -248,7 +248,7 @@ public class RecorridoRobotExtra2 {
                     if (posRobot[0] == FUERA_LIMITE[0] || posRobot[1] == FUERA_LIMITE[1]){
                         System.out.println("El robot se cayó del mapa :(");
                         return esPosible;
-                    } else if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1] && i == instrucciones.length()-1){
+                    } else if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1] && i == instrucciones.length()-1 && placasOn == placasTotal){
                         System.out.println(leyenda);
                         mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
                         mostrarMapa(mapa);
@@ -268,7 +268,7 @@ public class RecorridoRobotExtra2 {
                     break;
                     
                 case 'R':
-                    if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1] && i == instrucciones.length()-1){
+                    if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1] && i == instrucciones.length()-1 && placasOn == placasTotal){
                         System.out.println(leyenda);
                         mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
                         mostrarMapa(mapa);
@@ -286,7 +286,7 @@ public class RecorridoRobotExtra2 {
                     direccion = rotarRobot(direccion, instrucciones.charAt(i));
                     break;
                 case 'L':
-                    if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1] && i == instrucciones.length()-1){
+                    if(posRobot[0] == posFin[0] && posRobot[1] == posFin[1] && i == instrucciones.length()-1 && placasOn == placasTotal){
                         System.out.println(leyenda);
                         mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
                         mostrarMapa(mapa);
