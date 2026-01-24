@@ -66,10 +66,10 @@ public class RecorridoRobot {
         }
         return direccion;
     }
-    static String[] actualizarMapa(String[] mapa, int[] posRobot, int direccion, char instruccion, int[] posFin){
+    static String[] actualizarMapa(String[] mapa, int[] posRobot, int direccion, char instruccion, int[] posFinOrIni){
         // 1 ^    2 >    3 v    4 <   -1 Error
         String[] aux = new String[2];
-        boolean enMeta = (posRobot[0] == posFin[0] && posRobot[1] == posFin[1]);
+        boolean enMeta = (posRobot[0] == posFinOrIni[0] && posRobot[1] == posFinOrIni[1]);
         switch (instruccion) {
             case 'A':
                 switch (direccion) {
@@ -104,24 +104,28 @@ public class RecorridoRobot {
                     case 1:
                         if(enMeta){
                             mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z",">"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A",">"); 
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("^",">");
                         break;
                     case 2:
                         if(enMeta){
-                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","v"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","v");
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A","v"); 
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace(">","v");
                         break;
                     case 3:
                         if(enMeta){
                             mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","<"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A","<"); 
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("v","<");
                         break;
                     case 4:
                         if(enMeta){
                             mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","^"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A","^");
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("<","^");
                         break;
@@ -131,25 +135,30 @@ public class RecorridoRobot {
                 switch (direccion) {
                     case 1:
                         if(enMeta){
-                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","<"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","<");
+                            
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A","<"); 
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("^","<");
                         break;
                     case 2:
                         if(enMeta){
                             mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","^"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A","^"); 
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace(">","^");
                         break;
                     case 3:
                         if(enMeta){
                             mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z",">"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A",">");
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("v",">");
                         break;
                     case 4:
                         if(enMeta){
-                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","v"); 
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("Z","v");
+                            mapa[posRobot[0]] = mapa[posRobot[0]].replace("A","v"); 
                         }
                         mapa[posRobot[0]] = mapa[posRobot[0]].replace("<","v");
                         break;
@@ -160,6 +169,11 @@ public class RecorridoRobot {
                 aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
                 aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
                 mapa[posRobot[0]] = aux[0]+"Z"+aux[1];
+                break;
+            case 'I':
+                aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
+                aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
+                mapa[posRobot[0]] = aux[0]+"A"+aux[1];
                 break;
         }
         return mapa;
@@ -184,6 +198,9 @@ public class RecorridoRobot {
         } else {
             posRobot = new int[] {-1, -1};
         }
+        if (posRobot[0] == mapa.length || posRobot[1] == mapa[0].length() || posRobot[0] < 0 || posRobot[1] < 0) {
+            posRobot = new int[] {-1, -1};
+        }
         return posRobot;
     }
 
@@ -194,7 +211,8 @@ public class RecorridoRobot {
         final char FINAL = 'Z';
         final char MINA = '*';
         int direccion = 1; // 1 ^    2 >    3 v    4 <   -1 Error
-        int[] posRobot = posicionEnMapa(mapa, SALIDA);
+        int[] posInicial = posicionEnMapa(mapa, SALIDA);
+        int[] posRobot = new int[] {posInicial[0], posInicial[1]};
         int[] posFin = posicionEnMapa(mapa, FINAL);
         final int[] FUERA_LIMITE = new int[]{-1,-1};
         for (int i = 0; i < instrucciones.length(); i++) {
@@ -203,6 +221,8 @@ public class RecorridoRobot {
                 case 'A':
                     if (posRobot[0] == posFin[0] && posRobot[1] == posFin[1]) {
                         mapa = actualizarMapa(mapa, posRobot, direccion, FINAL, posFin);
+                    } else if(posRobot[0] == posInicial[0] && posRobot[1] == posInicial[1]){
+                        mapa = actualizarMapa(mapa, posRobot, direccion, 'I', posInicial);
                     }
                     posRobot = avanzarRobot(mapa, posRobot, direccion);
                     if (posRobot[0] == FUERA_LIMITE[0] || posRobot[1] == FUERA_LIMITE[1]){
@@ -236,6 +256,7 @@ public class RecorridoRobot {
                     }
                     System.out.println(leyenda);
                     mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
+                    mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posInicial);
                     mostrarMapa(mapa);
                     try {
                         Thread.sleep(1000);
@@ -253,6 +274,7 @@ public class RecorridoRobot {
                     }
                     System.out.println(leyenda);
                     mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posFin);
+                    mapa = actualizarMapa(mapa, posRobot, direccion, instrucciones.charAt(i), posInicial);
                     mostrarMapa(mapa);
                     try {
                         Thread.sleep(1000);
@@ -269,7 +291,7 @@ public class RecorridoRobot {
         return esPosible;
     }
     static String[] mapaBase(){
-        String[] mapa = new String[] {
+        String[] mapa = new String[] { //linea de prueba: araaaaalaaalaaaa
                 "  Z       ",
                 " *        ",
                 "  *  *    ",
