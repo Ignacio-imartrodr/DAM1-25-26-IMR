@@ -83,7 +83,7 @@ public class RecorridoRobotExtra {
     static String[] copiarMapa(String[] mapaACopiar){
         String[] mapaCopia = new String[mapaACopiar.length];
         for (int i = 0; i < mapaACopiar.length; i++) {
-            mapaCopia[i] = mapaACopiar[i];
+            mapaCopia[i] = new String(mapaACopiar[i]);
         }
         return mapaCopia;
     }
