@@ -18,7 +18,7 @@ public class RecorridoRobotExtra2 {
     static String pedirInstrucciones() {
         String instrucciones;
         try {
-            instrucciones = sc.nextLine().strip().replace(" ", "").toUpperCase();
+            instrucciones = sc.nextLine().strip().replace(".", "").toUpperCase();
             for (int i = 0; i < instrucciones.length(); i++) {
                 if (instrucciones.charAt(i) != 'A' && instrucciones.charAt(i) != 'L' && instrucciones.charAt(i) != 'R') {
                     System.out.println("Instrucciones invalidas, vuelve a intentarlo:");
@@ -102,25 +102,25 @@ public class RecorridoRobotExtra2 {
             case 'A':
                 switch (direccion) {
                     case 1:
-                        mapa[posRobot[0]+1] = mapa[posRobot[0]+1].replace("^"," ");
+                        mapa[posRobot[0]+1] = mapa[posRobot[0]+1].replace("^",".");
                         aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
                         aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
                         mapa[posRobot[0]] = aux[0]+"^"+aux[1];
                         break;
                     case 2:
-                        mapa[posRobot[0]] = mapa[posRobot[0]].replace(">"," ");
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace(">",".");
                         aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
                         aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
                         mapa[posRobot[0]] = aux[0]+">"+aux[1];
                         break;
                     case 3:
-                        mapa[posRobot[0]-1] = mapa[posRobot[0]-1].replace("v"," ");
+                        mapa[posRobot[0]-1] = mapa[posRobot[0]-1].replace("v",".");
                         aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
                         aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
                         mapa[posRobot[0]] = aux[0]+"v"+aux[1];
                         break;
                     case 4:
-                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("<"," ");
+                        mapa[posRobot[0]] = mapa[posRobot[0]].replace("<",".");
                         aux[0] = mapa[posRobot[0]].substring(0, posRobot[1]);
                         aux[1] = mapa[posRobot[0]].substring(posRobot[1]+1, mapa[posRobot[0]].length());
                         mapa[posRobot[0]] = aux[0]+"<"+aux[1];
@@ -399,31 +399,31 @@ public class RecorridoRobotExtra2 {
         switch (lvl) {
             case 0:
                 mapa = new String[] { //linea de prueba: araaaaalaaalaaaa
-                    "  Z -     ",
-                    " *        ",
-                    "  *  *    ",
-                    "      -   ",
-                    " A        "
+                    "..Z.-.....",
+                    ".*........",
+                    "..*..*....",
+                    "......-...",
+                    ".A........"
                 };
                 break;
             case 1:
                 mapa = new String[] { //linea de prueba: aaraaaaaaalalaaaaararalaaraaaaaaa
-                    "     -    Z   ",
-                    "  *     *     ",
-                    "      *       ",
-                    "  -       *   ",
-                    "       -      ",
-                    " *            ",
-                    "A             "
+                    ".....-....Z...",
+                    "..*.....*.....",
+                    "......*.......",
+                    "..-.......*...",
+                    ".......-......",
+                    ".*............",
+                    "A............."
                 };
                 break;
             default:
                 mapa = new String[] { //linea de prueba: aaaaara
-                    "  Z       ",
-                    "          ",
-                    "          ",
-                    "          ",
-                    " A        "
+                    "..Z.......",
+                    "..........",
+                    "..........",
+                    "..........",
+                    ".A........"
                 };
                 break;
         }
