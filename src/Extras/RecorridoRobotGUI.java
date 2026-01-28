@@ -143,6 +143,7 @@ class GamePanel extends JPanel implements ActionListener {
     }
 
     private void startExecution() {
+        loadLevel(level);
         String text = inputField.getText().toUpperCase().replace(" ", "");
         if (text.isEmpty()) return;
         
