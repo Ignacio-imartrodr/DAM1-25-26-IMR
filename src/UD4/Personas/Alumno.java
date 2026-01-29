@@ -12,11 +12,23 @@ public class Alumno {
     int notaContornos;
     
     static Scanner sc = new Scanner(System.in);
-    static void pedirNombreCompleto(String nombre, String apellido1, String apellido2){
-        System.out.println("Nombre: ");
-
+    public static void pedirNombreCompleto(String nombre, String apellido1, String apellido2, LocalDate fechaNacimiento){
+        System.out.print("Nombre: ");
+        pedirPorTeclado(nombre);
+        System.out.print("Primer apellido: ");
+        pedirPorTeclado(apellido1);
+        System.out.print("Segundo apellido: ");
+        pedirPorTeclado(apellido2);
+        System.out.print("Fecha de nacimiento (dd/mm/aaaa): ");
+        pedirPorTeclado(fechaNacimiento);
     }
-    static void pedirPorTeclado(String var){
+    public static void pedirNotas(int notaProg, int notaContornos){
+        System.out.print("Nota de Programación: ");
+        pedirPorTeclado(notaProg);
+        System.out.print("Nota de Contornos: ");
+        pedirPorTeclado(notaContornos);
+    }
+    private static void pedirPorTeclado(String var){
         try {
             var = sc.nextLine();
         } catch (Exception e) {
@@ -25,7 +37,7 @@ public class Alumno {
             pedirPorTeclado(var);
         }
     }
-    static void pedirPorTeclado(int var){
+    private static void pedirPorTeclado(int var){
         try {
             var = sc.nextInt();
         } catch (Exception e) {
@@ -34,10 +46,9 @@ public class Alumno {
             pedirPorTeclado(var);
         }
     }
-    static void pedirPorTeclado(LocalDate var){
-        CharSequence text;
+    private static void pedirPorTeclado(LocalDate var){
         try {
-            text = sc.nextLine();
+            //TODO Pedir fecha
         } catch (Exception e) {
             sc.nextLine();
             System.out.println("Error, vuelve a intentar");
