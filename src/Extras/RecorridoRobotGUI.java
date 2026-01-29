@@ -17,7 +17,7 @@ public class RecorridoRobotGUI extends JFrame {
         this.setResizable(false);
         
         // Agregamos el panel del juego
-        GamePanel panel = new GamePanel();
+        PanelDeJuego panel = new PanelDeJuego();
         this.add(panel);
         
         this.pack(); // Ajusta la ventana al tamaño del panel
