@@ -49,10 +49,13 @@ public class Repetidos {
         return respuesta;
     }
     static void invertirArray(int[] array) {
-        for (int i = 0, aux, j = array.length - 1;  i < array.length/2; i++, j--) {
+        int j = array.length-1;
+        int aux;
+        for (int i = 0; i < array.length/2; i++) {
             aux = array[i];
             array[i] = array[j];
             array[j] = aux;
+            j--;
         }   
     }
 }

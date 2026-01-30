@@ -8,51 +8,66 @@ public class Alumno {
     String apellido1;
     String apellido2;
     LocalDate fechaNacimiento;
-    int notaProg;
-    int notaContornos;
+    double notaProg;
+    double notaContornos;
     
-    static Scanner sc = new Scanner(System.in);
-    public static void pedirNombreCompleto(String nombre, String apellido1, String apellido2, LocalDate fechaNacimiento){
+    private static Scanner sc = new Scanner(System.in);
+    public void pedirNombreCompleto(){
         System.out.print("Nombre: ");
-        pedirPorTeclado(nombre);
+        nombre = pedirPorTeclado();
         System.out.print("Primer apellido: ");
-        pedirPorTeclado(apellido1);
+        apellido1 = pedirPorTeclado();
         System.out.print("Segundo apellido: ");
-        pedirPorTeclado(apellido2);
-        System.out.print("Fecha de nacimiento (dd/mm/aaaa): ");
-        pedirPorTeclado(fechaNacimiento);
+        apellido2 = pedirPorTeclado();
+        /*System.out.print("Fecha de nacimiento (dd/mm/aaaa): ");
+        fechaNacimiento = pedirPorTeclado();*/ //TODO combretir de string a LocalDate
     }
-    public static void pedirNotas(int notaProg, int notaContornos){
+    public void pedirNotas(){
         System.out.print("Nota de Programación: ");
-        pedirPorTeclado(notaProg);
+        notaProg = Double.parseDouble(pedirPorTeclado());
         System.out.print("Nota de Contornos: ");
-        pedirPorTeclado(notaContornos);
+        notaContornos = Double.parseDouble(pedirPorTeclado());
     }
-    private static void pedirPorTeclado(String var){
+    private String pedirPorTeclado(){
+        String var;
         try {
             var = sc.nextLine();
         } catch (Exception e) {
             sc.nextLine();
             System.out.println("Error, vuelve a intentar");
-            pedirPorTeclado(var);
+            return pedirPorTeclado();
         }
+        return var;
     }
-    private static void pedirPorTeclado(int var){
-        try {
-            var = sc.nextInt();
-        } catch (Exception e) {
-            sc.nextLine();
-            System.out.println("Error, vuelve a intentar");
-            pedirPorTeclado(var);
+
+    String getUsername(){
+        String username = "";
+        String nom;
+        String apell1;
+        String apell2;
+        nom = nombre.substring(0, 1);
+        apell1 = apellido1.split(" ")[0];
+        apell2 = apellido2.split(" ")[0];
+        if (apell1.length() > 4){
+            apell1 = apell1.substring(0, 5);
         }
+        if (apell2.length() > 4){
+            apell2 = apell2.substring(0, 5);
+        }
+        username = (nom + apell1 + apell2).toLowerCase();
+        String charInvalidos = "áéíóúüñ";
+        String charValidos = "aeiouun";
+        
+        for (int i = 0; i < username.length(); i++) {
+            for (int j = 0; j < charInvalidos.length(); j++) {
+                username = username.replace(charInvalidos.charAt(j), charValidos.charAt(j));
+            }
+        }
+        return username;
     }
-    private static void pedirPorTeclado(LocalDate var){
-        try {
-            //TODO Pedir fecha
-        } catch (Exception e) {
-            sc.nextLine();
-            System.out.println("Error, vuelve a intentar");
-            pedirPorTeclado(var);
-        }
+    public static void main(String[] args) {
+        Alumno alumno = new Alumno();
+        alumno.pedirNombreCompleto();
+        System.out.println("Nombre de usuario: " + alumno.getUsername());
     }
 }
