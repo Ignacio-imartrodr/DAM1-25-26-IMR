@@ -11,48 +11,42 @@ public class Alumno {
     LocalDate fechaNacimiento;
     double notaProg;
     double notaContornos;
-    
-    private static Scanner sc = new Scanner(System.in,"Windows-1252");
+    Persona personaAlumno = new Persona();
+
+    private static Scanner sc = new Scanner(System.in);
+    public void pedirAtributos(){
+        pedirNombreCompleto();
+        pedirFechaNacimiento();
+        pedirNotas();
+    }
     public void pedirNombreCompleto(){
-        System.out.print("Nombre: ");
-        nombre = pedirPorTeclado();
-        System.out.print("Primer apellido: ");
-        apellido1 = pedirPorTeclado();
-        System.out.print("Segundo apellido: ");
-        apellido2 = pedirPorTeclado();
-        System.out.print("Fecha de nacimiento (dd/mm/aaaa): ");
-        fechaNacimiento = pedirFecha();
+        personaAlumno.pedirNombreCompleto();
+        nombre = personaAlumno.nombre;
+        apellido1 = personaAlumno.apellido1;
+        apellido2 = personaAlumno.apellido2;
+    }
+    public void pedirFechaNacimiento(){
+        personaAlumno.pedirFechaNacimiento();
+        fechaNacimiento = personaAlumno.fechaNacimiento;
     }
     public void pedirNotas(){
         System.out.print("Nota de Programación: ");
-        notaProg = Double.parseDouble(pedirPorTeclado());
+        notaProg = pedirNum();
         System.out.print("Nota de Contornos: ");
-        notaContornos = Double.parseDouble(pedirPorTeclado());
+        notaContornos = pedirNum();
     }
-    private String pedirPorTeclado(){
-        String var;
+    private Double pedirNum(){
+        Double var;
         try {
-            var = sc.nextLine();
+            var = sc.nextDouble();
         } catch (Exception e) {
             sc.nextLine();
-            System.out.println("Formato erróneo, vuelve a intentar");
-            return pedirPorTeclado();
+            System.out.println("Introduce números con \",\" como separador");
+            System.out.print("Vuelve a intentar: ");
+            return pedirNum();
         }
         return var;
     }
-    private LocalDate pedirFecha(){
-        LocalDate var;
-        try {
-            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            var = LocalDate.parse(pedirPorTeclado(), formato);
-        } catch (Exception e) {
-            sc.nextLine();
-            System.out.println("Error, vuelve a intentar");
-            return pedirFecha();
-        }
-        return var;
-    }
-
     String getUsername(){
         String username = "";
         String nom;
@@ -82,9 +76,29 @@ public class Alumno {
         }
         return username;
     }
+    public String getFicha(){
+        /*
+        Ficha Alumno/a
+        ===============
+        "Usuario: " + getUsername()
+        "Nombre: " + this.nombre
+        "Apellidos: " apellido1 + apellido2 
+        "Nota media: " + String.valueOf((notaProg*notaContornos)/2)
+        "Fecha de nacimiento: " + 
+        */
+        
+        String Cabecera = "Ficha Alumno/a\n=================\n";
+        String usuario = "Usuario: " + getUsername();
+        String nombre = "Nombre: " + this.nombre;
+        String apellidos = String.format("Apellidos: %s %s", apellido1, apellido2);
+        String media = String.format("Nota media: %.2f", (notaProg+notaContornos)/2);
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String nacimiento = "Fecha de nacimiento: " + fechaNacimiento.format(formato);
+        return String.format("%s%s%n%s%n%s%n%s%n%s", Cabecera, usuario, nombre, apellidos, media, nacimiento);
+    }
     public static void main(String[] args) {
         Alumno alumno = new Alumno();
-        alumno.pedirNombreCompleto();
-        System.out.println("Nombre de usuario: " + alumno.getUsername());
+        alumno.pedirAtributos();
+        System.out.println(alumno.getFicha());
     }
 }
