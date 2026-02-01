@@ -1,4 +1,4 @@
-package UD4.Personas;
+package UD4.Instituto.Personas;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
