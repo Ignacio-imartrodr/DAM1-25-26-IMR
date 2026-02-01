@@ -2,6 +2,7 @@ package UD4.Instituto.Personas;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 import UD4.Instituto.Modulos.Modulo;
 
@@ -12,7 +13,7 @@ public class Profesor {
     public String nombreCompleto = apellido1 + " " + apellido2 + ", " + nombre;
     public int id;
     public LocalDate fechaNacimiento;
-    public Modulo moduloImpartido;
+    public Modulo[] modulosImpartibles = new Modulo[0];
     private Persona personaAlumno = new Persona();
 
     public void pedirAtributos(){
@@ -28,6 +29,10 @@ public class Profesor {
     public void pedirFechaNacimiento(){
         personaAlumno.pedirFechaNacimiento();
         fechaNacimiento = personaAlumno.fechaNacimiento;
+    }
+    public void asignarModuloImpartido(Modulo modulo){
+        modulosImpartibles = Arrays.copyOf(modulosImpartibles, modulosImpartibles.length + 1);
+        modulosImpartibles[modulosImpartibles.length - 1] = modulo;
     }
     String getUsername(){
         String username = "";
@@ -76,12 +81,21 @@ public class Profesor {
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String nacimiento = "Fecha de nacimiento: " + fechaNacimiento.format(formato);
         String edad = "Edad: " + numEdad;
+        String modulosStr = "\nModulos impartibles:";
 
         if (fechaNacimiento == null) {
-            ficha = String.format("%s%s%n%s%n%s", Cabecera, usuario, nombre, apellidos);
+            ficha = String.format("%s%s%n%s%n%s%n", Cabecera, usuario, nombre, apellidos);
         } else {
-            ficha = String.format("%s%s%n%s%n%s%n%s%n%s", Cabecera, usuario, nombre, apellidos, nacimiento, edad);
+            ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n", Cabecera, usuario, nombre, apellidos, nacimiento, edad);
         }
+        for (int i = 0; i < modulosImpartibles.length; i++) {
+            modulosStr +=  String.format(" %s", modulosImpartibles[i].nombre);
+            if (i != modulosImpartibles.length-1) {
+                modulosStr += ",";
+            }
+        }
+        ficha += modulosStr;
+
         return ficha;
     }
 }

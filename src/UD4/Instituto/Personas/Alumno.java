@@ -30,7 +30,7 @@ public class Alumno {
         int posicion = -1;
         boolean encontrado = false;
         for (int i = 0; i < modulosMatriculado.length && !encontrado; i++) {
-            if (id == modulo.alumnadoMatriculado[i].id){
+            if (id == modulo.alumnosMatriculados[i].id){
                 encontrado = true;
                 posicion = i;
             }

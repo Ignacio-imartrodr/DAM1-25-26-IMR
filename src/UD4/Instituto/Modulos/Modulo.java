@@ -4,20 +4,23 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import UD4.Instituto.Personas.Alumno;
+import UD4.Instituto.Personas.Profesor;
 
 public class Modulo {
-    public Alumno[] alumnadoMatriculado;
+    public Alumno[] alumnosMatriculados;
+    public Profesor[] ProfesoresImpartiendo; 
     public int horas;
     public String nombre;
     public double[] notas;
+    
     public void mostrar() {
         System.out.println("Modulo: " + nombre);
         System.out.println("=========================");
         System.out.println("Horas: " + horas);
-        System.out.println("Cantidad de alumnado matriculado: " + alumnadoMatriculado.length);
+        System.out.println("Cantidad de alumnado matriculado: " + alumnosMatriculados.length);
     }
     public void mostrarAlumnado(){
-        for (Alumno alumno : alumnadoMatriculado) {
+        for (Alumno alumno : alumnosMatriculados) {
             System.out.println(alumno.getFicha());
             System.out.println("____________________");
         }
@@ -25,9 +28,9 @@ public class Modulo {
     
     private static Scanner sc = new Scanner(System.in,"Windows-1252");
     public void asignarNotasAAlumnos(){
-        notas = new double[alumnadoMatriculado.length];
+        notas = new double[alumnosMatriculados.length];
         int i = 0;
-        for (Alumno alumno : alumnadoMatriculado) {
+        for (Alumno alumno : alumnosMatriculados) {
             System.out.print("Nota de " + alumno.nombreCompleto + " con id \"" + alumno.id + ": ");
             notas[i] = Double.parseDouble(pedirPorTeclado(true));
             alumno.asignarNotaAAlumno(notas[i]);
@@ -48,11 +51,33 @@ public class Modulo {
         System.out.print("Horas: ");
         horas = Integer.parseInt(pedirPorTeclado(true));
     }
+    public void pedirProfesores(){
+        final String TERMINAR = "fin";
+        int id = 0;
+        boolean terminado = false;
+        ProfesoresImpartiendo = new Profesor[0];
+        Profesor newProfesor;
+        while (!terminado) {
+            newProfesor = new Profesor();
+            System.out.println("Responde \"fin\" para terminar el listado");
+            newProfesor.pedirNombreCompleto();
+            if (!(newProfesor.nombre.equalsIgnoreCase(TERMINAR) || newProfesor.apellido1.equalsIgnoreCase(TERMINAR)|| newProfesor.apellido2.equalsIgnoreCase(TERMINAR))) {
+                newProfesor.pedirFechaNacimiento();
+                newProfesor.id = id;
+                newProfesor.asignarModuloImpartido(this);
+                ProfesoresImpartiendo = Arrays.copyOf(ProfesoresImpartiendo, ProfesoresImpartiendo.length + 1);
+                ProfesoresImpartiendo[ProfesoresImpartiendo.length - 1] = newProfesor;
+                id++;
+            } else {
+                terminado = true;
+            }
+        }
+    }
     public void pedirAlumnado(){
         final String TERMINAR = "fin";
         int id = 0;
         boolean terminado = false;
-        alumnadoMatriculado = new Alumno[0];
+        alumnosMatriculados = new Alumno[0];
         Alumno newAlumno;
         while (!terminado) {
             newAlumno = new Alumno();
@@ -62,8 +87,8 @@ public class Modulo {
                 newAlumno.pedirFechaNacimiento();
                 newAlumno.id = id;
                 newAlumno.asignarModuloAAlumno(this);
-                alumnadoMatriculado = Arrays.copyOf(alumnadoMatriculado, alumnadoMatriculado.length + 1);
-                alumnadoMatriculado[alumnadoMatriculado.length - 1] = newAlumno;
+                alumnosMatriculados = Arrays.copyOf(alumnosMatriculados, alumnosMatriculados.length + 1);
+                alumnosMatriculados[alumnosMatriculados.length - 1] = newAlumno;
                 id++;
             } else {
                 terminado = true;
@@ -108,6 +133,7 @@ public class Modulo {
             return pedirPorTeclado(pideNumero);
         }
     }
+    
     public static void main(String[] args) {
         boolean parar = false;
         final String TERMINAR = "fin";
