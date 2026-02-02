@@ -7,32 +7,41 @@ import java.util.Arrays;
 import UD4.Instituto.Modulos.Modulo;
 
 public class Profesor {
-    public String nombre;
-    public String apellido1;
-    public String apellido2;
+    public static Profesor[] darArrayProfesoresDeCSV(String rutaCSV){
+        Persona[] personasCSV = Persona.darArrayPersonasDeCSV(rutaCSV);
+        Profesor[] profesores = new Profesor[personasCSV.length];
+        int i = 0;
+        for (Profesor profesor : profesores) {
+            profesor.personaProfesor = personasCSV[i];
+            profesor.id = i;
+            profesores[i] = profesor;
+            i++;
+        }
+        return profesores;
+    }
+
+    private Persona personaProfesor = new Persona();
+    public String nombre = personaProfesor.nombre;
+    public String apellido1 = personaProfesor.apellido1;
+    public String apellido2 = personaProfesor.apellido2;
     public String nombreCompleto = apellido1 + " " + apellido2 + ", " + nombre;
     public int id;
-    public LocalDate fechaNacimiento;
-    public Modulo[] modulosImpartibles = new Modulo[0];
-    private Persona personaAlumno = new Persona();
+    public LocalDate fechaNacimiento = personaProfesor.fechaNacimiento;
+    public Modulo[] modulosImpartidos = new Modulo[0];
 
     public void pedirAtributos(){
         pedirNombreCompleto();
         pedirFechaNacimiento();
     }
     public void pedirNombreCompleto(){
-        personaAlumno.pedirNombreCompleto();
-        nombre = personaAlumno.nombre;
-        apellido1 = personaAlumno.apellido1;
-        apellido2 = personaAlumno.apellido2;
+        personaProfesor.pedirNombreCompleto();
     }
     public void pedirFechaNacimiento(){
-        personaAlumno.pedirFechaNacimiento();
-        fechaNacimiento = personaAlumno.fechaNacimiento;
+        personaProfesor.pedirFechaNacimiento();
     }
     public void asignarModuloImpartido(Modulo modulo){
-        modulosImpartibles = Arrays.copyOf(modulosImpartibles, modulosImpartibles.length + 1);
-        modulosImpartibles[modulosImpartibles.length - 1] = modulo;
+        modulosImpartidos = Arrays.copyOf(modulosImpartidos, modulosImpartidos.length + 1);
+        modulosImpartidos[modulosImpartidos.length - 1] = modulo;
     }
     String getUsername(){
         String username = "";
@@ -88,9 +97,9 @@ public class Profesor {
         } else {
             ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n", Cabecera, usuario, nombre, apellidos, nacimiento, edad);
         }
-        for (int i = 0; i < modulosImpartibles.length; i++) {
-            modulosStr +=  String.format(" %s", modulosImpartibles[i].nombre);
-            if (i != modulosImpartibles.length-1) {
+        for (int i = 0; i < modulosImpartidos.length; i++) {
+            modulosStr +=  String.format(" %s", modulosImpartidos[i].nombre);
+            if (i != modulosImpartidos.length-1) {
                 modulosStr += ",";
             }
         }

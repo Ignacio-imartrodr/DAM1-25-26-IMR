@@ -7,16 +7,29 @@ import java.util.Arrays;
 import UD4.Instituto.Modulos.Modulo;
 
 public class Alumno {
-    public String nombre;
-    public String apellido1;
-    public String apellido2;
+    public static Alumno[] darArrayAlumnosDeCSV(String rutaCSV){
+        Persona[] personasCSV = Persona.darArrayPersonasDeCSV(rutaCSV);
+        Alumno[] alumnos = new Alumno[personasCSV.length];
+        int i = 0;
+        for (Alumno alumno : alumnos) {
+            alumno.personaAlumno = personasCSV[i];
+            alumno.id = i;
+            alumnos[i] = alumno;
+            i++;
+        }
+        return alumnos;
+    }
+
+    private Persona personaAlumno = new Persona();
+    public String nombre = personaAlumno.nombre;
+    public String apellido1 = personaAlumno.apellido1;
+    public String apellido2 = personaAlumno.apellido2;
     public String nombreCompleto = apellido1 + " " + apellido2 + ", " + nombre;
     public int id;
-    public LocalDate fechaNacimiento;
+    public LocalDate fechaNacimiento = personaAlumno.fechaNacimiento;
     public Modulo[] modulosMatriculado = new Modulo[0];
     public double[] notasModulos = new double[0];
     public double mediaGeneral = getNotaMedia();
-    private Persona personaAlumno = new Persona();
 
     public void asignarModuloAAlumno(Modulo modulo){
         modulosMatriculado = Arrays.copyOf(modulosMatriculado, modulosMatriculado.length + 1);
@@ -56,15 +69,12 @@ public class Alumno {
         pedirNombreCompleto();
         pedirFechaNacimiento();
     }
+    
     public void pedirNombreCompleto(){
         personaAlumno.pedirNombreCompleto();
-        nombre = personaAlumno.nombre;
-        apellido1 = personaAlumno.apellido1;
-        apellido2 = personaAlumno.apellido2;
     }
     public void pedirFechaNacimiento(){
         personaAlumno.pedirFechaNacimiento();
-        fechaNacimiento = personaAlumno.fechaNacimiento;
     }
     public void mostrarNotas(){
         int posicion;

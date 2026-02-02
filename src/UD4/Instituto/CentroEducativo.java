@@ -63,6 +63,7 @@ public class CentroEducativo {
             System.out.println("Responde \"fin\" cuando no haya más modulos");
             modulo.pedirAtributos();
             if (!modulo.nombre.equalsIgnoreCase(TERMINAR)) {
+                modulo.pedirProfesado();
                 modulo.pedirAlumnado();
                 modulo.asignarNotasAAlumnos();
                 modulosDisponibles = Arrays.copyOf(modulosDisponibles, modulosDisponibles.length + 1);

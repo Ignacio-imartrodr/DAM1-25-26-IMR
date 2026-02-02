@@ -4,7 +4,23 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+import UD4.Instituto.Util;
+
 public class Persona {
+    public static Persona[] darArrayPersonasDeCSV(String rutaCSV){
+        String[] personasCSV = Util.readFileToStringArray(rutaCSV);
+        Persona[] personas = new Persona[personasCSV.length];
+
+        for (int i = 0; i < personasCSV.length; i++) {
+            String[] atributos = personasCSV[i].split(",");
+            personas[i] = new Persona();
+            personas[i].nombre = atributos[0];
+            personas[i].apellido1 = atributos[1];
+            personas[i].apellido2 = atributos[2];
+            personas[i].fechaNacimiento = LocalDate.parse(atributos[3], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        }
+        return personas;
+    }
     String nombre;
     String apellido1;
     String apellido2;

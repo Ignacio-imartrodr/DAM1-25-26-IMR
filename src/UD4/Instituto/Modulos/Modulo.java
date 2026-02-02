@@ -51,47 +51,89 @@ public class Modulo {
         System.out.print("Horas: ");
         horas = Integer.parseInt(pedirPorTeclado(true));
     }
-    public void pedirProfesores(){
-        final String TERMINAR = "fin";
-        int id = 0;
-        boolean terminado = false;
-        ProfesoresImpartiendo = new Profesor[0];
-        Profesor newProfesor;
-        while (!terminado) {
-            newProfesor = new Profesor();
-            System.out.println("Responde \"fin\" para terminar el listado");
-            newProfesor.pedirNombreCompleto();
-            if (!(newProfesor.nombre.equalsIgnoreCase(TERMINAR) || newProfesor.apellido1.equalsIgnoreCase(TERMINAR)|| newProfesor.apellido2.equalsIgnoreCase(TERMINAR))) {
-                newProfesor.pedirFechaNacimiento();
-                newProfesor.id = id;
-                newProfesor.asignarModuloImpartido(this);
-                ProfesoresImpartiendo = Arrays.copyOf(ProfesoresImpartiendo, ProfesoresImpartiendo.length + 1);
-                ProfesoresImpartiendo[ProfesoresImpartiendo.length - 1] = newProfesor;
-                id++;
-            } else {
-                terminado = true;
+    public void pedirProfesado(){
+        boolean conCSV = false;
+        String respuesta;
+        System.out.print("¿Deseas introducir el profesorado desde un fichero CSV? (s/n): ");
+        respuesta = pedirPorTeclado(false);
+        while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
+            System.out.println("Responde unicamente con \"s\" o \"n\"");
+            respuesta = pedirPorTeclado(false);
+        }
+        if (respuesta.equalsIgnoreCase("s")) {
+            conCSV = true;
+        }
+        if (conCSV) {
+            /*System.out.print("Ruta del fichero CSV: ");
+            String rutaCSV = pedirPorTeclado(false);*/
+            String rutaCSV = "src\\UD4\\Instituto\\profesores.csv";
+            ProfesoresImpartiendo = Profesor.darArrayProfesoresDeCSV(rutaCSV);
+            for (Profesor profesor : ProfesoresImpartiendo) {
+                profesor.asignarModuloImpartido(this);
+            }
+        }else {
+            final String TERMINAR = "fin";
+            int id = 0;
+            boolean terminado = false;
+            ProfesoresImpartiendo = new Profesor[0];
+            Profesor newProfesor;
+            while (!terminado) {
+                newProfesor = new Profesor();
+                System.out.println("Responde \"fin\" para terminar el listado");
+                newProfesor.pedirNombreCompleto();
+                if (!(newProfesor.nombre.equalsIgnoreCase(TERMINAR) || newProfesor.apellido1.equalsIgnoreCase(TERMINAR)|| newProfesor.apellido2.equalsIgnoreCase(TERMINAR))) {
+                    newProfesor.pedirFechaNacimiento();
+                    newProfesor.id = id;
+                    newProfesor.asignarModuloImpartido(this);
+                    ProfesoresImpartiendo = Arrays.copyOf(ProfesoresImpartiendo, ProfesoresImpartiendo.length + 1);
+                    ProfesoresImpartiendo[ProfesoresImpartiendo.length - 1] = newProfesor;
+                    id++;
+                } else {
+                    terminado = true;
+                }
             }
         }
     }
     public void pedirAlumnado(){
-        final String TERMINAR = "fin";
-        int id = 0;
-        boolean terminado = false;
-        alumnosMatriculados = new Alumno[0];
-        Alumno newAlumno;
-        while (!terminado) {
-            newAlumno = new Alumno();
-            System.out.println("Responde \"fin\" para terminar el listado");
-            newAlumno.pedirNombreCompleto();
-            if (!(newAlumno.nombre.equalsIgnoreCase(TERMINAR) || newAlumno.apellido1.equalsIgnoreCase(TERMINAR)|| newAlumno.apellido2.equalsIgnoreCase(TERMINAR))) {
-                newAlumno.pedirFechaNacimiento();
-                newAlumno.id = id;
-                newAlumno.asignarModuloAAlumno(this);
-                alumnosMatriculados = Arrays.copyOf(alumnosMatriculados, alumnosMatriculados.length + 1);
-                alumnosMatriculados[alumnosMatriculados.length - 1] = newAlumno;
-                id++;
-            } else {
-                terminado = true;
+        boolean conCSV = false;
+        String respuesta;
+        System.out.print("¿Deseas introducir el alumnado desde un fichero CSV? (s/n): ");
+        respuesta = pedirPorTeclado(false);
+        while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
+            System.out.println("Responde unicamente con \"s\" o \"n\"");
+            respuesta = pedirPorTeclado(false);
+        }
+        if (respuesta.equalsIgnoreCase("s")) {
+            conCSV = true;
+        }
+        if (conCSV) {
+            /*System.out.print("Ruta del fichero CSV: ");
+            String rutaCSV = pedirPorTeclado(false);*/
+            String rutaCSV = "src\\UD4\\Instituto\\alumnos.csv";
+            alumnosMatriculados = Alumno.darArrayAlumnosDeCSV(rutaCSV);
+            for (Alumno alumno : alumnosMatriculados) {
+                alumno.asignarModuloAAlumno(this);
+            }
+        }else {
+            final String TERMINAR = "fin";
+            int id = 0;
+            boolean terminado = false;
+            alumnosMatriculados = new Alumno[0];
+            Alumno newAlumno;
+            while (!terminado) {
+                newAlumno = new Alumno();
+                System.out.println("Responde \"fin\" para terminar el listado");
+                newAlumno.pedirNombreCompleto();
+                if (!(newAlumno.nombre.equalsIgnoreCase(TERMINAR) || newAlumno.apellido1.equalsIgnoreCase(TERMINAR)|| newAlumno.apellido2.equalsIgnoreCase(TERMINAR))) {
+                    newAlumno.pedirFechaNacimiento();
+                    newAlumno.id = id;
+                    newAlumno.asignarModuloAAlumno(this);
+                    alumnosMatriculados = Arrays.copyOf(alumnosMatriculados, alumnosMatriculados.length + 1);
+                    alumnosMatriculados[alumnosMatriculados.length - 1] = newAlumno;
+                    id++;
+                } else {
+                    terminado = true;
+                }
             }
         }
     }
