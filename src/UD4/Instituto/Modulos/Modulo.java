@@ -1,8 +1,8 @@
 package UD4.Instituto.Modulos;
 
 import java.util.Arrays;
-import java.util.Scanner;
 
+import UD4.Instituto.Util;
 import UD4.Instituto.Personas.Alumno;
 import UD4.Instituto.Personas.Profesor;
 
@@ -26,13 +26,12 @@ public class Modulo {
         }
     }
     
-    private static Scanner sc = new Scanner(System.in,"Windows-1252");
     public void asignarNotasAAlumnos(){
         notas = new double[alumnosMatriculados.length];
         int i = 0;
         for (Alumno alumno : alumnosMatriculados) {
             System.out.print("Nota de " + alumno.nombreCompleto + " con id \"" + alumno.id + ": ");
-            notas[i] = Double.parseDouble(pedirPorTeclado(true));
+            notas[i] = Double.parseDouble(Util.pedirPorTeclado(true));
             alumno.asignarNotaAAlumno(notas[i]);
             i++;
         }
@@ -44,21 +43,70 @@ public class Modulo {
     }
     public void pedirNombre(){
         System.out.print("Nombre: ");
-        nombre = pedirPorTeclado(false);
+        nombre = Util.pedirPorTeclado(false);
         
     }
     public void pedirHoras(){
         System.out.print("Horas: ");
-        horas = Integer.parseInt(pedirPorTeclado(true));
+        horas = Integer.parseInt(Util.pedirPorTeclado(true));
     }
-    public void pedirProfesado(){
+    public void asignarAProfesorado(Profesor[] profesorado){
         boolean conCSV = false;
         String respuesta;
         System.out.print("¿Deseas introducir el profesorado desde un fichero CSV? (s/n): ");
-        respuesta = pedirPorTeclado(false);
+        respuesta = Util.pedirPorTeclado(false);
         while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
             System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = pedirPorTeclado(false);
+            respuesta = Util.pedirPorTeclado(false);
+        }
+        if (respuesta.equalsIgnoreCase("s")) {
+            conCSV = true;
+        }
+        if (conCSV) {
+            int id = 0;
+            /*System.out.print("Ruta del fichero CSV: ");
+            String rutaCSV = pedirPorTeclado(false);*/
+            String rutaCSV = "src\\UD4\\Instituto\\profesoresModulo.csv";
+            Profesor[] ProfesoresCSV = Profesor.darArrayProfesoresDeCSV(rutaCSV);
+            for (Profesor profesor : ProfesoresCSV) {
+                profesor.id = id;
+                if (Util.verificaObjetoEnArray(profesor, profesorado)) {
+                    profesor.asignarModuloImpartido(this);
+                    id++;
+                } else {
+                    System.out.println("El profesor/a " + profesor.nombreCompleto + " con id " + profesor.id + " no existe: ");
+                }
+            }
+        }else{
+            boolean imparte = false;
+            respuesta = "";
+            for (Profesor profesor : profesorado) {
+                System.out.print("El profesor/a " + profesor.nombreCompleto + " con id " + profesor.id + " imparte este modulo? (s/n): " );
+                respuesta = Util.pedirPorTeclado(false);
+                while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
+                    System.out.println("Responde unicamente con \"s\" o \"n\"");
+                    respuesta = Util.pedirPorTeclado(false);
+                }
+                if (respuesta.equalsIgnoreCase("s")) {
+                    imparte = true;
+                }
+                if (imparte) {
+                    profesor.modulosImpartidos = Arrays.copyOf(profesor.modulosImpartidos, profesor.modulosImpartidos.length + 1);
+                    profesor.modulosImpartidos[profesor.modulosImpartidos.length -1] = this;
+                }
+                imparte = false;
+            }
+        }
+        
+    }
+    public void pedirProfesorado(){
+        boolean conCSV = false;
+        String respuesta;
+        System.out.print("¿Deseas introducir el profesorado desde un fichero CSV? (s/n): ");
+        respuesta = Util.pedirPorTeclado(false);
+        while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
+            System.out.println("Responde unicamente con \"s\" o \"n\"");
+            respuesta = Util.pedirPorTeclado(false);
         }
         if (respuesta.equalsIgnoreCase("s")) {
             conCSV = true;
@@ -98,10 +146,10 @@ public class Modulo {
         boolean conCSV = false;
         String respuesta;
         System.out.print("¿Deseas introducir el alumnado desde un fichero CSV? (s/n): ");
-        respuesta = pedirPorTeclado(false);
+        respuesta = Util.pedirPorTeclado(false);
         while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
             System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = pedirPorTeclado(false);
+            respuesta = Util.pedirPorTeclado(false);
         }
         if (respuesta.equalsIgnoreCase("s")) {
             conCSV = true;
@@ -137,45 +185,6 @@ public class Modulo {
             }
         }
     }
-    private String pedirPorTeclado(boolean pideNumero){
-        String var;
-        boolean sonNumeros = true;
-        try {
-            var = sc.nextLine();
-            for (int i = 0; i < var.length() && sonNumeros; i++) {
-                if (!Character.isDigit(var.charAt(i)) || var.charAt(i) != ',') {
-                    sonNumeros = false;
-                }
-            }
-            
-            if (!pideNumero) {
-                if (!sonNumeros) {
-                    String charCorrectos = "áéíóúüñ";
-                    String charIncorrectos = " ¡¢£¤"; //Para ISO-8859-1
-                    String charIncorrectos1 = " ‚¡¢£�¤";//Para Windows-1252
-                    String[] StringsIncorrectos = new String[] {charIncorrectos, charIncorrectos1};
-                    for (int i = 0; i < var.length(); i++) {
-                        for (int j = 0; j < StringsIncorrectos.length; j++) {
-                            for (int k = 0; k < StringsIncorrectos[j].length(); k++) {
-                                var = var.replace(StringsIncorrectos[j].charAt(k), charCorrectos.charAt(k));
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (!sonNumeros) {
-                    System.out.print("Error, introdruce un valor numérico: ");
-                    return pedirPorTeclado(pideNumero);
-                }
-            }
-            return var;
-        } catch (Exception e) {
-            sc.nextLine();
-            System.out.println("Error, vuelve a intentar");
-            return pedirPorTeclado(pideNumero);
-        }
-    }
-    
     public static void main(String[] args) {
         boolean parar = false;
         final String TERMINAR = "fin";

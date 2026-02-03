@@ -13,12 +13,12 @@ public class PreguntaMasDificil {
         System.out.println(mediaPreguntaMasDificil(alumnoPregunta));
     }
     static double mediaPreguntaMasDificil(double[][] notas){
-        if (notas == null || notas == new double[notas.length][] ) {
+        if (notas == null || notas.length == 0 || notas[0].length == 0){ 
             return -1;
         }
         double mediaMinima = 11;
-        double mediaPregunta = 0;
-        for (int i = 0; i < notas[i].length; i++) {
+        for (int i = 0; i < notas.length && i < notas[i].length; i++) {
+            double mediaPregunta = 0;
             for (int j = 0; j < notas.length; j++) {
                 mediaPregunta += notas[j][i];
             }
@@ -26,7 +26,6 @@ public class PreguntaMasDificil {
             if (mediaPregunta < mediaMinima){
                 mediaMinima = mediaPregunta;
             }
-            mediaPregunta = 0;
         }
         return mediaMinima;
     }
