@@ -54,12 +54,14 @@ public class Util {
         boolean sonNumeros = true;
         try {
             var = sc.nextLine();
+            if (var.equals("")) {
+                return null;
+            }
             for (int i = 0; i < var.length() && sonNumeros; i++) {
                 if (!Character.isDigit(var.charAt(i)) || var.charAt(i) != ',') {
                     sonNumeros = false;
                 }
             }
-            
             if (!pideNumero) {
                 if (!sonNumeros) {
                     String charCorrectos = "áéíóúüñ";
