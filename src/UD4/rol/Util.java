@@ -2,6 +2,7 @@ package UD4.rol;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -49,6 +50,50 @@ public class Util {
         }
     }
     private static Scanner sc = new Scanner(System.in,"Windows-1252");
+
+    /**
+     * Lee y carga el contenido de un fichero de texto a un String
+     * 
+     * @param filePath
+     * @return
+     */
+    public static String readFileToString(String filePath) {
+        StringBuilder fileContent = new StringBuilder();
+        try {
+            // Creamos un objeto FileReader que nos permitirá leer el fichero
+            FileReader reader = new FileReader(filePath);
+
+            // Creamos un buffer para leer el fichero de forma más eficiente
+            BufferedReader buffer = new BufferedReader(reader);
+
+            // Leemos el fichero línea a línea
+            String line;
+            while ((line = buffer.readLine()) != null) {
+                // Vamos añadiendo cada línea al StringBuilder
+                fileContent.append(line);
+                // Añadimos un salto de línea al final de cada línea
+                fileContent.append("\n");
+            }
+
+            // Cerramos el buffer y el fichero
+            buffer.close();
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("No existe el fichero.");
+            // e.printStackTrace();
+        }
+
+        // Devolvemos el contenido del fichero como un String
+        return fileContent.toString();
+    }
+
+    /**
+     * Lee y carga el contenido de un fichero de texto a un array de String (un
+     * elemento por línea)
+     * 
+     * @param filePath
+     * @return
+     */
     public static String pedirPorTeclado(boolean pideNumero){
         String var;
         boolean sonNumeros = true;
@@ -89,6 +134,7 @@ public class Util {
             return pedirPorTeclado(pideNumero);
         }
     }
+
     public static boolean verificaObjetoEnArray(Object objetivo, Object[] array){ //Verificar como lo compara
         boolean verificado = false;
         for (Object object : array) {
@@ -97,5 +143,20 @@ public class Util {
             }
         }
         return verificado;
+    }
+    
+    public static void writeStringToFile(String str, String filePath) {
+        try {
+            // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
+            FileWriter writer = new FileWriter(filePath);
+
+            // Escribimos el String en el fichero
+            writer.write(str);
+
+            // Cerramos el fichero
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
