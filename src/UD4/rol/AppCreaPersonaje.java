@@ -9,39 +9,31 @@ package UD4.rol;
  */
 
 public class AppCreaPersonaje {
-    public static void GuardarPersonaje(Personaje personaje, String rutaFichero){
-        String respuesta;
-        System.out.print("¿Quieres guardar el personaje en un fichero? (s/n): ");
-        respuesta = Util.pedirPorTeclado(false);
-        while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
-            System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = Util.pedirPorTeclado(false);
-        }
-        if (respuesta.equalsIgnoreCase("s")) {
-            rutaFichero = "src\\UD4\\rol\\personajesGuardados.json";
+    public static void guardarPersonaje(Personaje personaje){
+        System.out.print("¿Quieres guardar el personaje en un fichero .json? (s/n): ");
+        if (Util.confirmarSN()) {
+            /*System.out.print("Ruta del fichero: ");
+            String rutaFichero = Util.pedirPorTeclado(false); */
+            String rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json";
             Util.writeStringToFile(personaje.toJSONString(), rutaFichero);
             System.out.println("Personaje guardado en " + rutaFichero);
         }
     }
     public static void main(String[] args) {
-        String respuesta;
         boolean seguir = true;
         while (seguir) {
             System.out.print("¿Quieres crear un nuevo personaje? (s/n): ");
-            respuesta = Util.pedirPorTeclado(false);
-            while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
-                System.out.println("Responde unicamente con \"s\" o \"n\"");
-                respuesta = Util.pedirPorTeclado(false);
-            }
-            if (respuesta.equalsIgnoreCase("n")) {
+            if (!Util.confirmarSN()) {
+                System.out.println();
                 seguir = false;
             } else {
                 Personaje personaje = new Personaje();
-                System.out.println("Razas disponibles:" + Personaje.getRazasStats());
+                System.out.println("\nRazas disponibles:\n\n" + Personaje.getRazasStats());
                 personaje.crearPersonaje();
                 personaje.mostrar();
-                
+                guardarPersonaje(personaje);
             }
         }
+
     }
 }

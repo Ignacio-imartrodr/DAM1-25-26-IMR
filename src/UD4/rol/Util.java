@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -88,22 +92,22 @@ public class Util {
     }
 
     /**
-     * Lee y carga el contenido de un fichero de texto a un array de String (un
+     * Lee y carga el contenido por teclado y verifica si es un número dependiendo de {@code pideNumero}
      * elemento por línea)
      * 
-     * @param filePath
+     * @param pideNumero Indica si tiene que verificar que la entrada por teclado sea numérica.
      * @return
      */
     public static String pedirPorTeclado(boolean pideNumero){
         String var;
         boolean sonNumeros = true;
         try {
-            var = sc.nextLine();
-            if (var.equals("")) {
-                return null;
+            var = sc.nextLine().strip();
+            if (var.equals("")|| var.isBlank() || var.isEmpty()) {
+                return "-1";
             }
             for (int i = 0; i < var.length() && sonNumeros; i++) {
-                if (!Character.isDigit(var.charAt(i)) || var.charAt(i) != ',') {
+                if (!Character.isDigit(var.charAt(i)) || var.charAt(i) != ',' || var.charAt(i) != '-' || var.charAt(i) != '+') {
                     sonNumeros = false;
                 }
             }
@@ -135,6 +139,12 @@ public class Util {
         }
     }
 
+    /**
+     * Verifica si un objeto se encuentra en un array de ese objeto.
+     * @param objetivo Objeto a buscar.
+     * @param array Array donde buscar el objeto.
+     * @return  {@code true} si {@code objetivo} está en el array {@code array} o {@code false} si {@code objetivo} NO está en el array {@code array}
+     */
     public static boolean verificaObjetoEnArray(Object objetivo, Object[] array){ //Verificar como lo compara
         boolean verificado = false;
         for (Object object : array) {
@@ -145,7 +155,12 @@ public class Util {
         return verificado;
     }
     
-    public static void writeStringToFile(String str, String filePath) {
+    /**
+     * Escribe una cadena de texto {@code str} en un archivo designado
+     * @param   str   : Texto que se añadirá al fichero.
+     * @param   filePath  : Ruta de la ubicación del archivo.
+     */
+    public static void writeStringToFile(String str, String filePath) {//TODO que no sobre-escriba
         try {
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
             FileWriter writer = new FileWriter(filePath);
@@ -158,5 +173,43 @@ public class Util {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Pregunta por teclado "s" o "n" hasta que obtener una respuesta válida
+     * 
+     * @return {@code true} if "s", {@code false} if "n".
+     */
+    public static boolean confirmarSN(){
+        String respuesta;
+        boolean s = false;
+        respuesta = Util.pedirPorTeclado(false);
+        while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
+            System.out.println("Responde unicamente con \"s\" o \"n\"");
+            respuesta = Util.pedirPorTeclado(false);
+        }
+        if (respuesta.equalsIgnoreCase("s")) {
+            s = true;
+        }
+        return s;
+    }
+    private static String getJson(String url) throws IOException, InterruptedException {
+        // Configuración del proxy del sistema
+        System.setProperty("java.net.useSystemProxies", "true");
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
+        if (resp.statusCode() != 200) {
+            System.err.println("Error HTTP: " + resp.statusCode());
+            System.exit(1);
+        }
+
+        String json = resp.body();
+        return json;
     }
 }

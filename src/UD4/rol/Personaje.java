@@ -20,10 +20,10 @@ public class Personaje {
         int num;
         final int MIN = 1;
         final int MAX = 100;
-        if ( !texto.equals(null) || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        if ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
             throw new PersonajeException("Valores fuera de límites");
         }
-        if (texto.equals(null)) {
+        if (texto.equals("-1")) {
             num = generarRnd1a100();
         } else {
             num = Integer.parseInt(texto);
@@ -34,16 +34,31 @@ public class Personaje {
         int num;
         final int MIN = esXp ? 0 : 1;
         final int MAX = esXp ? 999 : 100;
-        if ( !texto.equals(null) || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        if ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
             throw new PersonajeException("Valores fuera de límites");
         }
-        if (texto.equals(null)) {
+        if (texto.equals("-1")) {
             num = MIN;
         } else {
             num = Integer.parseInt(texto);
         }
         return num;
     }
+    public static String asignarRaza(String respuesta){
+        if ( !respuesta.equals("-1") || !Util.verificaObjetoEnArray(respuesta, Personaje.RAZAS_VALIDAS) ) {
+            throw new PersonajeException("Raza no válida.");
+        }
+        if (respuesta.equals("-1")) {
+            respuesta = RAZAS_VALIDAS[0];
+        }
+        return respuesta;
+    }
+
+    /**
+     * Crea un objeto sin entregarle parametros.
+     * 
+     * @return Nuevo objeto de clase Personaje sin valores.
+     */
     Personaje(){
         this.nombre = null;
         this.raza = null;
@@ -53,33 +68,56 @@ public class Personaje {
         this.nivel = 0;
         this.experiencia = 0;
     }
-    
+    /**
+     * Crea un objeto con los parametros como {@code String} convertiendolos a los tipos necesarios o instaurandolos como sus valores predefinidos.
+     * 
+     * @param   nombre  : No puede ser null, ni "-1" ni estár en blanco. 
+     * @param   raza    : Tiene que ser uno de los tipos validos si no será "HUMANO" por defecto.
+     * @param   experiencia    : Asignarle un valor entre 0 (inclusive) y 1000 (exclusive) o "-1" para el valor por defecto.
+     * @param   others  : Asignarles un valor entre 1 (inclusive) y 101 (exclusive) o "-1" para el valor por defecto.
+     * @return Nuevo objeto de clase Personaje con los parametros otorgados.
+     */
     Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia){
+        try {
+            nombre = nombre.strip();
+        } catch (Exception e) {
+            throw new PersonajeException("El valor \"null\" no es valido");
+        }
+        if (nombre.equals("-1") || nombre.isEmpty() || nombre.isBlank()) {
+            throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"-1\", prueba \"Personaje()\" en su lugar");
+        }
         this.nombre = nombre;
-        this.raza = raza;
-        this.fuerza = asignarStatRng(fuerza);
-        this.agilidad = asignarStatRng(agilidad);
-        this.constitucion = asignarStatRng(constitucion);
+        try {
+            this.raza = asignarRaza(raza.toUpperCase());
+        } catch (PersonajeException e) {
+            this.raza = RAZAS_VALIDAS[0];
+        }
+        String[] bonus = asignarBonus(raza);
+        int bonusFuerza = bonus[0].equals("x") ? 0 : Integer.parseInt(bonus[0]);
+        int bonusAgilidad = bonus[1].equals("x") ? 0 : Integer.parseInt(bonus[1]);
+        int bonusConstitucion = bonus[2].equals("x") ? 0 : Integer.parseInt(bonus[2]);
+
+        this.fuerza = asignarStatRng(fuerza) + bonusFuerza;
+        this.agilidad = asignarStatRng(agilidad) + bonusAgilidad;
+        this.constitucion = asignarStatRng(constitucion) + bonusConstitucion;
         this.nivel = (byte) asignarStatNoRng(false, nivel);
-        this.experiencia = 0;
+        this.experiencia = asignarStatNoRng(true, experiencia);
+        /*
         try {
             int xp = Integer.parseInt(experiencia.strip());
             sumarExperiencia(xp);
         } catch (PersonajeException e) {
             try {
                 int xp = Integer.parseInt(experiencia.strip());
-                int extra = xp % Personaje.EXP_MAX;
-                int veces = xp / Personaje.EXP_MAX;
-                for (int i= 0; i < veces; i++) {
-                    sumarExperiencia(xp);//TODO calcular cantidad de exp
-
-
+                int extra = xp % EXP_MAX;
+                int vecesXpMax = xp / EXP_MAX;
+                for (int i= 0; i < vecesXpMax; i++) {
+                    sumarExperiencia(EXP_MAX);
                 }
                 sumarExperiencia(extra);
             } catch (Exception a) {}
-            
         } catch (Exception e) {}
-        
+        */
     }
 
     private static String[] asignarBonus(String raza) {
@@ -134,30 +172,33 @@ public class Personaje {
         int num = rnd.nextInt(100) + 1;
         return num;
     };
-
+    
+    
     public void crearPersonaje(){
         System.out.print("Nombre del personaje: ");
         nombre = Util.pedirPorTeclado(false);
-        while (nombre.equals(null) || nombre.strip().equals("")) {
-            System.out.print("Escoge un nombre de personaje: ");
+        while (nombre.equals("-1")) {
+            System.out.print("El persnaje necesita un nombre: ");
             nombre = Util.pedirPorTeclado(false);          
         }
         nombre = nombre.strip();
         System.out.println("Escoge una de las siguientes razas: orco, elfo, HUMANO, enano, hobbit o troll");
-        raza = Util.pedirPorTeclado(false).toUpperCase();
-        while ( !raza.equals(null) || !Util.verificaObjetoEnArray(raza, RAZAS_VALIDAS) ) {
+        raza = Util.pedirPorTeclado(false);
+        while ( !raza.equals("-1") && !Util.verificaObjetoEnArray(raza.toUpperCase(), RAZAS_VALIDAS) ) {
             System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
-            raza = Util.pedirPorTeclado(false).toUpperCase();
+            raza = Util.pedirPorTeclado(false);
         }
-        if (raza.equals(null)) {
-            raza = "HUMANO";
+        if (raza.equals("-1")) {
+            raza = RAZAS_VALIDAS[0];
+        } else {
+            raza = raza.toUpperCase();
         }
         String[] bonus = asignarBonus(raza);
         int bonusFuerza = bonus[0].equals("x") ? 0 : Integer.parseInt(bonus[0]);
         int bonusAgilidad = bonus[1].equals("x") ? 0 : Integer.parseInt(bonus[1]);
         int bonusConstitucion = bonus[2].equals("x") ? 0 : Integer.parseInt(bonus[2]);
 
-        System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa Enter sin introducir ningún valor.");
+        System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
         System.out.print("Fuerza: ");
         fuerza = pedirStatRng() + bonusFuerza;
         
@@ -180,11 +221,11 @@ public class Personaje {
         texto = Util.pedirPorTeclado(true);
         final int MIN = 1;
         final int MAX = 100;
-        while ( !texto.equals(null) || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        while ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
             System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
             texto = Util.pedirPorTeclado(true);
         }
-        if (texto.equals(null)) {
+        if (texto.equals("-1")) {
             num = generarRnd1a100();
         } else {
             num = Integer.parseInt(texto);
@@ -197,11 +238,11 @@ public class Personaje {
         texto = Util.pedirPorTeclado(true);
         final int MIN = esXp ? 0 : 1;
         final int MAX = esXp ? 999 : 100;
-        while ( !texto.equals(null) || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        while ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
             System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
             texto = Util.pedirPorTeclado(true);
         }
-        if (texto.equals(null)) {
+        if (texto.equals("-1")) {
             num = MIN;
         } else {
             num = Integer.parseInt(texto);
@@ -217,12 +258,12 @@ public class Personaje {
         String raza = "Raza: " + nombreRaza;
         String nivel = "Nivel: " + this.nivel;
         String experiencia = "Experiencia: " + this.experiencia;
-        String puntosVida = "Puntos de vida : " + this.puntosVida + "/" + vidaMax;
+        String puntosVida = "Puntos de vida : (" + this.puntosVida + "/" + vidaMax + ")";
         String fuerza = "Fuerza: " + this.fuerza;
         String agilidad = "Agilidad: " + this.agilidad;
         String constitucion = "Constitución: " + this.constitucion;
 
-        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s", Cabecera, nombre, raza, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion);
+        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, raza, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion);
         System.out.println(ficha);
     }
     public String toString(){
