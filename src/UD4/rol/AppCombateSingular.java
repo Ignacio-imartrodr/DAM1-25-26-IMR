@@ -11,6 +11,10 @@ package UD4.rol;
 public class AppCombateSingular {
     public static void main(String[] args) {
         AppCreaPersonaje.main(args);
-        
+        String[] PersonajesRegistrados;
+        for (String string : args) {
+            
+        }
+        Util.readFileToStringArray(null);
     }
 }

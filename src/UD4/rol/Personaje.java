@@ -9,12 +9,80 @@ public class Personaje {
     int fuerza;
     int agilidad;
     int constitucion;
-    int nivel;
+    byte nivel;
     int experiencia;
     int vidaMax = 50 + constitucion;
     int puntosVida = vidaMax;
+    final static int EXP_MAX = 255999; 
     final static String[] RAZAS_VALIDAS = {"HUMANO", "ELFO", "ENANO", "HOBBIT", "ORCO", "TROLL"};
-    static String[] asignarBonus(String raza) {
+
+    private int asignarStatRng(String texto){
+        int num;
+        final int MIN = 1;
+        final int MAX = 100;
+        if ( !texto.equals(null) || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+            throw new PersonajeException("Valores fuera de límites");
+        }
+        if (texto.equals(null)) {
+            num = generarRnd1a100();
+        } else {
+            num = Integer.parseInt(texto);
+        }
+        return num;
+    }
+    private int asignarStatNoRng(boolean esXp, String texto){
+        int num;
+        final int MIN = esXp ? 0 : 1;
+        final int MAX = esXp ? 999 : 100;
+        if ( !texto.equals(null) || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+            throw new PersonajeException("Valores fuera de límites");
+        }
+        if (texto.equals(null)) {
+            num = MIN;
+        } else {
+            num = Integer.parseInt(texto);
+        }
+        return num;
+    }
+    Personaje(){
+        this.nombre = null;
+        this.raza = null;
+        this.fuerza = 0;
+        this.agilidad = 0;
+        this.constitucion = 0;
+        this.nivel = 0;
+        this.experiencia = 0;
+    }
+    
+    Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia){
+        this.nombre = nombre;
+        this.raza = raza;
+        this.fuerza = asignarStatRng(fuerza);
+        this.agilidad = asignarStatRng(agilidad);
+        this.constitucion = asignarStatRng(constitucion);
+        this.nivel = (byte) asignarStatNoRng(false, nivel);
+        this.experiencia = 0;
+        try {
+            int xp = Integer.parseInt(experiencia.strip());
+            sumarExperiencia(xp);
+        } catch (PersonajeException e) {
+            try {
+                int xp = Integer.parseInt(experiencia.strip());
+                int extra = xp % Personaje.EXP_MAX;
+                int veces = xp / Personaje.EXP_MAX;
+                for (int i= 0; i < veces; i++) {
+                    sumarExperiencia(xp);//TODO calcular cantidad de exp
+
+
+                }
+                sumarExperiencia(extra);
+            } catch (Exception a) {}
+            
+        } catch (Exception e) {}
+        
+    }
+
+    private static String[] asignarBonus(String raza) {
         String bonusFuerza = "x";
         String bonusAgilidad = "x";
         String bonusConstitucion = "x";
@@ -53,12 +121,20 @@ public class Personaje {
         String[] bonus = {bonusFuerza, bonusAgilidad, bonusConstitucion};
         return bonus;
     }
-
+    public static String getRazasStats() {
+        String fichas = "";
+        for (String raza : RAZAS_VALIDAS) {
+            String[] bonus = asignarBonus(raza);
+            fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
+        }
+        return fichas;
+    }
     private static int generarRnd1a100(){
         Random rnd = new Random();
         int num = rnd.nextInt(100) + 1;
         return num;
     };
+
     public void crearPersonaje(){
         System.out.print("Nombre del personaje: ");
         nombre = Util.pedirPorTeclado(false);
@@ -92,12 +168,10 @@ public class Personaje {
         constitucion = pedirStatRng() + bonusConstitucion;
         
         System.out.print("Nivel: ");
-        nivel = pedirStatNoRng(false);
+        nivel = (byte) pedirStatNoRng(false);
         
         System.out.println("Nivel de experiencia: ");
         experiencia = pedirStatNoRng(true);
-        
-        
     }
 
     private int pedirStatRng(){
@@ -156,7 +230,7 @@ public class Personaje {
         return nombreYVida;
     }
     public byte sumarExperiencia(int puntos){
-        if (puntos > 255999) { //TODO probar exception
+        if (puntos > EXP_MAX) { //TODO probar exception
             throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
         }
         byte lvlsUp = 0;
@@ -214,14 +288,7 @@ public class Personaje {
         }
         return daño;
     }
-    public String getRazasStats() {
-        String fichas = "";
-        for (String raza : RAZAS_VALIDAS) {
-            String[] bonus = asignarBonus(raza);
-            fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
-        }
-        return fichas;
-    }
+    
     public String toJSONString() {
         return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d,\"puntosVida\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, vidaMax, puntosVida);
     }
