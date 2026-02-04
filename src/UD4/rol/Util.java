@@ -13,11 +13,11 @@ import java.util.Scanner;
 
 public class Util {
     /**
-     * Lee y carga el contenido de un fichero de texto a un array de String (un
-     * elemento por línea y cada atributo separado por ",")
+     * Lee y carga el contenido de un fichero de texto a un array de {@Code String } (un
+     * elemento por línea)
      * 
      * @param filePath Es la ruta del fichero
-     * @return Array de String con el contenido del fichero
+     * @return {@Code String[] } con el contenido del fichero
      */
     public static String[] readFileToStringArray(String filePath) {
         String[] lineas = new String[0];
@@ -46,6 +46,7 @@ public class Util {
         // Devolvemos el contenido del fichero como un String
         return lineas;
     }
+    
     public static void mostrarContenidoCSV(String filePath){
         String[] contenidoCSV = readFileToStringArray(filePath);
         for (String linea : contenidoCSV) {
@@ -56,7 +57,7 @@ public class Util {
     private static Scanner sc = new Scanner(System.in,"Windows-1252");
 
     /**
-     * Lee y carga el contenido de un fichero de texto a un String
+     * Lee y carga el contenido de un fichero de texto a un {@Code String }
      * 
      * @param filePath
      * @return
@@ -96,7 +97,7 @@ public class Util {
      * elemento por línea)
      * 
      * @param pideNumero Indica si tiene que verificar que la entrada por teclado sea numérica.
-     * @return
+     * @return {@Code String } con el resulatado del teclado o "-1" si está vacía.
      */
     public static String pedirPorTeclado(boolean pideNumero){
         String var;
@@ -193,7 +194,13 @@ public class Util {
         }
         return s;
     }
-    private static String getJson(String url) throws IOException, InterruptedException {
+    /**
+     * Lee y carga el contenido de un fichero de texto a un Json mediante una URL.
+     * 
+     * @param   url   : Enlace al Archivo.json
+     * @return  {@code String} con el contenido del Archivo.json
+     */
+    public static String getJson(String url) throws IOException, InterruptedException {
         // Configuración del proxy del sistema
         System.setProperty("java.net.useSystemProxies", "true");
 

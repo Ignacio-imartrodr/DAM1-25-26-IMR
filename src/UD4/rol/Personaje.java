@@ -330,7 +330,10 @@ public class Personaje {
         return daño;
     }
     
-    public String toJSONString() {
-        return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d,\"puntosVida\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, vidaMax, puntosVida);
+    public String toJsonString() {
+        return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%s,\"agilidad\":%s,\"constitucion\":%s,\"nivel\":%s,\"experiencia\":%s,\"vidaMax\":%s,\"puntosVida\":%s}%n", nombre, raza, String.valueOf(fuerza), String.valueOf(agilidad), String.valueOf(constitucion), String.valueOf(nivel), String.valueOf(experiencia), String.valueOf(vidaMax), String.valueOf(puntosVida));
+    }
+    public String toCsvString() {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s", nombre, raza, String.valueOf(fuerza), String.valueOf(agilidad), String.valueOf(constitucion), String.valueOf(nivel), String.valueOf(experiencia), String.valueOf(vidaMax), String.valueOf(puntosVida));
     }
 }
