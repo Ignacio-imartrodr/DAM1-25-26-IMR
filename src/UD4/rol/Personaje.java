@@ -82,7 +82,7 @@ public class Personaje {
      * @param   others  : Asignarles un valor entre 1 (inclusive) y 101 (exclusive) o "-1" para el valor por defecto.
      * @return Nuevo objeto de clase Personaje con los parametros otorgados.
      */
-    Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia){
+    Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
         try {
             nombre = nombre.strip();
         } catch (Exception e) {
@@ -97,16 +97,28 @@ public class Personaje {
         } catch (PersonajeException e) {
             this.raza = RAZAS_VALIDAS[0];
         }
-        String[] bonus = asignarBonus(raza);
-        int bonusFuerza = bonus[0].equals("x") ? 0 : Integer.parseInt(bonus[0]);
-        int bonusAgilidad = bonus[1].equals("x") ? 0 : Integer.parseInt(bonus[1]);
-        int bonusConstitucion = bonus[2].equals("x") ? 0 : Integer.parseInt(bonus[2]);
-
-        this.fuerza = asignarStatRng(fuerza) + bonusFuerza;
-        this.agilidad = asignarStatRng(agilidad) + bonusAgilidad;
-        this.constitucion = asignarStatRng(constitucion) + bonusConstitucion;
-        this.nivel = (byte) asignarStatNoRng(false, nivel);
-        this.experiencia = asignarStatNoRng(true, experiencia);
+        if (yaExistente) {
+            if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
+                throw new PersonajeException("Valores fuera de límites");
+            } else {
+                this.fuerza = Integer.parseInt(fuerza);
+                this.agilidad = Integer.parseInt(agilidad);
+                this.constitucion = Integer.parseInt(constitucion);
+                this.nivel = (byte) Integer.parseInt(nivel);
+                this.experiencia = Integer.parseInt(experiencia);
+            }
+        } else {
+            String[] bonus = asignarBonus(raza);
+            int bonusFuerza = bonus[0].equals("x") ? 0 : Integer.parseInt(bonus[0]);
+            int bonusAgilidad = bonus[1].equals("x") ? 0 : Integer.parseInt(bonus[1]);
+            int bonusConstitucion = bonus[2].equals("x") ? 0 : Integer.parseInt(bonus[2]);
+    
+            this.fuerza = asignarStatRng(fuerza) + bonusFuerza;
+            this.agilidad = asignarStatRng(agilidad) + bonusAgilidad;
+            this.constitucion = asignarStatRng(constitucion) + bonusConstitucion;
+            this.nivel = (byte) asignarStatNoRng(false, nivel);
+            this.experiencia = asignarStatNoRng(true, experiencia);
+        }
         /* Ignorar
         try {
             int xp = Integer.parseInt(experiencia.strip());
@@ -124,7 +136,7 @@ public class Personaje {
         } catch (Exception e) {}
         */
     }
-
+    
     private static String[] asignarBonus(String raza) {
         String bonusFuerza = "x";
         String bonusAgilidad = "x";

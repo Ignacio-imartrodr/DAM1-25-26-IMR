@@ -17,23 +17,24 @@ public class AppCreaPersonaje {
         while (restart) {
             restart = false;
             System.out.print("¿Quieres guardar en un fichero? (S/n): ");
-            if (Util.escogerOpcion(null, null)) {
+            if (Util.escogerOpcion("s", "n")) {
                 System.out.println("OPCIONES: \nJson o Csv");
                 System.out.print("¿Tipo de fichero? (J/c): ");
                 if (Util.escogerOpcion("j", "c")) {
                     System.out.print("Ruta del fichero: ");
                     rutaFichero = Util.pedirPorTeclado(false);
-                    if (!rutaFichero.endsWith(".csv")) {
-                        System.out.println("La ruta debe contener un fichero con extensión .csv");
+                    if (!rutaFichero.endsWith(".json")) {
+                        System.out.println("La ruta debe contener un fichero con extensión .json");
                         restart = true;
                     } else {
                         restart = true;
                     }
+                    
                 } else {            
                     System.out.print("Ruta del fichero: ");
                     rutaFichero = Util.pedirPorTeclado(false);
-                    if (!rutaFichero.endsWith(".json")) {
-                        System.out.println("La ruta debe contener un fichero con extensión .json");
+                    if (!rutaFichero.endsWith(".csv")) {
+                        System.out.println("La ruta debe contener un fichero con extensión .csv");
                         restart = true;
                     } else {
                         restart = true;
@@ -50,13 +51,13 @@ public class AppCreaPersonaje {
         boolean seguir = true;
         while (seguir) {
             System.out.print("¿Quieres crear un nuevo personaje? (S/n): ");
-            if (Util.escogerOpcion(null, null)) {
+            if (Util.escogerOpcion("s", "n")) {
                 Personaje personaje = new Personaje();
                 System.out.println("\nRazas disponibles:\n\n" + Personaje.getRazasStats());
                 personaje.crearPersonaje();
                 personaje.mostrar();
                 System.out.println("¿Es el personaje correcto? (S/n):");
-                if (Util.escogerOpcion(null, null)) {
+                if (Util.escogerOpcion("s", "n")) {
                     personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
                     personajesNuevos[personajesNuevos.length - 1] = personaje;
                 }

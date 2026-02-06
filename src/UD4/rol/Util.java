@@ -31,7 +31,7 @@ public class Util {
 
             // Leemos el fichero línea a línea
             String line;
-            while ((line = buffer.readLine()) != null) {
+            while ((line = buffer.readLine()) != null && !(line = buffer.readLine()).isEmpty()) {
                 lineas = Arrays.copyOf(lineas, lineas.length + 1);
                 lineas[lineas.length - 1] = line;
             }
@@ -73,7 +73,7 @@ public class Util {
 
             // Leemos el fichero línea a línea
             String line;
-            while ((line = buffer.readLine()) != null) {
+            while ((line = buffer.readLine()) != null && !(line = buffer.readLine()).isEmpty()) {
                 // Vamos añadiendo cada línea al StringBuilder
                 fileContent.append(line);
                 // Añadimos un salto de línea al final de cada línea
@@ -184,17 +184,11 @@ public class Util {
      * @param   opcion2    : Si es null vale "n" sino el valor {@code String } introducido.
      * @return {@code true} if {@code respuesta.equals(opcion1) || respuesta.equals("-1")}, {@code false} if {@code respuesta.equeals(opcion2) }.
      */
-    public static boolean escogerOpcion(Object opcion1, Object opcion2){
-        if (opcion1.equals(null)) {
-            opcion1 = "s";
-        } else {
-            opcion1 = opcion1.toString().toLowerCase();
-        }
-        if (opcion2.equals(null)) {
-            opcion2 = "n";
-        } else {
-            opcion2 = opcion2.toString().toLowerCase();
-        }
+    public static boolean escogerOpcion(String opcion1, String opcion2){
+        
+        opcion1 = opcion1.toLowerCase();
+        opcion2 = opcion2.toLowerCase();
+        
         String respuesta;
         boolean s = false;
         respuesta = Util.pedirPorTeclado(false).toLowerCase();
