@@ -17,7 +17,7 @@ public class Util {
      * elemento por línea)
      * 
      * @param filePath Es la ruta del fichero
-     * @return {@Code String[] } con el contenido del fichero
+     * @return {@Code String[] } con el contenido del fichero esparado por lineas
      */
     public static String[] readFileToStringArray(String filePath) {
         String[] lineas = new String[0];
@@ -160,11 +160,12 @@ public class Util {
      * Escribe una cadena de texto {@code str} en un archivo designado
      * @param   str   : Texto que se añadirá al fichero.
      * @param   filePath  : Ruta de la ubicación del archivo.
+     * @param   append  : {@code true }Para añadir al final del fichero {@code true }Para sustituir el principio del fichero
      */
-    public static void writeStringToFile(String str, String filePath) {//TODO que no sobre-escriba
+    public static void writeStringToFile(String str, String filePath, boolean append) {
         try {
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
-            FileWriter writer = new FileWriter(filePath);
+            FileWriter writer = new FileWriter(filePath, append);
 
             // Escribimos el String en el fichero
             writer.write(str);

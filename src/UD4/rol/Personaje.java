@@ -53,7 +53,9 @@ public class Personaje {
         }
         return respuesta;
     }
-
+    Personaje(Object nullObjet){
+        
+    }
     /**
      * Crea un objeto sin entregarle parametros.
      * 
@@ -213,6 +215,9 @@ public class Personaje {
         
         System.out.println("Nivel de experiencia: ");
         experiencia = pedirStatNoRng(true);
+
+        vidaMax = 50 + constitucion;
+        puntosVida = vidaMax;
     }
 
     private int pedirStatRng(){
@@ -323,7 +328,6 @@ public class Personaje {
             }
             enemigo.perderVida(daño);
             enemigo.sumarExperiencia(daño);
-            sumarExperiencia(daño);
         } else {
             daño = 0;
         }
@@ -334,6 +338,15 @@ public class Personaje {
         return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%s,\"agilidad\":%s,\"constitucion\":%s,\"nivel\":%s,\"experiencia\":%s,\"vidaMax\":%s,\"puntosVida\":%s}%n", nombre, raza, String.valueOf(fuerza), String.valueOf(agilidad), String.valueOf(constitucion), String.valueOf(nivel), String.valueOf(experiencia), String.valueOf(vidaMax), String.valueOf(puntosVida));
     }
     public String toCsvString() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s", nombre, raza, String.valueOf(fuerza), String.valueOf(agilidad), String.valueOf(constitucion), String.valueOf(nivel), String.valueOf(experiencia), String.valueOf(vidaMax), String.valueOf(puntosVida));
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s%n", nombre, raza, String.valueOf(fuerza), String.valueOf(agilidad), String.valueOf(constitucion), String.valueOf(nivel), String.valueOf(experiencia), String.valueOf(vidaMax), String.valueOf(puntosVida));
     }
+    public void toFile(String filePath) {
+        if (filePath.endsWith(".json")) {
+            Util.writeStringToFile(toJsonString(), filePath, true);
+        } else if (filePath.endsWith(".csv")) {
+            Util.writeStringToFile(toCsvString(), filePath, true);
+        } else {
+            System.out.println("Formato de archivo no soportado. Solo se aceptan archivos .json o .csv");
+        }
+    }   
 }

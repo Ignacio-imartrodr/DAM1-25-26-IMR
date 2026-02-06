@@ -2,22 +2,51 @@ package UD4.rol;
 
 import java.util.Arrays;
 
-/** 
+/**
  * @author Ignacio MR
  * 
- * Crea un programa de consola que permita al usuario generar 
- * y editar personajes de diferentes modos y guardarlos
- * en disco en un fichero de texto en formato JSON o CSV. 
+ *         Crea un programa de consola que permita al usuario generar
+ *         y editar personajes de diferentes modos y guardarlos
+ *         en disco en un fichero de texto en formato JSON o CSV.
  */
 
 public class AppCombateSingular {
-    private static boolean cambiar(boolean turno){
-        return turno ? false : true;
+    private static void cambiar(boolean turno) {
+        turno = turno ? false : true;
     }
-    private static Personaje[] seleccionarPersonajes(Personaje[] PersonajesCreados){
+
+    private static Personaje[] seleccionarPersonajes(Personaje[] PersonajesCreados) {
         Personaje[] personajesEnBatalla = new Personaje[2];
-        //TODO seleccionar del array dado
+        // TODO seleccionar del array dado
         return personajesEnBatalla;
+    }
+
+    private static void guardarPorPersonaje(Personaje[] personajesCreados){
+        String rutaFichero;
+        for (Personaje personaje : personajesCreados) {
+            personaje.mostrar();
+            System.out.print("¿Quieres guardar este personaje? (s/n): ");
+            if (Util.confirmarSN()) {
+                boolean repetir = true;
+                while (repetir) {
+                    System.out.println("src\\UD4\\rol\\PersonajesGuardados.csv");//TODO borrar
+                    System.out.print("Ruta del fichero (Json o Csv): ");
+                    rutaFichero = Util.pedirPorTeclado(false);
+                    personaje.toFile(rutaFichero);
+                        if (rutaFichero.endsWith(".json") || rutaFichero.endsWith(".csv")) {
+                        repetir = false;
+                    } else {
+                        System.out.println( "¿Quieres intentar de nuevo? (s/n): ");
+                        if (!Util.confirmarSN()) {
+                            System.out.println("Personaje no guardado.");
+                            repetir = false;
+                        }
+                    }
+                }
+                } else {
+            System.out.println("Personaje no guardado.");
+            }
+        }    
     }
     private static Personaje[] extraerPersonaje(String[] arrayPersonajes, boolean esJson){
         Personaje[] personajesExtraidos = new Personaje[arrayPersonajes.length];
@@ -94,7 +123,7 @@ public class AppCombateSingular {
                         } else {
                             System.out.print("¿Es mediante una Ruta a un archivo.JSON ? (s/n): ");
                             if (Util.confirmarSN()) {
-                                personajesFichero = extraerPersonaje(Util.readFileToStringArray(rutaFile), true);
+                                personajesFichero = extraerPersonaje(Util.readFileToString(rutaFile).split("}"), true);
                             } else {
                                 restart = true;
                             }
@@ -107,9 +136,47 @@ public class AppCombateSingular {
         }
         return personajesFichero;
     }
+    public static void bucleGuardadoPersonajes(Personaje[] personajesCreados){
+        boolean repetir = true;
+        while (repetir) {
+            repetir = false;
+            System.out.println("¿Quieres guardar los personajes? (s/n): ");
+            if (Util.confirmarSN()) {
+                String rutaFichero;
+                System.out.println("¿Quieres guardar todos los personajes creados y cargados en un único Archivo? (s/n): ");
+                if (Util.confirmarSN()) {
+                    rutaFichero = AppCreaPersonaje.pedirRuta();
+                    if (!rutaFichero.equals("-1")) {
+                        String[] borrado = new String[personajesCreados.length];
+                        int i = 0;
+                        for (String string : borrado) {
+                            string = "\n";
+                            borrado[i] = string;
+                            i++;
+                        }
+                        Util.writeStringToFile(borrado.toString(), rutaFichero, false); 
+                        for (Personaje personaje : personajesCreados) {
+                            personaje.toFile(rutaFichero);
+                        }
+                    } else {
+                        System.out.println("Personajes no guardados.");
+                        repetir = true;
+                    }
+                } else{
+                    System.out.println("¿Quieres elegir individualmente si guardar y donde cada personaje creado y cargado? (s/n): ");
+                    if (Util.confirmarSN()) {
+                        guardarPorPersonaje(personajesCreados);
+                    } else {
+                        System.out.println("Personajes no guardados.");
+                        repetir = true;
+                        
+                    }
+                }
+            }
+        }
+    }
     private static void getPersonajes(Personaje[] personajesCreados){
         Personaje[] temp;
-
         System.out.print("¿Quieres cargar los personajes de un archivo? (s/n): ");
         if (Util.confirmarSN()) {
             /*System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
@@ -129,21 +196,51 @@ public class AppCombateSingular {
     }
     public static void main(String[] args) {
         Personaje[] personajesCreados = new Personaje[0];
-        Personaje[] personajesEnBatalla = new Personaje[2];
-        boolean turno = true;
-
         getPersonajes(personajesCreados);
 
         System.out.println("\nPersonajes disponibles:\n");
         for (Personaje personaje : personajesCreados) {
             personaje.mostrar();
         }
+        Personaje[] personajesEnBatalla;
         personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+
+        boolean turno = true;
         while (personajesEnBatalla[0].estaVivo() && personajesEnBatalla[1].estaVivo()) {
-            
-
-            turno = cambiar(turno);
+            byte personajeEnTurno = (byte) (turno ? 0 : 1);
+            String accion;
+            boolean accionNoValida = true;
+            int xp;
+            System.out.println("\nTurno de " + personajesEnBatalla[personajeEnTurno].toString());
+            while (accionNoValida) {
+                System.out.println("¿Qué va a hacer? ( 1 - Atacar | 2 - Curar )");// Aún no :  | 3 - Usar objeto | 4 - Huir
+                accion = Util.pedirPorTeclado(true);
+                switch (Integer.parseInt(accion)) {
+                    case 1:
+                        xp = personajesEnBatalla[personajeEnTurno].atacar(personajesEnBatalla[1 - personajeEnTurno]);
+                        personajesEnBatalla[personajeEnTurno].sumarExperiencia(xp);
+                        accionNoValida = false;
+                        break;
+    
+                    case 2:
+                        personajesEnBatalla[personajeEnTurno].curar();
+                        accionNoValida = false;
+                        break;
+                
+                    default:
+                        System.out.println("Acción no válida.");
+                        break;
+                }
+            }
+            cambiar(turno);
         }
-
+        System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
+        System.out.println("¿Otra batalla? (s/n)");
+        if (Util.confirmarSN()) {
+            
+        } else {
+            bucleGuardadoPersonajes(personajesCreados);
+        }
+        
     }
 }

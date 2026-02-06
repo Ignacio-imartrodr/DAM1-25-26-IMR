@@ -11,49 +11,42 @@ import java.util.Arrays;
  */
 
 public class AppCreaPersonaje {
-    public static void guardarPersonaje(Personaje personaje){
-        boolean restart = false;
+    public static String pedirRuta(){
+        boolean restart = true;
+        String rutaFichero = "-1";
         while (restart) {
             restart = false;
             System.out.println("Opciones: \nJson o Csv");
-            System.out.print("¿Quieres guardar el personaje en un fichero? (s/n): ");
+            System.out.print("¿Quieres guardar en un fichero? (s/n): ");
             if (Util.confirmarSN()) {
-                System.out.print("¿Quieres guardar el personaje en un fichero.CSV ? (s/n): ");
+                System.out.print("¿Quieres guardar en un fichero.CSV ? (s/n): ");
                 if (Util.confirmarSN()) {
                     /*System.out.print("Ruta del fichero: ");
                     String rutaFichero = Util.pedirPorTeclado(false); */
-                    String rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.csv";
-                    Util.writeStringToFile(personaje.toCsvString(), rutaFichero);
-                    System.out.println("Personaje guardado en " + rutaFichero);
-                } else {
-                    System.out.print("¿Quieres guardar el personaje en un fichero.JSON ? (s/n): ");
-                    if (Util.confirmarSN()) {
-                        System.out.println("Opciones: \nURL o Ruta del fichero");
-                        System.out.print("¿Quieres guardar el personaje mediante una URL ? (s/n): ");
-                        if (Util.confirmarSN()) {
-                            /*System.out.print("Ruta del fichero: ");
-                            String rutaFichero = Util.pedirPorTeclado(false); */
-                            String rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json";
-                            Util.writeStringToFile(personaje.toJsonString(), rutaFichero);
-                            System.out.println("Personaje guardado en " + rutaFichero);
-                        } else {
-                            System.out.print("¿Quieres guardar el personaje mediante una Ruta a un archivo.JSON ? (s/n): ");
-                            if (Util.confirmarSN()) {
-                                /*System.out.print("Ruta del fichero: ");
-                                String rutaFichero = Util.pedirPorTeclado(false); */
-                                String rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json";
-                                Util.writeStringToFile(personaje.toJsonString(), rutaFichero);
-                                System.out.println("Personaje guardado en " + rutaFichero);
-                            } else {
-                                restart = true;
-                            }
-                        }
-                    } else {
+                    rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.csv";
+                    if (!rutaFichero.endsWith(".csv")) {
+                        System.out.println("La ruta debe contener un fichero con extensión .csv");
                         restart = true;
                     }
+                } else {
+                    System.out.print("¿Quieres guardar en un fichero.JSON ? (s/n): ");
+                    if (Util.confirmarSN()) {
+                        /*System.out.print("Ruta del fichero: ");
+                        String rutaFichero = Util.pedirPorTeclado(false); */
+                        rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json";
+                        if (!rutaFichero.endsWith(".json")) {
+                            System.out.println("La ruta debe contener un fichero con extensión .json");
+                            restart = true;
+                        } else {
+                                restart = true;
+                        }
+                    }
                 }
+            } else {
+                System.out.println("Personaje no guardado.");
             }
         }
+        return rutaFichero;
     }
     public static Personaje[] pedirPersonajes() {
         Personaje[] personajesNuevos = new Personaje[0];
@@ -68,8 +61,7 @@ public class AppCreaPersonaje {
                 System.out.println("¿Es el personaje correcto? (s/n):");
                 if (Util.confirmarSN()) {
                     personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
-                    personajesNuevos[personajesNuevos.length] = personaje;
-                    guardarPersonaje(personaje);
+                    personajesNuevos[personajesNuevos.length - 1] = personaje;
                 }
             } else {
                 System.out.println();
@@ -77,5 +69,16 @@ public class AppCreaPersonaje {
             }
         }
         return personajesNuevos;
+    }
+    public static void main(String[] args) {
+        Personaje[] personajesNuevos = pedirPersonajes();
+        for (Personaje personaje : personajesNuevos) {
+            String ruta = pedirRuta();
+            if (ruta.equals("-1")) {
+                System.out.println("No se guardó el personaje.");
+            } else {
+                personaje.toFile(ruta);
+            }
+        }
     }
 }
