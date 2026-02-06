@@ -2,6 +2,9 @@ package UD4.rol;
 
 import java.util.Random;
 
+/**
+ * @author Ignacio MR
+ */
 
 public class Personaje {
     String nombre;
@@ -104,7 +107,7 @@ public class Personaje {
         this.constitucion = asignarStatRng(constitucion) + bonusConstitucion;
         this.nivel = (byte) asignarStatNoRng(false, nivel);
         this.experiencia = asignarStatNoRng(true, experiencia);
-        /*
+        /* Ignorar
         try {
             int xp = Integer.parseInt(experiencia.strip());
             sumarExperiencia(xp);

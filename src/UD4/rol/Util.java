@@ -178,19 +178,31 @@ public class Util {
     }
 
     /**
-     * Pregunta por teclado "s" o "n" hasta que obtener una respuesta válida
+     * Pregunta por teclado {@code opcion1 } o {@code opcion2 } hasta obtener una respuesta válida (si se presiona "Enter" selecciona {@code opcion1 })
      * 
-     * @return {@code true} if "s", {@code false} if "n".
+     * @param   opcion1    : Si es null vale "s" sino el valor {@code String } introducido y es la respuesta por defecto.
+     * @param   opcion2    : Si es null vale "n" sino el valor {@code String } introducido.
+     * @return {@code true} if {@code respuesta.equals(opcion1) || respuesta.equals("-1")}, {@code false} if {@code respuesta.equeals(opcion2) }.
      */
-    public static boolean confirmarSN(){
+    public static boolean escogerOpcion(Object opcion1, Object opcion2){
+        if (opcion1.equals(null)) {
+            opcion1 = "s";
+        } else {
+            opcion1 = opcion1.toString().toLowerCase();
+        }
+        if (opcion2.equals(null)) {
+            opcion2 = "n";
+        } else {
+            opcion2 = opcion2.toString().toLowerCase();
+        }
         String respuesta;
         boolean s = false;
-        respuesta = Util.pedirPorTeclado(false);
-        while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
-            System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = Util.pedirPorTeclado(false);
+        respuesta = Util.pedirPorTeclado(false).toLowerCase();
+        while (!respuesta.equals(opcion1) && !respuesta.equals(opcion2) && !respuesta.equals("-1")) {
+            System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 +"\": ");
+            respuesta = Util.pedirPorTeclado(false).toLowerCase();
         }
-        if (respuesta.equalsIgnoreCase("s")) {
+        if (respuesta.equals(opcion1) || respuesta.equals("-1")) {
             s = true;
         }
         return s;

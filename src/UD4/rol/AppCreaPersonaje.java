@@ -16,30 +16,29 @@ public class AppCreaPersonaje {
         String rutaFichero = "-1";
         while (restart) {
             restart = false;
-            System.out.println("Opciones: \nJson o Csv");
-            System.out.print("¿Quieres guardar en un fichero? (s/n): ");
-            if (Util.confirmarSN()) {
-                System.out.print("¿Quieres guardar en un fichero.CSV ? (s/n): ");
-                if (Util.confirmarSN()) {
+            System.out.print("¿Quieres guardar en un fichero? (S/n): ");
+            if (Util.escogerOpcion(null, null)) {
+                System.out.println("OPCIONES: \nJson o Csv");
+                System.out.print("¿Tipo de fichero? (J/c): ");
+                if (Util.escogerOpcion("j", "c")) {
                     /*System.out.print("Ruta del fichero: ");
                     String rutaFichero = Util.pedirPorTeclado(false); */
-                    rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.csv";
+                    rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.csv"; //TODO cambiar
                     if (!rutaFichero.endsWith(".csv")) {
                         System.out.println("La ruta debe contener un fichero con extensión .csv");
                         restart = true;
+                    } else {
+                        restart = true;
                     }
-                } else {
-                    System.out.print("¿Quieres guardar en un fichero.JSON ? (s/n): ");
-                    if (Util.confirmarSN()) {
-                        /*System.out.print("Ruta del fichero: ");
-                        String rutaFichero = Util.pedirPorTeclado(false); */
-                        rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json";
-                        if (!rutaFichero.endsWith(".json")) {
-                            System.out.println("La ruta debe contener un fichero con extensión .json");
-                            restart = true;
-                        } else {
-                                restart = true;
-                        }
+                } else {            
+                    /*System.out.print("Ruta del fichero: ");
+                    String rutaFichero = Util.pedirPorTeclado(false); */
+                    rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json"; //TODO cambiar
+                    if (!rutaFichero.endsWith(".json")) {
+                        System.out.println("La ruta debe contener un fichero con extensión .json");
+                        restart = true;
+                    } else {
+                        restart = true;
                     }
                 }
             } else {
@@ -52,14 +51,14 @@ public class AppCreaPersonaje {
         Personaje[] personajesNuevos = new Personaje[0];
         boolean seguir = true;
         while (seguir) {
-            System.out.print("¿Quieres crear un nuevo personaje? (s/n): ");
-            if (Util.confirmarSN()) {
+            System.out.print("¿Quieres crear un nuevo personaje? (S/n): ");
+            if (Util.escogerOpcion(null, null)) {
                 Personaje personaje = new Personaje();
                 System.out.println("\nRazas disponibles:\n\n" + Personaje.getRazasStats());
                 personaje.crearPersonaje();
                 personaje.mostrar();
-                System.out.println("¿Es el personaje correcto? (s/n):");
-                if (Util.confirmarSN()) {
+                System.out.println("¿Es el personaje correcto? (S/n):");
+                if (Util.escogerOpcion(null, null)) {
                     personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
                     personajesNuevos[personajesNuevos.length - 1] = personaje;
                 }
