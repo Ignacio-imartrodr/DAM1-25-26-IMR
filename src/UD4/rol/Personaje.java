@@ -279,7 +279,7 @@ public class Personaje {
         return nombreYVida;
     }
     public byte sumarExperiencia(int puntos){
-        if (puntos > EXP_MAX) { //TODO probar exception
+        if (puntos > EXP_MAX) {
             throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
         }
         byte lvlsUp = 0;

@@ -11,7 +11,7 @@ import java.util.Arrays;
  */
 
 public class AppCreaPersonaje {
-    public static String pedirRuta(){
+    public static String pedirRutaGuardado(){
         boolean restart = true;
         String rutaFichero = "-1";
         while (restart) {
@@ -21,9 +21,8 @@ public class AppCreaPersonaje {
                 System.out.println("OPCIONES: \nJson o Csv");
                 System.out.print("¿Tipo de fichero? (J/c): ");
                 if (Util.escogerOpcion("j", "c")) {
-                    /*System.out.print("Ruta del fichero: ");
-                    String rutaFichero = Util.pedirPorTeclado(false); */
-                    rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.csv"; //TODO cambiar
+                    System.out.print("Ruta del fichero: ");
+                    rutaFichero = Util.pedirPorTeclado(false);
                     if (!rutaFichero.endsWith(".csv")) {
                         System.out.println("La ruta debe contener un fichero con extensión .csv");
                         restart = true;
@@ -31,9 +30,8 @@ public class AppCreaPersonaje {
                         restart = true;
                     }
                 } else {            
-                    /*System.out.print("Ruta del fichero: ");
-                    String rutaFichero = Util.pedirPorTeclado(false); */
-                    rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json"; //TODO cambiar
+                    System.out.print("Ruta del fichero: ");
+                    rutaFichero = Util.pedirPorTeclado(false);
                     if (!rutaFichero.endsWith(".json")) {
                         System.out.println("La ruta debe contener un fichero con extensión .json");
                         restart = true;
@@ -72,7 +70,7 @@ public class AppCreaPersonaje {
     public static void main(String[] args) {
         Personaje[] personajesNuevos = pedirPersonajes();
         for (Personaje personaje : personajesNuevos) {
-            String ruta = pedirRuta();
+            String ruta = pedirRutaGuardado();
             if (ruta.equals("-1")) {
                 System.out.println("No se guardó el personaje.");
             } else {

@@ -56,7 +56,6 @@ public class AppCombateSingular {
             if (Util.escogerOpcion(null, null)) {
                 boolean repetir = true;
                 while (repetir) {
-                    System.out.println("src\\UD4\\rol\\PersonajesGuardados.csv");//TODO borrar
                     System.out.print("Ruta del fichero (Json o Csv): ");
                     rutaFichero = Util.pedirPorTeclado(false);
                     personaje.toFile(rutaFichero);
@@ -163,6 +162,21 @@ public class AppCombateSingular {
                         restart = false;
                     }
                 }
+            } else {
+                System.out.println("Quierres ingresar otra ruta? (S/n)");
+                if (Util.escogerOpcion(null, null)) {
+                    System.out.print("Ruta? (\"n\" para salir): ");
+                    rutaFile = Util.pedirPorTeclado(false);
+                    if (rutaFile.equalsIgnoreCase("n")) {
+                        System.out.println("personajes no cargados");
+                        restart = false;
+                    } else {
+                        restart = true;
+                    }
+                } else {
+                    System.out.println("personajes no cargados");
+                    restart = false;
+                }
             }
         }
         return personajesFichero;
@@ -176,7 +190,7 @@ public class AppCombateSingular {
                 String rutaFichero;
                 System.out.println("¿Quieres guardar todos los personajes creados y cargados en un único Archivo? (S/n): ");
                 if (Util.escogerOpcion(null, null)) {
-                    rutaFichero = AppCreaPersonaje.pedirRuta();
+                    rutaFichero = AppCreaPersonaje.pedirRutaGuardado();
                     if (!rutaFichero.equals("-1")) {
                         String[] borrado = new String[personajesCreados.length];
                         int i = 0;
@@ -210,9 +224,8 @@ public class AppCombateSingular {
         Personaje[] temp;
         System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
         if (Util.escogerOpcion(null, null)) {
-            /*System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
-            String rutaFichero = Util.pedirPorTeclado(false); */
-            String rutaFichero = "src\\UD4\\rol\\PersonajesGuardados.json"; //TODO cambiar
+            System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
+            String rutaFichero = Util.pedirPorTeclado(false);
             temp = cargarPersonajesDeArchivo(rutaFichero);
             if (!temp.equals(null)) {
                 for (Personaje personaje : temp) {
