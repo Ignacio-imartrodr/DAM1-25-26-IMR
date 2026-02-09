@@ -16,7 +16,7 @@ public class Personaje {
     int experiencia;
     int vidaMax = 50 + constitucion;
     int puntosVida = vidaMax;
-    final static int EXP_MAX = 255999; 
+    final static int EXP_MAX = 127999; 
     final static String[] RAZAS_VALIDAS = {"HUMANO", "ELFO", "ENANO", "HOBBIT", "ORCO", "TROLL"};
 
     private int asignarStatRng(String texto){
@@ -298,9 +298,16 @@ public class Personaje {
         if (puntos/1000 != 0) {
             lvlsUp = (byte) (puntos / 1000);
             experiencia += puntos % 1000;
-        }
-        for (int i = 0; i < lvlsUp; i++) {
-            subirNivel();
+            if (experiencia >= 1000 ) {
+                if (lvlsUp == EXP_MAX/1000) {
+                    throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
+                }
+                experiencia %= 1000;
+                lvlsUp++;
+            }
+            for (int i = 0; i < lvlsUp; i++) {
+                subirNivel();
+            }
         }
         return lvlsUp;
     }

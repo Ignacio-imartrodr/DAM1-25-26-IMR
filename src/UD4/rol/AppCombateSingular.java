@@ -11,14 +11,14 @@ import java.util.Arrays;
  */
 
 public class AppCombateSingular {
-    private static void cambiar(boolean turno) {
-        turno = turno ? false : true;
+    private static boolean cambiar(boolean turno) {
+        return turno = turno ? false : true;
     }
 
     private static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados) {
         Personaje[] personajesEnBatalla = new Personaje[2];
         boolean esSiguiente = true;
-        for (int i = -1, j = 0, skip = -1; i < personajesCreados.length && j < personajesEnBatalla.length;) {
+        for (int i = -1, j = 0, skip = -1; j < personajesEnBatalla.length;) {
             if (esSiguiente) {
                 if (i == personajesCreados.length -1) {
                     i = 0;
@@ -113,7 +113,7 @@ public class AppCombateSingular {
     }
     private static Personaje[] cargarPersonajesDeArchivo(String rutaFile){
         String[] personajesGuardados;
-        Personaje[] personajesFichero = null;
+        Personaje[] personajesFichero = new Personaje[0];
         boolean restart = true;
         while (restart) {
             restart = false;
@@ -173,7 +173,7 @@ public class AppCombateSingular {
                         restart = true;
                     }
                 } else {
-                    System.out.println("personajes no cargados");
+                    System.out.println("No se han cargado personajes.");
                     restart = false;
                 }
             }
@@ -222,26 +222,29 @@ public class AppCombateSingular {
     private static Personaje[] getPersonajes(){
         Personaje[] personajesCreados = new Personaje[0];
         Personaje[] temp;
-        System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
-        if (Util.escogerOpcion("s", "n")) {
-            String rutaFichero;
-            do {
-                System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
-                rutaFichero = Util.pedirPorTeclado(false);
-            } while (rutaFichero.equals("-1"));
+        while (personajesCreados.length < 2) {
+            System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
+            if (Util.escogerOpcion("s", "n")) {
+                String rutaFichero;
+                do {
+                    System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
+                    rutaFichero = Util.pedirPorTeclado(false);
+                } while (rutaFichero.equals("-1"));
 
-            temp = cargarPersonajesDeArchivo(rutaFichero);
-            if (!temp.equals(null)) {
+                temp = cargarPersonajesDeArchivo(rutaFichero);
                 for (Personaje personaje : temp) {
                     personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
                     personajesCreados[personajesCreados.length - 1] = personaje;
-                }    
+                }
             }
-        }
-        temp = AppCreaPersonaje.pedirPersonajes();
-        for (Personaje personaje : temp) {
-            personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
-            personajesCreados[personajesCreados.length - 1] = personaje;
+            temp = AppCreaPersonaje.pedirPersonajes();
+            for (Personaje personaje : temp) {
+                personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
+                personajesCreados[personajesCreados.length - 1] = personaje;
+            }
+            if (personajesCreados.length < 2) {
+                System.out.println("Se necesitan al menos 2 personajes para la batalla.");
+            }
         }
         return personajesCreados;
     }
@@ -253,49 +256,65 @@ public class AppCombateSingular {
         for (Personaje personaje : personajesCreados) {
             personaje.mostrar();
             System.out.println("________________________");
+            System.out.println();
         }
         bucleGuardadoPersonajes(personajesCreados);
 
-        Personaje[] personajesEnBatalla;
+        Personaje[] personajesEnBatalla = new Personaje[2];
         personajesEnBatalla = seleccionarPersonajes(personajesCreados);
-
-        boolean turno = true;
-        while (personajesEnBatalla[0].estaVivo() && personajesEnBatalla[1].estaVivo()) {
-            byte personajeEnTurno = (byte) (turno ? 0 : 1);
-            String accion;
-            boolean accionNoValida = true;
-            int xp;
-            System.out.println("\nTurno de " + personajesEnBatalla[personajeEnTurno].toString());
-            while (accionNoValida) {
-                System.out.println("¿Qué va a hacer? ( 1 - Atacar | 2 - Curar )");// Aún no :  | 3 - Usar objeto | 4 - Huir
-                accion = Util.pedirPorTeclado(true);
-                switch (Integer.parseInt(accion)) {
-                    case 1:
-                        xp = personajesEnBatalla[personajeEnTurno].atacar(personajesEnBatalla[1 - personajeEnTurno]);
-                        personajesEnBatalla[personajeEnTurno].sumarExperiencia(xp);
-                        accionNoValida = false;
-                        break;
-    
-                    case 2:
-                        personajesEnBatalla[personajeEnTurno].curar();
-                        accionNoValida = false;
-                        break;
-                
-                    default:
-                        System.out.println("Acción no válida.");
-                        accionNoValida = true;
-                        break;
-                }
-            }
-            cambiar(turno);
-        }
-        System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
-        System.out.println("¿Otra batalla? (S/n)");
-        if (Util.escogerOpcion("s", "n")) {
+        while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
+            System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
             personajesEnBatalla = seleccionarPersonajes(personajesCreados);
-        } else {
-            bucleGuardadoPersonajes(personajesCreados);
         }
+
+        boolean batalla = true;
+        boolean turno = true;
+        while (batalla) {
+            while (personajesEnBatalla[0].estaVivo() && personajesEnBatalla[1].estaVivo()) {
+                byte personajeEnTurno;
+                personajeEnTurno = (byte) (turno ? 0 : 1);
+                String accion;
+                boolean accionNoValida = true;
+                int xp;
+                System.out.println("\nTurno de " + personajesEnBatalla[personajeEnTurno].toString());
+                while (accionNoValida) {
+                    System.out.println("¿Qué va a hacer? ( 1 - Atacar | 2 - Curar )");// Aún no :  | 3 - Usar objeto | 4 - Huir
+                    accion = Util.pedirPorTeclado(true);
+                    switch (Integer.parseInt(accion)) {
+                        case 1:
+                            xp = personajesEnBatalla[personajeEnTurno].atacar(personajesEnBatalla[1 - personajeEnTurno]);
+                            personajesEnBatalla[personajeEnTurno].sumarExperiencia(xp);
+                            accionNoValida = false;
+                            turno = cambiar(turno);
+                            break;
         
+                        case 2:
+                            personajesEnBatalla[personajeEnTurno].curar();
+                            accionNoValida = false;
+                            break;
+                    
+                        default:
+                            System.out.println("Acción no válida.");
+                            accionNoValida = true;
+                            break;
+                    }
+                    turno = cambiar(turno);
+                }
+                
+            }
+            System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
+            System.out.println("¿Otra batalla? (S/n)");
+            if (Util.escogerOpcion("s", "n")) {
+                personajesEnBatalla = new Personaje[2];
+                personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+                while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
+                    System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
+                    personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+                }   
+            } else {
+                bucleGuardadoPersonajes(personajesCreados);
+                batalla = false;
+            }
+        }
     }
 }

@@ -107,8 +107,8 @@ public class Util {
             if (var.equals("")|| var.isBlank() || var.isEmpty()) {
                 return "-1";
             }
-            for (int i = 0; i < var.length() && sonNumeros; i++) {
-                if (!Character.isDigit(var.charAt(i)) || var.charAt(i) != ',' || var.charAt(i) != '-' || var.charAt(i) != '+') {
+            for (int i = 0; i < var.length() && pideNumero; i++) {
+                if (!Character.isDigit(var.charAt(i)) && var.charAt(i) != ',' && var.charAt(i) != '-' && var.charAt(i) != '+') {
                     sonNumeros = false;
                 }
             }
