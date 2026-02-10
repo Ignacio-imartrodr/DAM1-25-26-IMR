@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Personaje {
     String nombre;
-    String raza;
+    Razas raza;
     int fuerza;
     int agilidad;
     int constitucion;
@@ -16,8 +16,7 @@ public class Personaje {
     int experiencia;
     int vidaMax = 50 + constitucion;
     int puntosVida = vidaMax;
-    final static int EXP_MAX = 127999; 
-    final static String[] RAZAS_VALIDAS = {"HUMANO", "ELFO", "ENANO", "HOBBIT", "ORCO", "TROLL"};
+    final static int EXP_MAX = 127999;
 
     /**
      * Asigna un valor valido a un stat o un valor random
@@ -66,14 +65,15 @@ public class Personaje {
         }
         return num;
     }
-    public static String asignarRaza(String respuesta){
+    public static Razas asignarRaza(String respuesta){
+        Razas raza;
         if (respuesta.equals("-1")) {
-            respuesta = RAZAS_VALIDAS[0];
+            raza = Razas.Array()[0];
         }
         if ( !respuesta.equals("-1") && Util.UbiObjetoEnArray(respuesta, Personaje.RAZAS_VALIDAS) == -1 ) {
             throw new PersonajeException("Raza no válida.");
         }
-        return respuesta;
+        return raza;
     }
     Personaje(Object nullObjet){
         
@@ -151,37 +151,37 @@ public class Personaje {
         */
     }
     
-    private static String[] asignarBonus(String raza) {
+    private static String[] asignarBonus(Razas raza) {
         String bonusFuerza = "x";
         String bonusAgilidad = "x";
         String bonusConstitucion = "x";
         switch (raza) {
-                case "HUMANO":
+                case HUMANO:
                     bonusFuerza = "x";
                     bonusAgilidad = "x";
                     bonusConstitucion = "x";
                     break;
-                case "ELFO":
+                case ELFO:
                     bonusFuerza = "-5";
                     bonusAgilidad = "+15";
                     bonusConstitucion = "-10";
                     break;
-                case "ENANO":
+                case ENANO:
                     bonusFuerza = "+5";
                     bonusAgilidad = "-15";
                     bonusConstitucion = "+10";
                     break;
-                case "HOBBIT":
+                case HOBBIT:
                     bonusFuerza = "-10";
                     bonusAgilidad = "+20";
                     bonusConstitucion = "-5";
                     break;
-                case "ORCO":
+                case ORCO:
                     bonusFuerza = "+15";
                     bonusAgilidad = "-25";
                     bonusConstitucion = "+10";
                     break;
-                case "TROLL":
+                case TROLL:
                     bonusFuerza = "+10";
                     bonusAgilidad = "-25";
                     bonusConstitucion = "+15";
@@ -192,7 +192,7 @@ public class Personaje {
     }
     public static String getRazasStats() {
         String fichas = "";
-        for (String raza : RAZAS_VALIDAS) {
+        for (Razas raza : Razas.Array()) {
             String[] bonus = asignarBonus(raza);
             fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
         }
