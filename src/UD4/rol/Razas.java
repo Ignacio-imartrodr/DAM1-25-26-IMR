@@ -14,8 +14,8 @@ public enum Razas {
     public static Razas[] Array(){
         Razas[] razas = new Razas[0];
         for (Razas raza : Razas.values()) {
-            Arrays.copyOf(razas, razas.length + 1);
-            razas[razas.length -1] = raza;
+            razas = Arrays.copyOf(razas, razas.length + 1);
+            razas[razas.length - 1] = raza;
         }
         return razas;
     }

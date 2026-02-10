@@ -7,16 +7,16 @@ import java.util.Random;
  */
 
 public class Personaje {
-    String nombre;
-    Razas raza;
-    int fuerza;
-    int agilidad;
-    int constitucion;
-    byte nivel;
-    int experiencia;
-    int vidaMax = 50 + constitucion;
-    int puntosVida = vidaMax;
-    final static int EXP_MAX = 127999;
+    private String nombre;
+    private Razas raza;
+    private int fuerza;
+    private int agilidad;
+    private int constitucion;
+    private byte nivel;
+    private int experiencia;
+    private int vidaMax = 50 + constitucion;
+    private int puntosVida = vidaMax;
+    private final static int EXP_MAX = 127999;
 
     /**
      * Asigna un valor valido a un stat o un valor random
@@ -66,18 +66,22 @@ public class Personaje {
         return num;
     }
     public static Razas asignarRaza(String respuesta){
-        Razas raza;
+        Razas raza = Razas.HUMANO;
         if (respuesta.equals("-1")) {
             raza = Razas.Array()[0];
+        } else {
+            try {
+                raza = Razas.valueOf(respuesta.toUpperCase());
+            } catch (Exception e) {
+                throw new PersonajeException("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
+            }
         }
-        if ( !respuesta.equals("-1") && Util.UbiObjetoEnArray(respuesta, Personaje.RAZAS_VALIDAS) == -1 ) {
+        /*if ( !respuesta.equals("-1") && Util.UbiObjetoEnArray(raza, Razas.Array()) == -1 ) {
             throw new PersonajeException("Raza no válida.");
-        }
+        }*/
         return raza;
     }
-    Personaje(Object nullObjet){
-        
-    }
+    
     /**
      * Crea un objeto sin entregarle parametros.
      * 
@@ -112,9 +116,9 @@ public class Personaje {
         }
         this.nombre = nombre;
         try {
-            this.raza = asignarRaza(raza.toUpperCase());
+            this.raza = asignarRaza(raza);
         } catch (PersonajeException e) {
-            this.raza = RAZAS_VALIDAS[0];
+            this.raza = Razas.HUMANO;
         }
         if (yaExistente) {
             if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
@@ -190,6 +194,9 @@ public class Personaje {
         String[] bonus = {bonusFuerza, bonusAgilidad, bonusConstitucion};
         return bonus;
     }
+    public String getNombre(){
+        return this.nombre;
+    }
     public static String getRazasStats() {
         String fichas = "";
         for (Razas raza : Razas.Array()) {
@@ -217,7 +224,7 @@ public class Personaje {
         
         for (boolean error = true; error;) {
             try {
-                raza = asignarRaza(Util.pedirPorTeclado(false).toUpperCase());
+                raza = asignarRaza(Util.pedirPorTeclado(false));
                 error = false;
             } catch (PersonajeException e) {
                 System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
@@ -280,7 +287,7 @@ public class Personaje {
         String ficha;
         String Cabecera = "Ficha Personaje\n=================\n";
         String nombre = "Nombre: " + this.nombre;
-        String nombreRaza = this.raza.charAt(0) + this.raza.substring(1).toLowerCase();
+        String nombreRaza = this.raza.toString();
         String raza = "Raza: " + nombreRaza;
         String nivel = "Nivel: " + this.nivel;
         String experiencia = "Experiencia: " + this.experiencia;
@@ -356,9 +363,7 @@ public class Personaje {
                 daño = enemigo.puntosVida;
             }
             enemigo.perderVida(daño);
-            enemigo.sumarExperiencia(daño);
         } else {
-            System.out.println("El ataque falló!");
             daño = 0;
         }
         return daño;

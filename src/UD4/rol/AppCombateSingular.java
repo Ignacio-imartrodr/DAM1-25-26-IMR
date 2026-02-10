@@ -287,7 +287,23 @@ public class AppCombateSingular {
                     switch (Integer.parseInt(accion)) {
                         case 1:
                             xp = personajesEnBatalla[personajeEnTurno].atacar(personajesEnBatalla[1 - personajeEnTurno]);
-                            personajesEnBatalla[personajeEnTurno].sumarExperiencia(xp);
+                            try {
+                                personajesEnBatalla[personajeEnTurno].sumarExperiencia(xp);
+                                personajesEnBatalla[1 - personajeEnTurno].sumarExperiencia(xp);
+                            } catch (PersonajeException e) {
+                                int xpRest = xp;
+                                for (; xpRest >= 125000; xpRest -= 125000) {
+                                    personajesEnBatalla[personajeEnTurno].sumarExperiencia(125000);
+                                    personajesEnBatalla[1 - personajeEnTurno].sumarExperiencia(125000);
+                                }
+                                personajesEnBatalla[personajeEnTurno].sumarExperiencia(xpRest);
+                                personajesEnBatalla[1 - personajeEnTurno].sumarExperiencia(xpRest);
+                            }
+                            if (xp == 0) {
+                                System.out.println("El ataque falló!");
+                            } else {
+                                System.out.println( "El personaje \"" + personajesEnBatalla[1 - personajeEnTurno].getNombre() + "\" recibió " + xp + " de daño!");
+                            }
                             accionNoValida = false;
                             break;
         
