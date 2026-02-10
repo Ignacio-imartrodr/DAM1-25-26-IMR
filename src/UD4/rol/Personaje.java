@@ -19,17 +19,36 @@ public class Personaje {
     final static int EXP_MAX = 127999; 
     final static String[] RAZAS_VALIDAS = {"HUMANO", "ELFO", "ENANO", "HOBBIT", "ORCO", "TROLL"};
 
-    private int asignarStatRng(String texto){
+    /**
+     * Asigna un valor valido a un stat o un valor random
+     * @param   texto   :
+     * @param   stat    : 0 para Fuerza, 1 para Agilidad o 2 para Constitucion
+     * @return
+     * 
+     * 
+     */
+    private int asignarStatRng(String texto, int stat){
+        if (stat > 2) {
+            throw new PersonajeException("Stat no valida");
+        }
         int num;
         final int MIN = 1;
         final int MAX = 100;
-        if ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        
+        if ( !texto.equals("-1") && (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
             throw new PersonajeException("Valores fuera de límites");
         }
         if (texto.equals("-1")) {
             num = generarRnd1a100();
         } else {
             num = Integer.parseInt(texto);
+        }
+        String[] bonus = asignarBonus(raza);
+        int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
+        if (num + bonusStat < 1) {
+            num = 1;
+        } else {
+            num += bonusStat;
         }
         return num;
     }
@@ -48,11 +67,11 @@ public class Personaje {
         return num;
     }
     public static String asignarRaza(String respuesta){
-        if ( !respuesta.equals("-1") || !Util.verificaObjetoEnArray(respuesta, Personaje.RAZAS_VALIDAS) ) {
-            throw new PersonajeException("Raza no válida.");
-        }
         if (respuesta.equals("-1")) {
             respuesta = RAZAS_VALIDAS[0];
+        }
+        if ( !respuesta.equals("-1") && Util.UbiObjetoEnArray(respuesta, Personaje.RAZAS_VALIDAS) == -1 ) {
+            throw new PersonajeException("Raza no válida.");
         }
         return respuesta;
     }
@@ -108,14 +127,9 @@ public class Personaje {
                 this.experiencia = Integer.parseInt(experiencia);
             }
         } else {
-            String[] bonus = asignarBonus(raza);
-            int bonusFuerza = bonus[0].equals("x") ? 0 : Integer.parseInt(bonus[0]);
-            int bonusAgilidad = bonus[1].equals("x") ? 0 : Integer.parseInt(bonus[1]);
-            int bonusConstitucion = bonus[2].equals("x") ? 0 : Integer.parseInt(bonus[2]);
-    
-            this.fuerza = asignarStatRng(fuerza) + bonusFuerza;
-            this.agilidad = asignarStatRng(agilidad) + bonusAgilidad;
-            this.constitucion = asignarStatRng(constitucion) + bonusConstitucion;
+            this.fuerza = asignarStatRng(fuerza, 0);
+            this.agilidad = asignarStatRng(agilidad, 1);
+            this.constitucion = asignarStatRng(constitucion, 2);
             this.nivel = (byte) asignarStatNoRng(false, nivel);
             this.experiencia = asignarStatNoRng(true, experiencia);
         }
@@ -200,30 +214,26 @@ public class Personaje {
         }
         nombre = nombre.strip();
         System.out.println("Escoge una de las siguientes razas: orco, elfo, HUMANO, enano, hobbit o troll");
-        raza = Util.pedirPorTeclado(false);
-        while ( !raza.equals("-1") && !Util.verificaObjetoEnArray(raza.toUpperCase(), RAZAS_VALIDAS) ) {
-            System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
-            raza = Util.pedirPorTeclado(false);
+        
+        for (boolean error = true; error;) {
+            try {
+                raza = asignarRaza(Util.pedirPorTeclado(false).toUpperCase());
+                error = false;
+            } catch (PersonajeException e) {
+                System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
+                error = true;
+            }
         }
-        if (raza.equals("-1")) {
-            raza = RAZAS_VALIDAS[0];
-        } else {
-            raza = raza.toUpperCase();
-        }
-        String[] bonus = asignarBonus(raza);
-        int bonusFuerza = bonus[0].equals("x") ? 0 : Integer.parseInt(bonus[0]);
-        int bonusAgilidad = bonus[1].equals("x") ? 0 : Integer.parseInt(bonus[1]);
-        int bonusConstitucion = bonus[2].equals("x") ? 0 : Integer.parseInt(bonus[2]);
 
         System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
         System.out.print("Fuerza: ");
-        fuerza = pedirStatRng() + bonusFuerza;
+        fuerza = asignarStatRng(pedirStatRng(), 0);
         
         System.out.print("Agilidad: ");
-        agilidad = pedirStatRng() + bonusAgilidad;
+        agilidad = asignarStatRng(pedirStatRng(), 1);
 
         System.out.print("Constitución: ");
-        constitucion = pedirStatRng() + bonusConstitucion;
+        constitucion = asignarStatRng(pedirStatRng(), 2);
         
         System.out.print("Nivel: ");
         nivel = (byte) pedirStatNoRng(false);
@@ -235,10 +245,8 @@ public class Personaje {
         puntosVida = vidaMax;
     }
 
-    private int pedirStatRng(){
-        String texto;
-        int num;
-        texto = Util.pedirPorTeclado(true);
+    private String pedirStatRng(){
+        String texto = Util.pedirPorTeclado(true);
         final int MIN = 1;
         final int MAX = 100;
         while ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
@@ -246,11 +254,9 @@ public class Personaje {
             texto = Util.pedirPorTeclado(true);
         }
         if (texto.equals("-1")) {
-            num = generarRnd1a100();
-        } else {
-            num = Integer.parseInt(texto);
+            texto = String.valueOf(generarRnd1a100());
         }
-        return num;
+        return texto;
     }
     private int pedirStatNoRng(boolean esXp){
         String texto;
@@ -282,8 +288,9 @@ public class Personaje {
         String fuerza = "Fuerza: " + this.fuerza;
         String agilidad = "Agilidad: " + this.agilidad;
         String constitucion = "Constitución: " + this.constitucion;
+        String overAll = "OverAll: " + (this.fuerza + this.agilidad + this.constitucion);
 
-        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, raza, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion);
+        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, raza, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion, overAll);
         System.out.println(ficha);
     }
     public String toString(){
@@ -321,7 +328,7 @@ public class Personaje {
         puntosVida += (vidaMax -  oldVidaMax);
     }
     public void curar(){
-        if (puntosVida < vidaMax && puntosVida > 0) {
+        if (puntosVida < vidaMax) {
             puntosVida = vidaMax;
         }
     }
@@ -351,16 +358,17 @@ public class Personaje {
             enemigo.perderVida(daño);
             enemigo.sumarExperiencia(daño);
         } else {
+            System.out.println("El ataque falló!");
             daño = 0;
         }
         return daño;
     }
     
     public String toJsonString() {
-        return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%s,\"agilidad\":%s,\"constitucion\":%s,\"nivel\":%s,\"experiencia\":%s,\"vidaMax\":%s,\"puntosVida\":%s}%n", nombre, raza, String.valueOf(fuerza), String.valueOf(agilidad), String.valueOf(constitucion), String.valueOf(nivel), String.valueOf(experiencia), String.valueOf(vidaMax), String.valueOf(puntosVida));
+        return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d,\"puntosVida\":%d}%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, vidaMax, puntosVida);
     }
     public String toCsvString() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s%n", nombre, raza, String.valueOf(fuerza), String.valueOf(agilidad), String.valueOf(constitucion), String.valueOf(nivel), String.valueOf(experiencia), String.valueOf(vidaMax), String.valueOf(puntosVida));
+        return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, vidaMax, puntosVida);
     }
     public void toFile(String filePath) {
         if (filePath.endsWith(".json")) {

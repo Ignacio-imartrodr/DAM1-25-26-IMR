@@ -1,6 +1,7 @@
 package UD4.rol;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * @author Ignacio MR
@@ -41,8 +42,11 @@ public class AppCombateSingular {
                     skip = i;
                 }
             }
-            System.out.println("Siguiente personaje o anterior? (S/a): ");
-            esSiguiente = Util.escogerOpcion("s", "a");
+            if (j < personajesEnBatalla.length) {
+                System.out.println("Siguiente personaje o anterior? (S/a): ");
+                esSiguiente = Util.escogerOpcion("s", "a");
+            }
+            
             
         }
         return personajesEnBatalla;
@@ -268,11 +272,11 @@ public class AppCombateSingular {
         }
 
         boolean batalla = true;
-        boolean turno = true;
         while (batalla) {
+            Random rnd = new Random();
+            boolean turno = rnd.nextBoolean();
             while (personajesEnBatalla[0].estaVivo() && personajesEnBatalla[1].estaVivo()) {
-                byte personajeEnTurno;
-                personajeEnTurno = (byte) (turno ? 0 : 1);
+                byte personajeEnTurno = (byte) (turno ? 0 : 1);
                 String accion;
                 boolean accionNoValida = true;
                 int xp;
@@ -285,7 +289,6 @@ public class AppCombateSingular {
                             xp = personajesEnBatalla[personajeEnTurno].atacar(personajesEnBatalla[1 - personajeEnTurno]);
                             personajesEnBatalla[personajeEnTurno].sumarExperiencia(xp);
                             accionNoValida = false;
-                            turno = cambiar(turno);
                             break;
         
                         case 2:
@@ -298,19 +301,20 @@ public class AppCombateSingular {
                             accionNoValida = true;
                             break;
                     }
-                    turno = cambiar(turno);
                 }
-                
+                turno = cambiar(turno);
             }
             System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
             System.out.println("¿Otra batalla? (S/n)");
             if (Util.escogerOpcion("s", "n")) {
+                personajesEnBatalla[0].curar();
+                personajesEnBatalla[1].curar();
                 personajesEnBatalla = new Personaje[2];
                 personajesEnBatalla = seleccionarPersonajes(personajesCreados);
                 while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
                     System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
                     personajesEnBatalla = seleccionarPersonajes(personajesCreados);
-                }   
+                }
             } else {
                 bucleGuardadoPersonajes(personajesCreados);
                 batalla = false;

@@ -141,16 +141,16 @@ public class Util {
     }
 
     /**
-     * Verifica si un objeto se encuentra en un array de ese objeto.
+     * Busca la posición de un objeto en un array de ese objeto y si no existe devuelve -1.
      * @param objetivo Objeto a buscar.
      * @param array Array donde buscar el objeto.
-     * @return  {@code true} si {@code objetivo} está en el array {@code array} o {@code false} si {@code objetivo} NO está en el array {@code array}
+     * @return  Ubicación de {@code objetivo} si está en el array {@code array} o {@code -1} si {@code objetivo} NO está en el array {@code array}
      */
-    public static boolean verificaObjetoEnArray(Object objetivo, Object[] array){ //Verificar como lo compara
-        boolean verificado = false;
-        for (Object object : array) {
-            if (object.equals(objetivo)) {
-                verificado = true;
+    public static int UbiObjetoEnArray(Object objetivo, Object[] array){ //Verificar como lo compara
+        int verificado = -1;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(objetivo)) {
+                verificado = i;
             }
         }
         return verificado;
