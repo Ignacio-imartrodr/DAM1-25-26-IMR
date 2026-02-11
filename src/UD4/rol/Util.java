@@ -41,6 +41,7 @@ public class Util {
             reader.close();
         } catch (IOException e) {
             System.out.println("No existe el fichero o hay un problema con él.");
+            return null;
         }
 
         // Devolvemos el contenido del fichero como un String

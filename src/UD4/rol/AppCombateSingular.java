@@ -79,7 +79,11 @@ public class AppCombateSingular {
         }    
     }
     private static Personaje[] extraerPersonaje(String[] arrayPersonajes, boolean esJson){
-        Personaje[] personajesExtraidos = new Personaje[arrayPersonajes.length];
+        Personaje[] personajesExtraidos = new Personaje[0];
+        try{
+            personajesExtraidos = new Personaje[arrayPersonajes.length];
+        } catch (Exception e) {}
+        
         String[] atributos;
         int i = 0;
         int idPers = 1;
@@ -231,11 +235,14 @@ public class AppCombateSingular {
             if (Util.escogerOpcion("s", "n")) {
                 String rutaFichero;
                 do {
-                    System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
-                    rutaFichero = Util.pedirPorTeclado(false);
-                } while (rutaFichero.equals("-1"));
-
-                temp = cargarPersonajesDeArchivo(rutaFichero);
+                    
+                    do {
+                        System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
+                        rutaFichero = Util.pedirPorTeclado(false);
+                    } while (rutaFichero.equals("-1"));
+    
+                    temp = cargarPersonajesDeArchivo(rutaFichero);
+                } while (temp == null);
                 for (Personaje personaje : temp) {
                     personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
                     personajesCreados[personajesCreados.length - 1] = personaje;
