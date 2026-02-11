@@ -68,7 +68,7 @@ public class Personaje {
     public static Razas asignarRaza(String respuesta){
         Razas raza = Razas.HUMANO;
         if (respuesta.equals("-1")) {
-            raza = Razas.Array()[0];
+            raza = Razas.toArray()[0];
         } else {
             try {
                 raza = Razas.valueOf(respuesta.toUpperCase());
@@ -199,7 +199,7 @@ public class Personaje {
     }
     public static String getRazasStats() {
         String fichas = "";
-        for (Razas raza : Razas.Array()) {
+        for (Razas raza : Razas.toArray()) {
             String[] bonus = asignarBonus(raza);
             fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
         }

@@ -160,7 +160,7 @@ public class Util {
      * Escribe una cadena de texto {@code str} en un archivo designado
      * @param   str   : Texto que se añadirá al fichero.
      * @param   filePath  : Ruta de la ubicación del archivo.
-     * @param   append  : {@code true }Para añadir al final del fichero {@code true }Para sustituir el principio del fichero
+     * @param   append  : {@code true} Para añadir al final del fichero o {@code false} para sustituir el principio del fichero
      */
     public static void writeStringToFile(String str, String filePath, boolean append) {
         try {

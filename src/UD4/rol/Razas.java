@@ -11,7 +11,7 @@ public enum Razas {
         nombre= this.name().charAt(0) + this.name().substring(1).toLowerCase();
         return nombre;
     }
-    public static Razas[] Array(){
+    public static Razas[] toArray(){
         Razas[] razas = new Razas[0];
         for (Razas raza : Razas.values()) {
             razas = Arrays.copyOf(razas, razas.length + 1);
