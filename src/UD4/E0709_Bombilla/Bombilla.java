@@ -50,6 +50,8 @@ public class Bombilla {
 
     public static void main(String[] args) {
         Bombilla b1 = new Bombilla();
+        System.out.println("Está encendida?: " + b1.estaEncendido());
+        System.out.println("Está el interruptor encendido?: " + b1.getInterruptor());
         b1.encender();
         System.out.println("Está encendida?: " + b1.estaEncendido());
         System.out.println("Está el interruptor encendido?: " + b1.getInterruptor());
