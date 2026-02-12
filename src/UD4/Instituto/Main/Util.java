@@ -1,4 +1,4 @@
-package UD4.Instituto;
+package UD4.Instituto.Main;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

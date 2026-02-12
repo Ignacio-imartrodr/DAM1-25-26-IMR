@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import UD4.Instituto.Util;
+import UD4.Instituto.Main.Util;
 
 public class Persona {
     public static Persona[] darArrayPersonasDeCSV(String rutaCSV){

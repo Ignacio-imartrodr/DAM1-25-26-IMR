@@ -2,7 +2,7 @@ package UD4.Instituto.Modulos;
 
 import java.util.Arrays;
 
-import UD4.Instituto.Util;
+import UD4.Instituto.Main.Util;
 import UD4.Instituto.Personas.Alumno;
 import UD4.Instituto.Personas.Profesor;
 
