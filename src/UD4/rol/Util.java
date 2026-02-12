@@ -11,7 +11,15 @@ import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class Util {
+    public static JSONArray JsonArray(String ruta){
+        Util.readFileToString(ruta);
+        JSONArray jsonArray = new JSONArray(ruta);
+        return jsonArray;
+    }
     /**
      * Lee y carga el contenido de un fichero de texto a un array de {@Code String } (un
      * elemento por línea)

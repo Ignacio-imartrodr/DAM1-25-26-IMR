@@ -3,6 +3,9 @@ package UD4.rol;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  * @author Ignacio MR
  * 
@@ -82,8 +85,7 @@ public class AppCombateSingular {
         Personaje[] personajesExtraidos = new Personaje[0];
         try{
             personajesExtraidos = new Personaje[arrayPersonajes.length];
-        } catch (Exception e) {}
-        
+        } catch (Exception x) {}
         String[] atributos;
         int i = 0;
         int idPers = 1;
@@ -131,9 +133,7 @@ public class AppCombateSingular {
                 if (rutaFile.endsWith(".csv")) {
                     personajesFichero = extraerPersonaje(Util.readFileToStringArray(rutaFile), false);
                 } else if (rutaFile.endsWith(".json") || rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
-                    System.out.println("\nOpciones: \nURL o Ruta del fichero");
-                    System.out.print("¿Quieres cargar mediante una URL ? (S/n): ");
-                    if (Util.escogerOpcion("s", "n")) {
+                    if (rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
                         boolean errorUrl = true;
                         String temp = rutaFile;
                         while (errorUrl) {
@@ -153,11 +153,15 @@ public class AppCombateSingular {
                             }
                         }
                     } else {
-                        System.out.print("¿Es mediante una Ruta a un archivo.JSON ? (S/n): ");
-                        if (Util.escogerOpcion("s", "n")) {
-                            personajesFichero = extraerPersonaje(Util.readFileToString(rutaFile).replaceAll("\n","").split("}"), true);
-                        } else {
-                            restart = true;
+                        JSONArray jsonArray = Util.JsonArray(rutaFile);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            if (jsonArray.getJSONObject(i) != null) {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject = jsonArray.getJSONObject(i);
+                                Personaje personaje = new Personaje(jsonObject.getString("name"), jsonObject.getString("raza"), jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), jsonObject.getString("constitucion"), jsonObject.getString("nivel"), jsonObject.getString("experiencia"), true);
+                                personajesFichero = Arrays.copyOf(personajesFichero, personajesFichero.length + 1);
+                                personajesFichero[personajesFichero.length - 1] = personaje;
+                            }
                         }
                     }
                 } else {
@@ -235,7 +239,6 @@ public class AppCombateSingular {
             if (Util.escogerOpcion("s", "n")) {
                 String rutaFichero;
                 do {
-                    
                     do {
                         System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
                         rutaFichero = Util.pedirPorTeclado(false);
