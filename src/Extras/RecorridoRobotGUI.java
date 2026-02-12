@@ -17,7 +17,7 @@ public class RecorridoRobotGUI extends JFrame {
         this.setResizable(false);
         
         // Agregamos el panel del juego
-        PanelDeJuego panel = new PanelDeJuego();
+        PanelJuegoRobot panel = new PanelJuegoRobot();
         this.add(panel);
         
         this.pack(); // Ajusta la ventana al tamaño del panel
@@ -32,7 +32,7 @@ public class RecorridoRobotGUI extends JFrame {
     }
 }
 
-class GamePanel extends JPanel implements ActionListener {
+class PanelJuegoRobot extends JPanel implements ActionListener {
 
     // --- CONFIGURACIÓN ---
     final int TILE_SIZE = 64; // Tamaño de cada cuadro
@@ -67,7 +67,7 @@ class GamePanel extends JPanel implements ActionListener {
     JTextField inputField;
     JButton runButton;
 
-    public GamePanel() {
+    public PanelJuegoRobot() {
         this.setPreferredSize(new Dimension(W, H + 50)); // +50 para la barra de abajo
         this.setBackground(new Color(30, 30, 35));
         this.setFocusable(true);

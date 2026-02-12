@@ -32,7 +32,7 @@ public class SuperZombieShooter extends JFrame {
     }
 }
 
-class PanelDeJuego extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
+class GamePanel extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
 
     // --- CONSTANTES ---
     final int W = 800, H = 600;
@@ -63,7 +63,7 @@ class PanelDeJuego extends JPanel implements ActionListener, KeyListener, MouseL
     int wave = 1;
     int spawnTimer = 0;
 
-    public PanelDeJuego() {
+    public GamePanel() {
         this.setPreferredSize(new Dimension(W, H));
         this.setBackground(new Color(20, 20, 25));
         this.setFocusable(true);

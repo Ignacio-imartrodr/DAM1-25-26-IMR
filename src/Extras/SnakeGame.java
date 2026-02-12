@@ -1,4 +1,4 @@
-/**package Extras;
+package Extras;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.util.Random;
 public class SnakeGame extends JFrame {
 
     public SnakeGame() {
-        this.add(new GamePanel());
+        this.add(new PanelJuegoSnake());
         this.setTitle("Snake Game - Java");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -22,7 +22,7 @@ public class SnakeGame extends JFrame {
     }
 }
 
-class GamePanel extends JPanel implements ActionListener {
+class PanelJuegoSnake extends JPanel implements ActionListener {
 
     // Configuraciones de pantalla
     static final int SCREEN_WIDTH = 600;
@@ -46,7 +46,7 @@ class GamePanel extends JPanel implements ActionListener {
     Timer timer;
     Random random;
 
-    public GamePanel() {
+    public PanelJuegoSnake() {
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
@@ -197,4 +197,3 @@ class GamePanel extends JPanel implements ActionListener {
         }
     }
 }
-*/
