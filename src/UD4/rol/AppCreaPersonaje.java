@@ -8,6 +8,7 @@ import java.util.Arrays;
  * Crea un programa de consola que permita al usuario generar 
  * y editar personajes de diferentes modos y guardarlos
  * en disco en un fichero de texto en formato JSON. 
+ * 
  */
 
 public class AppCreaPersonaje {

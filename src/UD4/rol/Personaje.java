@@ -7,6 +7,7 @@ import java.util.Random;
  */
 
 public class Personaje {
+    private final static int VIDA_MIN = 50;
     private String nombre;
     private Razas raza;
     private int fuerza;
@@ -14,10 +15,11 @@ public class Personaje {
     private int constitucion;
     private byte nivel;
     private int experiencia;
-    private int vidaMax = 50 + constitucion;
-    private int puntosVida = vidaMax;
+    private int puntosVida = getVidaMax();
     private final static int EXP_MAX = 127999;
 
+    private int getVidaMax(){ return VIDA_MIN + constitucion;}
+    
     /**
      * Asigna un valor valido a un stat o un valor random
      * @param   texto   :
@@ -68,12 +70,12 @@ public class Personaje {
     public static Razas asignarRaza(String respuesta){
         Razas raza = Razas.HUMANO;
         if (respuesta.equals("-1")) {
-            raza = Razas.toArray()[0];
+            raza = Razas.HUMANO;
         } else {
             try {
                 raza = Razas.valueOf(respuesta.toUpperCase());
             } catch (Exception e) {
-                throw new PersonajeException("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
+                throw new PersonajeException("Raza no válida.");
             }
         }
         /*if ( !respuesta.equals("-1") && Util.UbiObjetoEnArray(raza, Razas.Array()) == -1 ) {
@@ -96,6 +98,17 @@ public class Personaje {
         this.nivel = 0;
         this.experiencia = 0;
     }
+
+    /**
+     * Crea un objeto unicamente con el nombre.
+     * 
+     * @param   nombre  : No puede ser null, ni "-1" ni estár en blanco. 
+     * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} dado.
+     */
+    Personaje(String nombre){
+        new Personaje(nombre, "-1", "-1", "-1", "-1", "-1", "-1", false);
+    }
+
     /**
      * Crea un objeto con los parametros como {@code String} convertiendolos a los tipos necesarios o instaurandolos como sus valores predefinidos.
      * 
@@ -108,8 +121,10 @@ public class Personaje {
     Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
         try {
             nombre = nombre.strip();
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             throw new PersonajeException("El valor \"null\" no es valido");
+        } catch (Exception b){
+            throw new PersonajeException("El valor de \"nombre\" no es valido");
         }
         if (nombre.equals("-1") || nombre.isEmpty() || nombre.isBlank()) {
             throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"-1\", prueba \"Personaje()\" en su lugar");
@@ -248,8 +263,7 @@ public class Personaje {
         System.out.println("Nivel de experiencia: ");
         experiencia = pedirStatNoRng(true);
 
-        vidaMax = 50 + constitucion;
-        puntosVida = vidaMax;
+        puntosVida = getVidaMax();
     }
 
     private String pedirStatRng(){
@@ -291,7 +305,7 @@ public class Personaje {
         String raza = "Raza: " + nombreRaza;
         String nivel = "Nivel: " + this.nivel;
         String experiencia = "Experiencia: " + this.experiencia;
-        String puntosVida = "Puntos de vida : (" + this.puntosVida + "/" + vidaMax + ")";
+        String puntosVida = "Puntos de vida : (" + this.puntosVida + "/" + getVidaMax() + ")";
         String fuerza = "Fuerza: " + this.fuerza;
         String agilidad = "Agilidad: " + this.agilidad;
         String constitucion = "Constitución: " + this.constitucion;
@@ -301,10 +315,10 @@ public class Personaje {
         System.out.println(ficha);
     }
     public String toString(){
-        String nombreYVida = nombre + " (" + puntosVida + "/" + vidaMax + ")";
+        String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
         return nombreYVida;
     }
-    public byte sumarExperiencia(int puntos){
+    public byte sumarExperiencia(int puntos){// La xperiencia va de 0 a 999 y luego vuelve a 0
         if (puntos > EXP_MAX) {
             throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
         }
@@ -327,25 +341,20 @@ public class Personaje {
     }
     public void subirNivel(){
         nivel++;
-        fuerza += (fuerza*0.05);
-        agilidad += (agilidad*0.05);
-        constitucion += (constitucion*0.05);
-        int oldVidaMax = vidaMax;
-        vidaMax = 50 + constitucion;
-        puntosVida += (vidaMax -  oldVidaMax);
+        fuerza += Math.round(fuerza * 0.05);
+        agilidad += Math.round(agilidad * 0.05);
+        int oldVidaMax = getVidaMax();
+        constitucion += Math.round(constitucion * 0.05);
+        puntosVida += (getVidaMax() - oldVidaMax);
     }
     public void curar(){
-        if (puntosVida < vidaMax) {
-            puntosVida = vidaMax;
+        if (puntosVida < getVidaMax()) {
+            puntosVida = getVidaMax();
         }
     }
     public boolean perderVida(int puntos){
-        boolean muerto = false;
         puntosVida -= puntos;
-        if (puntosVida <= 0) {
-            muerto = true;
-        }
-        return muerto;
+        return !estaVivo();
     }
     public boolean estaVivo(){
         boolean vivo = true;
@@ -370,18 +379,10 @@ public class Personaje {
     }
     
     public String toJsonString() {
-        return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d,\"puntosVida\":%d}%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, vidaMax, puntosVida);
+        return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
     }
     public String toCsvString() {
-        return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, vidaMax, puntosVida);
+        return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);
     }
-    public void toFile(String filePath) {
-        if (filePath.endsWith(".json")) {
-            Util.writeStringToFile(toJsonString(), filePath, true);
-        } else if (filePath.endsWith(".csv")) {
-            Util.writeStringToFile(toCsvString(), filePath, true);
-        } else {
-            System.out.println("Formato de archivo no soportado. Solo se aceptan archivos .json o .csv");
-        }
-    }   
+      
 }

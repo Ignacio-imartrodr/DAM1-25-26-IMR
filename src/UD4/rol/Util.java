@@ -1,6 +1,7 @@
 package UD4.rol;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
+import org.junit.platform.engine.discovery.FileSelector;
 
 public class Util {
     public static JSONArray JsonArray(String ruta){
@@ -165,19 +166,58 @@ public class Util {
         return verificado;
     }
     
+    public static void borrarFichero(String RutaFichero){
+        try {
+            File archivo = new File(RutaFichero);
+            if (archivo.delete()) {
+                
+            }
+        } catch (Exception e) {
+            System.out.println("Eror borando el archivo");
+        }
+    }
+
     /**
      * Escribe una cadena de texto {@code str} en un archivo designado
      * @param   str   : Texto que se añadirá al fichero.
      * @param   filePath  : Ruta de la ubicación del archivo.
      * @param   append  : {@code true} Para añadir al final del fichero o {@code false} para sustituir el principio del fichero
      */
-    public static void writeStringToFile(String str, String filePath, boolean append) {
+    public static void writeStringToCsv(String str, String filePath, boolean append) {
         try {
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
             FileWriter writer = new FileWriter(filePath, append);
 
             // Escribimos el String en el fichero
             writer.write(str);
+
+            // Cerramos el fichero
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void writeStringToJson(String str, String filePath, boolean append) {
+        try {
+            final String START = "[\n";
+            final String END = "]";
+            
+            // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
+            FileWriter writer = new FileWriter(filePath, append);
+
+            if (append) {
+                writer.write("\n"+str, 1, str.length());
+                //TODO terminar 
+    
+            } else {
+                borrarFichero(filePath);
+                FileWriter json = new FileWriter(filePath, false);
+                // Escribimos el String en el fichero
+                json.write(START);
+                writer.write(str + END, 1, str.length());
+                
+                json.close();
+            }
 
             // Cerramos el fichero
             writer.close();

@@ -54,7 +54,15 @@ public class AppCombateSingular {
         }
         return personajesEnBatalla;
     }
-
+    public void toFile(String filePath, String personajes) {
+        if (filePath.endsWith(".json")) {
+            Util.writeStringToJson(personajes, filePath, true);
+        } else if (filePath.endsWith(".csv")) {
+            Util.writeStringToCsv(personajes, filePath, true);
+        } else {
+            System.out.println("Formato de archivo no soportado. Solo se aceptan archivos .json o .csv");
+        }
+    } 
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
         String rutaFichero;
         for (Personaje personaje : personajesCreados) {
@@ -210,7 +218,7 @@ public class AppCombateSingular {
                             borrado[i] = string;
                             i++;
                         }
-                        Util.writeStringToFile(borrado.toString(), rutaFichero, false); 
+                        Util.writeStringToCsv(borrado.toString(), rutaFichero, false); 
                         for (Personaje personaje : personajesCreados) {
                             personaje.toFile(rutaFichero);
                         }
