@@ -7,6 +7,7 @@ import java.util.Random;
  */
 
 public class Personaje {
+    //IDEA: Añadirle un Id para poder tener personages con el mismo nombre
     private final static int VIDA_MIN = 50;
     private String nombre;
     private Razas raza;
@@ -106,9 +107,18 @@ public class Personaje {
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} dado.
      */
     Personaje(String nombre){
-        new Personaje(nombre, "-1", "-1", "-1", "-1", "-1", "-1", false);
+        this(nombre, "-1", "-1", "-1", "-1", "-1", "-1", false);
     }
-
+    /**
+     * Crea un objeto unicamente con el nombre.
+     * 
+     * @param   nombre  : No puede ser null, ni "-1" ni estár en blanco. 
+     * @param   raza    : Tiene que ser una raza valida o será "Humano" por defecto. 
+     * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} y la {@code raza} dados.
+     */
+    Personaje(String nombre, String raza){
+        this(nombre, raza, "-1", "-1", "-1", "-1", "-1", false);
+    }
     /**
      * Crea un objeto con los parametros como {@code String} convertiendolos a los tipos necesarios o instaurandolos como sus valores predefinidos.
      * 
@@ -126,7 +136,7 @@ public class Personaje {
         } catch (Exception b){
             throw new PersonajeException("El valor de \"nombre\" no es valido");
         }
-        if (nombre.equals("-1") || nombre.isEmpty() || nombre.isBlank()) {
+        if (nombre == null || nombre.equals("-1") || nombre.isEmpty() || nombre.isBlank()) {
             throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"-1\", prueba \"Personaje()\" en su lugar");
         }
         this.nombre = nombre;
@@ -379,7 +389,8 @@ public class Personaje {
     }
     
     public String toJsonString() {
-        return String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
+        String personajeJson = String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
+        return personajeJson;
     }
     public String toCsvString() {
         return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);

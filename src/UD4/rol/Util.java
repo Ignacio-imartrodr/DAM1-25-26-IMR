@@ -11,22 +11,26 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Scanner;
-
 import org.json.JSONArray;
-import org.junit.platform.engine.discovery.FileSelector;
 
 public class Util {
+    /**
+     * Lee y carga el contenido de un fichero de texto a un array de {@code Json} 
+     * 
+     * @param ruta Es la ruta del fichero
+     * @return {@code JsonArray} con el contenido del fichero de la librería json.JSONArray.
+     */
     public static JSONArray JsonArray(String ruta){
         Util.readFileToString(ruta);
         JSONArray jsonArray = new JSONArray(ruta);
         return jsonArray;
     }
     /**
-     * Lee y carga el contenido de un fichero de texto a un array de {@Code String } (un
-     * elemento por línea)
+     * Lee y carga el contenido de un fichero de texto a un array de {@code String} (un
+     * elemento por línea).
      * 
-     * @param filePath Es la ruta del fichero
-     * @return {@Code String[] } con el contenido del fichero esparado por lineas
+     * @param filePath Es la ruta del fichero-
+     * @return {@code String[]} con el contenido del fichero esparado por lineas-
      */
     public static String[] readFileToStringArray(String filePath) {
         String[] lineas = new String[0];
@@ -40,7 +44,7 @@ public class Util {
 
             // Leemos el fichero línea a línea
             String line;
-            while ((line = buffer.readLine()) != null && !(line = buffer.readLine()).isEmpty()) {
+            while ((line = buffer.readLine()) != null) {
                 lineas = Arrays.copyOf(lineas, lineas.length + 1);
                 lineas[lineas.length - 1] = line;
             }
@@ -67,7 +71,7 @@ public class Util {
     private static Scanner sc = new Scanner(System.in,"Windows-1252");
 
     /**
-     * Lee y carga el contenido de un fichero de texto a un {@Code String }
+     * Lee y carga el contenido de un fichero de texto a un {@code String}
      * 
      * @param filePath
      * @return
@@ -83,7 +87,7 @@ public class Util {
 
             // Leemos el fichero línea a línea
             String line;
-            while ((line = buffer.readLine()) != null && !(line = buffer.readLine()).isEmpty()) {
+            while ((line = buffer.readLine()) != null) {
                 // Vamos añadiendo cada línea al StringBuilder
                 fileContent.append(line);
                 // Añadimos un salto de línea al final de cada línea
@@ -107,7 +111,7 @@ public class Util {
      * elemento por línea)
      * 
      * @param pideNumero Indica si tiene que verificar que la entrada por teclado sea numérica.
-     * @return {@Code String } con el resulatado del teclado o "-1" si está vacía.
+     * @return {@code String} con el resulatado del teclado o "-1" si está vacía.
      */
     public static String pedirPorTeclado(boolean pideNumero){
         String var;
@@ -157,24 +161,36 @@ public class Util {
      * @return  Ubicación de {@code objetivo} si está en el array {@code array} o {@code -1} si {@code objetivo} NO está en el array {@code array}
      */
     public static int UbiObjetoEnArray(Object objetivo, Object[] array){ //Verificar como lo compara
-        int verificado = -1;
+        int Ubi = -1;
         for (int i = 0; i < array.length; i++) {
             if (array[i].equals(objetivo)) {
-                verificado = i;
+                Ubi = i;
             }
         }
-        return verificado;
+        return Ubi;
     }
     
-    public static void borrarFichero(String RutaFichero){
+    public static boolean borrarFicheroYCrearloVacio(String RutaFichero){
+        boolean successful = false;
         try {
             File archivo = new File(RutaFichero);
-            if (archivo.delete()) {
-                
+            if (archivo.exists()) {
+                if (!archivo.delete()) {
+                    System.err.println("Error borrando el archivo");
+                } else {
+                    if (!archivo.createNewFile()){
+                        System.err.println("Error creando el archivo de nuevo");
+                    } else {
+                        successful = true;
+                    }
+                }
+            } else {
+                System.out.println("El archivo no existe");
             }
         } catch (Exception e) {
-            System.out.println("Eror borando el archivo");
+            System.out.println("Error");
         }
+        return successful;
     }
 
     /**
@@ -183,10 +199,10 @@ public class Util {
      * @param   filePath  : Ruta de la ubicación del archivo.
      * @param   append  : {@code true} Para añadir al final del fichero o {@code false} para sustituir el principio del fichero
      */
-    public static void writeStringToCsv(String str, String filePath, boolean append) {
+    public static void writeStringToCsv(String str, String filePath) {
         try {
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
-            FileWriter writer = new FileWriter(filePath, append);
+            FileWriter writer = new FileWriter(filePath, true);
 
             // Escribimos el String en el fichero
             writer.write(str);
@@ -202,36 +218,46 @@ public class Util {
             final String START = "[\n";
             final String END = "]";
             
-            // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
-            FileWriter writer = new FileWriter(filePath, append);
-
             if (append) {
-                writer.write("\n"+str, 1, str.length());
-                //TODO terminar 
-    
-            } else {
-                borrarFichero(filePath);
-                FileWriter json = new FileWriter(filePath, false);
-                // Escribimos el String en el fichero
-                json.write(START);
-                writer.write(str + END, 1, str.length());
+                String[] lineas = readFileToStringArray(filePath);
+                String textoFinal = "";
+                lineas[lineas.length-2] += ",";
+                lineas[lineas.length - 1] = str.toString();
+                lineas = Arrays.copyOf(lineas, lineas.length + 1);
+                lineas[lineas.length -1] = END;
+                for (String linea : lineas) {
+                    textoFinal += linea + "\n";
+                }
+                textoFinal = textoFinal.substring(0, textoFinal.length() - 1);
+                if(borrarFicheroYCrearloVacio(filePath)){
+                    // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
+                    FileWriter writer = new FileWriter(filePath, append);
+                    writer.write(textoFinal);
+                    // Cerramos el fichero
+                    writer.close();
+                }
                 
-                json.close();
+            } else {
+                if (borrarFicheroYCrearloVacio(filePath)) {
+                    // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
+                    FileWriter writer = new FileWriter(filePath, append);
+                    writer.write(START + str + "\n" + END);
+                    // Cerramos el fichero
+                    writer.close();
+                }
             }
 
-            // Cerramos el fichero
-            writer.close();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     /**
-     * Pregunta por teclado {@code opcion1 } o {@code opcion2 } hasta obtener una respuesta válida (si se presiona "Enter" selecciona {@code opcion1 })
+     * Pregunta por teclado {@code opcion1 } o {@code opcion2 } hasta obtener una respuesta válida (si se presiona "Enter" selecciona {@code opcion1})
      * 
-     * @param   opcion1    : Si es null vale "s" sino el valor {@code String } introducido y es la respuesta por defecto.
-     * @param   opcion2    : Si es null vale "n" sino el valor {@code String } introducido.
-     * @return {@code true} if {@code respuesta.equals(opcion1) || respuesta.equals("-1")}, {@code false} if {@code respuesta.equeals(opcion2) }.
+     * @param   opcion1    : Si es null vale "s" sino el valor {@code String} introducido y es la respuesta por defecto.
+     * @param   opcion2    : Si es null vale "n" sino el valor {@code String} introducido.
+     * @return {@code true} if {@code respuesta.equals(opcion1) || respuesta.equals("-1")}, {@code false} if {@code respuesta.equeals(opcion2)}.
      */
     public static boolean escogerOpcion(String opcion1, String opcion2){
         
@@ -274,5 +300,9 @@ public class Util {
 
         String json = resp.body();
         return json;
+    }
+    public static void main(String[] args) {
+        Personaje prueba = new Personaje("prueba");
+        writeStringToJson(prueba.toJsonString(), "src\\UD4\\rol\\PersonajesGuardados.json", true);
     }
 }

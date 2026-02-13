@@ -2,16 +2,32 @@ package UD4.rol;
 
 import java.util.Arrays;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /** 
  * @author Ignacio MR
  * 
  * Crea un programa de consola que permita al usuario generar 
  * y editar personajes de diferentes modos y guardarlos
  * en disco en un fichero de texto en formato JSON. 
- * 
  */
 
 public class AppCreaPersonaje {
+    public static Personaje[] personajesDeJson(String ruta){
+        JSONArray personajes = Util.JsonArray(ruta);
+        Personaje[] personajesJson = new Personaje[0];
+        for (int i = 0; i < personajes.length(); i++) {
+            if (personajes.getJSONObject(i) != null) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject = personajes.getJSONObject(i);
+                Personaje personaje = new Personaje(jsonObject.getString("nombre"), jsonObject.getString("raza"), jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), jsonObject.getString("constitucion"), jsonObject.getString("nivel"), jsonObject.getString("experiencia"), true);
+                personajesJson = Arrays.copyOf(personajesJson, personajesJson.length + 1);
+                personajesJson[personajesJson.length - 1] = personaje;
+            }
+        }
+        return personajesJson;
+    }
     public static String pedirRutaGuardado(){
         boolean restart = true;
         String rutaFichero = "-1";
@@ -76,7 +92,11 @@ public class AppCreaPersonaje {
             if (ruta.equals("-1")) {
                 System.out.println("No se guardó el personaje.");
             } else {
-                personaje.toFile(ruta);
+                if (ruta.endsWith(".json")) {
+                    Util.writeStringToJson(personaje.toJsonString(), ruta, false);
+                } else if (ruta.endsWith(".csv")) {
+                    Util.writeStringToCsv(personaje.toCsvString(), ruta);
+                }
             }
         }
     }
