@@ -2,6 +2,9 @@ package UD4.rol;
 
 import java.util.Arrays;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /** 
  * @author Ignacio MR
  * 
@@ -12,6 +15,20 @@ import java.util.Arrays;
  */
 
 public class AppCreaPersonaje {
+    public static Personaje[] personajesDeJson(String ruta){
+        JSONArray personajes = Util.JsonArray(ruta);
+        Personaje[] personajesJson = new Personaje[0];
+        for (int i = 0; i < personajes.length(); i++) {
+        if (personajes.getJSONObject(i) != null) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject = personajes.getJSONObject(i);
+            Personaje personaje = new Personaje(jsonObject.getString("nombre"), jsonObject.getString("raza"), jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), jsonObject.getString("constitucion"), jsonObject.getString("nivel"), jsonObject.getString("experiencia"), true);
+            personajesJson = Arrays.copyOf(personajesJson, personajesJson.length + 1);
+            personajesJson[personajesJson.length - 1] = personaje;
+            }
+        }
+        return personajesJson;
+    }
     public static String pedirRutaGuardado(){
         boolean restart = true;
         String rutaFichero = "-1";

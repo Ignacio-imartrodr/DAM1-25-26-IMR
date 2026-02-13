@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import org.json.JSONArray;
-import org.junit.platform.engine.discovery.FileSelector;
 
 public class Util {
     public static JSONArray JsonArray(String ruta){
