@@ -6,9 +6,9 @@ import java.util.Random;
 /**
  * @author Ignacio MR
  * 
- *         Crea un programa de consola que permita al usuario generar
- *         y editar personajes de diferentes modos y guardarlos
- *         en disco en un fichero de texto en formato JSON o CSV.
+ * Crea un programa de consola que permita al usuario generar
+ * y editar personajes de diferentes modos y guardarlos
+ * en disco en un fichero de texto en formato JSON o CSV.
  */
 
 public class AppCombateSingular {
@@ -46,20 +46,9 @@ public class AppCombateSingular {
                 System.out.println("Siguiente personaje o anterior? (S/a): ");
                 esSiguiente = Util.escogerOpcion("s", "a");
             }
-            
-            
         }
         return personajesEnBatalla;
     }
-    /*public void toFile(String filePath, String personajes) {
-        if (filePath.endsWith(".json")) {
-            Util.writeStringToJson(personajes, filePath, true);
-        } else if (filePath.endsWith(".csv")) {
-            Util.writeStringToCsv(personajes, filePath);
-        } else {
-            System.out.println("Formato de archivo no soportado. Solo se aceptan archivos .json o .csv");
-        }
-    } */
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
         String rutaFichero;
         for (Personaje personaje : personajesCreados) {
@@ -210,16 +199,22 @@ public class AppCombateSingular {
                         String personajes = "";
                         if (rutaFichero.endsWith(".json")) {
                             for (Personaje personaje : personajesCreados) {
-                                personajes += personaje.toJsonString()+",\n";
+                                if (!(personaje == null)) {
+                                    personajes += personaje.toJsonString()+",\n";
+                                }
                             }
-                            Util.writeStringToJson(personajes, rutaFichero, false);
+                            if (!personajes.equals("")) {
+                                personajes = personajes.substring(0, personajes.lastIndexOf(","));
+                                Util.writeStringToJson(personajes, rutaFichero, false);
+                            }
                         } else if (rutaFichero.endsWith(".csv")) {
                             Util.borrarFicheroYCrearloVacio(rutaFichero);
                             for (Personaje personaje : personajesCreados) {
-                                Util.writeStringToCsv(personaje.toCsvString(), rutaFichero);
+                                if (!(personaje == null)) {
+                                    Util.writeStringToCsv(personaje.toCsvString(), rutaFichero);
+                                }
                             }
                         }
-                        
                     } else {
                         System.out.println("Personajes no guardados.");
                         repetir = true;

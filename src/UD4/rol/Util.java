@@ -302,7 +302,21 @@ public class Util {
         return json;
     }
     public static void main(String[] args) {
+        String personajes = "";
+        Personaje[] personajesCreados = new Personaje[3];
         Personaje prueba = new Personaje("prueba");
-        writeStringToJson(prueba.toJsonString(), "src\\UD4\\rol\\PersonajesGuardados.json", true);
+        Personaje prueba1 = new Personaje("prueba1");
+        personajesCreados[0] = prueba;
+        personajesCreados[1] = prueba1;
+        for (Personaje personaje : personajesCreados) {
+            if (!(personaje == null)) {
+                personajes += personaje.toJsonString()+",\n";
+            }
+        }
+        if (!personajes.equals("")) {
+            personajes = personajes.substring(0, personajes.lastIndexOf(","));
+            writeStringToJson(personajes, "src\\UD4\\rol\\PersonajesGuardados.json", true);
+        }
+        
     }
 }
