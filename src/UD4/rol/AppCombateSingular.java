@@ -36,7 +36,7 @@ public class AppCombateSingular {
             if (i != skip){
                 personajesCreados[i].mostrar();
                 System.out.print("¿Quieres seleccionar este personaje? (S/n): ");
-                if (Util.escogerOpcion("s", "n")) {
+                if (Util.escogerOpcion("S", "n")) {
                     personajesEnBatalla [j] = personajesCreados[i];
                     j++;
                     skip = i;
@@ -44,23 +44,29 @@ public class AppCombateSingular {
             }
             if (j < personajesEnBatalla.length) {
                 System.out.println("Siguiente personaje o anterior? (S/a): ");
-                esSiguiente = Util.escogerOpcion("s", "a");
+                esSiguiente = Util.escogerOpcion("S", "a");
             }
         }
         return personajesEnBatalla;
     }
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
         String rutaFichero;
+        String rutaPrevia = "";
         for (Personaje personaje : personajesCreados) {
             personaje.mostrar();
             System.out.print("¿Quieres guardar este personaje? (S/n): ");
-            if (Util.escogerOpcion("s", "n")) {
+            if (Util.escogerOpcion("S", "n")) {
                 boolean repetir = true;
                 while (repetir) {
-                    System.out.print("Ruta del fichero (Json o Csv): ");
+                    System.out.print("Ruta del fichero Json o Csv (Enter para usar ruta previa): ");
                     rutaFichero = Util.pedirPorTeclado(false);
+                    if (rutaFichero.equals("-1")) {
+                        rutaFichero = rutaPrevia;
+                    } else {
+                        rutaPrevia = rutaFichero;
+                    }
                     if (rutaFichero.endsWith(".json")) {
-                        if (Util.UbiObjetoEnArray(personaje, AppCreaPersonaje.personajesDeJson(rutaFichero)) == -1) {
+                        if (Util.UbiObjetoEnArray(personaje, AppCreaPersonaje.getPersonajesJson(rutaFichero)) == -1) {
                             Util.writeStringToJson(personaje.toJsonString(), rutaFichero, true);
                             repetir = false;
                         }
@@ -68,8 +74,9 @@ public class AppCombateSingular {
                         Util.writeStringToCsv(personaje.toCsvString(), rutaFichero);
                         repetir = false;
                     } else {
+                        System.out.println("Ruta no valida");
                         System.out.println( "¿Quieres intentar de nuevo? (S/n): ");
-                        if (!Util.escogerOpcion("s", "n")) {
+                        if (!Util.escogerOpcion("S", "n")) {
                             System.out.println("Personaje no guardado.");
                             repetir = false;
                         }
@@ -80,57 +87,20 @@ public class AppCombateSingular {
             }
         }    
     }
-    private static Personaje[] extraerPersonaje(String[] arrayPersonajes, boolean esJson){
-        Personaje[] personajesExtraidos = new Personaje[0];
-        try{
-            personajesExtraidos = new Personaje[arrayPersonajes.length];
-        } catch (Exception x) {}
-        String[] atributos;
-        int i = 0;
-        int idPers = 1;
-        if (esJson) {
-            for (String linea : arrayPersonajes) {
-                atributos = new String[7];
-                atributos = linea.split(",");
-                for (int j = 0; j < atributos.length; j++) {
-                    atributos[j] = atributos[j].substring(atributos[j].indexOf(":") + 1).replaceAll("\"", "");
-                }
-                try {
-                    Personaje newPersonaje = new Personaje(atributos[0], atributos[1], atributos[2], atributos[3], atributos[4], atributos[5], atributos[6], true);
-                    personajesExtraidos[i]= newPersonaje;
-                    i++;
-                } catch (Exception e) {
-                    System.out.println("El personaje número " + idPers + " contiene un error.");
-                }
-                idPers++;
-            }
-        } else {
-            for (String linea : arrayPersonajes) {
-                atributos = new String[7];
-                atributos = linea.split(",");
-                try {
-                    Personaje newPersonaje = new Personaje(atributos[0], atributos[1], atributos[2], atributos[3], atributos[4], atributos[5], atributos[6], true);
-                    personajesExtraidos[i]= newPersonaje;
-                    i++;
-                } catch (Exception e) {
-                    System.out.println("El personaje número " + idPers + "contiene un error.");
-                }
-                idPers++;
-            }
-        }
-        return personajesExtraidos;
-    }
+    
     private static Personaje[] cargarPersonajesDeArchivo(String rutaFile){
-        String[] personajesGuardados;
         Personaje[] personajesFichero = new Personaje[0];
         boolean restart = true;
         while (restart) {
             restart = false;
             System.out.println("Opciones: \nJson o Csv");
             System.out.print("¿Quieres cargar personajes desde " + rutaFile + "? (S/n): ");
-            if (Util.escogerOpcion("s", "n")) {
+            if (Util.escogerOpcion("S", "n")) {
                 if (rutaFile.endsWith(".csv")) {
-                    personajesFichero = extraerPersonaje(Util.readFileToStringArray(rutaFile), false);
+                    personajesFichero = AppCreaPersonaje.getPersonajesCsv(rutaFile);
+                    if (personajesFichero.length == 0) {
+                        System.out.println("El fichero no contenía personajes");
+                    }
                 } else if (rutaFile.endsWith(".json") || rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
                     if (rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
                         boolean errorUrl = true;
@@ -138,8 +108,14 @@ public class AppCombateSingular {
                         while (errorUrl) {
                             errorUrl = false;
                             try {
-                                personajesGuardados = Util.getJson(temp).split("},");
-                                personajesFichero = extraerPersonaje(personajesGuardados, true);
+                                personajesFichero = AppCreaPersonaje.getPersonajesJson(rutaFile);
+                                if (personajesFichero.length == 0) {
+                                    System.out.println("El Json no contenía personajes");
+                                }
+                                System.out.print("¿Probar otra Url? (S/n): ");
+                                if (Util.escogerOpcion("S", "n")) {
+                                    errorUrl = true;
+                                }
                             } catch (Exception e) {
                                 errorUrl = true;
                                 System.out.println("Error en la url");
@@ -152,7 +128,7 @@ public class AppCombateSingular {
                             }
                         }
                     } else {
-                        personajesFichero = AppCreaPersonaje.personajesDeJson(rutaFile);
+                        personajesFichero = AppCreaPersonaje.getPersonajesJson(rutaFile);
                         if (personajesFichero.length == 0) {
                             System.out.println("El fichero no contenía personajes");
                         }
@@ -168,11 +144,11 @@ public class AppCombateSingular {
                 }
             } else {
                 System.out.println("Quierres ingresar otra ruta? (S/n)");
-                if (Util.escogerOpcion("s", "n")) {
+                if (Util.escogerOpcion("S", "n")) {
                     System.out.print("Ruta? (\"n\" para salir): ");
                     rutaFile = Util.pedirPorTeclado(false);
                     if (rutaFile.equalsIgnoreCase("n")) {
-                        System.out.println("personajes no cargados");
+                        System.out.println("Personajes no cargados");
                         restart = false;
                     } else {
                         restart = true;
@@ -190,10 +166,10 @@ public class AppCombateSingular {
         while (repetir) {
             repetir = false;
             System.out.println("¿Quieres guardar los personajes? (S/n): ");
-            if (Util.escogerOpcion("s", "n")) {
-                String rutaFichero;
+            if (Util.escogerOpcion("S", "n")) {
                 System.out.println("¿Quieres guardar todos los personajes creados y cargados en un único Archivo? (S/n): ");
-                if (Util.escogerOpcion("s", "n")) {
+                if (Util.escogerOpcion("S", "n")) {
+                    String rutaFichero;
                     rutaFichero = AppCreaPersonaje.pedirRutaGuardado();
                     if (!rutaFichero.equals("-1")) {
                         String personajes = "";
@@ -214,6 +190,9 @@ public class AppCombateSingular {
                                     Util.writeStringToCsv(personaje.toCsvString(), rutaFichero);
                                 }
                             }
+                        } else {
+                            System.out.println("Ruta no valida.");
+                            repetir = true;
                         }
                     } else {
                         System.out.println("Personajes no guardados.");
@@ -221,7 +200,7 @@ public class AppCombateSingular {
                     }
                 } else{
                     System.out.println("¿Quieres elegir individualmente si guardar y donde cada personaje creado y cargado? (S/n): ");
-                    if (Util.escogerOpcion("s", "n")) {
+                    if (Util.escogerOpcion("S", "n")) {
                         guardarPorPersonaje(personajesCreados);
                     } else {
                         System.out.println("Personajes no guardados.");
@@ -237,7 +216,7 @@ public class AppCombateSingular {
         Personaje[] temp;
         while (personajesCreados.length < 2) {
             System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
-            if (Util.escogerOpcion("s", "n")) {
+            if (Util.escogerOpcion("S", "n")) {
                 String rutaFichero;
                 do {
                     do {
@@ -276,12 +255,17 @@ public class AppCombateSingular {
         bucleGuardadoPersonajes(personajesCreados);
 
         Personaje[] personajesEnBatalla = new Personaje[2];
-        personajesEnBatalla = seleccionarPersonajes(personajesCreados);
-        while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
-            System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
+        if (personajesCreados.length > 2) {
             personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+            while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
+                System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
+                personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+            }
+        } else {
+            personajesEnBatalla[0] = personajesCreados[0];
+            personajesEnBatalla[1] = personajesCreados[1];
         }
-
+        
         boolean batalla = true;
         while (batalla) {
             Random rnd = new Random();
@@ -333,7 +317,7 @@ public class AppCombateSingular {
             }
             System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
             System.out.println("¿Otra batalla? (S/n)");
-            if (Util.escogerOpcion("s", "n")) {
+            if (Util.escogerOpcion("S", "n")) {
                 personajesEnBatalla[0].curar();
                 personajesEnBatalla[1].curar();
                 personajesEnBatalla = new Personaje[2];

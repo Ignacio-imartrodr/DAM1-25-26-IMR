@@ -267,11 +267,11 @@ public class Util {
         String respuesta;
         boolean s = false;
         respuesta = Util.pedirPorTeclado(false).toLowerCase();
-        while (!respuesta.equals(opcion1) && !respuesta.equals(opcion2) && !respuesta.equals("-1")) {
+        while (!respuesta.equalsIgnoreCase(opcion1) && !respuesta.equalsIgnoreCase(opcion2) && !respuesta.equals("-1")) {
             System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 +"\": ");
             respuesta = Util.pedirPorTeclado(false).toLowerCase();
         }
-        if (respuesta.equals(opcion1) || respuesta.equals("-1")) {
+        if (respuesta.equalsIgnoreCase(opcion1) || respuesta.equals("-1")) {
             s = true;
         }
         return s;
