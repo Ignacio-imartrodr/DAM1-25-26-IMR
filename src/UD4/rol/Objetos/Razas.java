@@ -21,7 +21,7 @@ public enum Razas {
         }
         return razas;
     }
-    public static Razas StringARaza(String respuesta){
+    public static Razas StringToRaza(String respuesta){
         Razas raza = Razas.HUMANO;
         if (respuesta == null) {
             raza = Razas.HUMANO;

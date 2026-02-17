@@ -126,7 +126,7 @@ public class Personaje {
         }
         this.nombre = nombre;
         try {
-            this.raza = Razas.StringARaza(raza);
+            this.raza = Razas.StringToRaza(raza);
         } catch (PersonajeException e) {
             throw new PersonajeException("Raza no válida.");
         }
@@ -255,7 +255,7 @@ public class Personaje {
         
         for (boolean error = true; error;) {
             try {
-                raza = Razas.StringARaza(Util.pedirPorTeclado(false));
+                raza = Razas.StringToRaza(Util.pedirPorTeclado(false));
                 error = false;
             } catch (PersonajeException e) {
                 System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
