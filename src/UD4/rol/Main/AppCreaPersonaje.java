@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import UD4.Rol.Utilidades.*;
 import UD4.Rol.Objetos.Personaje;
+import UD4.Rol.Objetos.Stats;
 
 /** 
  * @author Ignacio MR
@@ -118,22 +119,114 @@ public class AppCreaPersonaje {
     }
     public static void modificarPersonagesArray(Personaje[] personajesArray){
         mostrarPersonajes(personajesArray);
-        
+        boolean esSiguiente = true;
+        boolean salir = false;
+        for (int i = -1, skip = -1; !salir;) {
+            System.out.println("¿Quieres modificar algún personaje? (S/n)");
+            if (Util.escogerOpcion("S", "n")) {
+                if (esSiguiente) {
+                    if (i == personajesArray.length -1) {
+                        i = 0;
+                    } else {
+                        i++;
+                    }
+                } else {
+                    if (i == 0) {
+                        i = personajesArray.length -1;
+                    } else {
+                        i--;
+                    }
+                }
+                if (i != skip){
+                    boolean errorMod = false;
+                    do {
+                        personajesArray[i].mostrar();
+                        System.out.print("¿Quieres modificar este personaje? (S/n): ");
+                        if (Util.escogerOpcion("S", "n")) {
+                            errorMod  = true;
+                            String nombre = personajesArray[i].getNombre();
+                            String raza = String.valueOf(personajesArray[i].getRaza());
+                            String fuerza = String.valueOf(personajesArray[i].getFuerza());
+                            String agilidad = String.valueOf(personajesArray[i].getAgilidad());
+                            String constitucion = String.valueOf(personajesArray[i].getConstitucion());
+                            String nivel = String.valueOf(personajesArray[i].getNivel());
+                            String experiencia = String.valueOf(personajesArray[i].getExperiencia());
+                            System.out.print("¿Que quieres modificar?");
+                            System.out.println("Nombre, raza, fuerza, agilidad, constitucion, nivel o experiencia");
+                            String mod = Util.pedirPorTeclado(false);
+                            if (!(mod == null)) {
+                                Stats stat;
+                                try {
+                                    stat = Stats.valueOf(mod.toUpperCase());
+                                    switch (stat) {
+                                        case NOMBRE:
+                                            mod = Util.pedirPorTeclado(false);
+                                            personajesArray[i] = new Personaje(mod, raza, fuerza, agilidad, constitucion, nivel, experiencia, true);
+                                            break;
+                                        case RAZA:
+                                            mod = Util.pedirPorTeclado(false);
+                                            personajesArray[i] = new Personaje(nombre, mod, fuerza, agilidad, constitucion, nivel, experiencia, true);
+                                            break;
+                                        case FUERZA:
+                                            mod = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, mod, agilidad, constitucion, nivel, experiencia, true);
+                                            break;
+                                        case AGILIDAD:
+                                            mod = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, mod, constitucion, nivel, experiencia, true);
+                                            break;
+                                        case CONSTITUCION:
+                                            mod = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, mod, nivel, experiencia, true);
+                                            break;
+                                        case NIVEL:
+                                            mod = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, mod, experiencia, true);
+                                            break;
+                                        case EXPERIENCIA:
+                                            mod = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, mod, true);
+                                            break;
+                                    }
+                                } catch (Exception e) {
+                                    System.out.println("Valor no válido.");
+                                }
+                            } else {
+                                System.out.println("Introduce un valor válido.");
+                            }
+                        } else {
+                            errorMod = false;
+                        }
+                    } while (errorMod);
+                    skip = i;
+                }
+                System.out.println("Siguiente personaje o Anterior? (S/a): ");
+                esSiguiente = Util.escogerOpcion("S", "a");
+            } else {
+                salir = true;
+            } 
+        }
     }
     public static void main(String[] args) {
-        Personaje[] personajesNuevos = pedirPersonajes();
-        for (Personaje personaje : personajesNuevos) {
-            String ruta = AppCombateSingular.pedirRutaGuardado();
-            if (ruta == null) {
-                System.out.println("No se guardó el personaje.");
-            } else {
-                if (ruta.endsWith(".json")) {
-                    Util.writeStringToJson(personaje.toJsonString(), ruta, false);
-                } else if (ruta.endsWith(".csv")) {
-                    Util.writeStringToCsv(personaje.toCsvString(), ruta);
+        Personaje[] personajesNuevos = new Personaje[0];
+        Personaje[] temp;
+        System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
+        if (Util.escogerOpcion("S", "n")) {
+            String rutaFichero;
+            rutaFichero = AppCombateSingular.pedirRuta();
+            if (!(rutaFichero == null)) {
+                temp = AppCombateSingular.cargarPersonajesDeArchivo(rutaFichero);
+                for (Personaje personaje : temp) {
+                    personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
+                    personajesNuevos[personajesNuevos.length - 1] = personaje;
                 }
             }
         }
-
+        temp = pedirPersonajes();
+        for (Personaje personaje : temp) {
+            personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
+            personajesNuevos[personajesNuevos.length - 1] = personaje;
+        }
+        modificarPersonagesArray(personajesNuevos);
     }
 }

@@ -19,7 +19,7 @@ public class AppCombateSingular {
     private static boolean cambiar(boolean turno) {
         return turno = turno ? false : true;
     }
-    public static String pedirRutaGuardado(){
+    public static String pedirRuta(){
         boolean restart = true;
         String rutaFichero = null;
         while (restart) {
@@ -40,8 +40,8 @@ public class AppCombateSingular {
         }
         return rutaFichero;
     }
-    private static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados) {
-        Personaje[] personajesEnBatalla = new Personaje[2];
+    static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados, int cantidadASeleccionar) {
+        Personaje[] personajesEnBatalla = new Personaje[cantidadASeleccionar];
         boolean esSiguiente = true;
         for (int i = -1, j = 0, skip = -1; j < personajesEnBatalla.length;) {
             if (esSiguiente) {
@@ -111,8 +111,7 @@ public class AppCombateSingular {
             }
         }    
     }
-    
-    private static Personaje[] cargarPersonajesDeArchivo(String rutaFile){
+    static Personaje[] cargarPersonajesDeArchivo(String rutaFile){
         Personaje[] personajesFichero = new Personaje[0];
         boolean restart = true;
         while (restart) {
@@ -194,7 +193,7 @@ public class AppCombateSingular {
                 System.out.println("¿Quieres guardar todos los personajes creados y cargados en un único Archivo? (S/n): ");
                 if (Util.escogerOpcion("S", "n")) {
                     String rutaFichero;
-                    rutaFichero = pedirRutaGuardado();
+                    rutaFichero = pedirRuta();
                     if (!(rutaFichero == null)) {
                         String personajes = "";
                         if (rutaFichero.endsWith(".json")) {
@@ -242,7 +241,7 @@ public class AppCombateSingular {
             System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
             if (Util.escogerOpcion("S", "n")) {
                 String rutaFichero;
-                rutaFichero = pedirRutaGuardado();
+                rutaFichero = pedirRuta();
                 if (!(rutaFichero == null)) {
                     temp = cargarPersonajesDeArchivo(rutaFichero);
                     for (Personaje personaje : temp) {
@@ -263,6 +262,7 @@ public class AppCombateSingular {
         return personajesCreados;
     }
     public static void main(String[] args) {
+        final int NUM_COMBATIENTES = 2; 
         Personaje[] personajesCreados;
         personajesCreados = getPersonajes();
 
@@ -271,10 +271,10 @@ public class AppCombateSingular {
 
         Personaje[] personajesEnBatalla = new Personaje[2];
         if (personajesCreados.length > 2) {
-            personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+            personajesEnBatalla = seleccionarPersonajes(personajesCreados, NUM_COMBATIENTES);
             while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
                 System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
-                personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+                personajesEnBatalla = seleccionarPersonajes(personajesCreados, NUM_COMBATIENTES);
             }
         } else {
             personajesEnBatalla[0] = personajesCreados[0];
@@ -336,10 +336,10 @@ public class AppCombateSingular {
                 personajesEnBatalla[0].curar();
                 personajesEnBatalla[1].curar();
                 personajesEnBatalla = new Personaje[2];
-                personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+                personajesEnBatalla = seleccionarPersonajes(personajesCreados, NUM_COMBATIENTES);
                 while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
                     System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
-                    personajesEnBatalla = seleccionarPersonajes(personajesCreados);
+                    personajesEnBatalla = seleccionarPersonajes(personajesCreados, NUM_COMBATIENTES);
                 }
             } else {
                 bucleGuardadoPersonajes(personajesCreados);

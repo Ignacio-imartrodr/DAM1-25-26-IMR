@@ -20,8 +20,6 @@ public class Personaje {
     private int experiencia;
     private int puntosVida = getVidaMax();
     private final static int EXP_MAX = 127999;
-
-    private int getVidaMax(){ return VIDA_MIN + constitucion;}
     
     /**
      * Asigna un valor valido a un stat o un valor random
@@ -70,22 +68,7 @@ public class Personaje {
         }
         return num;
     }
-    public static Razas asignarRaza(String respuesta){
-        Razas raza = Razas.HUMANO;
-        if (respuesta == null) {
-            raza = Razas.HUMANO;
-        } else {
-            try {
-                raza = Razas.valueOf(respuesta.toUpperCase());
-            } catch (Exception e) {
-                throw new PersonajeException("Raza no válida.");
-            }
-        }
-        /*if ( !respuesta.equals("-1") && Util.UbiObjetoEnArray(raza, Razas.Array()) == -1 ) {
-            throw new PersonajeException("Raza no válida.");
-        }*/
-        return raza;
-    }
+    
     
     /**
      * Crea un objeto sin entregarle parametros.
@@ -128,7 +111,7 @@ public class Personaje {
      * @param   raza    : Tiene que ser uno de los tipos validos si no será "HUMANO" por defecto.
      * @param   experiencia    : Asignarle un valor entre 0 (inclusive) y 1000 (exclusive) o null para el valor por defecto.
      * @param   others  : Asignarles un valor entre 1 (inclusive) y 101 (exclusive) o null para el valor por defecto.
-     * @return Nuevo objeto de clase Personaje con los parametros otorgados.
+     * @return Nuevo objeto de clase Personaje con los parametros otorgados o {@code PersonajeExcepcion} si algun valor no es valido.
      */
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
         try {
@@ -143,9 +126,9 @@ public class Personaje {
         }
         this.nombre = nombre;
         try {
-            this.raza = asignarRaza(raza);
+            this.raza = Razas.StringARaza(raza);
         } catch (PersonajeException e) {
-            this.raza = Razas.HUMANO;
+            throw new PersonajeException("Raza no válida.");
         }
         if (yaExistente) {
             if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
@@ -224,6 +207,27 @@ public class Personaje {
     public String getNombre(){
         return this.nombre;
     }
+    public Razas getRaza() {
+        return raza;
+    }
+    public int getFuerza() {
+        return fuerza;
+    }
+    public int getAgilidad() {
+        return agilidad;
+    }
+    public int getConstitucion() {
+        return constitucion;
+    }
+    public byte getNivel() {
+        return nivel;
+    }
+    public int getExperiencia() {
+        return experiencia;
+    }
+    public int getVidaMax(){
+        return VIDA_MIN + constitucion;
+    }
     public static String getRazasStats() {
         String fichas = "";
         for (Razas raza : Razas.toArray()) {
@@ -251,7 +255,7 @@ public class Personaje {
         
         for (boolean error = true; error;) {
             try {
-                raza = asignarRaza(Util.pedirPorTeclado(false));
+                raza = Razas.StringARaza(Util.pedirPorTeclado(false));
                 error = false;
             } catch (PersonajeException e) {
                 System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");

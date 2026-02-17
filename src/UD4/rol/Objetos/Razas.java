@@ -2,6 +2,8 @@ package UD4.Rol.Objetos;
 
 import java.util.Arrays;
 
+import UD4.Rol.Utilidades.PersonajeException;
+
 public enum Razas {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
@@ -18,5 +20,18 @@ public enum Razas {
             razas[razas.length - 1] = raza;
         }
         return razas;
+    }
+    public static Razas StringARaza(String respuesta){
+        Razas raza = Razas.HUMANO;
+        if (respuesta == null) {
+            raza = Razas.HUMANO;
+        } else {
+            try {
+                raza = Razas.valueOf(respuesta.toUpperCase());
+            } catch (Exception e) {
+                throw new PersonajeException("Raza no válida.");
+            }
+        }
+        return raza;
     }
 }
