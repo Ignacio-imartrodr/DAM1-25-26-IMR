@@ -1,6 +1,8 @@
-package UD4.rol;
+package UD4.Rol.Objetos;
 
 import java.util.Random;
+
+import UD4.Rol.Utilidades.*;
 
 /**
  * @author Ignacio MR
@@ -90,7 +92,7 @@ public class Personaje {
      * 
      * @return Nuevo objeto de clase Personaje sin valores.
      */
-    Personaje(){
+    public Personaje(){
         this.nombre = null;
         this.raza = null;
         this.fuerza = 0;
@@ -106,7 +108,7 @@ public class Personaje {
      * @param   nombre  : No puede ser null ni estár en blanco. 
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} dado.
      */
-    Personaje(String nombre){
+    public Personaje(String nombre){
         this(nombre, null, null, null, null, null, null, false);
     }
     /**
@@ -116,7 +118,7 @@ public class Personaje {
      * @param   raza    : Tiene que ser una raza valida o será "Humano" por defecto. 
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} y la {@code raza} dados.
      */
-    Personaje(String nombre, String raza){
+    public Personaje(String nombre, String raza){
         this(nombre, raza, null, null, null, null, null, false);
     }
     /**
@@ -128,7 +130,7 @@ public class Personaje {
      * @param   others  : Asignarles un valor entre 1 (inclusive) y 101 (exclusive) o null para el valor por defecto.
      * @return Nuevo objeto de clase Personaje con los parametros otorgados.
      */
-    Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
+    public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
         try {
             nombre = nombre.strip();
         } catch (NullPointerException e) {

@@ -1,9 +1,12 @@
-package UD4.rol;
+package UD4.Rol.Main;
 
 import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import UD4.Rol.Utilidades.*;
+import UD4.Rol.Objetos.Personaje;
 
 /** 
  * @author Ignacio MR
@@ -14,6 +17,14 @@ import org.json.JSONObject;
  */
 
 public class AppCreaPersonaje {
+    public static void mostrarPersonajes(Personaje[] personajesCreados) {
+        System.out.println("\nPersonajes disponibles:\n");
+        for (Personaje personaje : personajesCreados) {
+            personaje.mostrar();
+            System.out.println("________________________");
+            System.out.println();
+        }
+    }
     public static Personaje[] getPersonajesJson(String ruta){
         JSONArray personajes = Util.JsonArray(ruta);
         Personaje[] personajesJson = new Personaje[0];
@@ -105,6 +116,10 @@ public class AppCreaPersonaje {
         }
         return personajesNuevos;
     }
+    public static void modificarPersonagesArray(Personaje[] personajesArray){
+        mostrarPersonajes(personajesArray);
+        
+    }
     public static void main(String[] args) {
         Personaje[] personajesNuevos = pedirPersonajes();
         for (Personaje personaje : personajesNuevos) {
@@ -119,5 +134,6 @@ public class AppCreaPersonaje {
                 }
             }
         }
+
     }
 }

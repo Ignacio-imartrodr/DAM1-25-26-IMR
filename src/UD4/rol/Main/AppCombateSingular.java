@@ -1,7 +1,11 @@
-package UD4.rol;
+package UD4.Rol.Main;
 
 import java.util.Arrays;
 import java.util.Random;
+
+import UD4.Rol.Objetos.Personaje;
+import UD4.Rol.Utilidades.PersonajeException;
+import UD4.Rol.Utilidades.Util;
 
 /**
  * @author Ignacio MR
@@ -262,12 +266,7 @@ public class AppCombateSingular {
         Personaje[] personajesCreados;
         personajesCreados = getPersonajes();
 
-        System.out.println("\nPersonajes disponibles:\n");
-        for (Personaje personaje : personajesCreados) {
-            personaje.mostrar();
-            System.out.println("________________________");
-            System.out.println();
-        }
+        AppCreaPersonaje.mostrarPersonajes(personajesCreados);
         bucleGuardadoPersonajes(personajesCreados);
 
         Personaje[] personajesEnBatalla = new Personaje[2];
@@ -348,4 +347,5 @@ public class AppCombateSingular {
             }
         }
     }
+    
 }

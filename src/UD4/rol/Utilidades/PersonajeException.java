@@ -1,4 +1,4 @@
-package UD4.rol;
+package UD4.Rol.Utilidades;
 
 /**
  * Thrown when an exceptional personaje condition has occurred. For

@@ -1,4 +1,4 @@
-package UD4.rol;
+package UD4.Rol.Utilidades;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +12,8 @@ import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Scanner;
 import org.json.JSONArray;
+
+import UD4.Rol.Objetos.Personaje;
 
 public class Util {
     /**
@@ -266,10 +268,10 @@ public class Util {
         
         String respuesta;
         boolean s = false;
-        respuesta = Util.pedirPorTeclado(false).toLowerCase();
+        respuesta = Util.pedirPorTeclado(false);
         while (!(respuesta == null) && !respuesta.equalsIgnoreCase(opcion1) && !respuesta.equalsIgnoreCase(opcion2)) {
             System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 +"\": ");
-            respuesta = Util.pedirPorTeclado(false).toLowerCase();
+            respuesta = Util.pedirPorTeclado(false);
         }
         if (respuesta == null || respuesta.equalsIgnoreCase(opcion1)) {
             s = true;
