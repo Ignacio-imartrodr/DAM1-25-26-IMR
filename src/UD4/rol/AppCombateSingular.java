@@ -17,7 +17,7 @@ public class AppCombateSingular {
     }
     public static String pedirRutaGuardado(){
         boolean restart = true;
-        String rutaFichero = "-1";
+        String rutaFichero = null;
         while (restart) {
             restart = false;
             System.out.print("¿Quieres dar una ruta? (S/n): ");
@@ -25,12 +25,13 @@ public class AppCombateSingular {
                 System.out.println("OPCIONES: \nJson o Csv");
                 System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
                 rutaFichero = Util.pedirPorTeclado(false);
-                if (!rutaFichero.endsWith(".json") || !rutaFichero.endsWith(".csv")) {
+                if ((rutaFichero == null) || (!rutaFichero.endsWith(".json") || !rutaFichero.endsWith(".csv"))) {
                     System.out.println("La ruta debe dirigir a un fichero con extensión .csv o .json");
                     restart = true;
                 }
             } else {
                 System.out.println("Ruta no guardada.");
+                rutaFichero = null;
             }
         }
         return rutaFichero;
@@ -79,7 +80,7 @@ public class AppCombateSingular {
                 while (repetir) {
                     System.out.print("Ruta del fichero Json o Csv (Enter para usar ruta previa): ");
                     rutaFichero = Util.pedirPorTeclado(false);
-                    if (rutaFichero.equals("-1")) {
+                    if (rutaFichero == null) {
                         rutaFichero = rutaPrevia;
                     } else {
                         rutaPrevia = rutaFichero;
@@ -190,7 +191,7 @@ public class AppCombateSingular {
                 if (Util.escogerOpcion("S", "n")) {
                     String rutaFichero;
                     rutaFichero = pedirRutaGuardado();
-                    if (!rutaFichero.equals("-1")) {
+                    if (!(rutaFichero == null)) {
                         String personajes = "";
                         if (rutaFichero.endsWith(".json")) {
                             for (Personaje personaje : personajesCreados) {
@@ -238,7 +239,7 @@ public class AppCombateSingular {
             if (Util.escogerOpcion("S", "n")) {
                 String rutaFichero;
                 rutaFichero = pedirRutaGuardado();
-                if (!rutaFichero.equals("-1")) {
+                if (!(rutaFichero == null)) {
                     temp = cargarPersonajesDeArchivo(rutaFichero);
                     for (Personaje personaje : temp) {
                         personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);

@@ -119,7 +119,7 @@ public class Util {
         try {
             var = sc.nextLine().strip();
             if (var.equals("")|| var.isBlank() || var.isEmpty()) {
-                return "-1";
+                return null;
             }
             for (int i = 0; i < var.length() && pideNumero; i++) {
                 if (!Character.isDigit(var.charAt(i)) && var.charAt(i) != ',' && var.charAt(i) != '-' && var.charAt(i) != '+') {
@@ -267,11 +267,11 @@ public class Util {
         String respuesta;
         boolean s = false;
         respuesta = Util.pedirPorTeclado(false).toLowerCase();
-        while (!respuesta.equalsIgnoreCase(opcion1) && !respuesta.equalsIgnoreCase(opcion2) && !respuesta.equals("-1")) {
+        while (!(respuesta == null) && !respuesta.equalsIgnoreCase(opcion1) && !respuesta.equalsIgnoreCase(opcion2)) {
             System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 +"\": ");
             respuesta = Util.pedirPorTeclado(false).toLowerCase();
         }
-        if (respuesta.equalsIgnoreCase(opcion1) || respuesta.equals("-1")) {
+        if (respuesta == null || respuesta.equalsIgnoreCase(opcion1)) {
             s = true;
         }
         return s;

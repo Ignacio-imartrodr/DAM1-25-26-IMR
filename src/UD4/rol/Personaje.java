@@ -37,10 +37,10 @@ public class Personaje {
         final int MIN = 1;
         final int MAX = 100;
         
-        if ( !texto.equals("-1") && (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             throw new PersonajeException("Valores fuera de límites");
         }
-        if (texto.equals("-1")) {
+        if (texto == null) {
             num = generarRnd1a100();
         } else {
             num = Integer.parseInt(texto);
@@ -58,10 +58,10 @@ public class Personaje {
         int num;
         final int MIN = esXp ? 0 : 1;
         final int MAX = esXp ? 999 : 100;
-        if ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             throw new PersonajeException("Valores fuera de límites");
         }
-        if (texto.equals("-1")) {
+        if (texto == null) {
             num = MIN;
         } else {
             num = Integer.parseInt(texto);
@@ -70,7 +70,7 @@ public class Personaje {
     }
     public static Razas asignarRaza(String respuesta){
         Razas raza = Razas.HUMANO;
-        if (respuesta.equals("-1")) {
+        if (respuesta == null) {
             raza = Razas.HUMANO;
         } else {
             try {
@@ -103,29 +103,29 @@ public class Personaje {
     /**
      * Crea un objeto unicamente con el nombre.
      * 
-     * @param   nombre  : No puede ser null, ni "-1" ni estár en blanco. 
+     * @param   nombre  : No puede ser null ni estár en blanco. 
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} dado.
      */
     Personaje(String nombre){
-        this(nombre, "-1", "-1", "-1", "-1", "-1", "-1", false);
+        this(nombre, null, null, null, null, null, null, false);
     }
     /**
      * Crea un objeto unicamente con el nombre.
      * 
-     * @param   nombre  : No puede ser null, ni "-1" ni estár en blanco. 
+     * @param   nombre  : No puede ser null ni estár en blanco. 
      * @param   raza    : Tiene que ser una raza valida o será "Humano" por defecto. 
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} y la {@code raza} dados.
      */
     Personaje(String nombre, String raza){
-        this(nombre, raza, "-1", "-1", "-1", "-1", "-1", false);
+        this(nombre, raza, null, null, null, null, null, false);
     }
     /**
      * Crea un objeto con los parametros como {@code String} convertiendolos a los tipos necesarios o instaurandolos como sus valores predefinidos.
      * 
-     * @param   nombre  : No puede ser null, ni "-1" ni estár en blanco. 
+     * @param   nombre  : No puede ser null ni estár en blanco. 
      * @param   raza    : Tiene que ser uno de los tipos validos si no será "HUMANO" por defecto.
-     * @param   experiencia    : Asignarle un valor entre 0 (inclusive) y 1000 (exclusive) o "-1" para el valor por defecto.
-     * @param   others  : Asignarles un valor entre 1 (inclusive) y 101 (exclusive) o "-1" para el valor por defecto.
+     * @param   experiencia    : Asignarle un valor entre 0 (inclusive) y 1000 (exclusive) o null para el valor por defecto.
+     * @param   others  : Asignarles un valor entre 1 (inclusive) y 101 (exclusive) o null para el valor por defecto.
      * @return Nuevo objeto de clase Personaje con los parametros otorgados.
      */
     Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
@@ -136,8 +136,8 @@ public class Personaje {
         } catch (Exception b){
             throw new PersonajeException("El valor de \"nombre\" no es valido");
         }
-        if (nombre == null || nombre.equals("-1") || nombre.isEmpty() || nombre.isBlank()) {
-            throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"-1\", prueba \"Personaje()\" en su lugar");
+        if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
+            throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"null\" o estár en blanco, prueba \"Personaje()\" en su lugar");
         }
         this.nombre = nombre;
         try {
@@ -240,7 +240,7 @@ public class Personaje {
     public void crearPersonaje(){
         System.out.print("Nombre del personaje: ");
         nombre = Util.pedirPorTeclado(false);
-        while (nombre.equals("-1")) {
+        while (nombre == null) {
             System.out.print("El persnaje necesita un nombre: ");
             nombre = Util.pedirPorTeclado(false);          
         }
@@ -280,11 +280,11 @@ public class Personaje {
         String texto = Util.pedirPorTeclado(true);
         final int MIN = 1;
         final int MAX = 100;
-        while ( !texto.equals("-1") && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
             texto = Util.pedirPorTeclado(true);
         }
-        if (texto.equals("-1")) {
+        if (texto == null) {
             texto = String.valueOf(generarRnd1a100());
         }
         return texto;
@@ -295,11 +295,11 @@ public class Personaje {
         texto = Util.pedirPorTeclado(true);
         final int MIN = esXp ? 0 : 1;
         final int MAX = esXp ? 999 : 100;
-        while ( !texto.equals("-1") && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
             texto = Util.pedirPorTeclado(true);
         }
-        if (texto.equals("-1")) {
+        if (texto == null) {
             num = MIN;
         } else {
             num = Integer.parseInt(texto);

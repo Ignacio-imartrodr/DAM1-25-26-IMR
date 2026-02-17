@@ -109,7 +109,7 @@ public class AppCreaPersonaje {
         Personaje[] personajesNuevos = pedirPersonajes();
         for (Personaje personaje : personajesNuevos) {
             String ruta = AppCombateSingular.pedirRutaGuardado();
-            if (ruta.equals("-1")) {
+            if (ruta == null) {
                 System.out.println("No se guardó el personaje.");
             } else {
                 if (ruta.endsWith(".json")) {
