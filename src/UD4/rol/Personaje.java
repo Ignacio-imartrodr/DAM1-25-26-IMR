@@ -280,7 +280,7 @@ public class Personaje {
         String texto = Util.pedirPorTeclado(true);
         final int MIN = 1;
         final int MAX = 100;
-        while ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        while ( !texto.equals("-1") && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
             texto = Util.pedirPorTeclado(true);
         }
@@ -295,7 +295,7 @@ public class Personaje {
         texto = Util.pedirPorTeclado(true);
         final int MIN = esXp ? 0 : 1;
         final int MAX = esXp ? 999 : 100;
-        while ( !texto.equals("-1") || (Integer.parseInt(texto) < MIN && Integer.parseInt(texto) > MAX)) {
+        while ( !texto.equals("-1") && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
             texto = Util.pedirPorTeclado(true);
         }

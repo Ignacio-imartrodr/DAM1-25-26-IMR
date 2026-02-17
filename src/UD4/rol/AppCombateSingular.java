@@ -20,32 +20,17 @@ public class AppCombateSingular {
         String rutaFichero = "-1";
         while (restart) {
             restart = false;
-            System.out.print("¿Quieres guardar en un fichero? (S/n): ");
+            System.out.print("¿Quieres dar una ruta? (S/n): ");
             if (Util.escogerOpcion("s", "n")) {
                 System.out.println("OPCIONES: \nJson o Csv");
-                System.out.print("¿Tipo de fichero? (J/c): ");
-                if (Util.escogerOpcion("j", "c")) {
-                    System.out.print("Ruta del fichero: ");
-                    rutaFichero = Util.pedirPorTeclado(false);
-                    if (!rutaFichero.endsWith(".json")) {
-                        System.out.println("La ruta debe contener un fichero con extensión .json");
-                        restart = true;
-                    } else {
-                        restart = true;
-                    }
-                    
-                } else {            
-                    System.out.print("Ruta del fichero: ");
-                    rutaFichero = Util.pedirPorTeclado(false);
-                    if (!rutaFichero.endsWith(".csv")) {
-                        System.out.println("La ruta debe contener un fichero con extensión .csv");
-                        restart = true;
-                    } else {
-                        restart = true;
-                    }
+                System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
+                rutaFichero = Util.pedirPorTeclado(false);
+                if (!rutaFichero.endsWith(".json") || !rutaFichero.endsWith(".csv")) {
+                    System.out.println("La ruta debe dirigir a un fichero con extensión .csv o .json");
+                    restart = true;
                 }
             } else {
-                System.out.println("Personaje no guardado.");
+                System.out.println("Ruta no guardada.");
             }
         }
         return rutaFichero;
@@ -229,7 +214,7 @@ public class AppCombateSingular {
                             repetir = true;
                         }
                     } else {
-                        System.out.println("Personajes no guardados.");
+                        System.out.println("Ruta no valida.");
                         repetir = true;
                     }
                 } else{
@@ -252,17 +237,13 @@ public class AppCombateSingular {
             System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
             if (Util.escogerOpcion("S", "n")) {
                 String rutaFichero;
-                do {
-                    do {
-                        System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
-                        rutaFichero = Util.pedirPorTeclado(false);
-                    } while (rutaFichero.equals("-1"));
-    
+                rutaFichero = pedirRutaGuardado();
+                if (!rutaFichero.equals("-1")) {
                     temp = cargarPersonajesDeArchivo(rutaFichero);
-                } while (temp == null);
-                for (Personaje personaje : temp) {
-                    personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
-                    personajesCreados[personajesCreados.length - 1] = personaje;
+                    for (Personaje personaje : temp) {
+                        personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
+                        personajesCreados[personajesCreados.length - 1] = personaje;
+                    }
                 }
             }
             temp = AppCreaPersonaje.pedirPersonajes();

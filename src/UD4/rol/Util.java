@@ -255,8 +255,8 @@ public class Util {
     /**
      * Pregunta por teclado {@code opcion1 } o {@code opcion2 } hasta obtener una respuesta válida (si se presiona "Enter" selecciona {@code opcion1})
      * 
-     * @param   opcion1    : Si es null vale "s" sino el valor {@code String} introducido y es la respuesta por defecto.
-     * @param   opcion2    : Si es null vale "n" sino el valor {@code String} introducido.
+     * @param   opcion1    : El valor {@code String} introducido y es la respuesta por defecto.
+     * @param   opcion2    : El valor {@code String} introducido.
      * @return {@code true} if {@code respuesta.equals(opcion1) || respuesta.equals("-1")}, {@code false} if {@code respuesta.equeals(opcion2)}.
      */
     public static boolean escogerOpcion(String opcion1, String opcion2){
