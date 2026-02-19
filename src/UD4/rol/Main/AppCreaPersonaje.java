@@ -138,12 +138,12 @@ public class AppCreaPersonaje {
                     }
                 }
                 if (i != skip){
-                    boolean errorMod = false;
+                    boolean modificar;
                     do {
                         personajesArray[i].mostrar();
                         System.out.print("¿Quieres modificar este personaje? (S/n): ");
                         if (Util.escogerOpcion("S", "n")) {
-                            errorMod  = true;
+                            modificar  = true;
                             String nombre = personajesArray[i].getNombre();
                             String raza = String.valueOf(personajesArray[i].getRaza());
                             String fuerza = String.valueOf(personajesArray[i].getFuerza());
@@ -151,41 +151,41 @@ public class AppCreaPersonaje {
                             String constitucion = String.valueOf(personajesArray[i].getConstitucion());
                             String nivel = String.valueOf(personajesArray[i].getNivel());
                             String experiencia = String.valueOf(personajesArray[i].getExperiencia());
-                            System.out.print("¿Que quieres modificar?");
+                            System.out.print("¿Que valor quieres modificar?");
                             System.out.println("Nombre, raza, fuerza, agilidad, constitucion, nivel o experiencia");
-                            String mod = Util.pedirPorTeclado(false);
-                            if (!(mod == null)) {
+                            String valor = Util.pedirPorTeclado(false);
+                            if (!(valor == null)) {
                                 Stats stat;
                                 try {
-                                    stat = Stats.valueOf(mod.toUpperCase());
+                                    stat = Stats.valueOf(valor.toUpperCase());
                                     switch (stat) {
                                         case NOMBRE:
-                                            mod = Util.pedirPorTeclado(false);
-                                            personajesArray[i] = new Personaje(mod, raza, fuerza, agilidad, constitucion, nivel, experiencia, true);
+                                            valor = Util.pedirPorTeclado(false);
+                                            personajesArray[i] = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia, true);
                                             break;
                                         case RAZA:
-                                            mod = Util.pedirPorTeclado(false);
-                                            personajesArray[i] = new Personaje(nombre, mod, fuerza, agilidad, constitucion, nivel, experiencia, true);
+                                            valor = Util.pedirPorTeclado(false);
+                                            personajesArray[i] = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia, true);
                                             break;
                                         case FUERZA:
-                                            mod = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, mod, agilidad, constitucion, nivel, experiencia, true);
+                                            valor = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia, true);
                                             break;
                                         case AGILIDAD:
-                                            mod = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, mod, constitucion, nivel, experiencia, true);
+                                            valor = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, true);
                                             break;
                                         case CONSTITUCION:
-                                            mod = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, mod, nivel, experiencia, true);
+                                            valor = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, true);
                                             break;
                                         case NIVEL:
-                                            mod = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, mod, experiencia, true);
+                                            valor = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia, true);
                                             break;
                                         case EXPERIENCIA:
-                                            mod = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, mod, true);
+                                            valor = Util.pedirPorTeclado(true);
+                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, true);
                                             break;
                                     }
                                 } catch (Exception e) {
@@ -195,19 +195,20 @@ public class AppCreaPersonaje {
                                 System.out.println("Introduce un valor válido.");
                             }
                         } else {
-                            errorMod = false;
+                            modificar = false;
                         }
-                    } while (errorMod);
+                    } while (modificar);
                     skip = i;
+                    System.out.println("Siguiente personaje o Anterior? (S/a): ");
+                    esSiguiente = Util.escogerOpcion("S", "a");
                 }
-                System.out.println("Siguiente personaje o Anterior? (S/a): ");
-                esSiguiente = Util.escogerOpcion("S", "a");
             } else {
                 salir = true;
             } 
         }
     }
     public static void main(String[] args) {
+        int id = 0;
         Personaje[] personajesNuevos = new Personaje[0];
         Personaje[] temp;
         System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
@@ -217,15 +218,19 @@ public class AppCreaPersonaje {
             if (!(rutaFichero == null)) {
                 temp = AppCombateSingular.cargarPersonajesDeArchivo(rutaFichero);
                 for (Personaje personaje : temp) {
+                    personaje.setId(id); 
                     personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
                     personajesNuevos[personajesNuevos.length - 1] = personaje;
+                    id++;
                 }
             }
         }
         temp = pedirPersonajes();
         for (Personaje personaje : temp) {
+            personaje.setId(id); 
             personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
             personajesNuevos[personajesNuevos.length - 1] = personaje;
+            id++;
         }
         modificarPersonagesArray(personajesNuevos);
     }

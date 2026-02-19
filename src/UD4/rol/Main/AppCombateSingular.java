@@ -262,10 +262,15 @@ public class AppCombateSingular {
         return personajesCreados;
     }
     public static void main(String[] args) {
+        int id = 0;
         final int NUM_COMBATIENTES = 2; 
         Personaje[] personajesCreados;
         personajesCreados = getPersonajes();
-
+        for (Personaje personaje : personajesCreados) {
+            personaje.setId(id);
+            personajesCreados[id] = personaje;
+            id++;
+        }
         AppCreaPersonaje.mostrarPersonajes(personajesCreados);
         bucleGuardadoPersonajes(personajesCreados);
 
@@ -335,6 +340,13 @@ public class AppCombateSingular {
             if (Util.escogerOpcion("S", "n")) {
                 personajesEnBatalla[0].curar();
                 personajesEnBatalla[1].curar();
+                for (int i = 0; i < personajesEnBatalla.length; i++) {
+                    for (int j = 0; j < personajesCreados.length; j++) {
+                        if (personajesCreados[j].getId() == personajesEnBatalla[i].getId()) {
+                            personajesCreados[j] = personajesEnBatalla[j];
+                        }
+                    }
+                }
                 personajesEnBatalla = new Personaje[2];
                 personajesEnBatalla = seleccionarPersonajes(personajesCreados, NUM_COMBATIENTES);
                 while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {

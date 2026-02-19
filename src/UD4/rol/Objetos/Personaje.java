@@ -10,7 +10,7 @@ import UD4.Rol.Utilidades.*;
 
 public class Personaje {
     //IDEA: Añadirle un Id para poder tener personages con el mismo nombre
-    private final static int VIDA_MIN = 50;
+    private int id = -1;
     private String nombre;
     private Razas raza;
     private int fuerza;
@@ -19,6 +19,7 @@ public class Personaje {
     private byte nivel;
     private int experiencia;
     private int puntosVida = getVidaMax();
+    private final static int VIDA_MIN = 50;
     private final static int EXP_MAX = 127999;
     
     /**
@@ -76,6 +77,7 @@ public class Personaje {
      * @return Nuevo objeto de clase Personaje sin valores.
      */
     public Personaje(){
+        this.id = -1;
         this.nombre = null;
         this.raza = null;
         this.fuerza = 0;
@@ -114,6 +116,7 @@ public class Personaje {
      * @return Nuevo objeto de clase Personaje con los parametros otorgados o {@code PersonajeExcepcion} si algun valor no es valido.
      */
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
+        this.id = -1;
         try {
             nombre = nombre.strip();
         } catch (NullPointerException e) {
@@ -203,6 +206,16 @@ public class Personaje {
             }
         String[] bonus = {bonusFuerza, bonusAgilidad, bonusConstitucion};
         return bonus;
+    }
+    public void setId(int id) {
+        if (id <= 0) {
+            this.id = id;
+        } else {
+            throw new PersonajeException("Id invalida");
+        }
+    }
+    public int getId(){
+        return this.id;
     }
     public String getNombre(){
         return this.nombre;
