@@ -7,12 +7,6 @@ import UD4.Rol.Utilidades.PersonajeException;
 public enum Razas {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
-    @Override
-    public String toString() {
-        String nombre;
-        nombre= this.name().charAt(0) + this.name().substring(1).toLowerCase();
-        return nombre;
-    }
     public static Razas[] toArray(){
         Razas[] razas = new Razas[0];
         for (Razas raza : Razas.values()) {
@@ -34,4 +28,40 @@ public enum Razas {
         }
         return raza;
     }
+    public static int[] buffHabilidad(Personaje personaje){
+        int bonusFuerza = 0;
+        int bonusAgilidad = 0;
+        int bonusConstitucion = 0;
+        int cura = 0;
+        switch (personaje.getRaza()) {
+                case HUMANO:
+                    bonusFuerza = personaje.getFuerza()/2;
+                    bonusAgilidad = personaje.getAgilidad()/2;
+                    bonusConstitucion = personaje.getConstitucion()/2;
+                    break;
+                case ELFO:
+                    cura = -(personaje.getVidaMax()/2);
+                    break;
+                case ENANO:
+                    System.out.println("Juego en desarrollo, habilidad aún no implementada :(");
+                    break;
+                case HOBBIT:
+                    break;
+                case ORCO:
+                    bonusFuerza = personaje.getFuerza();
+                    break;
+                case TROLL:
+                    cura = -((personaje.getVidaMax() * 100) / 15 );
+                    break;
+            }
+        int[] bonus = new int[] {bonusFuerza, bonusAgilidad, bonusConstitucion, cura};
+        return bonus;
+    }
+    @Override
+    public String toString() {
+        String nombre;
+        nombre= this.name().charAt(0) + this.name().substring(1).toLowerCase();
+        return nombre;
+    }
+    
 }

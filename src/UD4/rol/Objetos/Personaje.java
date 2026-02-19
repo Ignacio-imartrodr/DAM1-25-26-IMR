@@ -9,7 +9,6 @@ import UD4.Rol.Utilidades.*;
  */
 
 public class Personaje {
-    //IDEA: Añadirle un Id para poder tener personages con el mismo nombre
     private int id = -1;
     private String nombre;
     private Razas raza;
@@ -19,6 +18,7 @@ public class Personaje {
     private byte nivel;
     private int experiencia;
     private int puntosVida = getVidaMax();
+    private boolean habilidadRazaActiva = true;
     private final static int VIDA_MIN = 50;
     private final static int EXP_MAX = 127999;
     
@@ -46,7 +46,7 @@ public class Personaje {
         } else {
             num = Integer.parseInt(texto);
         }
-        String[] bonus = asignarBonus(raza);
+        String[] bonus = asignarBonusRaza(raza);
         int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
         if (num + bonusStat < 1) {
             num = 1;
@@ -167,8 +167,17 @@ public class Personaje {
         } catch (Exception e) {}
         */
     }
-    
-    private static String[] asignarBonus(Razas raza) {
+    public void asignarBonus(int[] bonus, boolean sustraer) {
+        int bonusFuerza = bonus[0];
+        int bonusAgilidad = bonus[1];
+        int bonusConstitucion = bonus[2];
+        int cura = bonus[3];
+        fuerza += sustraer ? -bonusFuerza : bonusFuerza;
+        agilidad += sustraer ? -bonusAgilidad : bonusAgilidad;
+        constitucion += sustraer ? -bonusConstitucion : bonusConstitucion;
+        perderVida(cura);// Al ser "cura" un valor negativo gana vida en vez de perderla
+    }
+    private static String[] asignarBonusRaza(Razas raza) {
         String bonusFuerza = "x";
         String bonusAgilidad = "x";
         String bonusConstitucion = "x";
@@ -241,10 +250,16 @@ public class Personaje {
     public int getVidaMax(){
         return VIDA_MIN + constitucion;
     }
+    public int getPuntosVida(){
+        return puntosVida;
+    }
+    public boolean isHabilidadRazaActiva() {
+        return habilidadRazaActiva;
+    }
     public static String getRazasStats() {
         String fichas = "";
         for (Razas raza : Razas.toArray()) {
-            String[] bonus = asignarBonus(raza);
+            String[] bonus = asignarBonusRaza(raza);
             fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
         }
         return fichas;
@@ -406,7 +421,75 @@ public class Personaje {
         }
         return daño;
     }
-    
+    public void quitarHabilidadRaza(){
+        habilidadRazaActiva = false; 
+    }
+    public void activarHabilidadRaza(){
+        habilidadRazaActiva = true; 
+    }
+    public byte duracionHabilidadRaza(Personaje enemigo){
+        boolean haceEfecto = habilidadRazaActiva;
+        byte turnosEfecto = -1;
+        if (haceEfecto) {
+            boolean esHobbit = getRaza().equals(Razas.HOBBIT);
+            Razas habilidad = esHobbit ? enemigo.getRaza() : raza;
+            switch (habilidad) {
+                    case HUMANO:
+                        turnosEfecto = 1;
+                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                        
+                    case ELFO:
+                        turnosEfecto = 1;
+                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                        break;
+                    case ENANO:
+                        //TODO: crear que fabrique objeto
+                        //TODO: craer objetos
+                        
+                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                        break;
+                    case HOBBIT:
+                        haceEfecto = false;
+                        break;
+                    case ORCO:
+                        turnosEfecto = 0;
+                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                        break;
+                    case TROLL:
+                        turnosEfecto = 3;
+                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                        break;
+                    default:
+                        throw new PersonajeException("Error con la habilidad de raza");
+                }
+        }
+        return haceEfecto ? turnosEfecto : -1;
+    }
+    public String stringHabilidadRaza(){
+        String nombreYHabilidad = "";
+        switch (this.raza) {
+                case HUMANO:
+                    nombreYHabilidad = "Furor Heróico (buffea todas sus estadisticas en un 50% hasta terminar proximo turno)";
+                    break;
+                case ELFO:
+                    nombreYHabilidad = "Madre naturaleza (Añade a los puntos de vida el 50% de vida máx)";
+                    break;
+                case ENANO:
+                    nombreYHabilidad = "Crear (Fabrica un objeto aleatorio)";
+                    break;
+                case HOBBIT:
+                    nombreYHabilidad = "Steal (Roba la habillidad de raza de su enemigo por un turno)";
+                    break;
+                case ORCO:
+                    nombreYHabilidad = "Mamporro (Golpea al enemigo con el doble de fuerza)";
+                    break;
+                case TROLL:
+                    nombreYHabilidad = "Regeneración (Se cura un 15% de su vida máx durante 3 turnos)";
+                    break;
+            }
+        return nombreYHabilidad;
+    }
+
     public String toJsonString() {
         String personajeJson = String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
         return personajeJson;

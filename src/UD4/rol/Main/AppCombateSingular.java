@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import UD4.Rol.Objetos.Personaje;
+import UD4.Rol.Objetos.Razas;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
@@ -290,49 +291,96 @@ public class AppCombateSingular {
         while (batalla) {
             Random rnd = new Random();
             boolean turno = rnd.nextBoolean();
+            boolean dosHobbit = personajesEnBatalla[0].getRaza().equals(Razas.HOBBIT) && personajesEnBatalla[1].getRaza().equals(Razas.HOBBIT);
+            byte turnosEfecto0 = -1;
+            byte turnosEfecto1 = -1;
+            int[] buffTemporal0 = new int[] {0, 0, 0, 0};
+            int[] buffTemporal1 = new int[] {0, 0, 0, 0};
             while (personajesEnBatalla[0].estaVivo() && personajesEnBatalla[1].estaVivo()) {
+                int[] buffEnAccion = turno ? buffTemporal0 : buffTemporal1;
+                int[] buffEnemigo = turno ? buffTemporal1 : buffTemporal0;
+                byte turnosEfectoAccion = turno ? turnosEfecto0 : turnosEfecto1;
                 byte personajeEnTurno = (byte) (turno ? 0 : 1);
+                Personaje personajeActuando = personajesEnBatalla[personajeEnTurno];
+                Personaje enemigo = personajesEnBatalla[1 - personajeEnTurno];
                 String accion;
                 boolean accionNoValida = true;
                 int xp;
-                System.out.println("\nTurno de " + personajesEnBatalla[personajeEnTurno].toString());
+                System.out.println("\nTurno de " + personajeActuando.toString());
                 while (accionNoValida) {
-                    System.out.println("¿Qué va a hacer? ( 1 - Atacar | 2 - Curar )");// Aún no :  | 3 - Usar objeto | 4 - Huir
+                    if (turnosEfectoAccion >= 0) {
+                        buffEnAccion = Razas.buffHabilidad(personajeActuando);
+                    }
+                    personajeActuando.asignarBonus(buffEnAccion, false);
+                    enemigo.asignarBonus(buffEnemigo, false);
+                    System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - "+ personajeActuando.stringHabilidadRaza() +" ]");// Aún no :   | 4 - Usar objeto | 5 - Huir
                     accion = Util.pedirPorTeclado(true);
                     switch (Integer.parseInt(accion)) {
                         case 1:
-                            xp = personajesEnBatalla[personajeEnTurno].atacar(personajesEnBatalla[1 - personajeEnTurno]);
+                            xp = personajeActuando.atacar(enemigo);
                             try {
-                                personajesEnBatalla[personajeEnTurno].sumarExperiencia(xp);
-                                personajesEnBatalla[1 - personajeEnTurno].sumarExperiencia(xp);
+                                personajeActuando.sumarExperiencia(xp);
+                                enemigo.sumarExperiencia(xp);
                             } catch (PersonajeException e) {
                                 int xpRest = xp;
                                 for (; xpRest >= 125000; xpRest -= 125000) {
-                                    personajesEnBatalla[personajeEnTurno].sumarExperiencia(125000);
-                                    personajesEnBatalla[1 - personajeEnTurno].sumarExperiencia(125000);
+                                    personajeActuando.sumarExperiencia(125000);
+                                    enemigo.sumarExperiencia(125000);
                                 }
-                                personajesEnBatalla[personajeEnTurno].sumarExperiencia(xpRest);
-                                personajesEnBatalla[1 - personajeEnTurno].sumarExperiencia(xpRest);
+                                personajeActuando.sumarExperiencia(xpRest);
+                                enemigo.sumarExperiencia(xpRest);
                             }
                             if (xp == 0) {
                                 System.out.println("El ataque falló!");
                             } else {
-                                System.out.println( "El personaje \"" + personajesEnBatalla[1 - personajeEnTurno].getNombre() + "\" recibió " + xp + " de daño!");
+                                System.out.println( "El personaje \"" + enemigo.getNombre() + "\" recibió " + xp + " de daño!");
                             }
                             accionNoValida = false;
                             break;
         
                         case 2:
-                            personajesEnBatalla[personajeEnTurno].curar();
+                            personajeActuando.curar();
                             accionNoValida = false;
                             break;
-                    
+                        
+                        case 3:
+                            turnosEfectoAccion = personajeActuando.duracionHabilidadRaza(enemigo);
+                            if (turnosEfectoAccion == -1) {
+                                if (dosHobbit) {//(dosHobbit || personaje.getRaza().equals(Razas.HOBBIT)) Posibilidad de añadir probabilidad de fallo en el robo de habilidad
+                                    System.out.println("La habilidad de raza no surte efecto");
+                                } else {
+                                    System.out.println("La habilidad no se puede utilizar durante este turno!");
+                                    accionNoValida = true;
+                                }   
+                            } else {
+                                if (turnosEfectoAccion == 0) {
+                                    buffEnAccion = Razas.buffHabilidad(personajeActuando);
+                                    personajeActuando.asignarBonus(buffEnAccion, false);
+                                }
+                            }
+                            
+                            break;
                         default:
                             System.out.println("Acción no válida.");
                             accionNoValida = true;
                             break;
                     }
                 }
+                turnosEfectoAccion--;
+                if (turno) {
+                    turnosEfecto0 = turnosEfectoAccion;
+                    buffTemporal0 = buffEnAccion;
+                    buffTemporal1 = buffEnemigo;
+                } else {
+                    turnosEfecto1 = turnosEfectoAccion;
+                    buffTemporal1 = buffEnAccion;
+                    buffTemporal0 = buffEnemigo;
+                }
+                personajeActuando.asignarBonus(buffEnAccion, true);
+                enemigo.asignarBonus(buffEnemigo, true);
+                if (!personajeActuando.isHabilidadRazaActiva()) { personajeActuando.activarHabilidadRaza(); }
+                personajesEnBatalla[personajeEnTurno] = personajeActuando;
+                personajesEnBatalla[1 - personajeEnTurno] = enemigo;
                 turno = cambiar(turno);
             }
             System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
