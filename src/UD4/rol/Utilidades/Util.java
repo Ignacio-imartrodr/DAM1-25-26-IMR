@@ -15,6 +15,10 @@ import org.json.JSONArray;
 
 import UD4.Rol.Objetos.Personaje;
 
+/**
+ * @author Ignacio MR (HM Profesor Óscar de programación)
+ */
+
 public class Util {
     /**
      * Lee y carga el contenido de un fichero de texto a un array de {@code Json} 

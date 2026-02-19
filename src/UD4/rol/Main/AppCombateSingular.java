@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import UD4.Rol.Objetos.Personaje;
-import UD4.Rol.Objetos.Razas;
+import UD4.Rol.Objetos.Raza;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
@@ -291,7 +291,7 @@ public class AppCombateSingular {
         while (batalla) {
             Random rnd = new Random();
             boolean turno = rnd.nextBoolean();
-            boolean dosHobbit = personajesEnBatalla[0].getRaza().equals(Razas.HOBBIT) && personajesEnBatalla[1].getRaza().equals(Razas.HOBBIT);
+            boolean dosHobbit = personajesEnBatalla[0].getRaza().equals(Raza.HOBBIT) && personajesEnBatalla[1].getRaza().equals(Raza.HOBBIT);
             byte turnosEfecto0 = -1;
             byte turnosEfecto1 = -1;
             int[] buffTemporal0 = new int[] {0, 0, 0, 0};
@@ -309,7 +309,7 @@ public class AppCombateSingular {
                 System.out.println("\nTurno de " + personajeActuando.toString());
                 while (accionNoValida) {
                     if (turnosEfectoAccion >= 0) {
-                        buffEnAccion = Razas.buffHabilidad(personajeActuando);
+                        buffEnAccion = Raza.buffHabilidad(personajeActuando);
                     }
                     personajeActuando.asignarBonus(buffEnAccion, false);
                     enemigo.asignarBonus(buffEnemigo, false);
@@ -354,7 +354,7 @@ public class AppCombateSingular {
                                 }   
                             } else {
                                 if (turnosEfectoAccion == 0) {
-                                    buffEnAccion = Razas.buffHabilidad(personajeActuando);
+                                    buffEnAccion = Raza.buffHabilidad(personajeActuando);
                                     personajeActuando.asignarBonus(buffEnAccion, false);
                                 }
                             }

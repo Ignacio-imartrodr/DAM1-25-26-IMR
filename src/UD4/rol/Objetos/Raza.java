@@ -4,24 +4,28 @@ import java.util.Arrays;
 
 import UD4.Rol.Utilidades.PersonajeException;
 
-public enum Razas {
+/**
+ * @author Ignacio MR
+ */
+
+public enum Raza {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
-    public static Razas[] toArray(){
-        Razas[] razas = new Razas[0];
-        for (Razas raza : Razas.values()) {
+    public static Raza[] toArray(){
+        Raza[] razas = new Raza[0];
+        for (Raza raza : Raza.values()) {
             razas = Arrays.copyOf(razas, razas.length + 1);
             razas[razas.length - 1] = raza;
         }
         return razas;
     }
-    public static Razas StringToRaza(String respuesta){
-        Razas raza = Razas.HUMANO;
+    public static Raza StringToRaza(String respuesta){
+        Raza raza = Raza.HUMANO;
         if (respuesta == null) {
-            raza = Razas.HUMANO;
+            raza = Raza.HUMANO;
         } else {
             try {
-                raza = Razas.valueOf(respuesta.toUpperCase());
+                raza = Raza.valueOf(respuesta.toUpperCase());
             } catch (Exception e) {
                 throw new PersonajeException("Raza no válida.");
             }

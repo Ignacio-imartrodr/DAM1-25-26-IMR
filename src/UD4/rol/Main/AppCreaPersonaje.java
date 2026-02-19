@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import UD4.Rol.Utilidades.*;
 import UD4.Rol.Objetos.Personaje;
-import UD4.Rol.Objetos.Stats;
 
 /** 
  * @author Ignacio MR
@@ -155,38 +154,39 @@ public class AppCreaPersonaje {
                             System.out.println("Nombre, raza, fuerza, agilidad, constitucion, nivel o experiencia");
                             String valor = Util.pedirPorTeclado(false);
                             if (!(valor == null)) {
-                                Stats stat;
                                 try {
-                                    stat = Stats.valueOf(valor.toUpperCase());
-                                    switch (stat) {
-                                        case NOMBRE:
+                                    valor = valor.toUpperCase();
+                                    switch (valor) {
+                                        case "NOMBRE":
                                             valor = Util.pedirPorTeclado(false);
                                             personajesArray[i] = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia, true);
                                             break;
-                                        case RAZA:
+                                        case "RAZA":
                                             valor = Util.pedirPorTeclado(false);
                                             personajesArray[i] = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia, true);
                                             break;
-                                        case FUERZA:
+                                        case "FUERZA":
                                             valor = Util.pedirPorTeclado(true);
                                             personajesArray[i] = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia, true);
                                             break;
-                                        case AGILIDAD:
+                                        case "AGILIDAD":
                                             valor = Util.pedirPorTeclado(true);
                                             personajesArray[i] = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, true);
                                             break;
-                                        case CONSTITUCION:
+                                        case "CONSTITUCION":
                                             valor = Util.pedirPorTeclado(true);
                                             personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, true);
                                             break;
-                                        case NIVEL:
+                                        case "NIVEL":
                                             valor = Util.pedirPorTeclado(true);
                                             personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia, true);
                                             break;
-                                        case EXPERIENCIA:
+                                        case "EXPERIENCIA":
                                             valor = Util.pedirPorTeclado(true);
                                             personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, true);
                                             break;
+                                        default:
+                                            throw new PersonajeException();
                                     }
                                 } catch (Exception e) {
                                     System.out.println("Valor no válido.");

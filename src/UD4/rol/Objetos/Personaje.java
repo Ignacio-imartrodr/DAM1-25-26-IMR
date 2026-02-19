@@ -11,7 +11,7 @@ import UD4.Rol.Utilidades.*;
 public class Personaje {
     private int id = -1;
     private String nombre;
-    private Razas raza;
+    private Raza raza;
     private int fuerza;
     private int agilidad;
     private int constitucion;
@@ -129,7 +129,7 @@ public class Personaje {
         }
         this.nombre = nombre;
         try {
-            this.raza = Razas.StringToRaza(raza);
+            this.raza = Raza.StringToRaza(raza);
         } catch (PersonajeException e) {
             throw new PersonajeException("Raza no válida.");
         }
@@ -177,7 +177,7 @@ public class Personaje {
         constitucion += sustraer ? -bonusConstitucion : bonusConstitucion;
         perderVida(cura);// Al ser "cura" un valor negativo gana vida en vez de perderla
     }
-    private static String[] asignarBonusRaza(Razas raza) {
+    private static String[] asignarBonusRaza(Raza raza) {
         String bonusFuerza = "x";
         String bonusAgilidad = "x";
         String bonusConstitucion = "x";
@@ -229,7 +229,7 @@ public class Personaje {
     public String getNombre(){
         return this.nombre;
     }
-    public Razas getRaza() {
+    public Raza getRaza() {
         return raza;
     }
     public int getFuerza() {
@@ -258,7 +258,7 @@ public class Personaje {
     }
     public static String getRazasStats() {
         String fichas = "";
-        for (Razas raza : Razas.toArray()) {
+        for (Raza raza : Raza.toArray()) {
             String[] bonus = asignarBonusRaza(raza);
             fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
         }
@@ -283,7 +283,7 @@ public class Personaje {
         
         for (boolean error = true; error;) {
             try {
-                raza = Razas.StringToRaza(Util.pedirPorTeclado(false));
+                raza = Raza.StringToRaza(Util.pedirPorTeclado(false));
                 error = false;
             } catch (PersonajeException e) {
                 System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
@@ -431,8 +431,8 @@ public class Personaje {
         boolean haceEfecto = habilidadRazaActiva;
         byte turnosEfecto = -1;
         if (haceEfecto) {
-            boolean esHobbit = getRaza().equals(Razas.HOBBIT);
-            Razas habilidad = esHobbit ? enemigo.getRaza() : raza;
+            boolean esHobbit = getRaza().equals(Raza.HOBBIT);
+            Raza habilidad = esHobbit ? enemigo.getRaza() : raza;
             switch (habilidad) {
                     case HUMANO:
                         turnosEfecto = 1;
@@ -443,8 +443,8 @@ public class Personaje {
                         if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;
                     case ENANO:
-                        //TODO: crear que fabrique objeto
-                        //TODO: craer objetos
+                        //TODO: crear que fabrique items
+                        //TODO: craer items
                         
                         if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;
@@ -478,7 +478,7 @@ public class Personaje {
                     nombreYHabilidad = "Crear (Fabrica un objeto aleatorio)";
                     break;
                 case HOBBIT:
-                    nombreYHabilidad = "Steal (Roba la habillidad de raza de su enemigo por un turno)";
+                    nombreYHabilidad = "Steal (Roba la habillidad de raza de su enemigo por un turno)"; //Vigila a donde te apunta con su habilidad jajaja
                     break;
                 case ORCO:
                     nombreYHabilidad = "Mamporro (Golpea al enemigo con el doble de fuerza)";

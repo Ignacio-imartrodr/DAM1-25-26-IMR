@@ -1,9 +1,12 @@
 package UD4.Rol.Utilidades;
 
 /**
+ * @author Ignacio MR
+ */
+/**
  * Thrown when an exceptional personaje condition has occurred. For
  * example, too much experience given at onece throws an
- * instance of this class.s
+ * instance of this class.
  *
  */
 public class PersonajeException extends RuntimeException {
