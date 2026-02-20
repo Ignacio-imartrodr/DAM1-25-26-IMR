@@ -313,7 +313,7 @@ public class AppCombateSingular {
                     }
                     personajeActuando.asignarBonus(buffEnAccion, false);
                     enemigo.asignarBonus(buffEnemigo, false);
-                    System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - "+ personajeActuando.stringHabilidadRaza() +" ]");// Aún no :   | 4 - Usar objeto | 5 - Huir
+                    System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - "+ personajeActuando.stringHabilidadRaza() +" | 4 - Usar objeto ]");// Aún no :   | 5 - Huir
                     accion = Util.pedirPorTeclado(true);
                     switch (Integer.parseInt(accion)) {
                         case 1:
@@ -344,22 +344,31 @@ public class AppCombateSingular {
                             break;
                         
                         case 3:
-                            turnosEfectoAccion = personajeActuando.duracionHabilidadRaza(enemigo);
-                            if (turnosEfectoAccion == -1) {
-                                if (dosHobbit) {//(dosHobbit || personaje.getRaza().equals(Razas.HOBBIT)) Posibilidad de añadir probabilidad de fallo en el robo de habilidad
-                                    System.out.println("La habilidad de raza no surte efecto");
+                            if (personajeActuando.isHabilidadRazaActiva()) {
+                                turnosEfectoAccion = personajeActuando.duracionHabilidadRaza(enemigo);
+                                if (turnosEfectoAccion == -1) {
+                                    if (dosHobbit) {//(dosHobbit || personaje.getRaza().equals(Razas.HOBBIT)) Posibilidad de añadir probabilidad de fallo en el robo de habilidad
+                                        System.out.println("La habilidad de raza no surte efecto");
+                                    } else {
+                                        System.out.println("La habilidad no se puede utilizar durante este turno!");
+                                        accionNoValida = true;
+                                    }   
                                 } else {
-                                    System.out.println("La habilidad no se puede utilizar durante este turno!");
-                                    accionNoValida = true;
-                                }   
-                            } else {
-                                if (turnosEfectoAccion == 0) {
-                                    buffEnAccion = Raza.buffHabilidad(personajeActuando);
-                                    personajeActuando.asignarBonus(buffEnAccion, false);
+                                    if (turnosEfectoAccion == 0) {
+                                        buffEnAccion = Raza.buffHabilidad(personajeActuando);
+                                        personajeActuando.asignarBonus(buffEnAccion, false);
+                                    }
                                 }
+                            } else {
+                                System.out.println("La habilidad no se puede utilizar durante este turno!");
+                                accionNoValida = true;
                             }
+                            break;
+                        
+                        case 4:
                             
                             break;
+                        
                         default:
                             System.out.println("Acción no válida.");
                             accionNoValida = true;

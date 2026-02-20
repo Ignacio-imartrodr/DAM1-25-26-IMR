@@ -20,7 +20,7 @@ public class Personaje {
     private int experiencia;
     private int puntosVida = getVidaMax();
     private boolean habilidadRazaActiva = true;
-    private Item[] bolsa = new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()};
+    private Item[] bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
     private final static int VIDA_MIN = 50;
     private final static int EXP_MAX = 127999;
     
@@ -467,7 +467,7 @@ public class Personaje {
                                 }
                             }
                         }
-                        bolsa = Arrays.copyOf(bolsa, Items.sort(bolsa));//TODO testear
+                        bolsa = Items.sort(bolsa);
                         
                         if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;
@@ -512,7 +512,25 @@ public class Personaje {
             }
         return nombreYHabilidad;
     }
-
+    public String mostrarBolsa(){
+        this.bolsa = Items.sort(this.bolsa);
+        String inventario = "Objetos disponibles:\n";
+        /* Mostrar todos
+        for (Item item : bolsa) {
+            if (item != null) {
+                inventario += "-" + item.getNombre() + "\n";
+            }
+        }*/
+        for (int i = 0, cant = 0; i < bolsa.length && !(bolsa[i] == null);) {
+            cant = Items.cantidadItem(bolsa, bolsa[i]);
+            inventario += "-" + bolsa[i].getNombre() + " (" + cant + ")\n";
+            cant --;
+            i += cant;
+            i++;
+            
+        }
+        return inventario;
+    }
     public String toJsonString() {
         String personajeJson = String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
         return personajeJson;
@@ -520,5 +538,9 @@ public class Personaje {
     public String toCsvString() {
         return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);
     }
-      
+    public static void main(String[] args) {
+        Personaje p = new Personaje("pureba");
+        p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas")};
+        System.out.println(p.mostrarBolsa());
+    }
 }

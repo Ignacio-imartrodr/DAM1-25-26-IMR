@@ -20,10 +20,11 @@ import UD4.Rol.Objetos.Personaje;
  */
 
 public class Util {
-    public static void swap(Object[] x, int a, int b) {
+    public static Object[] swap(Object[] x, int a, int b) {
         Object t = x[a];
         x[a] = x[b];
         x[b] = t;
+        return x;
     }
     /**
      * Lee y carga el contenido de un fichero de texto a un array de {@code Json} 
@@ -312,7 +313,7 @@ public class Util {
         String json = resp.body();
         return json;
     }
-    
+
     public static void main(String[] args) {
         String personajes = "";
         Personaje[] personajesCreados = new Personaje[3];

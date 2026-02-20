@@ -39,7 +39,7 @@ public enum Items {
         return itemRnd;
 
     }
-    public static int sort(Item[] x){
+    public static Item[] sort(Item[] x){
         boolean conNull = false;
         int lastPosNotNull = 0;
         for (Item item : x) {
@@ -54,18 +54,29 @@ public enum Items {
                     while (x[j] == null) {
                         j--;
                     }
-                    Util.swap(x, i, j);
+                    x = (Item[]) Util.swap(x, i, j);
                 }
                 lastPosNotNull = j;
             }
         }
         for (int i=0; i<lastPosNotNull; i++) {
             for (int j=i; j>0 && ((Comparable<Items>) Items.StringToItems(x[j-1].getNombre())).compareTo(Items.StringToItems(x[j].getNombre()))>0; j--) {
-                Util.swap(x, j, j-1);
+                x = (Item[]) Util.swap(x, i, j);
             }
         }
-        return lastPosNotNull;
+        x = Arrays.copyOf(x, lastPosNotNull);
+        return x;
     }
+    public static int cantidadItem(Item[] t, Item clave){
+        int cant = 0;
+        for (int i = 0; i < t.length; i++) {
+            if ((t[i].getNombre()).equals(clave.getNombre())) {
+                cant++;
+            }
+        }
+        return cant;
+    }
+
     @Override
     public String toString() {
         String string;
