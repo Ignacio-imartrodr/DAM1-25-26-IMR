@@ -2,7 +2,7 @@ package UD4.Instituto.Modulos;
 
 import java.util.Arrays;
 
-import UD4.Instituto.Util;
+import UD4.Instituto.Utiles;
 import UD4.Instituto.Personas.Alumno;
 import UD4.Instituto.Personas.Profesor;
 
@@ -31,7 +31,7 @@ public class Modulo {
         int i = 0;
         for (Alumno alumno : alumnosMatriculados) {
             System.out.print("Nota de " + alumno.nombreCompleto + " con id \"" + alumno.id + ": ");
-            notas[i] = Double.parseDouble(Util.pedirPorTeclado(true));
+            notas[i] = Double.parseDouble(Utiles.pedirPorTeclado(true));
             alumno.asignarNotaAAlumno(notas[i]);
             i++;
         }
@@ -43,21 +43,21 @@ public class Modulo {
     }
     public void pedirNombre(){
         System.out.print("Nombre: ");
-        nombre = Util.pedirPorTeclado(false);
+        nombre = Utiles.pedirPorTeclado(false);
         
     }
     public void pedirHoras(){
         System.out.print("Horas: ");
-        horas = Integer.parseInt(Util.pedirPorTeclado(true));
+        horas = Integer.parseInt(Utiles.pedirPorTeclado(true));
     }
     public void asignarAProfesorado(Profesor[] profesorado){
         boolean conCSV = false;
         String respuesta;
         System.out.print("¿Deseas introducir el profesorado desde un fichero CSV? (s/n): ");
-        respuesta = Util.pedirPorTeclado(false);
+        respuesta = Utiles.pedirPorTeclado(false);
         while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
             System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = Util.pedirPorTeclado(false);
+            respuesta = Utiles.pedirPorTeclado(false);
         }
         if (respuesta.equalsIgnoreCase("s")) {
             conCSV = true;
@@ -70,7 +70,7 @@ public class Modulo {
             Profesor[] ProfesoresCSV = Profesor.darArrayProfesoresDeCSV(rutaCSV);
             for (Profesor profesor : ProfesoresCSV) {
                 profesor.id = id;
-                if (Util.verificaObjetoEnArray(profesor, profesorado)) {
+                if (Utiles.verificaObjetoEnArray(profesor, profesorado)) {
                     profesor.asignarModuloImpartido(this);
                     id++;
                 } else {
@@ -82,10 +82,10 @@ public class Modulo {
             respuesta = "";
             for (Profesor profesor : profesorado) {
                 System.out.print("El profesor/a " + profesor.nombreCompleto + " con id " + profesor.id + " imparte este modulo? (s/n): " );
-                respuesta = Util.pedirPorTeclado(false);
+                respuesta = Utiles.pedirPorTeclado(false);
                 while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
                     System.out.println("Responde unicamente con \"s\" o \"n\"");
-                    respuesta = Util.pedirPorTeclado(false);
+                    respuesta = Utiles.pedirPorTeclado(false);
                 }
                 if (respuesta.equalsIgnoreCase("s")) {
                     imparte = true;
@@ -103,10 +103,10 @@ public class Modulo {
         boolean conCSV = false;
         String respuesta;
         System.out.print("¿Deseas introducir el profesorado desde un fichero CSV? (s/n): ");
-        respuesta = Util.pedirPorTeclado(false);
+        respuesta = Utiles.pedirPorTeclado(false);
         while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
             System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = Util.pedirPorTeclado(false);
+            respuesta = Utiles.pedirPorTeclado(false);
         }
         if (respuesta.equalsIgnoreCase("s")) {
             conCSV = true;
@@ -146,10 +146,10 @@ public class Modulo {
         boolean conCSV = false;
         String respuesta;
         System.out.print("¿Deseas introducir el alumnado desde un fichero CSV? (s/n): ");
-        respuesta = Util.pedirPorTeclado(false);
+        respuesta = Utiles.pedirPorTeclado(false);
         while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
             System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = Util.pedirPorTeclado(false);
+            respuesta = Utiles.pedirPorTeclado(false);
         }
         if (respuesta.equalsIgnoreCase("s")) {
             conCSV = true;

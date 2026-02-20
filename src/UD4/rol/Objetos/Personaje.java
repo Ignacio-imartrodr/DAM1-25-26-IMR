@@ -1,5 +1,6 @@
 package UD4.Rol.Objetos;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import UD4.Rol.Utilidades.*;
@@ -19,6 +20,7 @@ public class Personaje {
     private int experiencia;
     private int puntosVida = getVidaMax();
     private boolean habilidadRazaActiva = true;
+    private Item[] bolsa = new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()};
     private final static int VIDA_MIN = 50;
     private final static int EXP_MAX = 127999;
     
@@ -85,6 +87,7 @@ public class Personaje {
         this.constitucion = 0;
         this.nivel = 0;
         this.experiencia = 0;
+        this.bolsa = null;
     }
 
     /**
@@ -133,6 +136,7 @@ public class Personaje {
         } catch (PersonajeException e) {
             throw new PersonajeException("Raza no válida.");
         }
+        Items.sort(this.bolsa);
         if (yaExistente) {
             if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
                 throw new PersonajeException("Valores fuera de límites");
@@ -308,6 +312,8 @@ public class Personaje {
         experiencia = pedirStatNoRng(true);
 
         puntosVida = getVidaMax();
+
+        Items.sort(bolsa);
     }
 
     private String pedirStatRng(){
@@ -443,8 +449,25 @@ public class Personaje {
                         if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;
                     case ENANO:
-                        //TODO: crear que fabrique items
-                        //TODO: craer items
+                        boolean bolsaLlena = true;
+                        for (Item item : bolsa) {
+                            if (item == null) {
+                                bolsaLlena = false;
+                                break;
+                            }
+                        }
+                        if (bolsaLlena) {
+                            bolsa = Arrays.copyOf(bolsa, bolsa.length + 1);
+                            bolsa[bolsa.length - 1] = Items.getItemRnd();
+                        } else {
+                            for (int i = 0; i < bolsa.length; i++) {
+                                if (bolsa[i] == null) {
+                                    bolsa[i] = Items.getItemRnd();
+                                    break;
+                                }
+                            }
+                        }
+                        bolsa = Arrays.copyOf(bolsa, Items.sort(bolsa));//TODO testear
                         
                         if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;

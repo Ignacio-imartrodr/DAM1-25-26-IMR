@@ -67,5 +67,4 @@ public enum Raza {
         nombre= this.name().charAt(0) + this.name().substring(1).toLowerCase();
         return nombre;
     }
-    
 }

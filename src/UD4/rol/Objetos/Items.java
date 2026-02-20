@@ -1,20 +1,22 @@
 package UD4.Rol.Objetos;
 
 import java.util.Arrays;
+import java.util.Random;
 
-import UD4.Rol.Utilidades.ItemException;
+import UD4.Rol.Utilidades.*;
 
 /**
  * @author Ignacio MR
  */
 
 public enum Items {
-    POCION_VIDA, CUCHILO, SACO_DE_VIENTO;
 
-    public static Items StringToItem(String respuesta){
+    POCION_VIDA, CUCHILLO, SACO_DE_VIENTO, BOMBA_DE_HUMO, ENREDADERAS;
+
+    public static Items StringToItems(String respuesta){
         Items item;
         try {
-            item = Items.valueOf(respuesta.toUpperCase());
+            item = Items.valueOf(respuesta.toUpperCase().replace(" ", "_"));
             return item;
         } catch (Exception e) {
             throw new ItemException("Item no válido.");
@@ -29,11 +31,51 @@ public enum Items {
         }
         return items;
     }
+    public static Item getItemRnd(){
+        Random rnd = new Random();
+        Items[] itemsCreados = toArray();
+        int i = rnd.nextInt(itemsCreados.length - 1);
+        Item itemRnd = new Item(itemsCreados[i].name());
+        return itemRnd;
+
+    }
+    public static int sort(Item[] x){
+        boolean conNull = false;
+        int lastPosNotNull = 0;
+        for (Item item : x) {
+            if (item == null) {
+                conNull = true;
+                break;
+            }
+        }
+        if (conNull) {
+            for (int i = 0, j = x.length - 1; i < j; i++) {
+                if (x[i] == null) {
+                    while (x[j] == null) {
+                        j--;
+                    }
+                    Util.swap(x, i, j);
+                }
+                lastPosNotNull = j;
+            }
+        }
+        for (int i=0; i<lastPosNotNull; i++) {
+            for (int j=i; j>0 && ((Comparable<Items>) Items.StringToItems(x[j-1].getNombre())).compareTo(Items.StringToItems(x[j].getNombre()))>0; j--) {
+                Util.swap(x, j, j-1);
+            }
+        }
+        return lastPosNotNull;
+    }
     @Override
     public String toString() {
         String string;
         string = this.name().charAt(0) + this.name().substring(1).toLowerCase();
         string = string.replace("_", " ");
         return string;
+    }
+    public static void main(String[] args) {
+        Item[] foo = new Item[]{null, Items.getItemRnd(), new Item("Enredaderas")};
+        Items.sort(foo);
+        
     }
 }

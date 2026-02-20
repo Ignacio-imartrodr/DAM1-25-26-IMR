@@ -77,10 +77,10 @@ public class CentroEducativo {
         boolean conCSV = false;
         String respuesta;
         System.out.print("¿Deseas introducir el alumnado desde un fichero CSV? (s/n): ");
-        respuesta = Util.pedirPorTeclado(false);
+        respuesta = Utiles.pedirPorTeclado(false);
         while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
             System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = Util.pedirPorTeclado(false);
+            respuesta = Utiles.pedirPorTeclado(false);
         }
         if (respuesta.equalsIgnoreCase("s")) {
             conCSV = true;
@@ -116,10 +116,10 @@ public class CentroEducativo {
         boolean conCSV = false;
         String respuesta;
         System.out.print("¿Deseas introducir el profesorado desde un fichero CSV? (s/n): ");
-        respuesta = Util.pedirPorTeclado(false);
+        respuesta = Utiles.pedirPorTeclado(false);
         while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n")) {
             System.out.println("Responde unicamente con \"s\" o \"n\"");
-            respuesta = Util.pedirPorTeclado(false);
+            respuesta = Utiles.pedirPorTeclado(false);
         }
         if (respuesta.equalsIgnoreCase("s")) {
             conCSV = true;

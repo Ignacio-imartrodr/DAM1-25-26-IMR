@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import UD4.Instituto.Util;
+import UD4.Instituto.Utiles;
 
 public class Persona {
     public static Persona[] darArrayPersonasDeCSV(String rutaCSV){
-        String[] personasCSV = Util.readFileToStringArray(rutaCSV);
+        String[] personasCSV = Utiles.readFileToStringArray(rutaCSV);
         Persona[] personas = new Persona[personasCSV.length];
 
         for (int i = 0; i < personasCSV.length; i++) {

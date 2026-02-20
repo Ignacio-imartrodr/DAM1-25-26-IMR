@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Util {
+public class Utiles {
     /**
      * Lee y carga el contenido de un fichero de texto a un array de String (un
      * elemento por línea y cada atributo separado por ",")
