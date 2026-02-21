@@ -179,7 +179,7 @@ public class Personaje {
         fuerza += sustraer ? -bonusFuerza : bonusFuerza;
         agilidad += sustraer ? -bonusAgilidad : bonusAgilidad;
         constitucion += sustraer ? -bonusConstitucion : bonusConstitucion;
-        perderVida(cura);// Al ser "cura" un valor negativo gana vida en vez de perderla
+        perderVida(cura); // Al ser "cura" un valor negativo gana vida en vez de perderla
     }
     private static String[] asignarBonusRaza(Raza raza) {
         String bonusFuerza = "x";
@@ -515,21 +515,27 @@ public class Personaje {
     public String mostrarBolsa(){
         this.bolsa = Items.sort(this.bolsa);
         String inventario = "Objetos disponibles:\n";
+        for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
+            cant = Items.cantidadItem(bolsa, bolsa[i]);
+            inventario += id + " - " + bolsa[i].getNombre() + " (" + cant + ") (" + bolsa[i].getDescription() + ")\n";
+            id++;
+        }
+        return inventario;
         /* Mostrar todos
         for (Item item : bolsa) {
             if (item != null) {
                 inventario += "-" + item.getNombre() + "\n";
             }
         }*/
-        for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
-            cant = Items.cantidadItem(bolsa, bolsa[i]);
-            inventario += id + " - " + bolsa[i].getNombre() + " (" + cant + ")\n";
-            id++;
-        }
-        return inventario;
     }
-    public void usarObjeto(Item objeto){
-        //TODO cambiar el objeto por null y utilizarlo
+    public void usarObjeto(Item item){
+        for (int i = 0; i < bolsa.length; i++) {
+            if (item.compareTo(bolsa[i]) == 0) {
+                bolsa[i] = null;
+                break;
+            }
+        }
+        bolsa = Items.sort(bolsa);
     }
     public String toJsonString() {
         String personajeJson = String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());

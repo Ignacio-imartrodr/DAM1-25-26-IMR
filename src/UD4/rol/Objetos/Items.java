@@ -11,9 +11,22 @@ import UD4.Rol.Utilidades.*;
 
 public enum Items {
 
-    POCION_VIDA, CUCHILLO, SACO_DE_VIENTO, BOMBA_DE_HUMO, ENREDADERAS;
+    POCION_VIDA, BOMBA_DE_HUMO, ENREDADERAS, MECHERO;
+    
+    public static Item[] conHabilidades(){
+        Item[] array = new Item[0];
+        for (Items item : Items.values()) {
+            Item objeto = new Item(item.name());
+            if (objeto.haveHabilidadExtra()) {
+                array = Arrays.copyOf(array, array.length + 1);
+                array[array.length - 1] = objeto;
+            }
+        }
+        Items.sort(array);
+        return array;
+    }
 
-    public static Items StringToItems(String respuesta){
+    public static Items stringToItems(String respuesta){
         Items item;
         try {
             item = Items.valueOf(respuesta.toUpperCase().strip().replace(" ", "_"));
@@ -61,7 +74,7 @@ public enum Items {
             }
         }
         for (int i=0; i < firtPosNull; i++) {
-            for (int j = i; j > 0 && ((Comparable<Items>) Items.StringToItems(x[j-1].getNombre())).compareTo(Items.StringToItems(x[j].getNombre()))>0; j--) {
+            for (int j = i; j > 0 && ((Comparable<Items>) Items.stringToItems(x[j-1].getNombre())).compareTo(Items.stringToItems(x[j].getNombre()))>0; j--) {
                 x = (Item[]) Util.swap(x, j, j-1);
             }
         }
@@ -77,7 +90,6 @@ public enum Items {
         }
         return cant;
     }
-
     @Override
     public String toString() {
         String string;
@@ -86,7 +98,7 @@ public enum Items {
         return string;
     }
     public static void main(String[] args) {
-        Item[] foo = new Item[]{null, Items.getItemRnd(), new Item("Enredaderas"), Items.getItemRnd()};
+        Item[] foo = new Item[]{null, Items.getItemRnd(), new Item("Mechero"), Items.getItemRnd()};
         Items.sort(foo);
     }
 }
