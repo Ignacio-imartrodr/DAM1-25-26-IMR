@@ -332,7 +332,7 @@ public class AppCombateSingular {
                     }
                     personajeActuando.asignarBonus(buffEnAccion[personajeEnTurno], false);
                     enemigo.asignarBonus(buffEnAccion[1 - personajeEnTurno], false);
-                    System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - "+ personajeActuando.stringHabilidadRaza() +" | 4 - Usar objeto ]");// Aún no :   | 5 - Huir
+                    System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - "+ personajeActuando.stringHabilidadRaza() +" | 4 - Abrir bolsa ]");// Aún no :   | 5 - Huir
                     accion = Util.pedirPorTeclado(true);
                     switch (Integer.parseInt(accion)) {
                         case 1:
@@ -393,7 +393,7 @@ public class AppCombateSingular {
                             Item objeto;
                             String bolsa = personajeActuando.mostrarBolsa();
                             System.out.println(bolsa);
-                            System.out.println("Escoge Objeto (número de la izquierda): ");
+                            System.out.println("Escoge Objeto (número de la izquierda) u otro número para cambiar de opción: ");
                             accion = Util.pedirPorTeclado(true);
                             int ubNomObjeto = Integer.parseInt(accion);
                             String ubNom = ubNomObjeto + " - ";
@@ -402,10 +402,11 @@ public class AppCombateSingular {
                             try {
                                 objeto = new Item(accion); 
                             } catch (Exception e) {
-                                System.out.println("Objeto no válido.");
+                                System.out.println("Saliendo de la bolsa...");
                                 break;
                             }
                             personajeActuando.usarObjeto(objeto);
+                            
                             switch (Items.stringToItems(objeto.getNombre())) {
                                 case POCION_VIDA: //Cura
                                     personajeActuando.perderVida(-objeto.getSanar());
@@ -426,6 +427,7 @@ public class AppCombateSingular {
                                 default:
                                     throw new ItemException("Item sin acción asignada.");
                             }
+                            System.out.println("Usaste \"" + objeto.getNombre() + "\"!");
                             accionNoValida = false;
                             break;
                         default:

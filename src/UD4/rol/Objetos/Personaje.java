@@ -456,19 +456,20 @@ public class Personaje {
                                 break;
                             }
                         }
+                        Item itemRnd = Items.getItemRnd();
                         if (bolsaLlena) {
                             bolsa = Arrays.copyOf(bolsa, bolsa.length + 1);
-                            bolsa[bolsa.length - 1] = Items.getItemRnd();
+                            bolsa[bolsa.length - 1] = itemRnd;
                         } else {
                             for (int i = 0; i < bolsa.length; i++) {
                                 if (bolsa[i] == null) {
-                                    bolsa[i] = Items.getItemRnd();
+                                    bolsa[i] = itemRnd;
                                     break;
                                 }
                             }
                         }
                         bolsa = Items.sort(bolsa);
-                        
+                        System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
                         if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;
                     case HOBBIT:
