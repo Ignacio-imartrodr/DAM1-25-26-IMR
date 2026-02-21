@@ -14,21 +14,9 @@ public class Item {
     int duracion = 1;
     boolean tieneHabilidadExtra = false;
     public Item(String nombre) {
-        boolean itemValido = false;
-        String name = "";
-        for (Items items : Items.values()) {
-            if (nombre.toUpperCase().replace(" ", "_").equals(items.name())) {
-                itemValido = true;
-                name = items.toString();
-                break;
-            }
-        }
-        if (itemValido) {
-            this.nombre = name;
-        } else {
-            throw new ItemException("Item no existente");
-        }
-        switch (Items.StringToItems(nombre)) {
+        Items items = Items.StringToItems(nombre);
+        this.nombre = items.toString();
+        switch (items) {
             case POCION_VIDA: //Cura
                 this.sanar = 75;
                 break;

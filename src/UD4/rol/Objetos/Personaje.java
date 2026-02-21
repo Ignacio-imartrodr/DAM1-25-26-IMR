@@ -521,15 +521,15 @@ public class Personaje {
                 inventario += "-" + item.getNombre() + "\n";
             }
         }*/
-        for (int i = 0, cant = 0; i < bolsa.length && !(bolsa[i] == null);) {
+        for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
             cant = Items.cantidadItem(bolsa, bolsa[i]);
-            inventario += "-" + bolsa[i].getNombre() + " (" + cant + ")\n";
-            cant --;
-            i += cant;
-            i++;
-            
+            inventario += id + " - " + bolsa[i].getNombre() + " (" + cant + ")\n";
+            id++;
         }
         return inventario;
+    }
+    public void usarObjeto(Item objeto){
+        //TODO cambiar el objeto por null y utilizarlo
     }
     public String toJsonString() {
         String personajeJson = String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
@@ -540,7 +540,15 @@ public class Personaje {
     }
     public static void main(String[] args) {
         Personaje p = new Personaje("pureba");
-        p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas")};
-        System.out.println(p.mostrarBolsa());
+        p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas"), null};
+        /*p.bolsa = new Item[]{null, Items.getItemRnd(), new Item("Enredaderas"), Items.getItemRnd(), new Item("eNREDADEraS")};*/
+        String bolsa = p.mostrarBolsa();
+        System.out.println(bolsa);
+        String accion = "2";
+        String ubNom = accion + " - ";
+        int ubNomObjeto = bolsa.indexOf(ubNom)+ ubNom.length();
+        accion = bolsa.substring(ubNomObjeto, ubNomObjeto + bolsa.substring(ubNomObjeto).indexOf(" ("));
+        Item objeto = new Item(accion); 
+        p.usarObjeto(objeto);
     }
 }

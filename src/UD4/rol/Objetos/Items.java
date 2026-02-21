@@ -16,7 +16,7 @@ public enum Items {
     public static Items StringToItems(String respuesta){
         Items item;
         try {
-            item = Items.valueOf(respuesta.toUpperCase().replace(" ", "_"));
+            item = Items.valueOf(respuesta.toUpperCase().strip().replace(" ", "_"));
             return item;
         } catch (Exception e) {
             throw new ItemException("Item no válido.");
@@ -41,7 +41,7 @@ public enum Items {
     }
     public static Item[] sort(Item[] x){
         boolean conNull = false;
-        int lastPosNotNull = 0;
+        int firtPosNull = x.length;
         for (Item item : x) {
             if (item == null) {
                 conNull = true;
@@ -54,23 +54,24 @@ public enum Items {
                     while (x[j] == null) {
                         j--;
                     }
-                    x = (Item[]) Util.swap(x, i, j);
+                    x[i] = x[j];
+                    x[j] = null;
                 }
-                lastPosNotNull = j;
+                firtPosNull = j;
             }
         }
-        for (int i=0; i<lastPosNotNull; i++) {
-            for (int j=i; j>0 && ((Comparable<Items>) Items.StringToItems(x[j-1].getNombre())).compareTo(Items.StringToItems(x[j].getNombre()))>0; j--) {
-                x = (Item[]) Util.swap(x, i, j);
+        for (int i=0; i < firtPosNull; i++) {
+            for (int j = i; j > 0 && ((Comparable<Items>) Items.StringToItems(x[j-1].getNombre())).compareTo(Items.StringToItems(x[j].getNombre()))>0; j--) {
+                x = (Item[]) Util.swap(x, j, j-1);
             }
         }
-        x = Arrays.copyOf(x, lastPosNotNull);
+        x = Arrays.copyOf(x, firtPosNull);
         return x;
     }
     public static int cantidadItem(Item[] t, Item clave){
         int cant = 0;
         for (int i = 0; i < t.length; i++) {
-            if ((t[i].getNombre()).equals(clave.getNombre())) {
+            if (t[i] != null && (t[i].getNombre()).equals(clave.getNombre())) {
                 cant++;
             }
         }
@@ -85,8 +86,7 @@ public enum Items {
         return string;
     }
     public static void main(String[] args) {
-        Item[] foo = new Item[]{null, Items.getItemRnd(), new Item("Enredaderas")};
+        Item[] foo = new Item[]{null, Items.getItemRnd(), new Item("Enredaderas"), Items.getItemRnd()};
         Items.sort(foo);
-        
     }
 }

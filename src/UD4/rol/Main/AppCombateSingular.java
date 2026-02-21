@@ -3,6 +3,7 @@ package UD4.Rol.Main;
 import java.util.Arrays;
 import java.util.Random;
 
+import UD4.Rol.Objetos.Item;
 import UD4.Rol.Objetos.Personaje;
 import UD4.Rol.Objetos.Raza;
 import UD4.Rol.Utilidades.PersonajeException;
@@ -366,9 +367,17 @@ public class AppCombateSingular {
                             break;
                         
                         case 4:
-                            
-                            break;
-                        
+                            Item objeto;
+                            String bolsa = personajeActuando.mostrarBolsa();
+                            System.out.println(bolsa);
+                            System.out.println("Escoge Objeto (número de la izquierda): ");
+                            accion = Util.pedirPorTeclado(true);
+                            int ubNomObjeto = Integer.parseInt(accion);
+                            String ubNom = ubNomObjeto + " - ";
+                            ubNomObjeto = bolsa.indexOf(ubNom)+ ubNom.length();
+                            accion = bolsa.substring(ubNomObjeto, ubNomObjeto + bolsa.substring(ubNomObjeto).indexOf(" ("));
+                            objeto = new Item(accion); 
+                            personajeActuando.usarObjeto(objeto);
                         default:
                             System.out.println("Acción no válida.");
                             accionNoValida = true;
