@@ -30,7 +30,7 @@ public class AppCombateSingular {
                 System.out.println("OPCIONES: \nJson o Csv");
                 System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
                 rutaFichero = Util.pedirPorTeclado(false);
-                if ((rutaFichero == null) || (!rutaFichero.endsWith(".json") || !rutaFichero.endsWith(".csv"))) {
+                if ((rutaFichero == null) || (!rutaFichero.endsWith(".json") && !rutaFichero.endsWith(".csv"))) {
                     System.out.println("La ruta debe dirigir a un fichero con extensión .csv o .json");
                     restart = true;
                 }
@@ -289,8 +289,15 @@ public class AppCombateSingular {
         
         boolean batalla = true;
         while (batalla) {
-            Random rnd = new Random();
-            boolean turno = rnd.nextBoolean();
+            boolean turno;
+            if (personajesEnBatalla[0].getAgilidad() == personajesEnBatalla[1].getAgilidad()) {
+                Random rnd = new Random();
+                turno = rnd.nextBoolean();
+            } else if (personajesEnBatalla[0].getAgilidad() > personajesEnBatalla[1].getAgilidad()) {
+                turno = true;
+            } else {
+                turno = false;
+            }
             boolean dosHobbit = personajesEnBatalla[0].getRaza().equals(Raza.HOBBIT) && personajesEnBatalla[1].getRaza().equals(Raza.HOBBIT);
             byte[] turnosEfectoAccion = new byte[] {-1, -1};
             int[][] buffEnAccion = new int[][] {{0, 0, 0, 0},{0, 0, 0, 0}};
@@ -332,7 +339,7 @@ public class AppCombateSingular {
                     }
                     personajeActuando.asignarBonus(buffEnAccion[personajeEnTurno], false);
                     enemigo.asignarBonus(buffEnAccion[1 - personajeEnTurno], false);
-                    System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - "+ personajeActuando.stringHabilidadRaza() +" | 4 - Abrir bolsa ]");// Aún no :   | 5 - Huir
+                    System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - "+ personajeActuando.stringHabilidadRaza() +" | 4 - Abrir bolsa | 5 - Huir ]");// Aún no :  
                     accion = Util.pedirPorTeclado(true);
                     switch (Integer.parseInt(accion)) {
                         case 1:
@@ -429,6 +436,11 @@ public class AppCombateSingular {
                             }
                             System.out.println("Usaste \"" + objeto.getNombre() + "\"!");
                             accionNoValida = false;
+                            break;
+                        
+                        case 5: 
+                            personajeActuando.perderVida(personajeActuando.getPuntosVida());
+                            System.out.println("\"" + personajeActuando.getNombre() + "\" ha huido del enfrentamiento!");
                             break;
                         default:
                             System.out.println("Acción no válida.");

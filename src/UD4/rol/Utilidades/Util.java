@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Scanner;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import UD4.Rol.Objetos.Personaje;
 
@@ -29,13 +30,25 @@ public class Util {
     /**
      * Lee y carga el contenido de un fichero de texto a un array de {@code Json} 
      * 
-     * @param ruta Es la ruta del fichero
-     * @return {@code JsonArray} con el contenido del fichero de la librería json.JSONArray.
+     * @param web Es la web hecha string
+     * @return {@code JsonArray} de la librería json.JSONArray con el contenido de la web.
      */
-    public static JSONArray JsonArray(String ruta){
-        Util.readFileToString(ruta);
-        JSONArray jsonArray = new JSONArray(ruta);
-        return jsonArray;
+    public static JSONArray stringToJsonArray(String web){
+        try {
+            String[] personajesStrings = stringToStringArray(web);
+            personajesStrings = Arrays.copyOf(personajesStrings, personajesStrings.length - 2);
+            JSONArray jsonArray = new JSONArray();
+            for (String string : personajesStrings) {
+                try {
+                    JSONObject personaJsonObject = new JSONObject(string);
+                    jsonArray.put(personaJsonObject);
+                } catch (Exception e) {
+                }
+            }
+            return jsonArray;
+        } catch (Exception e) {
+            throw new PersonajeException("Error obteniendo los personajes de la web");
+        }
     }
     /**
      * Lee y carga el contenido de un fichero de texto a un array de {@code String} (un
@@ -72,7 +85,45 @@ public class Util {
         // Devolvemos el contenido del fichero como un String
         return lineas;
     }
-    
+    /**
+     * Lee y carga el contenido de un fichero de texto a un array de {@code String} (un
+     * elemento por línea).
+     * 
+     * @param filePath Es la ruta del fichero-
+     * @return {@code String[]} con el contenido del fichero esparado por lineas-
+     */
+    public static String[] stringToStringArray(String text) {
+        String[] lineas = null;
+        try {
+            /*int cantLineas = 0;
+            for (char character : text.toCharArray()) {
+                if (character == ('\n')) {
+                    cantLineas++;
+                }
+            }
+            // Leemos el fichero línea a línea
+            String linea;
+            for (int i = 0; i < cantLineas; i++) {
+                
+            }*/
+            lineas = text.split("\n");
+            for (int i = 0; i < lineas.length; i++) {
+                if (lineas[i].equals("[") && i + 1 < lineas.length) {
+                    swap(lineas, i, i + 1);
+                }
+                String string = lineas[i].strip();
+                if (string.endsWith(",")) {
+                    lineas[i] = string.substring(0, string.lastIndexOf(","));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error.");
+            // e.printStackTrace();
+        }
+
+        // Devolvemos el contenido del fichero como un String
+        return lineas;
+    }
     public static void mostrarContenidoCSV(String filePath){
         String[] contenidoCSV = readFileToStringArray(filePath);
         for (String linea : contenidoCSV) {
@@ -294,7 +345,7 @@ public class Util {
      * @param   url   : Enlace al Archivo.json
      * @return  {@code String} con el contenido del Archivo.json
      */
-    public static String getJson(String url) throws IOException, InterruptedException {
+    public static String getJsonFromUrl(String url) throws IOException, InterruptedException {
         // Configuración del proxy del sistema
         System.setProperty("java.net.useSystemProxies", "true");
 
