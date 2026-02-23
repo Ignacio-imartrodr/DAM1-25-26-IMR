@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import UD4.Rol.Objetos.Personaje;
 
 /**
@@ -381,6 +380,5 @@ public class Util {
             personajes = personajes.substring(0, personajes.lastIndexOf(","));
             writeStringToJson(personajes, "src\\UD4\\rol\\PersonajesGuardados.json", true);
         }
-        
     }
 }

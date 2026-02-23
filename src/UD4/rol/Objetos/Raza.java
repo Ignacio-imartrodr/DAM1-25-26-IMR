@@ -20,9 +20,9 @@ public enum Raza {
         return razas;
     }
     public static Raza StringToRaza(String respuesta){
-        Raza raza = Raza.HUMANO;
+        Raza raza = HUMANO;
         if (respuesta == null) {
-            raza = Raza.HUMANO;
+            raza = HUMANO;
         } else {
             try {
                 raza = Raza.valueOf(respuesta.toUpperCase());
