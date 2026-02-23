@@ -1,7 +1,6 @@
 package UD4.Rol.Objetos.Equipacion;
 
 import UD4.Rol.Objetos.Rareza;
-import UD4.Rol.Utilidades.PersonajeException;
 
 public class Equipamiento {
     private String nombre;
@@ -10,7 +9,7 @@ public class Equipamiento {
     private int duravilidadMax;
     private int xp;
     private byte lvl;
-    private final static int EXP_MAX = 127999;
+    private final static int XP_MAX = 127999;
 
     public String getNombre() {
         return nombre;
@@ -27,7 +26,7 @@ public class Equipamiento {
     public byte getLvl() {
         return lvl;
     }
-    public void reparar(){
+    protected void reparar(){
 
     }
     public boolean perderDurabilidad(int dañoRecivido){
@@ -41,28 +40,35 @@ public class Equipamiento {
         }
         return Roto;
     }
-    public byte sumarExperiencia(int puntos){// La xperiencia va de 0 a 999 y luego vuelve a 0
-        if (puntos > EXP_MAX) {
-            throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
+    public byte sumarXp(int puntos){// La experiencia va de 0 a 999 y luego vuelve a 0
+        if (puntos == 0) {
+            return 0;
         }
-        byte lvlsUp = 0;
-        if (puntos/1000 != 0) {
-            lvlsUp = (byte) (puntos / 1000);
-            xp += puntos % 1000;
-            if (xp >= 1000 ) {
-                if (lvlsUp == EXP_MAX/1000) {
-                    throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
+        int lvlsUp = 0;
+        if (puntos > XP_MAX) {
+            for (; puntos >= XP_MAX; puntos -= XP_MAX) {
+                lvlsUp += this.sumarXp(125000);
+            }
+            lvlsUp += this.sumarXp(puntos);
+        } else {
+            if (puntos / 1000 != 0) {
+                lvlsUp = (puntos / 1000);
+                xp += puntos % 1000;
+                if (xp >= 1000) {
+                    xp %= 1000;
+                    lvlsUp++;
                 }
-                xp %= 1000;
-                lvlsUp++;
-            }
-            for (int i = 0; i < lvlsUp; i++) {
-                subirNivel();
+                for (int i = 0; i < lvlsUp; i++) {
+                    subirNivel();
+                }
             }
         }
-        return lvlsUp;
+        if (lvlsUp >= ((XP_MAX/1000) - ((int) lvl))) {
+            lvlsUp = ((XP_MAX/1000) - ((int) lvl));
+        }
+        return (byte) lvlsUp;
     }
-    public void subirNivel(){
+    protected void subirNivel(){
         lvl++;
         duravilidadMax += Math.round(duravilidadMax * 0.05);
         durabilidad = duravilidadMax;

@@ -3,6 +3,8 @@ package UD4.Rol.Objetos;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.json.JSONObject;
+
 import UD4.Rol.Utilidades.*;
 
 /**
@@ -368,7 +370,7 @@ public class Personaje {
         String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
         return nombreYVida;
     }
-    public byte sumarExperiencia(int puntos){// La xperiencia va de 0 a 999 y luego vuelve a 0
+    public byte sumarExperiencia(int puntos){// La experiencia va de 0 a 999 y luego vuelve a 0
         if (puntos > EXP_MAX) {
             throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
         }
@@ -539,8 +541,20 @@ public class Personaje {
         bolsa = Items.sort(bolsa);
     }
     public String toJsonString() {
-        String personajeJson = String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
+        String personajeJson = toJsonObject().toString();//String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
         return personajeJson;
+    }
+    public JSONObject toJsonObject(){
+        JSONObject personaje = new JSONObject();
+        personaje.accumulate("nombre", nombre);
+        personaje.accumulate("raza", raza);
+        personaje.accumulate("fuerza", fuerza);
+        personaje.accumulate("agilidad", agilidad);
+        personaje.accumulate("constitucion", constitucion);
+        personaje.accumulate("nivel", nivel);
+        personaje.accumulate("experiencia", experiencia);
+        personaje.accumulate("vidaMax", getVidaMax());
+        return personaje;
     }
     public String toCsvString() {
         return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);

@@ -27,13 +27,14 @@ public class Util {
         return x;
     }
     /**
-     * Lee y carga el contenido de un fichero de texto a un array de {@code Json} 
+     * Lee y carga el contenido de una web por url en formato {@code Json} a un array de {@code Json} 
      * 
-     * @param web Es la web hecha string
+     * @param url Es la url de la web.
      * @return {@code JsonArray} de la librería json.JSONArray con el contenido de la web.
      */
-    public static JSONArray stringToJsonArray(String web){
+    public static JSONArray stringToJsonArray(String url){//TODO arreglar para que el formato sea el correcto
         try {
+            String web = getJsonFromUrl(url);
             String[] personajesStrings = stringToStringArray(web);
             personajesStrings = Arrays.copyOf(personajesStrings, personajesStrings.length - 2);
             JSONArray jsonArray = new JSONArray();
@@ -46,7 +47,7 @@ public class Util {
             }
             return jsonArray;
         } catch (Exception e) {
-            throw new PersonajeException("Error obteniendo los personajes de la web");
+            throw new PersonajeException("Error obteniendo los objetos de la string");
         }
     }
     /**
@@ -275,7 +276,7 @@ public class Util {
             e.printStackTrace();
         }
     }
-    public static void writeStringToJson(String str, String filePath, boolean append) {
+    public static void writeStringToJson(String str, String filePath, boolean append) {//TODO Arreglar la sintaxis
         try {
             final String START = "[\n";
             final String END = "]";
@@ -339,12 +340,12 @@ public class Util {
         return s;
     }
     /**
-     * Lee y carga el contenido de un fichero de texto a un Json mediante una URL.
+     * Lee el contenido de un fichero de texto a un Json mediante una URL y lo carga a una {@code String}.
      * 
      * @param   url   : Enlace al Archivo.json
      * @return  {@code String} con el contenido del Archivo.json
      */
-    public static String getJsonFromUrl(String url) throws IOException, InterruptedException {
+    private static String getJsonFromUrl(String url) throws IOException, InterruptedException {
         // Configuración del proxy del sistema
         System.setProperty("java.net.useSystemProxies", "true");
 
@@ -370,7 +371,7 @@ public class Util {
         Personaje prueba = new Personaje("prueba");
         Personaje prueba1 = new Personaje("prueba1");
         personajesCreados[0] = prueba;
-        personajesCreados[1] = prueba1;
+        personajesCreados[1] = prueba1;/*
         for (Personaje personaje : personajesCreados) {
             if (!(personaje == null)) {
                 personajes += personaje.toJsonString()+",\n";
@@ -379,6 +380,11 @@ public class Util {
         if (!personajes.equals("")) {
             personajes = personajes.substring(0, personajes.lastIndexOf(","));
             writeStringToJson(personajes, "src\\UD4\\rol\\PersonajesGuardados.json", true);
-        }
+        }*/
+        JSONObject pers = new JSONObject();
+        pers.accumulate("Personajes", prueba.toJsonObject());
+        pers.accumulate("Personajes", prueba1.toJsonObject());
+        personajes = pers.toString();
+        System.out.println(personajes);
     }
 }
