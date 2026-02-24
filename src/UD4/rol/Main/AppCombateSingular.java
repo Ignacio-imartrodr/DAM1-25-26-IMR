@@ -3,6 +3,8 @@ package UD4.Rol.Main;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.json.JSONObject;
+
 import UD4.Rol.Objetos.*;
 import UD4.Rol.Utilidades.ItemException;
 import UD4.Rol.Utilidades.PersonajeException;
@@ -75,7 +77,7 @@ public class AppCombateSingular {
         return personajesEnBatalla;
     }
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
-        String rutaFichero;
+        String rutaFichero = null;
         String rutaPrevia = "";
         for (Personaje personaje : personajesCreados) {
             personaje.mostrar();
@@ -84,15 +86,23 @@ public class AppCombateSingular {
                 boolean repetir = true;
                 while (repetir) {
                     System.out.print("Ruta del fichero Json o Csv (Enter para usar ruta previa): ");
-                    rutaFichero = Util.pedirPorTeclado(false);
-                    if (rutaFichero == null) {
-                        rutaFichero = rutaPrevia;
-                    } else {
-                        rutaPrevia = rutaFichero;
+                    for (boolean noRutaPrevia = true; noRutaPrevia;) {
+                        noRutaPrevia = false;
+                        rutaFichero = Util.pedirPorTeclado(false);
+                        if (rutaFichero == null) {
+                            if (noRutaPrevia) {
+                                System.out.println("Necesitas dar una ruta al menos una vez");
+                                noRutaPrevia = true;
+                            } else {
+                                rutaFichero = rutaPrevia;
+                            }
+                        } else {
+                            rutaPrevia = rutaFichero;
+                        }
                     }
                     if (rutaFichero.endsWith(".json")) {
                         if (Util.UbiObjetoEnArray(personaje, AppCreaPersonaje.getPersonajesJson(rutaFichero)) == -1) {
-                            Util.writeStringToJson(personaje.toJsonString(), rutaFichero, true);
+                            Util.writePersonajeToJson(rutaFichero, true, personaje.toJsonObject());
                             repetir = false;
                         }
                     } else if (rutaFichero.endsWith(".csv")) {
@@ -196,16 +206,20 @@ public class AppCombateSingular {
                     String rutaFichero;
                     rutaFichero = pedirRuta();
                     if (!(rutaFichero == null)) {
-                        String personajes = "";
                         if (rutaFichero.endsWith(".json")) {
+                            JSONObject[] personajes = new JSONObject[0];
+                            JSONObject pers = new JSONObject();
                             for (Personaje personaje : personajesCreados) {
                                 if (!(personaje == null)) {
-                                    personajes += personaje.toJsonString()+",\n";
+                                    pers = personaje.toJsonObject();
+                                    personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                                    personajes[personajes.length - 1] = pers;
                                 }
                             }
-                            if (!personajes.equals("")) {
-                                personajes = personajes.substring(0, personajes.lastIndexOf(","));
-                                Util.writeStringToJson(personajes, rutaFichero, false);
+                            if (personajes.length != 0) {
+                                Util.writePersonajeToJson(rutaFichero, false, personajes);
+                            } else{
+                                System.out.println("No había personajes que guardar");
                             }
                         } else if (rutaFichero.endsWith(".csv")) {
                             Util.borrarFicheroYCrearloVacio(rutaFichero);

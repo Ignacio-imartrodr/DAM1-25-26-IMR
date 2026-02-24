@@ -41,28 +41,17 @@ public class AppCreaPersonaje {
     }
     public static Personaje[] getPersonajesJsonUrl(String ruta){
         Personaje[] personajesJson = new Personaje[0];
-        String web = "";
-        JSONArray personajes = new JSONArray();
+        JSONArray personajes;
         try {
-            web = Util.getJsonFromUrl(ruta);
+            personajes = Util.urlToJsonArray(ruta, "Personajes");
         } catch (Exception e) {
-            throw new PersonajeException("Error en la URL");
+            throw new PersonajeException("Error en el formato de la web");
         }
-        try {
-            JSONObject ArchivoUrl = new JSONObject(web);
-            personajes = new JSONArray(ArchivoUrl.getString("Personajes"));
-        } catch (Exception e) {
-            try {
-                personajes = Util.stringToJsonArray(web);
-            } catch (Exception b) {
-                throw new PersonajeException("Error en el formato de la web");
-            }
-        }
-        
         for (int i = 0; i < personajes.length(); i++) {
-            if (personajes.getJSONObject(i) != null) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject = personajes.getJSONObject(i);
+            JSONObject persVacio = new JSONObject("");
+            JSONObject pers = personajes.getJSONObject(i);
+            if (pers != null && !pers.equals(persVacio)) {
+                JSONObject jsonObject = personajes.getJSONObject(i);
                 Personaje personaje = new Personaje(jsonObject.getString("nombre"), jsonObject.getString("raza"), jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), jsonObject.getString("constitucion"), jsonObject.getString("nivel"), jsonObject.getString("experiencia"), true);
                 personajesJson = Arrays.copyOf(personajesJson, personajesJson.length + 1);
                 personajesJson[personajesJson.length - 1] = personaje;

@@ -1,24 +1,54 @@
 {
     "Personajes": [
         {
-            "nombre": "a",
             "raza": "HUMANO",
-            "fuerza": 51,
             "agilidad": 16,
+            "experiencia": 0,
+            "nombre": "a",
+            "fuerza": 51,
             "constitucion": 77,
             "nivel": 1,
-            "experiencia": 0,
             "vidaMax": 127
         },
         {
-            "nombre": "b",
             "raza": "HUMANO",
-            "fuerza": 51,
             "agilidad": 16,
+            "experiencia": 0,
+            "nombre": "b",
+            "fuerza": 51,
             "constitucion": 77,
             "nivel": 1,
-            "experiencia": 0,
             "vidaMax": 127
+        },
+        {
+            "raza": "HUMANO",
+            "agilidad": 79,
+            "experiencia": 0,
+            "nombre": "prueba",
+            "fuerza": 32,
+            "constitucion": 72,
+            "nivel": 1,
+            "vidaMax": 122
+        },
+        {
+            "raza": "HUMANO",
+            "agilidad": 13,
+            "experiencia": 0,
+            "nombre": "prueba1",
+            "fuerza": 58,
+            "constitucion": 8,
+            "nivel": 1,
+            "vidaMax": 58
+        },
+        {
+            "raza": "HUMANO",
+            "agilidad": 23,
+            "experiencia": 0,
+            "nombre": "prueba2",
+            "fuerza": 76,
+            "constitucion": 50,
+            "nivel": 1,
+            "vidaMax": 100
         }
     ]
 }

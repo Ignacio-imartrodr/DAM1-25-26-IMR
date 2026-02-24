@@ -29,25 +29,54 @@ public class Util {
     /**
      * Lee y carga el contenido de una web por url en formato {@code Json} a un array de {@code Json} 
      * 
+     * @param ruta Es la ruta del archivo Json.
+     * @param key Es el parametro que contiene los objetos o null si solo es el array en la web
+     * @return {@code JsonArray} de la librería json.JSONArray con el contenido del archivo Json.
+     */
+    public static JSONObject rutaToJsonObject(String ruta, String key){
+        try {
+            String text = readFileToString(ruta);
+            JSONObject webPersonajes = new JSONObject();
+            JSONArray jsonArray;
+            try {
+                webPersonajes = new JSONObject(text);
+                jsonArray = new JSONArray(webPersonajes.getJSONArray(key));
+                webPersonajes = new JSONObject();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    webPersonajes.accumulate("Personajes", jsonArray.getJSONObject(i));
+                }
+            } catch (Exception e) {
+                jsonArray = new JSONArray(text);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    webPersonajes.accumulate(key, jsonArray.getJSONObject(i));
+                }
+            }
+            return webPersonajes;
+        } catch (Exception e) {
+            throw new PersonajeException("Error obteniendo los objetos del archivo");
+        }
+    }
+    /**
+     * Lee y carga el contenido de una web por url en formato {@code Json} a un array de {@code Json} 
+     * 
      * @param url Es la url de la web.
+     * @param key Es el parametro que contiene los objetos o null si solo es el array en la web
      * @return {@code JsonArray} de la librería json.JSONArray con el contenido de la web.
      */
-    public static JSONArray stringToJsonArray(String url){//TODO arreglar para que el formato sea el correcto
+    public static JSONArray urlToJsonArray(String url, String key){
         try {
             String web = getJsonFromUrl(url);
-            String[] personajesStrings = stringToStringArray(web);
-            personajesStrings = Arrays.copyOf(personajesStrings, personajesStrings.length - 2);
-            JSONArray jsonArray = new JSONArray();
-            for (String string : personajesStrings) {
-                try {
-                    JSONObject personaJsonObject = new JSONObject(string);
-                    jsonArray.put(personaJsonObject);
-                } catch (Exception e) {
-                }
+            JSONObject webPersonajes;
+            JSONArray jsonArray;
+            try {
+                webPersonajes = new JSONObject(web);
+                jsonArray = new JSONArray(webPersonajes.getJSONArray(key));
+            } catch (Exception e) {
+                jsonArray = new JSONArray(web);
             }
             return jsonArray;
         } catch (Exception e) {
-            throw new PersonajeException("Error obteniendo los objetos de la string");
+            throw new PersonajeException("Error obteniendo los objetos de la web");
         }
     }
     /**
@@ -276,41 +305,19 @@ public class Util {
             e.printStackTrace();
         }
     }
-    public static void writeStringToJson(String str, String filePath, boolean append) {//TODO Arreglar la sintaxis
+    public static void writePersonajeToJson(String filePath, boolean append, JSONObject... personaje) {//TODO Arreglar la sintaxis
         try {
-            final String START = "[\n";
-            final String END = "]";
-            
-            if (append) {
-                String[] lineas = readFileToStringArray(filePath);
-                String textoFinal = "";
-                lineas[lineas.length-2] += ",";
-                lineas[lineas.length - 1] = str.toString();
-                lineas = Arrays.copyOf(lineas, lineas.length + 1);
-                lineas[lineas.length -1] = END;
-                for (String linea : lineas) {
-                    textoFinal += linea + "\n";
-                }
-                textoFinal = textoFinal.substring(0, textoFinal.length() - 1);
-                if(borrarFicheroYCrearloVacio(filePath)){
-                    // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
-                    FileWriter writer = new FileWriter(filePath, append);
-                    writer.write(textoFinal);
-                    // Cerramos el fichero
-                    writer.close();
-                }
-                
-            } else {
-                if (borrarFicheroYCrearloVacio(filePath)) {
-                    // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
-                    FileWriter writer = new FileWriter(filePath, append);
-                    writer.write(START + str + "\n" + END);
-                    // Cerramos el fichero
-                    writer.close();
-                }
-            }
-
-            
+            final String KEY = "Personajes";
+            JSONObject pers = append ? rutaToJsonObject(filePath, KEY) : new JSONObject();
+            for (Object object : personaje) {
+                pers.accumulate(KEY, object);
+            }    
+            borrarFicheroYCrearloVacio(filePath);
+            // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
+            FileWriter writer = new FileWriter(filePath, append);
+            writer.write(pers.toString());
+            // Cerramos el fichero
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -366,12 +373,14 @@ public class Util {
     }
 
     public static void main(String[] args) {
-        String personajes = "";
+        //String personajes = "";
         Personaje[] personajesCreados = new Personaje[3];
         Personaje prueba = new Personaje("prueba");
         Personaje prueba1 = new Personaje("prueba1");
+        Personaje prueba2 = new Personaje("prueba2");
         personajesCreados[0] = prueba;
-        personajesCreados[1] = prueba1;/*
+        personajesCreados[1] = prueba1;
+        personajesCreados[2] = prueba2;/*
         for (Personaje personaje : personajesCreados) {
             if (!(personaje == null)) {
                 personajes += personaje.toJsonString()+",\n";
@@ -381,10 +390,27 @@ public class Util {
             personajes = personajes.substring(0, personajes.lastIndexOf(","));
             writeStringToJson(personajes, "src\\UD4\\rol\\PersonajesGuardados.json", true);
         }*/
-        JSONObject pers = new JSONObject();
+        /*JSONObject pers = new JSONObject();
         pers.accumulate("Personajes", prueba.toJsonObject());
         pers.accumulate("Personajes", prueba1.toJsonObject());
-        personajes = pers.toString();
+        personajes = pers.get("Personajes").toString();
         System.out.println(personajes);
+        JSONArray intento = new JSONArray(personajes);
+        System.out.println(intento.toString());*/
+        String rutaFichero = "src\\UD4\\Rol\\PersonajesGuardados copy.json";
+        JSONObject[] personajes = new JSONObject[0];
+        JSONObject pers = new JSONObject();
+        for (Personaje personaje : personajesCreados) {
+            if (!(personaje == null)) {
+                pers = personaje.toJsonObject();
+                personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                personajes[personajes.length - 1] = pers;
+            }
+        }
+        if (personajes.length != 0) {
+            Util.writePersonajeToJson(rutaFichero, true, personajes);
+        } else{
+            System.out.println("No había personajes que guardar");
+        }
     }
 }
