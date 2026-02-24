@@ -1,0 +1,54 @@
+{
+    "Equipamientos": {
+        "Armaduras": [
+            {
+                "nombre": "Pechera de cuero",
+                "rareza": "COMMUN",
+                "constitucion": 20,
+                "nivel": 1,
+                "experiencia": 0,
+                "durabilidadMax": 1000
+            },
+            {
+                "nombre": "Pantalón de cuero",
+                "rareza": "COMMUN",
+                "constitucion": 15,
+                "nivel": 1,
+                "experiencia": 0,
+                "durabilidadMax": 1000
+            }
+        ],
+        "Armas": [
+            {
+                "nombre": "Espada de Madera",
+                "rareza": "COMMUN",
+                "fuerza": 20,
+                "nivel": 1,
+                "experiencia": 0,
+                "durabilidadMax": 1000
+            }
+        ]
+    },
+    "Personajes": [
+        {
+            "raza": "HUMANO",
+            "agilidad": 16,
+            "experiencia": 0,
+            "nombre": "a",
+            "fuerza": 51,
+            "constitucion": 77,
+            "nivel": 1,
+            "vidaMax": 127
+        },
+        {
+            "raza": "HUMANO",
+            "agilidad": 16,
+            "experiencia": 0,
+            "nombre": "b",
+            "fuerza": 51,
+            "constitucion": 77,
+            "nivel": 1,
+            "vidaMax": 127
+        }
+    ]
+}

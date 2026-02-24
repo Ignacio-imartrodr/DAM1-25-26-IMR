@@ -1,0 +1,56 @@
+{
+    "Armadura": {
+        "Pechera": {
+            "Pechera de cuero": {
+                "nombre": "Pechera de cuero",
+                "rareza": "COMMUN",
+                "constitucion": 20,
+                "nivel": 1,
+                "xp": 0
+            },
+            "Pechera de madera": {
+                "nombre": "Pechera de madera",
+                "rareza": "RARE",
+                "constitucion": 45,
+                "nivel": 1,
+                "xp": 0
+            }
+        },
+        "Pantalone": {
+            "Pantalon de cuero": {
+                "nombre": "Pantalón de cuero",
+                "rareza": "COMMUN",
+                "constitucion": 15,
+                "nivel": 1,
+                "xp": 0
+            },
+            "Pantalon de madera": {
+                "nombre": "Pantalón de madera",
+                "rareza": "RARE",
+                "constitucion": 30,
+                "nivel": 1,
+                "xp": 0
+            }
+        }
+    },
+    "Arma": {
+        "Espada": {
+            "Espada de Madera": {
+                "nombre": "Espada de Madera",
+                "rareza": "COMMUN",
+                "fuerza": 20,
+                "nivel": 1,
+                "xp": 0
+            }
+        },
+        "Barita": {
+            "Barita de Madera": {
+                "nombre": "Barita de Madera",
+                "rareza": "COMMUN",
+                "fuerza": 20,
+                "nivel": 1,
+                "xp": 0
+            }
+        }
+    }
+}

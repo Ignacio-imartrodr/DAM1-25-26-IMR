@@ -43,7 +43,7 @@ public class Util {
                 jsonArray = new JSONArray(webPersonajes.getJSONArray(key));
                 webPersonajes = new JSONObject();
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    webPersonajes.accumulate("Personajes", jsonArray.getJSONObject(i));
+                    webPersonajes.accumulate(key, jsonArray.getJSONObject(i));
                 }
             } catch (Exception e) {
                 jsonArray = new JSONArray(text);
@@ -305,12 +305,11 @@ public class Util {
             e.printStackTrace();
         }
     }
-    public static void writePersonajeToJson(String filePath, boolean append, JSONObject... personaje) {//TODO Arreglar la sintaxis
+    public static void writePersonajeToJson(String filePath, boolean append, String key, JSONObject... personaje) {
         try {
-            final String KEY = "Personajes";
-            JSONObject pers = append ? rutaToJsonObject(filePath, KEY) : new JSONObject();
+            JSONObject pers = append ? rutaToJsonObject(filePath, key) : new JSONObject();
             for (Object object : personaje) {
-                pers.accumulate(KEY, object);
+                pers.accumulate(key, object);
             }    
             borrarFicheroYCrearloVacio(filePath);
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
@@ -408,7 +407,7 @@ public class Util {
             }
         }
         if (personajes.length != 0) {
-            Util.writePersonajeToJson(rutaFichero, true, personajes);
+            Util.writePersonajeToJson(rutaFichero, true, "Personajes", personajes);
         } else{
             System.out.println("No había personajes que guardar");
         }

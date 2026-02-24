@@ -15,7 +15,7 @@ public enum Rareza {
         }
         return rareza;
     }
-    public static Rareza StringToRango(String respuesta){
+    public static Rareza StringToRareza(String respuesta){
         Rareza rareza;
         if (respuesta == null) {
             rareza = null;
