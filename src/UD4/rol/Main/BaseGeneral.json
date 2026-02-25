@@ -1,54 +1,82 @@
 {
-    "Equipamientos": {
-        "Armaduras": [
-            {
-                "nombre": "Pechera de cuero",
-                "rareza": "COMMUN",
-                "constitucion": 20,
-                "nivel": 1,
-                "experiencia": 0,
-                "durabilidadMax": 1000
-            },
-            {
-                "nombre": "Pantalón de cuero",
-                "rareza": "COMMUN",
-                "constitucion": 15,
-                "nivel": 1,
-                "experiencia": 0,
-                "durabilidadMax": 1000
-            }
-        ],
-        "Armas": [
-            {
-                "nombre": "Espada de Madera",
-                "rareza": "COMMUN",
-                "fuerza": 20,
-                "nivel": 1,
-                "experiencia": 0,
-                "durabilidadMax": 1000
-            }
-        ]
-    },
     "Personajes": [
         {
-            "raza": "HUMANO",
-            "agilidad": 16,
-            "experiencia": 0,
-            "nombre": "a",
-            "fuerza": 51,
-            "constitucion": 77,
-            "nivel": 1,
-            "vidaMax": 127
+            "Stats": {
+                "raza": "HUMANO",
+                "agilidad": 16,
+                "experiencia": 0,
+                "nombre": "a",
+                "fuerza": 51,
+                "constitucion": 77,
+                "nivel": 1,
+                "vidaMax": 127
+            },
+            "Equipamientos": {
+                "Armadura": {
+                    "Casco": {},
+                    "Pechera": {
+                        "nombre": "Pechera de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    "Pantalon": {
+                        "nombre": "Pantalón de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    "Botas": {}
+                },
+                "Arma": [
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    }
+                ]
+            }
         },
         {
-            "raza": "HUMANO",
-            "agilidad": 16,
-            "experiencia": 0,
-            "nombre": "b",
-            "fuerza": 51,
-            "constitucion": 77,
-            "nivel": 1,
-            "vidaMax": 127
+            "Stats": {
+                "raza": "HUMANO",
+                "agilidad": 16,
+                "experiencia": 0,
+                "nombre": "b",
+                "fuerza": 51,
+                "constitucion": 77,
+                "nivel": 1,
+                "vidaMax": 127
+            },
+            "Equipamientos": {
+                "Armadura": {
+                    "Casco": {},
+                    "Pechera": {
+                        "nombre": "Pechera de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    "Pantalon": {
+                        "nombre": "Pantalón de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    "Botas": {}
+                },
+                "Arma": [
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    }
+                ]
+            }
         }
     ]
 }

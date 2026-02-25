@@ -1,5 +1,6 @@
 package UD4.Rol.Objetos.Equipamiento;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import UD4.Rol.Objetos.Rareza;
@@ -7,7 +8,8 @@ import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.RarezaException;
 import UD4.Rol.Utilidades.Util;
 
-public class Equipamiento {
+public abstract class Equipamiento {
+    protected JSONObject objeto;
     protected String nombre;
     protected Rareza rareza;
     protected int durabilidad = getDurabilidadMax();
@@ -15,43 +17,20 @@ public class Equipamiento {
     protected byte lvl; //rango: [-128 a 127]
     private final short CONVERSOR = 129; // Para pasar entre lvl y nivel
     private final static int XP_MAX = 256999;
-    private final String[] PIEZAS = new String[] {"CASCO", "PECHERA", "PANTALON", "BOTAS"};
-    private final String[] ARMAS = new String[] {"ESPADA", "BARITA"};
-    private final String[] EQUIPAMIENTO = new String[] {"ARMADURA", "ARMA"};
     final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Objetos\\Equipacion\\Equipamientos.json";
 
-    protected Equipamiento(String tipo, String Subtipo){
-        boolean valido = false;
-        for (String string : EQUIPAMIENTO) {
-            if (tipo.toUpperCase().equals(string)) {
-                if (string.toUpperCase().equals("ARMA")) {
-                    for (String string2 : ARMAS) {
-                        if (Subtipo.toUpperCase().equals(string2)) {
-                            valido = true;
-                            break;
-                        }
-                    }
-                } else {
-                    for (String string2 : PIEZAS) {
-                        if (Subtipo.toUpperCase().equals(string2)) {
-                            valido = true;
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-        }
-        if (valido) {
-            JSONObject Atributos = Util.rutaToJsonObject(RUTA_EQUIPAMIENTOS, tipo);
-            this.nombre = Atributos.getJSONObject(Subtipo).getString("nombre");
-            this.rareza = Rareza.StringToRareza(Atributos.getJSONObject(Subtipo).getString("rareza"));
-            this.xp = Atributos.getJSONObject(Subtipo).getInt("xp");
-            this.lvl = (byte) (Atributos.getJSONObject(Subtipo).getInt("nivel") - CONVERSOR);
-        } else {
+    protected Equipamiento(String tipo, String subtipo, int num){
+        try {
+            JSONObject equipamiento = Util.rutaToJsonObject(RUTA_EQUIPAMIENTOS, tipo);
+            JSONArray atributos = equipamiento.getJSONArray(subtipo);
+            objeto = atributos.getJSONObject(num);
+            this.nombre = objeto.getString("nombre");
+            this.rareza = Rareza.StringToRareza(objeto.getString("rareza"));
+            this.xp = objeto.getInt("xp");
+            this.lvl = (byte) (objeto.getInt("nivel") - CONVERSOR);
+        } catch (Exception e) {
             throw new EquipamientoException("Error con las clases o subclases");
         }
-
     }
 
     public String getNombre() {

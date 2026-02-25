@@ -6,7 +6,7 @@ import UD4.Rol.Utilidades.ItemException;
  * @author Ignacio MR
  */
 
-public class Item {
+public class Item implements Comparable<Item>{
     private String nombre;
     private int sanar = 0;
     private int damage = 0;
@@ -61,6 +61,7 @@ public class Item {
     public boolean haveHabilidadExtra() {
         return tieneHabilidadExtra;
     }
+    @Override
     public int compareTo(Item otherItem){
         return Items.stringToItems(this.getNombre()).compareTo(Items.stringToItems(otherItem.getNombre()));
     }

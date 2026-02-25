@@ -1,56 +1,81 @@
 {
     "Armadura": {
-        "Pechera": {
-            "Pechera de cuero": {
-                "nombre": "Pechera de cuero",
+        "Casco": [
+            {
+                "nombre": "Pantalón de cuero",
                 "rareza": "COMMUN",
-                "constitucion": 20,
                 "nivel": 1,
                 "xp": 0
             },
-            "Pechera de madera": {
+            {
+                "nombre": "Pantalón de madera",
+                "rareza": "RARE",
+                "nivel": 1,
+                "xp": 0
+            }
+        ],
+        "Pechera": [
+            {
+                "nombre": "Pechera de cuero",
+                "rareza": "COMMUN",
+                "nivel": 1,
+                "xp": 0
+            },
+            {
+                "nombre": "Pechera de madera",
+                "rareza": "RARE",
+                "nivel": 1,
+                "xp": 0
+            }
+        ],
+        "Pantalon": [
+            {
+                "nombre": "Pantalón de cuero",
+                "rareza": "COMMUN",
+                "nivel": 1,
+                "xp": 0
+            },
+            {
+                "nombre": "Pantalón de madera",
+                "rareza": "RARE",
+                "nivel": 1,
+                "xp": 0
+            }
+        ],
+        "Botas": [
+            {
+                "nombre": "botas de cuero",
+                "rareza": "COMMUN",
+                "nivel": 1,
+                "xp": 0
+            },
+            {
                 "nombre": "Pechera de madera",
                 "rareza": "RARE",
                 "constitucion": 45,
                 "nivel": 1,
                 "xp": 0
             }
-        },
-        "Pantalone": {
-            "Pantalon de cuero": {
-                "nombre": "Pantalón de cuero",
-                "rareza": "COMMUN",
-                "constitucion": 15,
-                "nivel": 1,
-                "xp": 0
-            },
-            "Pantalon de madera": {
-                "nombre": "Pantalón de madera",
-                "rareza": "RARE",
-                "constitucion": 30,
-                "nivel": 1,
-                "xp": 0
-            }
-        }
+        ]
     },
     "Arma": {
-        "Espada": {
-            "Espada de Madera": {
+        "Espada": [
+            {
                 "nombre": "Espada de Madera",
                 "rareza": "COMMUN",
-                "fuerza": 20,
                 "nivel": 1,
-                "xp": 0
+                "xp": 0,
+                "afinidad": "CORTE"
             }
-        },
-        "Barita": {
-            "Barita de Madera": {
+        ],
+        "Barita": [
+            {
                 "nombre": "Barita de Madera",
                 "rareza": "COMMUN",
-                "fuerza": 20,
                 "nivel": 1,
-                "xp": 0
+                "xp": 0,
+                "afinidad": "MAGIA"
             }
-        }
+        ]
     }
 }
