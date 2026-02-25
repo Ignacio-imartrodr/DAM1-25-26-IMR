@@ -9,12 +9,12 @@ import UD4.Rol.Utilidades.RarezaException;
 import UD4.Rol.Utilidades.Util;
 
 public abstract class Equipamiento {
-    protected JSONObject objeto;
+    protected JSONObject objetoBase;
     protected String nombre;
     protected Rareza rareza;
     protected int durabilidad = getDurabilidadMax();
-    protected int xp;
-    protected byte lvl; //rango: [-128 a 127]
+    protected int xp = 0;
+    protected byte lvl = -128; //rango: [-128 a 127]
     private final short CONVERSOR = 129; // Para pasar entre lvl y nivel
     private final static int XP_MAX = 256999;
     final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Objetos\\Equipacion\\Equipamientos.json";
@@ -23,16 +23,13 @@ public abstract class Equipamiento {
         try {
             JSONObject equipamiento = Util.rutaToJsonObject(RUTA_EQUIPAMIENTOS, tipo);
             JSONArray atributos = equipamiento.getJSONArray(subtipo);
-            objeto = atributos.getJSONObject(num);
-            this.nombre = objeto.getString("nombre");
-            this.rareza = Rareza.StringToRareza(objeto.getString("rareza"));
-            this.xp = objeto.getInt("xp");
-            this.lvl = (byte) (objeto.getInt("nivel") - CONVERSOR);
+            objetoBase = atributos.getJSONObject(num);
+            this.nombre = objetoBase.getString("nombre");
+            this.rareza = Rareza.StringToRareza(objetoBase.getString("rareza"));
         } catch (Exception e) {
             throw new EquipamientoException("Error con las clases o subclases");
         }
     }
-
     public String getNombre() {
         return nombre;
     }
@@ -52,28 +49,31 @@ public abstract class Equipamiento {
         int durabilidadMax = 0;
         switch (rareza) {
             case COMMUN:
-                durabilidadMax = 500;
+                durabilidadMax = 1000;
                 break;
             case RARE:
-                durabilidadMax = 2000;
+                durabilidadMax = 2500;
                 break;
             case SPECIAL:
-                durabilidadMax = 3500;
+                durabilidadMax = 4000;
                 break;
             case ULTRARE:
-                durabilidadMax = 5000;
+                durabilidadMax = 5500;
                 break;
             case EPIC:
-                durabilidadMax = 7500;
+                durabilidadMax = 7000;
                 break;
             case LEGENDARY:
-                durabilidadMax = 9000;
+                durabilidadMax = 9500;
+                break;
+            case CHAOTIC:
+                durabilidadMax = 10000;
                 break;
             default:
                 throw new RarezaException("Rareza sin una durabilidad asignada");
         }
         for (int i = 1; i < getLvl(); i++) {
-            durabilidadMax += Math.round(durabilidadMax * 0.5);
+            durabilidadMax += Math.round(durabilidadMax * 0.25);
         }
         return durabilidadMax;
     }
@@ -104,9 +104,7 @@ public abstract class Equipamiento {
                     xp %= 1000;
                     lvlsUp++;
                 }
-                for (int i = 0; i < lvlsUp; i++) {
-                    subirNivel();
-                }
+                
             }
         } else if (getLvl() == (XP_MAX / 1000)) {
             if (xp + puntos >= (XP_MAX % 1000)) {
@@ -118,10 +116,14 @@ public abstract class Equipamiento {
         if (lvlsUp >= ((XP_MAX/1000) - getLvl())) {
             lvlsUp = ((XP_MAX/1000) - getLvl());
         }
-        return (byte) lvlsUp;
+        byte resultado = (byte) (lvlsUp - CONVERSOR);
+        subirNivel(resultado);
+        return resultado;
     }
-    protected void subirNivel(){
-        lvl++;
+    protected void subirNivel(byte lvlsUp){
+        for (int i = 0; i < (lvlsUp + CONVERSOR); i++) {
+            lvl++;
+        }
         durabilidad = getDurabilidadMax();
     }
 }

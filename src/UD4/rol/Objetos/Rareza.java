@@ -5,7 +5,7 @@ import java.util.Arrays;
 import UD4.Rol.Utilidades.PersonajeException;
 
 public enum Rareza {
-        COMMUN, SPECIAL, RARE, ULTRARE, EPIC, LEGENDARY;
+        COMMUN, SPECIAL, RARE, ULTRARE, EPIC, LEGENDARY, CHAOTIC;
 
     public static Rareza[] toArray(){
         Rareza[] rareza = new Rareza[0];
