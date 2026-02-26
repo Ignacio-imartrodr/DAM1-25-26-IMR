@@ -20,6 +20,7 @@ public class Pechera extends Armadura {
         this.xp = super.xp;
         this.lvl = super.lvl;
         this.material = super.material;
+        this.encantamiento = super.encantamiento;
         this.constitucion = (int) Math.round(super.constitucion * 1.5);
         this.pechera = getPecheraJsonObject();
     }

@@ -20,21 +20,22 @@ public abstract class Equipamiento {
     protected JSONObject objetoBase;
     protected String nombre;
     protected Rareza rareza;
-    protected int durabilidad = getDurabilidadMax();
+    protected int durabilidad;
     protected int xp = 0;
     protected byte lvl = -128; //rango: [-128 a 127]
     private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
     private final static int XP_MAX = 256999;
     final static protected String[] MATERIALES = new String[] {"MADERA", "COBRE", "HIERRO", "DIAMANTE", "ADAMANTIUM"};
-    final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Objetos\\Equipacion\\Equipamientos.json";
+    final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Objetos\\Equipamiento\\Equipamientos.json";
 
     protected Equipamiento(String tipo, String subtipo, int num){
         try {
             JSONObject equipamiento = Util.rutaToJsonObject(RUTA_EQUIPAMIENTOS, tipo);
-            JSONArray atributos = equipamiento.getJSONArray(subtipo);
-            objetoBase = atributos.getJSONObject(num);
+            JSONArray objetos = equipamiento.getJSONArray(subtipo);
+            objetoBase = objetos.getJSONObject(num);
             this.nombre = objetoBase.getString("nombre");
             this.rareza = Rareza.StringToRareza(objetoBase.getString("rareza"));
+            this.durabilidad = getDurabilidadMax();
         } catch (Exception e) {
             throw new EquipamientoException("Error con los tipos o subtipos");
         }
@@ -166,7 +167,7 @@ public abstract class Equipamiento {
             default:
                 break;
         }
-        //Modificar para tener diferentes prob
+        //TODO Modificar para tener diferentes prob
         int[] probArmas = new int[] {0,0,0,0,0,0,0,0,0,0,};
         int[] probArmaduras = new int[] {};
         rnd = (byte) (esArma ? rng.nextInt(probArmas.length) : rng.nextInt(probArmaduras.length));
@@ -199,4 +200,9 @@ public abstract class Equipamiento {
         }
         return equipamientoObtenido;
     }
+    @Override
+    public String toString() {
+        return nombre;
+    }
+    
 }

@@ -11,8 +11,9 @@ public abstract class Armadura extends Equipamiento {
     //Solo puede ser una pieza: Casco, Pechera, Pantalon o Botas y el Personaje solo puede tener equipado uno de cada 
     
     String material;
-    int constitucion = getConstitucion();
     JSONObject armadura;
+    int constitucion = getConstitucion();
+    String encantamiento = getEncantamiento();
     final static String KEY = "Armadura";
     final static String[] MATERIALES = getMateriales();
 
@@ -27,6 +28,16 @@ public abstract class Armadura extends Equipamiento {
         this.armadura = getArmaduraJsonObject();
     }
 
+    protected String getEncantamiento() {
+        String encantamiento;
+        if (armadura.opt("encantamiento") != null) {
+            encantamiento = armadura.getString("encantamiento");
+        } else {
+            encantamiento = null;
+        }
+        
+        return encantamiento;
+    }
     protected int getConstitucion() {
         int constitucion = 0;
         switch (rareza) {
@@ -52,7 +63,7 @@ public abstract class Armadura extends Equipamiento {
                 constitucion = 86;
                 break;
             default:
-                throw new RarezaException("Rareza sin una constitución asignado");
+                throw new RarezaException("Rareza sin una constitución asignada");
         }
         for (int i = 1; i < getLvl(); i++) {
             constitucion += Math.round(constitucion * 0.2);

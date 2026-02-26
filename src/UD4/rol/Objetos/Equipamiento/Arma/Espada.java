@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import UD4.Rol.Utilidades.Util;
 
 public class Espada extends Arma {
-    JSONObject espada;
     final static String KEY = "Espada";
 
     public Espada(String material){
@@ -23,11 +22,20 @@ public class Espada extends Arma {
         this.habilidad = super.habilidad;
         this.material = super.material;
         this.fuerza = (int) Math.round(super.fuerza * 1.2);
-        this.espada = getEspadaJsonObject();
+        this.objetoBase = getEspadaJsonObject();
 
     }
+    protected void subirNivel(byte lvlsUp){
+        super.subirNivel(lvlsUp);
+        this.fuerza = (int) Math.round(super.fuerza * 1.2);
+    }
     public JSONObject getEspadaJsonObject() {
-        espada = getArmaJsonObject();
-        return espada;
+        String key = "fuerza";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, durabilidad);
+        
+        return objetoBase;
     }
 }

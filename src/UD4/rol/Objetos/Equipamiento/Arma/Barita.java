@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import UD4.Rol.Utilidades.Util;
 
 public class Barita extends Arma {
-    JSONObject barita;
+
     int agilidad = 7;
     final static String KEY = "Barita";
 
@@ -23,16 +23,33 @@ public class Barita extends Arma {
         this.afinidad = super.afinidad;
         this.habilidad = super.habilidad;
         this.material = super.material;
-        this.barita = getBaritaJsonObject(); 
         this.fuerza = (int) Math.round(super.fuerza * 0.8);
+        this.objetoBase = getBaritaJsonObject(); 
     }
     protected void subirNivel(byte lvlsUp){
         super.subirNivel(lvlsUp);
         agilidad += Math.round(agilidad * 0.1);
+        this.fuerza = (int) Math.round(super.fuerza * 0.8);
     }
     public JSONObject getBaritaJsonObject() {
-        barita = getArmaJsonObject();
-        arma.accumulate("agilidad", agilidad);
-        return barita;
+        String key = "agilidad";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, durabilidad);
+
+        key = "fuerza";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, durabilidad);
+
+        return objetoBase;
+    }
+
+    public static void main(String[] args) {
+        Barita barita = new Barita(0);
+        barita.subirNivel( (byte) -126);
+        System.out.println(barita);
     }
 }

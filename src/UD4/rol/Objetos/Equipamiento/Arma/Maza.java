@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import UD4.Rol.Utilidades.Util;
 
 public class Maza extends Arma {
-    JSONObject maza;
     int agilidad = -10;
     final static String KEY = "Maza";
     
@@ -23,18 +22,29 @@ public class Maza extends Arma {
         this.afinidad = super.afinidad;
         this.habilidad = super.habilidad;
         this.material = super.material;
-        this.maza = getMazaJsonObject(); 
         this.fuerza = (int) Math.round(super.fuerza * 1.4);
+        this.objetoBase = getMazaJsonObject();
     }
     protected void subirNivel(byte lvlsUp){
         super.subirNivel(lvlsUp);
         if (agilidad < 0) {
             agilidad += Math.abs(Math.round(agilidad * 0.1));
         }
+        this.fuerza = (int) Math.round(super.fuerza * 1.4);
     }
     public JSONObject getMazaJsonObject() {
-        maza = getArmaJsonObject();
-        arma.accumulate("agilidad", agilidad);
-        return maza;
+        String key = "agilidad";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, durabilidad);
+
+        key = "fuerza";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, durabilidad);
+
+        return objetoBase;
     }
 }

@@ -33,25 +33,26 @@ public class Util {
      * @param key Es el parametro que contiene los objetos o null si solo es el array en la web
      * @return {@code JsonArray} de la librería json.JSONArray con el contenido del archivo Json.
      */
-    public static JSONObject rutaToJsonObject(String ruta, String key){
+    public static JSONObject rutaToJsonObject(String ruta, String... key){
         try {
             String text = readFileToString(ruta);
-            JSONObject webPersonajes = new JSONObject();
+            JSONObject objetosArchivo = new JSONObject();
             JSONArray jsonArray;
-            try {
-                webPersonajes = new JSONObject(text);
-                jsonArray = new JSONArray(webPersonajes.getJSONArray(key));
-                webPersonajes = new JSONObject();
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    webPersonajes.accumulate(key, jsonArray.getJSONObject(i));
+            if (text.startsWith("{")) {
+                try {
+                    objetosArchivo = new JSONObject(text);
+                    jsonArray = new JSONArray(objetosArchivo.getJSONArray(key[0]));
+                    objetosArchivo = new JSONObject(jsonArray);
+                } catch (Exception e) {
+                    objetosArchivo = new JSONObject(text);
+                    objetosArchivo = objetosArchivo.getJSONObject(key[0]);
+                    
                 }
-            } catch (Exception e) {
+            } else {
                 jsonArray = new JSONArray(text);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    webPersonajes.accumulate(key, jsonArray.getJSONObject(i));
-                }
+                objetosArchivo = new JSONObject(jsonArray);
             }
-            return webPersonajes;
+            return objetosArchivo;
         } catch (Exception e) {
             throw new PersonajeException("Error obteniendo los objetos del archivo");
         }
