@@ -1,9 +1,17 @@
 package UD4.Rol.Objetos.Equipamiento;
 
+import java.util.Random;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import UD4.Rol.Objetos.Rareza;
+import UD4.Rol.Objetos.Equipamiento.Arma.Barita;
+import UD4.Rol.Objetos.Equipamiento.Arma.Espada;
+import UD4.Rol.Objetos.Equipamiento.Arma.Maza;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Botas;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Casco;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Pantalon;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Pechera;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.RarezaException;
 import UD4.Rol.Utilidades.Util;
@@ -122,5 +130,73 @@ public abstract class Equipamiento {
             lvl++;
         }
         durabilidad = getDurabilidadMax();
+    }
+    public static Object gacha(int lvlPersonaje){
+        Object equipamientoObtenido = new Object();
+        Random rng = new Random();
+        boolean esArma = rng.nextBoolean();
+        String key = "";
+        byte rnd = (byte) (esArma ? rng.nextInt(3) : rng.nextInt(4));
+        switch (rnd) {
+            case 0:
+                if (esArma) {
+                    key = "Espada";
+                } else {
+                    key = "Casco";
+                }
+                break;
+            case 1:
+                if (esArma) {
+                    key = "Barita";
+                } else {
+                    key = "Pechera";
+                }
+                break;
+            case 2:
+                if (esArma) {
+                    key = "Maza";
+                } else {
+                    key = "Pantalon";
+                }
+                break;
+            case 3:
+                key = "Botas";
+                break;
+            
+            default:
+                break;
+        }
+        //Modificar para tener diferentes prob
+        int[] probArmas = new int[] {0,0,0,0,0,0,0,0,0,0,};
+        int[] probArmaduras = new int[] {};
+        rnd = (byte) (esArma ? rng.nextInt(probArmas.length) : rng.nextInt(probArmaduras.length));
+        try {
+            switch (key) {
+                case "Espada":
+                    equipamientoObtenido = new Espada(rnd);
+                    break;
+                case "Barita":
+                    equipamientoObtenido = new Barita(rnd);
+                    break;
+                case "Maza":
+                    equipamientoObtenido = new Maza(rnd);
+                    break;
+                case "Casco":
+                    equipamientoObtenido = new Casco(rnd);
+                    break;
+                case "Pechera":
+                    equipamientoObtenido = new Pechera(rnd);
+                    break;
+                case "Pantalon":
+                    equipamientoObtenido = new Pantalon(rnd);
+                    break;
+                case "Botas":
+                    equipamientoObtenido = new Botas(rnd);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new EquipamientoException("Equipamiento no existente");
+        }
+        return equipamientoObtenido;
     }
 }

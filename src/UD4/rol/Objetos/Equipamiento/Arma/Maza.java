@@ -2,11 +2,18 @@ package UD4.Rol.Objetos.Equipamiento.Arma;
 
 import org.json.JSONObject;
 
+import UD4.Rol.Utilidades.Util;
+
 public class Maza extends Arma {
     JSONObject maza;
     int agilidad = -10;
     final static String KEY = "Maza";
-    Maza(int num){
+    
+    public Maza(String material){
+        int num = Util.UbiObjetoEnArray(material, MATERIALES);
+        this(num);
+    }
+    public Maza(int num){
         super(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;

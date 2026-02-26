@@ -247,7 +247,7 @@ public class Personaje {
     public int getConstitucion() {
         return constitucion;
     }
-    public byte getNivel() {
+    public byte getNivel() {//TODO copiar el uso de nivel de Equipamiento
         return nivel;
     }
     public int getExperiencia() {

@@ -2,11 +2,18 @@ package UD4.Rol.Objetos.Equipamiento.Arma;
 
 import org.json.JSONObject;
 
+import UD4.Rol.Utilidades.Util;
+
 public class Barita extends Arma {
     JSONObject barita;
     int agilidad = 7;
     final static String KEY = "Barita";
-    Barita(int num){
+
+    public Barita(String material){
+        int num = Util.UbiObjetoEnArray(material, MATERIALES);
+        this(num);
+    }
+    public Barita(int num){
         super(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;

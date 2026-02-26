@@ -8,8 +8,11 @@ public class Espada extends Arma {
     JSONObject espada;
     final static String KEY = "Espada";
 
-    Espada(String material){
+    public Espada(String material){
         int num = Util.UbiObjetoEnArray(material, MATERIALES);
+        this(num);
+    }
+    public Espada(int num){
         super(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
@@ -21,15 +24,10 @@ public class Espada extends Arma {
         this.material = super.material;
         this.fuerza = (int) Math.round(super.fuerza * 1.2);
         this.espada = getEspadaJsonObject();
-        
+
     }
     public JSONObject getEspadaJsonObject() {
         espada = getArmaJsonObject();
         return espada;
     }
-    public static String getKey() {
-        return KEY;
-    }
-    
-    
 }
