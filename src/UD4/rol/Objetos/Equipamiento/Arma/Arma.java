@@ -10,9 +10,11 @@ public abstract class Arma extends Equipamiento {
     //Solo puede ser Espada, Maza o Barita y el Personaje solo puede equipar una
     JSONObject arma;
     Afinidad afinidad;
-    String habilidad = null;
+    String habilidad = getHabilidad();
     int fuerza = getFuerza();
+    String material;
     final static String KEY = "Arma";
+
     Arma(String subtipo, int num){
         super(KEY, subtipo, num);
         this.nombre = super.nombre;
@@ -20,8 +22,19 @@ public abstract class Arma extends Equipamiento {
         this.durabilidad = super.durabilidad;
         this.xp = super.xp;
         this.lvl = super.lvl;
-        this.arma = objetoBase;
-        afinidad = new Afinidad(super.objetoBase.getString("afinidad"));
+        this.arma = getArmaJsonObject();
+        this.afinidad = new Afinidad(super.objetoBase.getString("afinidad"));
+        this.material = MATERIALES[num];
+    }
+    protected String getHabilidad() {
+        String habilidad;
+        if (arma.opt("habilidad") != null) {
+            habilidad = arma.getString("habilidad");
+        } else {
+            habilidad = null;
+        }
+        
+        return habilidad;
     }
     protected int getFuerza() {
         int fuerza = 0;
@@ -43,37 +56,25 @@ public abstract class Arma extends Equipamiento {
                 break;
             case LEGENDARY:
                 fuerza = 75;
-                habilidad = objetoBase.getString("habilidad");
                 break;
             case CHAOTIC:
                 fuerza = 86;
-                habilidad = objetoBase.getString("habilidad");
                 break;
             default:
                 throw new RarezaException("Rareza sin un daño asignado");
         }
         for (int i = 1; i < getLvl(); i++) {
-            fuerza += Math.round(fuerza * 0.25);
+            fuerza += Math.round(fuerza * 0.15);
         }
         return fuerza;
     }
-    public JSONObject getArmaJsonObject() {
-        if (arma.opt("durabilidad") != null) {
-            arma.remove("durabilidad");
-        }
-        if (arma.opt("xp") != null) {
-            arma.remove("xp");
-        }
-        if (arma.opt("lvl") != null) {
-            arma.remove("lvl");
-        }
-        if (arma.opt("fuerza") != null) {
-            arma.remove("fuerza");
-        }
+    protected JSONObject getArmaJsonObject() {
+        arma = new JSONObject(objetoBase);
         arma.accumulate("durabilidad", durabilidad);
         arma.accumulate("xp", xp);
         arma.accumulate("lvl", lvl);
         arma.accumulate("fuerza", fuerza);
+        arma.accumulate("material", material);
         return arma;
     }
     protected void subirNivel(byte lvlsUp){

@@ -2,11 +2,11 @@ package UD4.Rol.Objetos.Equipamiento.Arma;
 
 import org.json.JSONObject;
 
-public class Barita extends Arma {
-    JSONObject barita;
-    int agilidad = 7;
-    final static String KEY = "Barita";
-    Barita(int num){
+public class Maza extends Arma {
+    JSONObject maza;
+    int agilidad = -10;
+    final static String KEY = "Maza";
+    Maza(int num){
         super(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
@@ -16,16 +16,18 @@ public class Barita extends Arma {
         this.afinidad = super.afinidad;
         this.habilidad = super.habilidad;
         this.material = super.material;
-        this.barita = getBaritaJsonObject(); 
-        this.fuerza = (int) Math.round(super.fuerza * 0.8);
+        this.maza = getMazaJsonObject(); 
+        this.fuerza = (int) Math.round(super.fuerza * 1.4);
     }
     protected void subirNivel(byte lvlsUp){
         super.subirNivel(lvlsUp);
-        agilidad += Math.round(agilidad * 0.1);
+        if (agilidad < 0) {
+            agilidad += Math.abs(Math.round(agilidad * 0.1));
+        }
     }
-    public JSONObject getBaritaJsonObject() {
-        barita = getArmaJsonObject();
+    public JSONObject getMazaJsonObject() {
+        maza = getArmaJsonObject();
         arma.accumulate("agilidad", agilidad);
-        return barita;
+        return maza;
     }
 }

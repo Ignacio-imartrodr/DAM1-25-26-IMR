@@ -253,13 +253,12 @@ public class Util {
      * @return  Ubicación de {@code objetivo} si está en el array {@code array} o {@code -1} si {@code objetivo} NO está en el array {@code array}
      */
     public static int UbiObjetoEnArray(Object objetivo, Object[] array){ //Verificar como lo compara
-        int Ubi = -1;
         for (int i = 0; i < array.length; i++) {
             if (array[i].equals(objetivo)) {
-                Ubi = i;
+                return i;
             }
         }
-        return Ubi;
+        return -1;
     }
     
     public static boolean borrarFicheroYCrearloVacio(String RutaFichero){

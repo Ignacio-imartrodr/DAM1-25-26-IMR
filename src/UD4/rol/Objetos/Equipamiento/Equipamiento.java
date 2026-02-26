@@ -15,8 +15,9 @@ public abstract class Equipamiento {
     protected int durabilidad = getDurabilidadMax();
     protected int xp = 0;
     protected byte lvl = -128; //rango: [-128 a 127]
-    private final short CONVERSOR = 129; // Para pasar entre lvl y nivel
+    private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
     private final static int XP_MAX = 256999;
+    final static protected String[] MATERIALES = new String[] {"MADERA", "COBRE", "HIERRO", "DIAMANTE", "ADAMANTIUM"};
     final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Objetos\\Equipacion\\Equipamientos.json";
 
     protected Equipamiento(String tipo, String subtipo, int num){
@@ -27,7 +28,7 @@ public abstract class Equipamiento {
             this.nombre = objetoBase.getString("nombre");
             this.rareza = Rareza.StringToRareza(objetoBase.getString("rareza"));
         } catch (Exception e) {
-            throw new EquipamientoException("Error con las clases o subclases");
+            throw new EquipamientoException("Error con los tipos o subtipos");
         }
     }
     public String getNombre() {
@@ -85,11 +86,7 @@ public abstract class Equipamiento {
         return estaRoto();
     }
     public boolean estaRoto(){
-        boolean Roto = false;
-        if (durabilidad <= 0) {
-            Roto = true;   
-        }
-        return Roto;
+        return durabilidad <= 0 ? true : false;
     }
     public byte sumarXp(int puntos){// La experiencia va de 0 a 999 y luego vuelve a 0
         if (puntos == 0) {
