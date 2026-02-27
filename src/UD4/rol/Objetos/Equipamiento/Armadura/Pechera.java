@@ -2,14 +2,15 @@ package UD4.Rol.Objetos.Equipamiento.Armadura;
 
 import org.json.JSONObject;
 
+import UD4.Rol.Objetos.Equipamiento.Rareza;
 import UD4.Rol.Utilidades.Util;
 
 public class Pechera extends Armadura {
     JSONObject pechera;
     final static String KEY = "Pechera";
 
-    public Pechera(String material){
-        int num = Util.UbiObjetoEnArray(material, MATERIALES);
+    public Pechera(String rareza){
+        int num = Util.UbiObjetoEnArray(Rareza.StringToRareza(rareza), Rareza.toArray());
         this(num);
     }
     public Pechera(int num){

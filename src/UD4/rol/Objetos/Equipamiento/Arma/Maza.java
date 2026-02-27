@@ -2,14 +2,21 @@ package UD4.Rol.Objetos.Equipamiento.Arma;
 
 import org.json.JSONObject;
 
+import UD4.Rol.Objetos.Equipamiento.Rareza;
+import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.Util;
 
 public class Maza extends Arma {
     int agilidad = -10;
     final static String KEY = "Maza";
     
-    public Maza(String material){
-        int num = Util.UbiObjetoEnArray(material, MATERIALES);
+    public Maza(String rareza){
+        int num = Util.UbiObjetoEnArray(Rareza.StringToRareza(rareza), Rareza.toArray());
+        if (num > 1) {
+            num--;
+        } else if (num == 1) {
+            throw new EquipamientoException("Rareza no válida");
+        }
         this(num);
     }
     public Maza(int num){
@@ -21,7 +28,6 @@ public class Maza extends Arma {
         this.lvl = super.lvl;
         this.afinidad = super.afinidad;
         this.habilidad = super.habilidad;
-        this.material = super.material;
         this.fuerza = (int) Math.round(super.fuerza * 1.4);
         this.objetoBase = getMazaJsonObject();
     }

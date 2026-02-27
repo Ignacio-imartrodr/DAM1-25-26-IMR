@@ -10,7 +10,6 @@ public abstract class Arma extends Equipamiento {
     //Solo puede ser Espada, Maza o Barita y el Personaje solo puede equipar una
     protected Afinidad afinidad;
     protected String habilidad;
-    protected String material;
     protected int fuerza;
     final static String KEY = "Arma";
 
@@ -23,7 +22,6 @@ public abstract class Arma extends Equipamiento {
         this.lvl = super.lvl;
         this.fuerza = getFuerzaBase();
         this.afinidad = new Afinidad(super.objetoBase.getString("afinidad"));
-        this.material = MATERIALES[num];
         this.habilidad = getHabilidad();
         this.objetoBase = getArmaJsonObject();
     }
@@ -40,15 +38,12 @@ public abstract class Arma extends Equipamiento {
         int fuerza = 0;
         switch (rareza) {
             case COMMUN:
-                fuerza = 7;
-                break;
-            case RARE:
                 fuerza = 18;
                 break;
             case SPECIAL:
                 fuerza = 42;
                 break;
-            case ULTRARE:
+            case RARE:
                 fuerza = 59;
                 break;
             case EPIC:

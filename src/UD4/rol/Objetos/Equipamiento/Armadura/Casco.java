@@ -2,14 +2,15 @@ package UD4.Rol.Objetos.Equipamiento.Armadura;
 
 import org.json.JSONObject;
 
+import UD4.Rol.Objetos.Equipamiento.Rareza;
 import UD4.Rol.Utilidades.Util;
 
 public class Casco extends Armadura {
     JSONObject casco;
     final static String KEY = "Casco";
 
-    public Casco(String material){
-        int num = Util.UbiObjetoEnArray(material, MATERIALES);
+    public Casco(String rareza){
+        int num = Util.UbiObjetoEnArray(Rareza.StringToRareza(rareza), Rareza.toArray());
         this(num);
     }
     public Casco(int num){

@@ -1,7 +1,5 @@
 package UD4.Rol.Objetos.Equipamiento.Armadura;
 
-import java.util.Arrays;
-
 import org.json.JSONObject;
 
 import UD4.Rol.Objetos.Equipamiento.Equipamiento;
@@ -15,7 +13,6 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
     int constitucion = getConstitucion();
     String encantamiento = getEncantamiento();
     final static String KEY = "Armadura";
-    final static String[] MATERIALES = getMateriales();
 
     Armadura(String pieza, int num){
         super(KEY, pieza, num);
@@ -24,7 +21,6 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
         this.durabilidad = super.durabilidad;
         this.xp = super.xp;
         this.lvl = super.lvl;
-        this.material = MATERIALES[num];
         this.armadura = getArmaduraJsonObject();
     }
 
@@ -42,15 +38,12 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
         int constitucion = 0;
         switch (rareza) {
             case COMMUN:
-                constitucion = 7;
-                break;
-            case RARE:
                 constitucion = 18;
                 break;
             case SPECIAL:
                 constitucion = 42;
                 break;
-            case ULTRARE:
+            case RARE:
                 constitucion = 59;
                 break;
             case EPIC:
@@ -69,14 +62,6 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
             constitucion += Math.round(constitucion * 0.2);
         }
         return constitucion;
-    }
-    private static String[] getMateriales(){
-        String[] temp = new String[] {"CUERO"};
-        for (String string : Equipamiento.MATERIALES) {
-            temp = Arrays.copyOf(temp, temp.length + 1);
-            temp[temp.length - 1] = string;
-        }
-        return temp;
     }
     protected JSONObject getArmaduraJsonObject() {
         armadura = new JSONObject(objetoBase);

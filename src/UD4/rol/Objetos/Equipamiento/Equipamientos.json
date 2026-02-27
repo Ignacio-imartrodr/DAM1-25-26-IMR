@@ -7,11 +7,11 @@
             },
             {
                 "nombre": "Casco de madera",
-                "rareza": "RARE"
+                "rareza": "SPECIAL"
             },
             {
                 "nombre": "Casco de cobre",
-                "rareza": "SUPERRARE"
+                "rareza": "RARE"
             },
             {
                 "nombre": "Casco de hierro",
@@ -33,11 +33,11 @@
             },
             {
                 "nombre": "Pechera de madera",
-                "rareza": "RARE"
+                "rareza": "SPECIAL"
             },
             {
                 "nombre": "Pechera de cobre",
-                "rareza": "SUPERRARE"
+                "rareza": "RARE"
             },
             {
                 "nombre": "Pechera de hierro",
@@ -59,11 +59,11 @@
             },
             {
                 "nombre": "Pantalón de madera",
-                "rareza": "RARE"
+                "rareza": "SPECIAL"
             },
             {
                 "nombre": "Pantalón de cobre",
-                "rareza": "SUPERRARE"
+                "rareza": "RARE"
             },
             {
                 "nombre": "Pantalón de hierro",
@@ -85,11 +85,11 @@
             },
             {
                 "nombre": "Botas de madera",
-                "rareza": "RARE"
+                "rareza": "SPECIAL"
             },
             {
                 "nombre": "Botas de cobre",
-                "rareza": "SUPERRARE"
+                "rareza": "RARE"
             },
             {
                 "nombre": "Botas de hierro",
@@ -114,7 +114,7 @@
             },
             {
                 "nombre": "Espada de Cobre",
-                "rareza": "SUPERRARE",
+                "rareza": "RARE",
                 "afinidad": "CORTE"
             },
             {
@@ -143,7 +143,7 @@
             },
             {
                 "nombre": "Barita de Cobre",
-                "rareza": "SUPERRARE",
+                "rareza": "RARE",
                 "afinidad": "MAGIA"
             },
             {
@@ -172,7 +172,7 @@
             },
             {
                 "nombre": "Maza de Cobre",
-                "rareza": "SUPERRARE",
+                "rareza": "RARE",
                 "afinidad": "GOLPE"
             },
             {

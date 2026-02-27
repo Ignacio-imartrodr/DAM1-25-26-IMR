@@ -1,9 +1,8 @@
 package UD4.Rol.Objetos.Entidades;
 
 import java.util.Random;
-
 import org.json.JSONObject;
-
+import UD4.Rol.Objetos.Equipamiento.Equipamiento;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
@@ -120,12 +119,26 @@ public abstract class Entidad {
     public int getExperiencia() {
         return experiencia;
     }
-    
     public int getPuntosVida(){
         return puntosVida;
     }
     public int getVidaMax(){
         return vidaMin + constitucion;
+    }
+    protected String getFicha(String nombreEntidad){
+        String ficha;
+        String Cabecera = "Ficha " + nombreEntidad + " \n=================\n";
+        String nombre = "Nombre: " + this.nombre;
+        String nivel = "Nivel: " + this.nivel;
+        String experiencia = "Experiencia: " + this.experiencia;
+        String puntosVida = "Puntos de vida : (" + this.puntosVida + "/" + getVidaMax() + ")";
+        String fuerza = "Fuerza: " + this.fuerza;
+        String agilidad = "Agilidad: " + this.agilidad;
+        String constitucion = "Constitución: " + this.constitucion;
+        String overAll = "OverAll: " + (this.fuerza + this.agilidad + this.constitucion);
+
+        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion, overAll);
+        return ficha;
     }
 
     public void asignarBonus(int[] bonus, boolean sustraer) {
@@ -269,21 +282,10 @@ public abstract class Entidad {
         }
         return num;
     }
-    protected String getFicha(String nombreEntidad){
-        String ficha;
-        String Cabecera = "Ficha " + nombreEntidad + " \n=================\n";
-        String nombre = "Nombre: " + this.nombre;
-        String nivel = "Nivel: " + this.nivel;
-        String experiencia = "Experiencia: " + this.experiencia;
-        String puntosVida = "Puntos de vida : (" + this.puntosVida + "/" + getVidaMax() + ")";
-        String fuerza = "Fuerza: " + this.fuerza;
-        String agilidad = "Agilidad: " + this.agilidad;
-        String constitucion = "Constitución: " + this.constitucion;
-        String overAll = "OverAll: " + (this.fuerza + this.agilidad + this.constitucion);
-
-        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion, overAll);
-        return ficha;
+    public Object gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
+        return Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
     }
+
     public JSONObject toJsonObject(){
         JSONObject entidad = new JSONObject();
         entidad.accumulate("nombre", nombre);

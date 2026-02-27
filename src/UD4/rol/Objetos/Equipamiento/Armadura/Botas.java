@@ -2,14 +2,15 @@ package UD4.Rol.Objetos.Equipamiento.Armadura;
 
 import org.json.JSONObject;
 
+import UD4.Rol.Objetos.Equipamiento.Rareza;
 import UD4.Rol.Utilidades.Util;
 
 public class Botas extends Armadura {
     JSONObject botas;
     final static String KEY = "Botas";
 
-    public Botas(String material){
-        int num = Util.UbiObjetoEnArray(material, MATERIALES);
+    public Botas(String rareza){
+        int num = Util.UbiObjetoEnArray(Rareza.StringToRareza(rareza), Rareza.toArray());
         this(num);
     }
     public Botas(int num){
