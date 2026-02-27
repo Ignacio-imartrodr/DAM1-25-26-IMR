@@ -1,6 +1,9 @@
 package UD4.Rol.Objetos.Entidades;
 
 import java.util.Random;
+
+import org.json.JSONObject;
+
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
@@ -248,5 +251,19 @@ public abstract class Entidad {
 
         ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion, overAll);
         return ficha;
+    }
+    public JSONObject toJsonObject(){
+        JSONObject entidad = new JSONObject();
+        entidad.accumulate("nombre", nombre);
+        entidad.accumulate("fuerza", fuerza);
+        entidad.accumulate("agilidad", agilidad);
+        entidad.accumulate("constitucion", constitucion);
+        entidad.accumulate("nivel", nivel);
+        entidad.accumulate("experiencia", experiencia);
+        entidad.accumulate("vidaMax", getVidaMax());
+        return entidad;
+    }
+    protected String toCsvString() {
+        return String.format("%s,%d,%d,%d,%d,%d,%d,%d", nombre, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);
     }
 }

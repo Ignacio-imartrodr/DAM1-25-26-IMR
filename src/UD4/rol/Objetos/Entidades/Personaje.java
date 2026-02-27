@@ -303,24 +303,15 @@ public class Personaje extends Entidad {
         }
         bolsa = Items.sort(bolsa);
     }
-    public String toJsonString() {
-        String personajeJson = toJsonObject().toString();//String.format("{\"nombre\":\"%s\",\"raza\":\"%s\",\"fuerza\":%d,\"agilidad\":%d,\"constitucion\":%d,\"nivel\":%d,\"experiencia\":%d,\"vidaMax\":%d}", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
-        return personajeJson;
-    }
+    @Override
     public JSONObject toJsonObject(){
-        JSONObject personaje = new JSONObject();
-        personaje.accumulate("nombre", nombre);
-        personaje.accumulate("raza", raza);
-        personaje.accumulate("fuerza", fuerza);
-        personaje.accumulate("agilidad", agilidad);
-        personaje.accumulate("constitucion", constitucion);
-        personaje.accumulate("nivel", nivel);
-        personaje.accumulate("experiencia", experiencia);
-        personaje.accumulate("vidaMax", getVidaMax());
+        JSONObject personaje = super.toJsonObject();
+        personaje.accumulate("raza", this.raza);
         return personaje;
     }
-    public String toCsvString() {
-        return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d%n", nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);
+    @Override
+    public String toCsvString(){
+        return super.toCsvString() + "," + raza + "\n";
     }
     public static void main(String[] args) {
         Personaje p = new Personaje("pureba");
