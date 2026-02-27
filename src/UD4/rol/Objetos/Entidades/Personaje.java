@@ -1,75 +1,28 @@
-package UD4.Rol.Objetos;
+package UD4.Rol.Objetos.Entidades;
 
 import java.util.Arrays;
-import java.util.Random;
-
 import org.json.JSONObject;
-
+import UD4.Rol.Objetos.*;
 import UD4.Rol.Utilidades.*;
 
 /**
  * @author Ignacio MR
  */
 
-public class Personaje {
+public class Personaje extends Entidad {
     private int id = -1;
-    private String nombre;
-    private Raza raza;
-    private int fuerza;
-    private int agilidad;
-    private int constitucion;
-    private byte nivel;
-    private int experiencia;
-    private int puntosVida = getVidaMax();
+    protected Raza raza;
     private boolean habilidadRazaActiva = true;
     private Item[] bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
-    private final static int VIDA_MIN = 50;
-    private final static int EXP_MAX = 127999;
     
-    /**
-     * Asigna un valor valido a un stat o un valor random
-     * @param   texto   :
-     * @param   stat    : 0 para Fuerza, 1 para Agilidad o 2 para Constitucion
-     * @return
-     * 
-     * 
-     */
-    private int asignarStatRng(String texto, int stat){
-        if (stat > 2) {
-            throw new PersonajeException("Stat no valida");
-        }
-        int num;
-        final int MIN = 1;
-        final int MAX = 100;
-        
-        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            throw new PersonajeException("Valores fuera de límites");
-        }
-        if (texto == null) {
-            num = generarRnd1a100();
-        } else {
-            num = Integer.parseInt(texto);
-        }
+    protected int asignarStatRng(String texto, int stat){
+        int num = super.asignarStatRng(texto, stat);
         String[] bonus = asignarBonusRaza(raza);
         int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
         if (num + bonusStat < 1) {
             num = 1;
         } else {
             num += bonusStat;
-        }
-        return num;
-    }
-    private int asignarStatNoRng(boolean esXp, String texto){
-        int num;
-        final int MIN = esXp ? 0 : 1;
-        final int MAX = esXp ? 999 : 100;
-        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            throw new PersonajeException("Valores fuera de límites");
-        }
-        if (texto == null) {
-            num = MIN;
-        } else {
-            num = Integer.parseInt(texto);
         }
         return num;
     }
@@ -81,15 +34,10 @@ public class Personaje {
      * @return Nuevo objeto de clase Personaje sin valores.
      */
     public Personaje(){
+        super();
         this.id = -1;
-        this.nombre = null;
         this.raza = null;
-        this.fuerza = 0;
-        this.agilidad = 0;
-        this.constitucion = 0;
-        this.nivel = 0;
-        this.experiencia = 0;
-        this.bolsa = null;
+        Items.sort(this.bolsa);
     }
 
     /**
@@ -121,69 +69,18 @@ public class Personaje {
      * @return Nuevo objeto de clase Personaje con los parametros otorgados o {@code PersonajeExcepcion} si algun valor no es valido.
      */
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
-        this.id = -1;
-        try {
-            nombre = nombre.strip();
-        } catch (NullPointerException e) {
-            throw new PersonajeException("El valor \"null\" no es valido");
-        } catch (Exception b){
-            throw new PersonajeException("El valor de \"nombre\" no es valido");
-        }
-        if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
-            throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"null\" o estár en blanco, prueba \"Personaje()\" en su lugar");
-        }
-        this.nombre = nombre;
+        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
         try {
             this.raza = Raza.StringToRaza(raza);
         } catch (PersonajeException e) {
             throw new PersonajeException("Raza no válida.");
         }
+        this.id = -1;
         Items.sort(this.bolsa);
-        if (yaExistente) {
-            if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
-                throw new PersonajeException("Valores fuera de límites");
-            } else {
-                this.fuerza = Integer.parseInt(fuerza);
-                this.agilidad = Integer.parseInt(agilidad);
-                this.constitucion = Integer.parseInt(constitucion);
-                this.nivel = (byte) Integer.parseInt(nivel);
-                this.experiencia = Integer.parseInt(experiencia);
-            }
-        } else {
-            this.fuerza = asignarStatRng(fuerza, 0);
-            this.agilidad = asignarStatRng(agilidad, 1);
-            this.constitucion = asignarStatRng(constitucion, 2);
-            this.nivel = (byte) asignarStatNoRng(false, nivel);
-            this.experiencia = asignarStatNoRng(true, experiencia);
-        }
-        /* Ignorar
-        try {
-            int xp = Integer.parseInt(experiencia.strip());
-            sumarExperiencia(xp);
-        } catch (PersonajeException e) {
-            try {
-                int xp = Integer.parseInt(experiencia.strip());
-                int extra = xp % EXP_MAX;
-                int vecesXpMax = xp / EXP_MAX;
-                for (int i= 0; i < vecesXpMax; i++) {
-                    sumarExperiencia(EXP_MAX);
-                }
-                sumarExperiencia(extra);
-            } catch (Exception a) {}
-        } catch (Exception e) {}
-        */
+        
     }
-    public void asignarBonus(int[] bonus, boolean sustraer) {
-        int bonusFuerza = bonus[0];
-        int bonusAgilidad = bonus[1];
-        int bonusConstitucion = bonus[2];
-        int cura = bonus[3];
-        fuerza += sustraer ? -bonusFuerza : bonusFuerza;
-        agilidad += sustraer ? -bonusAgilidad : bonusAgilidad;
-        constitucion += sustraer ? -bonusConstitucion : bonusConstitucion;
-        perderVida(cura); // Al ser "cura" un valor negativo gana vida en vez de perderla
-    }
-    private static String[] asignarBonusRaza(Raza raza) {
+    
+    protected static String[] asignarBonusRaza(Raza raza) {
         String bonusFuerza = "x";
         String bonusAgilidad = "x";
         String bonusConstitucion = "x";
@@ -232,33 +129,26 @@ public class Personaje {
     public int getId(){
         return this.id;
     }
-    public String getNombre(){
-        return this.nombre;
-    }
     public Raza getRaza() {
         return raza;
     }
-    public int getFuerza() {
-        return fuerza;
+    public String getBolsa(){
+        this.bolsa = Items.sort(this.bolsa);
+        String inventario = "Objetos disponibles:\n";
+        for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
+            cant = Items.cantidadItem(bolsa, bolsa[i]);
+            inventario += id + " - " + bolsa[i].getNombre() + " (" + cant + ") (" + bolsa[i].getDescription() + ")\n";
+            id++;
+        }
+        return inventario;
+        /* Mostrar todos
+        for (Item item : bolsa) {
+            if (item != null) {
+                inventario += "-" + item.getNombre() + "\n";
+            }
+        }*/
     }
-    public int getAgilidad() {
-        return agilidad;
-    }
-    public int getConstitucion() {
-        return constitucion;
-    }
-    public byte getNivel() {//TODO copiar el uso de nivel de Equipamiento
-        return nivel;
-    }
-    public int getExperiencia() {
-        return experiencia;
-    }
-    public int getVidaMax(){
-        return VIDA_MIN + constitucion;
-    }
-    public int getPuntosVida(){
-        return puntosVida;
-    }
+    
     public boolean isHabilidadRazaActiva() {
         return habilidadRazaActiva;
     }
@@ -270,12 +160,6 @@ public class Personaje {
         }
         return fichas;
     }
-    private static int generarRnd1a100(){
-        Random rnd = new Random();
-        int num = rnd.nextInt(100) + 1;
-        return num;
-    };
-    
     
     public void crearPersonaje(){
         System.out.print("Nombre del personaje: ");
@@ -316,118 +200,6 @@ public class Personaje {
         puntosVida = getVidaMax();
 
         Items.sort(bolsa);
-    }
-
-    private String pedirStatRng(){
-        String texto = Util.pedirPorTeclado(true);
-        final int MIN = 1;
-        final int MAX = 100;
-        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
-            texto = Util.pedirPorTeclado(true);
-        }
-        if (texto == null) {
-            texto = String.valueOf(generarRnd1a100());
-        }
-        return texto;
-    }
-    private int pedirStatNoRng(boolean esXp){
-        String texto;
-        int num;
-        texto = Util.pedirPorTeclado(true);
-        final int MIN = esXp ? 0 : 1;
-        final int MAX = esXp ? 999 : 100;
-        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
-            texto = Util.pedirPorTeclado(true);
-        }
-        if (texto == null) {
-            num = MIN;
-        } else {
-            num = Integer.parseInt(texto);
-        }
-        return num;
-    }
-
-    public void mostrar(){
-        String ficha;
-        String Cabecera = "Ficha Personaje\n=================\n";
-        String nombre = "Nombre: " + this.nombre;
-        String nombreRaza = this.raza.toString();
-        String raza = "Raza: " + nombreRaza;
-        String nivel = "Nivel: " + this.nivel;
-        String experiencia = "Experiencia: " + this.experiencia;
-        String puntosVida = "Puntos de vida : (" + this.puntosVida + "/" + getVidaMax() + ")";
-        String fuerza = "Fuerza: " + this.fuerza;
-        String agilidad = "Agilidad: " + this.agilidad;
-        String constitucion = "Constitución: " + this.constitucion;
-        String overAll = "OverAll: " + (this.fuerza + this.agilidad + this.constitucion);
-
-        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, raza, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion, overAll);
-        System.out.println(ficha);
-    }
-    public String toString(){
-        String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
-        return nombreYVida;
-    }
-    public byte sumarExperiencia(int puntos){// La experiencia va de 0 a 999 y luego vuelve a 0
-        if (puntos > EXP_MAX) {
-            throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
-        }
-        byte lvlsUp = 0;
-        if (puntos/1000 != 0) {
-            lvlsUp = (byte) (puntos / 1000);
-            experiencia += puntos % 1000;
-            if (experiencia >= 1000 ) {
-                if (lvlsUp == EXP_MAX/1000) {
-                    throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
-                }
-                experiencia %= 1000;
-                lvlsUp++;
-            }
-            for (int i = 0; i < lvlsUp; i++) {
-                subirNivel();
-            }
-        }
-        return lvlsUp;
-    }
-    public void subirNivel(){
-        nivel++;
-        fuerza += Math.round(fuerza * 0.05);
-        agilidad += Math.round(agilidad * 0.05);
-        int oldVidaMax = getVidaMax();
-        constitucion += Math.round(constitucion * 0.05);
-        puntosVida += (getVidaMax() - oldVidaMax);
-    }
-    public void curar(){
-        if (puntosVida < getVidaMax()) {
-            puntosVida = getVidaMax();
-        }
-    }
-    public boolean perderVida(int puntos){
-        puntosVida -= puntos;
-        return !estaVivo();
-    }
-    public boolean estaVivo(){
-        boolean vivo = true;
-        if (puntosVida <= 0) {
-            vivo = false;   
-        }
-        return vivo;
-    }
-    public int atacar(Personaje enemigo){
-        int puntAtaque = generarRnd1a100() + fuerza;
-        int puntDefensa = generarRnd1a100() + enemigo.agilidad;
-        int daño = puntDefensa - puntAtaque;
-        if ( daño > 0) {
-            if (daño > enemigo.puntosVida) {
-                daño = enemigo.puntosVida;
-            }
-            enemigo.perderVida(daño);
-        } else {
-            daño = 0;
-        }
-        return daño;
     }
     public void quitarHabilidadRaza(){
         habilidadRazaActiva = false; 
@@ -515,22 +287,13 @@ public class Personaje {
             }
         return nombreYHabilidad;
     }
-    public String mostrarBolsa(){
-        this.bolsa = Items.sort(this.bolsa);
-        String inventario = "Objetos disponibles:\n";
-        for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
-            cant = Items.cantidadItem(bolsa, bolsa[i]);
-            inventario += id + " - " + bolsa[i].getNombre() + " (" + cant + ") (" + bolsa[i].getDescription() + ")\n";
-            id++;
-        }
-        return inventario;
-        /* Mostrar todos
-        for (Item item : bolsa) {
-            if (item != null) {
-                inventario += "-" + item.getNombre() + "\n";
-            }
-        }*/
+    public void mostrar(){
+        String ficha = super.getFicha("Personaje");
+        String nombreRaza = this.raza.toString();
+        ficha += "\nRaza: " + nombreRaza;
+        System.out.println(ficha);
     }
+    
     public void usarObjeto(Item item){
         for (int i = 0; i < bolsa.length; i++) {
             if (item.compareTo(bolsa[i]) == 0) {
@@ -563,7 +326,7 @@ public class Personaje {
         Personaje p = new Personaje("pureba");
         p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas"), null};
         /*p.bolsa = new Item[]{null, Items.getItemRnd(), new Item("Enredaderas"), Items.getItemRnd(), new Item("eNREDADEraS")};*/
-        String bolsa = p.mostrarBolsa();
+        String bolsa = p.getBolsa();
         System.out.println(bolsa);
         String accion = "2";
         String ubNom = accion + " - ";

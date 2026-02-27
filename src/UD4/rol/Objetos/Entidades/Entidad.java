@@ -1,0 +1,252 @@
+package UD4.Rol.Objetos.Entidades;
+
+import java.util.Random;
+import UD4.Rol.Utilidades.PersonajeException;
+import UD4.Rol.Utilidades.Util;
+
+public abstract class Entidad {
+    protected String nombre;
+    protected int fuerza;
+    protected int agilidad;
+    protected int constitucion;
+    protected byte nivel;
+    protected int experiencia;
+    protected int puntosVida = getVidaMax();
+    protected boolean habilidadRazaActiva = true;
+    protected static int vidaMin = 50;
+    protected final static int EXP_MAX = 127999;
+
+
+    /**
+     * Asigna un valor valido a un stat o un valor random
+     * @param   texto   :
+     * @param   stat    : 0 para Fuerza, 1 para Agilidad o 2 para Constitucion
+     * @return
+     * 
+     * 
+     */
+    protected int asignarStatRng(String texto, int stat){
+        if (stat > 2) {
+            throw new PersonajeException("Stat no valida");
+        }
+        int num;
+        final int MIN = 1;
+        final int MAX = 100;
+        
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            throw new PersonajeException("Valores fuera de límites");
+        }
+        if (texto == null) {
+            num = generarRnd1a100();
+        } else {
+            num = Integer.parseInt(texto);
+        }
+        return num;
+    }
+    protected int asignarStatNoRng(boolean esXp, String texto){
+        int num;
+        final int MIN = esXp ? 0 : 1;
+        final int MAX = esXp ? 999 : 100;
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            throw new PersonajeException("Valores fuera de límites");
+        }
+        if (texto == null) {
+            num = MIN;
+        } else {
+            num = Integer.parseInt(texto);
+        }
+        return num;
+    }
+    
+    protected Entidad(){
+        this.nombre = null;
+        this.fuerza = 0;
+        this.agilidad = 0;
+        this.constitucion = 0;
+        this.nivel = 0;
+        this.experiencia = 0;
+    }
+    protected Entidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
+        
+        try {
+            nombre = nombre.strip();
+        } catch (NullPointerException e) {
+            throw new PersonajeException("El valor \"null\" no es valido");
+        } catch (Exception b){
+            throw new PersonajeException("El valor de \"nombre\" no es valido");
+        }
+        if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
+            throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"null\" o estár en blanco, prueba \"Personaje()\" en su lugar");
+        }
+        this.nombre = nombre;
+        
+        if (yaExistente) {
+            if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
+                throw new PersonajeException("Valores fuera de límites");
+            } else {
+                this.fuerza = Integer.parseInt(fuerza);
+                this.agilidad = Integer.parseInt(agilidad);
+                this.constitucion = Integer.parseInt(constitucion);
+                this.nivel = (byte) Integer.parseInt(nivel);
+                this.experiencia = Integer.parseInt(experiencia);
+            }
+        } else {
+            this.fuerza = asignarStatRng(fuerza, 0);
+            this.agilidad = asignarStatRng(agilidad, 1);
+            this.constitucion = asignarStatRng(constitucion, 2);
+            this.nivel = (byte) asignarStatNoRng(false, nivel);
+            this.experiencia = asignarStatNoRng(true, experiencia);
+        }
+    }
+    public String getNombre(){
+        return this.nombre;
+    }
+    public int getFuerza() {
+        return fuerza;
+    }
+    public int getAgilidad() {
+        return agilidad;
+    }
+    public int getConstitucion() {
+        return constitucion;
+    }
+    public byte getNivel() {//TODO copiar el uso de nivel de Equipamiento
+        return nivel;
+    }
+    public int getExperiencia() {
+        return experiencia;
+    }
+    
+    public int getPuntosVida(){
+        return puntosVida;
+    }
+    public int getVidaMax(){
+        return vidaMin + constitucion;
+    }
+
+    public void asignarBonus(int[] bonus, boolean sustraer) {
+        int bonusFuerza = bonus[0];
+        int bonusAgilidad = bonus[1];
+        int bonusConstitucion = bonus[2];
+        int cura = bonus[3];
+        fuerza += sustraer ? -bonusFuerza : bonusFuerza;
+        agilidad += sustraer ? -bonusAgilidad : bonusAgilidad;
+        constitucion += sustraer ? -bonusConstitucion : bonusConstitucion;
+        perderVida(cura); // Al ser "cura" un valor negativo gana vida en vez de perderla
+    }
+    
+    protected static int generarRnd1a100(){
+        Random rnd = new Random();
+        int num = rnd.nextInt(100) + 1;
+        return num;
+    };
+    @Override
+    public String toString(){
+        String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
+        return nombreYVida;
+    }
+    public byte sumarExperiencia(int puntos){// La experiencia va de 0 a 999 y luego vuelve a 0
+        if (puntos > EXP_MAX) {
+            throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
+        }
+        byte lvlsUp = 0;
+        if (puntos/1000 != 0) {
+            lvlsUp = (byte) (puntos / 1000);
+            experiencia += puntos % 1000;
+            if (experiencia >= 1000 ) {
+                if (lvlsUp == EXP_MAX/1000) {
+                    throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
+                }
+                experiencia %= 1000;
+                lvlsUp++;
+            }
+            for (int i = 0; i < lvlsUp; i++) {
+                subirNivel();
+            }
+        }
+        return lvlsUp;
+    }
+    public void subirNivel(){
+        nivel++;
+        fuerza += Math.round(fuerza * 0.05);
+        agilidad += Math.round(agilidad * 0.05);
+        int oldVidaMax = getVidaMax();
+        constitucion += Math.round(constitucion * 0.05);
+        puntosVida += (getVidaMax() - oldVidaMax);
+    }
+    public void curar(){
+        if (puntosVida < getVidaMax()) {
+            puntosVida = getVidaMax();
+        }
+    }
+    public boolean perderVida(int puntos){
+        puntosVida -= puntos;
+        return !estaVivo();
+    }
+    public boolean estaVivo(){
+        boolean vivo = true;
+        if (puntosVida <= 0) {
+            vivo = false;   
+        }
+        return vivo;
+    }
+    public int atacar(Personaje enemigo){
+        int puntAtaque = generarRnd1a100() + fuerza;
+        int puntDefensa = generarRnd1a100() + enemigo.agilidad;
+        int daño = puntDefensa - puntAtaque;
+        if ( daño > 0) {
+            if (daño > enemigo.puntosVida) {
+                daño = enemigo.puntosVida;
+            }
+            enemigo.perderVida(daño);
+        } else {
+            daño = 0;
+        }
+        return daño;
+    }
+    protected String pedirStatRng(){
+        String texto = Util.pedirPorTeclado(true);
+        final int MIN = 1;
+        final int MAX = 100;
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
+            texto = Util.pedirPorTeclado(true);
+        }
+        if (texto == null) {
+            texto = String.valueOf(generarRnd1a100());
+        }
+        return texto;
+    }
+    protected int pedirStatNoRng(boolean esXp){
+        String texto;
+        int num;
+        texto = Util.pedirPorTeclado(true);
+        final int MIN = esXp ? 0 : 1;
+        final int MAX = esXp ? 999 : 100;
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
+            texto = Util.pedirPorTeclado(true);
+        }
+        if (texto == null) {
+            num = MIN;
+        } else {
+            num = Integer.parseInt(texto);
+        }
+        return num;
+    }
+    protected String getFicha(String nombreEntidad){
+        String ficha;
+        String Cabecera = "Ficha " + nombreEntidad + " \n=================\n";
+        String nombre = "Nombre: " + this.nombre;
+        String nivel = "Nivel: " + this.nivel;
+        String experiencia = "Experiencia: " + this.experiencia;
+        String puntosVida = "Puntos de vida : (" + this.puntosVida + "/" + getVidaMax() + ")";
+        String fuerza = "Fuerza: " + this.fuerza;
+        String agilidad = "Agilidad: " + this.agilidad;
+        String constitucion = "Constitución: " + this.constitucion;
+        String overAll = "OverAll: " + (this.fuerza + this.agilidad + this.constitucion);
+
+        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion, overAll);
+        return ficha;
+    }
+}
