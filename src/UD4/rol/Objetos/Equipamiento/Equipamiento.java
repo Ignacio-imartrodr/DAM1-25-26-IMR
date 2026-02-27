@@ -1,6 +1,5 @@
 package UD4.Rol.Objetos.Equipamiento;
 
-import java.util.Arrays;
 import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,11 +77,18 @@ public abstract class Equipamiento {
         return durabilidadMax;
     }
 
-    private static int numDe1000ConInterpolarFromNivel(int porcentage, int cantARestar, int lvlEntidad){
+    /*private static int numDe1000ConInterpolarFromNivel(int porcentage, int cantARestar, int lvlEntidad){
         int interpolacion = (((lvlEntidad - 1) / 255) * (cantARestar * 10));
         int num = 1000 - (1000 - (porcentage * 10) - interpolacion);
-        return num;
-    }
+        return 1000 - num;
+    }*/
+    private static int numDe1000ConInterpolarFromNivel(int porcentage, int cantARestar, int lvlEntidad) {
+    int valorBase = porcentage * 10;
+    int valorFinal = (porcentage - cantARestar) * 10;
+    int resultado =  Math.round(valorBase + (valorFinal - valorBase) * ((lvlEntidad - 1) / (float) 255.0));
+    
+    return resultado;
+}
     public static Object gachaEquipamiento(int lvlEntidad, boolean esGeneral, boolean... gachaArmas){
         if (lvlEntidad > 256 || lvlEntidad < 1) {
             throw new EquipamientoException("Probabilidades del gacha erroneas por el limite del nivel");
@@ -133,36 +139,49 @@ public abstract class Equipamiento {
                 break;
         }
         
-        int[] prob = new int[0];
-        //TODO revisar, pone todo a 0 o 5
-        for (int i = 0; i < 1000; i++) {//Modificar porcentage para tener diferentes prob y cantARestar para el % que arrastro para darle a la siguiente categoría según el nivel
-            if (esArma) {
-                prob = Arrays.copyOf(prob, prob.length + 1);             //conLvlMin: 40%     30% 20% 6% 4% || conLvlMax: 33%     28% 23% 9% 6%
-                if (i < numDe1000ConInterpolarFromNivel(40, 7, lvlEntidad)) { 
-                    prob[prob.length - 1] = 0;
-                } else if (i < numDe1000ConInterpolarFromNivel(30, 9, lvlEntidad)) {
-                    prob[prob.length - 1] = 1;
-                } else if (i < numDe1000ConInterpolarFromNivel(20, 3, lvlEntidad)) {
-                    prob[prob.length - 1] = 2;
-                } else if (i < numDe1000ConInterpolarFromNivel(3, 2, lvlEntidad)) {
-                    prob[prob.length - 1] = 3;
+        int[] prob = new int[1000];
+        //TODO revisar
+        if (esArma) {
+            //conLvlMin: 40%     30% 20% 6% 4% || conLvlMax: 33%     28% 23% 9% 6%
+            int p0 = numDe1000ConInterpolarFromNivel(40, 7, lvlEntidad);
+            int p1 = p0 + numDe1000ConInterpolarFromNivel(30, 2, lvlEntidad);
+            int p2 = p1 + numDe1000ConInterpolarFromNivel(20, -3, lvlEntidad);
+            int p3 = p2 + numDe1000ConInterpolarFromNivel(6, -3, lvlEntidad);
+
+            for (int i = 0; i < 1000; i++) {
+                if (i < p0) {
+                    prob[i] = 0;
+                } else if (i < (p1)) {
+                    prob[i] = 1;
+                } else if (i < (p2)) {
+                    prob[i] = 2;
+                } else if (i < (p3)) {
+                    prob[i] = 3;
                 } else {
-                    prob[prob.length - 1] = 5;
+                    prob[i] = 4;
                 }
-            } else {
-                prob = Arrays.copyOf(prob, prob.length + 1); // conLvlMin: 35% 30% 20% 10% 3% 2% || conLvlMax: 30% 27% 18% 15% 6% 4%
-                if (i < numDe1000ConInterpolarFromNivel(35, 5, lvlEntidad)) {
-                    prob[prob.length - 1] = 0;
-                } else if (i < numDe1000ConInterpolarFromNivel(30, 8, lvlEntidad)) {
-                    prob[prob.length - 1] = 1;
-                } else if (i < numDe1000ConInterpolarFromNivel(20, 10, lvlEntidad)) {
-                    prob[prob.length - 1] = 2;
-                } else if (i < numDe1000ConInterpolarFromNivel(10, 5, lvlEntidad)) {
-                    prob[prob.length - 1] = 3;
-                } else if (i < numDe1000ConInterpolarFromNivel(3, 2, lvlEntidad)) {
-                    prob[prob.length - 1] = 4;
+            }
+        } else {
+            // conLvlMin: 35% 30% 20% 10% 3% 2% || conLvlMax: 30% 27% 18% 15% 6% 4%
+            int p0 = numDe1000ConInterpolarFromNivel(35, 5, lvlEntidad);
+            int p1 = p0 + numDe1000ConInterpolarFromNivel(30, 8, lvlEntidad);
+            int p2 = p1 + numDe1000ConInterpolarFromNivel(20, 10, lvlEntidad);
+            int p3 = p2 + numDe1000ConInterpolarFromNivel(10, 5, lvlEntidad);
+            int p4 = p3 + numDe1000ConInterpolarFromNivel(3, 2, lvlEntidad);
+            
+            for (int i = 0; i < 1000; i++) {
+                if (i < p0) {
+                    prob[i] = 0;
+                } else if (i < (p1)) {
+                    prob[i] = 1;
+                } else if (i < (p2)) {
+                    prob[i] = 2;
+                } else if (i < (p3)) {
+                    prob[i] = 3;
+                } else if (i < (p4)) {
+                    prob[i] = 4;
                 } else {
-                    prob[prob.length - 1] = 5;
+                    prob[i] = 5;
                 }
             }
         }

@@ -168,28 +168,28 @@
             {
                 "nombre": "Maza de Madera",
                 "rareza": "COMMUN",
-                "afinidad": "GOLPE"
+                "afinidad": "GOLPEO"
             },
             {
                 "nombre": "Maza de Cobre",
                 "rareza": "RARE",
-                "afinidad": "GOLPE"
+                "afinidad": "GOLPEO"
             },
             {
                 "nombre": "Maza de Hierro",
                 "rareza": "EPIC",
-                "afinidad": "GOLPE"
+                "afinidad": "GOLPEO"
             },
             {
                 "nombre": "Maza de Diamante",
                 "rareza": "LEGENDARY",
-                "afinidad": "GOLPE",
+                "afinidad": "GOLPEO",
                 "habilidad": "ROMPECASCOS"
             },
             {
                 "nombre": "Maza de Adamantium",
                 "rareza": "CHAOTIC",
-                "afinidad": "GOLPE",
+                "afinidad": "GOLPEO",
                 "habilidad": "SISMO"
             }
         ]

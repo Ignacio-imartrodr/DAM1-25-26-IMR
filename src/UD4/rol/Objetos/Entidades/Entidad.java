@@ -15,6 +15,8 @@ public abstract class Entidad {
     protected int experiencia;
     protected int puntosVida = getVidaMax();
     protected boolean habilidadRazaActiva = true;
+    protected Equipamiento[] equipamientoEquipado = new Equipamiento[5];
+    protected Equipamiento[] equipamientoGuardado = new Equipamiento[50];
     protected static int vidaMin = 50;
     protected final static int EXP_MAX = 256999;
 
@@ -101,6 +103,7 @@ public abstract class Entidad {
             this.experiencia = asignarStatNoRng(true, experiencia);
         }
     }
+    
     public String getNombre(){
         return this.nombre;
     }

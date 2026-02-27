@@ -4,7 +4,7 @@ import UD4.Rol.Utilidades.AfinidadException;
 import UD4.Rol.Utilidades.Util;
 
 public record Afinidad(String afinidad) implements Comparable<Afinidad>{
-
+    
     static String[] afinidades = new String[] {"CORTE", "GOLPEO", "MAGIA"};
     public Afinidad {
         boolean correcto = false;
