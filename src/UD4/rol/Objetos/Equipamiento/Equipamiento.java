@@ -102,15 +102,14 @@ public abstract class Equipamiento {
             return 0;
         }
         int lvlsUp = 0;
-        if (!(getLvl()*1000 + xp + puntos >= XP_MAX)) {
+        if (!(getLvl()*1000 + xp + puntos <= XP_MAX)) {
             if (puntos / 1000 != 0) {
                 lvlsUp = (puntos / 1000);
                 xp += puntos % 1000;
                 if (xp >= 1000) {
-                    xp %= 1000;
-                    lvlsUp++;
+                    lvlsUp += xp / 1000;
+                    xp = xp % 1000;
                 }
-                
             }
         } else if (getLvl() == (XP_MAX / 1000)) {
             if (xp + puntos >= (XP_MAX % 1000)) {

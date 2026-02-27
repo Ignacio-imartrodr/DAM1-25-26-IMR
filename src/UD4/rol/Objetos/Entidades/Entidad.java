@@ -12,13 +12,14 @@ public abstract class Entidad {
     protected int fuerza;
     protected int agilidad;
     protected int constitucion;
-    protected byte nivel;
+    protected byte nivel= -128; //rango: [-128 a 127]
     protected int experiencia;
     protected int puntosVida = getVidaMax();
     protected boolean habilidadRazaActiva = true;
     protected static int vidaMin = 50;
-    protected final static int EXP_MAX = 127999;
+    protected final static int EXP_MAX = 256999;
 
+    private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
 
     /**
      * Asigna un valor valido a un stat o un valor random
@@ -113,8 +114,8 @@ public abstract class Entidad {
     public int getConstitucion() {
         return constitucion;
     }
-    public byte getNivel() {//TODO copiar el uso de nivel de Equipamiento
-        return nivel;
+    public int getNivel() {
+        return nivel + CONVERSOR;
     }
     public int getExperiencia() {
         return experiencia;
@@ -152,8 +153,8 @@ public abstract class Entidad {
         if (puntos > EXP_MAX) {
             throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
         }
-        byte lvlsUp = 0;
-        if (puntos/1000 != 0) {
+        int lvlsUpIdeal = 0;
+        /*if (puntos/1000 != 0) {
             lvlsUp = (byte) (puntos / 1000);
             experiencia += puntos % 1000;
             if (experiencia >= 1000 ) {
@@ -166,16 +167,47 @@ public abstract class Entidad {
             for (int i = 0; i < lvlsUp; i++) {
                 subirNivel();
             }
+        }*/
+        if (!(getNivel()*1000 + experiencia + puntos <= EXP_MAX)) {
+            if (puntos / 1000 != 0) {
+                lvlsUpIdeal = (puntos / 1000);
+                experiencia += puntos % 1000;
+                if (experiencia >= 1000) {
+                    lvlsUpIdeal += experiencia / 1000;
+                    experiencia = experiencia % 1000;
+                }
+            }
+        } else if (getNivel() == (EXP_MAX / 1000)) {
+            if (experiencia + puntos >= (EXP_MAX % 1000)) {
+                experiencia = (EXP_MAX % 1000);
+            } else {
+                experiencia += puntos;
+            }
         }
-        return lvlsUp;
+        if (lvlsUpIdeal >= ((EXP_MAX/1000) - getNivel())) {
+            lvlsUpIdeal = ((EXP_MAX/1000) - getNivel());
+        }
+        int lvlsUpReal = 0;
+        for (int i = 0; i < lvlsUpIdeal; i++) {
+            if (subirNivel()) {
+                lvlsUpReal++;
+            }
+        }
+        byte resultado = (byte) (lvlsUpReal - CONVERSOR);
+        return resultado;
     }
-    public void subirNivel(){
-        nivel++;
-        fuerza += Math.round(fuerza * 0.05);
-        agilidad += Math.round(agilidad * 0.05);
-        int oldVidaMax = getVidaMax();
-        constitucion += Math.round(constitucion * 0.05);
-        puntosVida += (getVidaMax() - oldVidaMax);
+    public boolean subirNivel(){
+        if (nivel != EXP_MAX/1000) {
+            nivel++;
+            fuerza += Math.round(fuerza * 0.05);
+            agilidad += Math.round(agilidad * 0.05);
+            int oldVidaMax = getVidaMax();
+            constitucion += Math.round(constitucion * 0.05);
+            puntosVida += (getVidaMax() - oldVidaMax);
+            return true;
+        } else {
+            return false;
+        }
     }
     public void curar(){
         if (puntosVida < getVidaMax()) {
