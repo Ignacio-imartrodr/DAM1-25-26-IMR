@@ -5,8 +5,8 @@ import java.util.Arrays;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import UD4.Rol.Objetos.Entidades.Personaje;
 import UD4.Rol.Utilidades.*;
-import UD4.Rol.Objetos.Personaje;
 
 /** 
  * @author Ignacio MR

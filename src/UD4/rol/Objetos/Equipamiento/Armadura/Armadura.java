@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import UD4.Rol.Objetos.Equipamiento.Equipamiento;
 import UD4.Rol.Utilidades.RarezaException;
 
-public abstract class Armadura extends Equipamiento {
+public abstract class Armadura extends Equipamiento {//TODO Arreglar
     //Solo puede ser una pieza: Casco, Pechera, Pantalon o Botas y el Personaje solo puede tener equipado uno de cada 
     
     String material;

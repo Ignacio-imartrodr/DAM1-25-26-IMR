@@ -2,6 +2,7 @@ package UD4.Rol.Objetos;
 
 import java.util.Arrays;
 
+import UD4.Rol.Objetos.Entidades.Personaje;
 import UD4.Rol.Utilidades.PersonajeException;
 
 /**

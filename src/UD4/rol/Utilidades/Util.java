@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import UD4.Rol.Objetos.Personaje;
+
+import UD4.Rol.Objetos.Entidades.Personaje;
 
 /**
  * @author Ignacio MR (HM Profesor Óscar de programación)

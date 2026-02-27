@@ -6,6 +6,7 @@ import java.util.Random;
 import org.json.JSONObject;
 
 import UD4.Rol.Objetos.*;
+import UD4.Rol.Objetos.Entidades.Personaje;
 import UD4.Rol.Utilidades.ItemException;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
@@ -412,7 +413,7 @@ public class AppCombateSingular {
                         
                         case 4:
                             Item objeto;
-                            String bolsa = personajeActuando.mostrarBolsa();
+                            String bolsa = personajeActuando.getBolsa();
                             System.out.println(bolsa);
                             System.out.println("Escoge Objeto (número de la izquierda) u otro número para cambiar de opción: ");
                             accion = Util.pedirPorTeclado(true);
