@@ -6,14 +6,14 @@ import UD4.Rol.Objetos.Equipamiento.Equipamiento;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
-public abstract class Entidad {
+public abstract class Entidad{
     protected String nombre;
-    protected int fuerza;
-    protected int agilidad;
-    protected int constitucion;
+    protected int fuerza = 0;
+    protected int agilidad = 0;
+    protected int constitucion = 0;
     protected byte nivel= -128; //rango: [-128 a 127]
-    protected int experiencia;
-    protected int puntosVida = getVidaMax();
+    protected int experiencia = 0;
+    protected int puntosVida;
     protected boolean habilidadRazaActiva = true;
     protected Equipamiento[] equipamientoEquipado = new Equipamiento[5];
     protected Equipamiento[] equipamientoGuardado = new Equipamiento[50];
@@ -22,47 +22,6 @@ public abstract class Entidad {
 
     private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
 
-    /**
-     * Asigna un valor valido a un stat o un valor random
-     * @param   texto   :
-     * @param   stat    : 0 para Fuerza, 1 para Agilidad o 2 para Constitucion
-     * @return
-     * 
-     * 
-     */
-    protected int asignarStatRng(String texto, int stat){
-        if (stat > 2) {
-            throw new PersonajeException("Stat no valida");
-        }
-        int num;
-        final int MIN = 1;
-        final int MAX = 100;
-        
-        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            throw new PersonajeException("Valores fuera de límites");
-        }
-        if (texto == null) {
-            num = generarRnd1a100();
-        } else {
-            num = Integer.parseInt(texto);
-        }
-        return num;
-    }
-    protected int asignarStatNoRng(boolean esXp, String texto){
-        int num;
-        final int MIN = esXp ? 0 : 1;
-        final int MAX = esXp ? 999 : 100;
-        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            throw new PersonajeException("Valores fuera de límites");
-        }
-        if (texto == null) {
-            num = MIN;
-        } else {
-            num = Integer.parseInt(texto);
-        }
-        return num;
-    }
-    
     protected Entidad(){
         this.nombre = null;
         this.fuerza = 0;
@@ -96,12 +55,51 @@ public abstract class Entidad {
                 this.experiencia = Integer.parseInt(experiencia);
             }
         } else {
-            this.fuerza = asignarStatRng(fuerza, 0);
-            this.agilidad = asignarStatRng(agilidad, 1);
-            this.constitucion = asignarStatRng(constitucion, 2);
+            this.fuerza = asignarStatRnd(fuerza);
+            this.agilidad = asignarStatRnd(agilidad);
+            this.constitucion = asignarStatRnd(constitucion);
             this.nivel = (byte) asignarStatNoRng(false, nivel);
             this.experiencia = asignarStatNoRng(true, experiencia);
         }
+        puntosVida = getVidaMax();
+    }
+
+    /**
+     * Asigna un valor valido a un stat o un valor random
+     * @param   texto   :
+     * @param   stat    : 0 para Fuerza, 1 para Agilidad o 2 para Constitucion
+     * @return
+     * 
+     * 
+     */
+    protected int asignarStatRnd(String texto){
+        int num;
+        final int MIN = 1;
+        final int MAX = 100;
+        
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            throw new PersonajeException("Valores fuera de límites");
+        }
+        if (texto == null) {
+            num = generarRnd1a100();
+        } else {
+            num = Integer.parseInt(texto);
+        }
+        return num;
+    }
+    protected int asignarStatNoRng(boolean esXp, String texto){
+        int num;
+        final int MIN = esXp ? 0 : 1;
+        final int MAX = esXp ? 999 : 100;
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            throw new PersonajeException("Valores fuera de límites");
+        }
+        if (texto == null) {
+            num = MIN;
+        } else {
+            num = Integer.parseInt(texto);
+        }
+        return num;
     }
     
     public String getNombre(){
@@ -159,11 +157,6 @@ public abstract class Entidad {
         Random rnd = new Random();
         int num = rnd.nextInt(100) + 1;
         return num;
-    };
-    @Override
-    public String toString(){
-        String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
-        return nombreYVida;
     }
     public byte sumarExperiencia(int puntos){// La experiencia va de 0 a 999 y luego vuelve a 0
         if (puntos > EXP_MAX) {
@@ -302,5 +295,10 @@ public abstract class Entidad {
     }
     protected String toCsvString() {
         return String.format("%s,%d,%d,%d,%d,%d,%d,%d", nombre, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);
+    }
+    @Override
+    public String toString(){
+        String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
+        return nombreYVida;
     }
 }

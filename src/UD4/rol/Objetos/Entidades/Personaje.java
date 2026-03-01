@@ -12,12 +12,17 @@ import UD4.Rol.Utilidades.*;
 public class Personaje extends Entidad {
     private int id = -1;
     protected Raza raza;
-    private boolean habilidadRazaActiva = true;
     private Item[] bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
     
-    protected int asignarStatRng(String texto, int stat){
-        int num = super.asignarStatRng(texto, stat);
-        String[] bonus = asignarBonusRaza(raza);
+    protected int asignarBonusRaza(int stat){
+        int num;
+        switch (stat) {
+            case 0 ->num = super.fuerza;
+            case 1 ->num = super.agilidad;
+            case 2 ->num = super.constitucion;
+            default -> throw new PersonajeException("Stat rng no existente");
+        };
+        String[] bonus = arrayBonusRaza(raza);
         int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
         if (num + bonusStat < 1) {
             num = 1;
@@ -69,18 +74,24 @@ public class Personaje extends Entidad {
      * @return Nuevo objeto de clase Personaje con los parametros otorgados o {@code PersonajeExcepcion} si algun valor no es valido.
      */
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
-        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
-        try {
-            this.raza = Raza.StringToRaza(raza);
-        } catch (PersonajeException e) {
-            throw new PersonajeException("Raza no válida.");
+        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);//TODO areglar que devuelve null en todos los stats 
+        if (raza == null) {
+            this.raza = Raza.HUMANO;
+        }else{
+            try {
+                this.raza = Raza.StringToRaza(raza);
+            } catch (PersonajeException e) {
+                throw new PersonajeException("Raza no válida.");
+            }
         }
+        this.fuerza = asignarBonusRaza(0);
+        this.agilidad = asignarBonusRaza(1);
+        this.constitucion = asignarBonusRaza(2);
         this.id = -1;
         Items.sort(this.bolsa);
-        
     }
     
-    protected static String[] asignarBonusRaza(Raza raza) {
+    protected static String[] arrayBonusRaza(Raza raza) {
         String bonusFuerza = "x";
         String bonusAgilidad = "x";
         String bonusConstitucion = "x";
@@ -155,7 +166,7 @@ public class Personaje extends Entidad {
     public static String getRazasStats() {
         String fichas = "";
         for (Raza raza : Raza.toArray()) {
-            String[] bonus = asignarBonusRaza(raza);
+            String[] bonus = arrayBonusRaza(raza);
             fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
         }
         return fichas;
@@ -183,29 +194,32 @@ public class Personaje extends Entidad {
 
         System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
         System.out.print("Fuerza: ");
-        fuerza = asignarStatRng(pedirStatRng(), 0);
+        super.fuerza = super.asignarStatRnd(pedirStatRng());
+        this.fuerza = asignarBonusRaza(0);
         
         System.out.print("Agilidad: ");
-        agilidad = asignarStatRng(pedirStatRng(), 1);
+        super.agilidad = super.asignarStatRnd(pedirStatRng());
+        this.agilidad = asignarBonusRaza(1);
 
         System.out.print("Constitución: ");
-        constitucion = asignarStatRng(pedirStatRng(), 2);
+        super.constitucion = super.asignarStatRnd(pedirStatRng());
+        this.constitucion = asignarBonusRaza(2);
         
         System.out.print("Nivel: ");
-        nivel = (byte) pedirStatNoRng(false);
+        this.nivel = super.nivel = (byte) pedirStatNoRng(false);
         
         System.out.println("Nivel de experiencia: ");
-        experiencia = pedirStatNoRng(true);
+        this.experiencia = super.experiencia = pedirStatNoRng(true);
 
         puntosVida = getVidaMax();
 
         Items.sort(bolsa);
     }
     public void quitarHabilidadRaza(){
-        habilidadRazaActiva = false; 
+        this.habilidadRazaActiva = super.habilidadRazaActiva = false; 
     }
     public void activarHabilidadRaza(){
-        habilidadRazaActiva = true; 
+        this.habilidadRazaActiva = super.habilidadRazaActiva = true; 
     }
     public byte duracionHabilidadRaza(Personaje enemigo){
         boolean haceEfecto = habilidadRazaActiva;
@@ -294,14 +308,19 @@ public class Personaje extends Entidad {
         System.out.println(ficha);
     }
     
-    public void usarObjeto(Item item){
-        for (int i = 0; i < bolsa.length; i++) {
-            if (item.compareTo(bolsa[i]) == 0) {
-                bolsa[i] = null;
-                break;
+    public boolean usarObjeto(Item item){
+        boolean fueUsado = false;
+        if (item != null) {
+            for (int i = 0; i < bolsa.length; i++) {
+                if (item.compareTo(bolsa[i]) == 0) {
+                    bolsa[i] = null;
+                    fueUsado = true;
+                    break;
+                }
             }
+            bolsa = Items.sort(bolsa);
         }
-        bolsa = Items.sort(bolsa);
+        return fueUsado;
     }
     @Override
     public JSONObject toJsonObject(){
