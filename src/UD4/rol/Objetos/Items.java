@@ -73,11 +73,13 @@ public enum Items {
                 firtPosNull = j;
             }
         }
+        /* Ignorar
         for (int i=0; i < firtPosNull; i++) {
             for (int j = i; j > 0 && ((Comparable<Items>) Items.stringToItems(x[j-1].getNombre())).compareTo(Items.stringToItems(x[j].getNombre()))>0; j--) {
                 x = (Item[]) Util.swap(x, j, j-1);
             }
-        }
+        }*/
+        Arrays.sort(x,0, firtPosNull);
         x = Arrays.copyOf(x, firtPosNull);
         return x;
     }

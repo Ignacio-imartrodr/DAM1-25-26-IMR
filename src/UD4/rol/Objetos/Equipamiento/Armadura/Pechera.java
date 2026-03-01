@@ -6,7 +6,6 @@ import UD4.Rol.Objetos.Equipamiento.Rareza;
 import UD4.Rol.Utilidades.Util;
 
 public class Pechera extends Armadura {
-    JSONObject pechera;
     final static String KEY = "Pechera";
 
     public Pechera(String rareza){
@@ -20,13 +19,19 @@ public class Pechera extends Armadura {
         this.durabilidad = super.durabilidad;
         this.xp = super.xp;
         this.lvl = super.lvl;
-        this.material = super.material;
         this.encantamiento = super.encantamiento;
         this.constitucion = (int) Math.round(super.constitucion * 1.5);
-        this.pechera = getPecheraJsonObject();
+        this.objetoBase = super.objetoBase = getPecheraJsonObject();
     }
     public JSONObject getPecheraJsonObject() {
-        pechera = getArmaduraJsonObject();
-        return pechera;
+        objetoBase = getArmaduraJsonObject();
+
+        String key = "constitucion";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, constitucion);
+
+        return objetoBase;
     }
 }

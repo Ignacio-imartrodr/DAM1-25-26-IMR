@@ -1,9 +1,15 @@
 package UD4.Rol.Objetos.Equipamiento.Arma;
 
+import java.util.Arrays;
+
 import org.json.JSONObject;
 
 import UD4.Rol.Objetos.Equipamiento.Equipamiento;
 import UD4.Rol.Objetos.Equipamiento.Rareza;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Botas;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Casco;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Pantalon;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Pechera;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.Util;
 
@@ -31,7 +37,7 @@ public class Barita extends Arma {
         this.afinidad = super.afinidad;
         this.habilidad = super.habilidad;
         this.fuerza = (int) Math.round(super.fuerza * 0.8);
-        this.objetoBase = getBaritaJsonObject(); 
+        this.objetoBase = super.objetoBase = getBaritaJsonObject(); 
     }
     protected void subirNivel(byte lvlsUp){
         super.subirNivel(lvlsUp);
@@ -43,13 +49,13 @@ public class Barita extends Arma {
         if (objetoBase.opt(key) != null) {
             objetoBase.remove(key);
         }
-        objetoBase.accumulate(key, durabilidad);
+        objetoBase.accumulate(key, agilidad);
 
         key = "fuerza";
         if (objetoBase.opt(key) != null) {
             objetoBase.remove(key);
         }
-        objetoBase.accumulate(key, durabilidad);
+        objetoBase.accumulate(key, fuerza);
 
         return objetoBase;
     }
@@ -64,5 +70,43 @@ public class Barita extends Arma {
         barita = (Barita) equipamiento;
         barita.subirNivel( (byte) -126);
         System.out.println(barita);
+        Equipamiento[] equip = new Equipamiento[4];
+        for (int i = 0; i < equip.length; i++) {
+            equipamiento = Equipamiento.gachaEquipamiento(1, true, true);            
+            try {
+                Espada subtip = (Espada) equipamiento;
+                equip[i] = subtip;
+            } catch (Exception e) {
+                try {
+                    Barita subtip = (Barita) equipamiento;
+                    equip[i] = subtip;
+                } catch (Exception o) {
+                    try {
+                        Maza subtip = (Maza) equipamiento;
+                        equip[i] = subtip;
+                    } catch (Exception z) {
+                        try {
+                            Casco subtip = (Casco) equipamiento;
+                            equip[i] = subtip;
+                        } catch (Exception b) {
+                            try {
+                                Pechera subtip = (Pechera) equipamiento;
+                                equip[i] = subtip;
+                            } catch (Exception u) {
+                                try {
+                                    Pantalon subtip = (Pantalon) equipamiento;
+                                    equip[i] = subtip;
+                                } catch (Exception a) {
+                                    Botas subtip = (Botas) equipamiento;
+                                    equip[i] = subtip;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Arrays.sort(equip);
+        System.out.println(Arrays.toString(equip));
     }
 }

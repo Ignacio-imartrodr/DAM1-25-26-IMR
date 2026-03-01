@@ -29,7 +29,7 @@ public class Maza extends Arma {
         this.afinidad = super.afinidad;
         this.habilidad = super.habilidad;
         this.fuerza = (int) Math.round(super.fuerza * 1.4);
-        this.objetoBase = getMazaJsonObject();
+        this.objetoBase = super.objetoBase = getMazaJsonObject();
     }
     protected void subirNivel(byte lvlsUp){
         super.subirNivel(lvlsUp);
@@ -43,13 +43,13 @@ public class Maza extends Arma {
         if (objetoBase.opt(key) != null) {
             objetoBase.remove(key);
         }
-        objetoBase.accumulate(key, durabilidad);
+        objetoBase.accumulate(key, agilidad);
 
         key = "fuerza";
         if (objetoBase.opt(key) != null) {
             objetoBase.remove(key);
         }
-        objetoBase.accumulate(key, durabilidad);
+        objetoBase.accumulate(key, fuerza);
 
         return objetoBase;
     }

@@ -28,7 +28,7 @@ public class Espada extends Arma {
         this.lvl = super.lvl;
         this.habilidad = super.habilidad;
         this.fuerza = (int) Math.round(super.fuerza * 1.2);
-        this.objetoBase = getEspadaJsonObject();
+        this.objetoBase = super.objetoBase = getEspadaJsonObject();
 
     }
     protected void subirNivel(byte lvlsUp){
@@ -40,7 +40,7 @@ public class Espada extends Arma {
         if (objetoBase.opt(key) != null) {
             objetoBase.remove(key);
         }
-        objetoBase.accumulate(key, durabilidad);
+        objetoBase.accumulate(key, fuerza);
         
         return objetoBase;
     }

@@ -6,7 +6,6 @@ import UD4.Rol.Objetos.Equipamiento.Rareza;
 import UD4.Rol.Utilidades.Util;
 
 public class Botas extends Armadura {
-    JSONObject botas;
     final static String KEY = "Botas";
 
     public Botas(String rareza){
@@ -20,13 +19,19 @@ public class Botas extends Armadura {
         this.durabilidad = super.durabilidad;
         this.xp = super.xp;
         this.lvl = super.lvl;
-        this.material = super.material;
         this.encantamiento = super.encantamiento;
         this.constitucion = (int) Math.round(super.constitucion * 1.1);
-        this.botas = getBotasJsonObject();
+        this.objetoBase = super.objetoBase = getBotasJsonObject();
     }
     public JSONObject getBotasJsonObject() {
-        botas = getArmaduraJsonObject();
-        return botas;
+         objetoBase = getArmaduraJsonObject();
+
+        String key = "constitucion";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, constitucion);
+
+        return objetoBase;
     }
 }

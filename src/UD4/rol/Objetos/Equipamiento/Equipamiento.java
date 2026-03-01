@@ -9,7 +9,9 @@ import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.RarezaException;
 import UD4.Rol.Utilidades.Util;
 
-public abstract class Equipamiento {
+public abstract class Equipamiento implements Comparable<Equipamiento>{
+    private String tipo;
+    private String subtipo;
     protected JSONObject objetoBase;
     protected String nombre;
     protected Rareza rareza;
@@ -31,6 +33,8 @@ public abstract class Equipamiento {
         } catch (Exception e) {
             throw new EquipamientoException("Error con los tipos o subtipos");
         }
+        this.tipo = tipo;
+        this.subtipo = subtipo;
     }
     public String getNombre() {
         return nombre;
@@ -140,7 +144,6 @@ public abstract class Equipamiento {
         }
         
         int[] prob = new int[1000];
-        //TODO revisar
         if (esArma) {
             //conLvlMin: 40%     30% 20% 6% 4% || conLvlMax: 33%     28% 23% 9% 6%
             int p0 = numDe1000ConInterpolarFromNivel(40, 7, lvlEntidad);
@@ -263,6 +266,43 @@ public abstract class Equipamiento {
     @Override
     public String toString() {
         return nombre;
+    }
+    @Override
+    public int compareTo(Equipamiento other) {
+        //Comparar por Tipo
+        int tipoComp = Integer.compare(getPrioridadTipo(this.tipo), getPrioridadTipo(other.tipo));
+        if (tipoComp != 0) { return tipoComp; }
+
+        //Si son del mismo tipo, comparar por Subtipo
+        int subtipoComp = Integer.compare(getPrioridadSubtipo(this.subtipo), getPrioridadSubtipo(other.subtipo));
+        if (subtipoComp != 0) { return subtipoComp; }
+
+        //Si son del mismo subtipo, comparar por Rareza (orden inverso para que aparezca primero la mayor rareza)
+        int rarezaComp = other.rareza.compareTo(this.rareza);
+        if (rarezaComp != 0) { return rarezaComp; }
+
+        //Si son de la misma Rareza, comparar por Lvl
+        return Byte.compare(this.lvl, other.lvl);
+    }
+    // Métodos auxiliares para definir el orden real (es como un indice de prioridad)
+    private int getPrioridadTipo(String tipo) {
+        return switch (tipo.toUpperCase()) {
+            case "ARMADURA" -> 1;
+            case "ARMA" -> 2;
+            default -> throw new EquipamientoException("Tipo sin orden asignado asignado");
+        };
+    }
+    private int getPrioridadSubtipo(String subtipo) {
+        return switch (subtipo.toUpperCase()) {
+            case "CASCO" -> 1;
+            case "PECHERA" -> 2;
+            case "PANTALON" -> 3;
+            case "BOTAS" -> 4;
+            case "ESPADA" -> 5;
+            case "BARITA" -> 6;
+            case "MAZA" -> 7;
+            default -> throw new EquipamientoException("Subtipo sin orden asignado asignado");
+        };
     }
     
 }

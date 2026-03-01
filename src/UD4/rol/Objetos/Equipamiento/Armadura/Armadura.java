@@ -7,11 +7,8 @@ import UD4.Rol.Utilidades.RarezaException;
 
 public abstract class Armadura extends Equipamiento {//TODO Arreglar
     //Solo puede ser una pieza: Casco, Pechera, Pantalon o Botas y el Personaje solo puede tener equipado uno de cada 
-    
-    String material;
-    JSONObject armadura;
     int constitucion = getConstitucion();
-    String encantamiento = getEncantamiento();
+    String encantamiento;//TODO crear en Json
     final static String KEY = "Armadura";
 
     Armadura(String pieza, int num){
@@ -21,17 +18,17 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
         this.durabilidad = super.durabilidad;
         this.xp = super.xp;
         this.lvl = super.lvl;
-        this.armadura = getArmaduraJsonObject();
+        this.encantamiento = getEncantamiento();//TODO crearlo en Json
+        this.objetoBase = super.objetoBase = getArmaduraJsonObject();
     }
 
     protected String getEncantamiento() {
         String encantamiento;
-        if (armadura.opt("encantamiento") != null) {
-            encantamiento = armadura.getString("encantamiento");
+        if (objetoBase.opt("encantamiento") != null) {
+            encantamiento = objetoBase.getString("encantamiento");
         } else {
             encantamiento = null;
         }
-        
         return encantamiento;
     }
     protected int getConstitucion() {
@@ -64,11 +61,24 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
         return constitucion;
     }
     protected JSONObject getArmaduraJsonObject() {
-        armadura = new JSONObject(objetoBase);
-        armadura.accumulate("durabilidad", durabilidad);
-        armadura.accumulate("xp", xp);
-        armadura.accumulate("lvl", lvl);
-        armadura.accumulate("material", material);
-        return armadura;
+        String key = "durabilidad";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, durabilidad);
+
+        key = "xp";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, xp);
+
+        key = "lvl";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, lvl);
+
+        return objetoBase;
     }
 }
