@@ -19,7 +19,7 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
         this.xp = super.xp;
         this.lvl = super.lvl;
         this.encantamiento = getEncantamiento();//TODO crearlo en Json
-        this.objetoBase = super.objetoBase = getArmaduraJsonObject();
+        this.objetoBase = super.objetoBase = getJsonObject();
     }
 
     protected String getEncantamiento() {
@@ -60,25 +60,8 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
         }
         return constitucion;
     }
-    protected JSONObject getArmaduraJsonObject() {
-        String key = "durabilidad";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, durabilidad);
-
-        key = "xp";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, xp);
-
-        key = "lvl";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, lvl);
-
+    public JSONObject getJsonObject() {
+        objetoBase = super.getJsonObject();
         return objetoBase;
     }
 }

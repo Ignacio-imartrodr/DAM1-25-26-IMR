@@ -80,19 +80,35 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         }
         return durabilidadMax;
     }
+    public JSONObject getJsonObject(){
+        String key = "durabilidad";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, durabilidad);
 
-    /*private static int numDe1000ConInterpolarFromNivel(int porcentage, int cantARestar, int lvlEntidad){
-        int interpolacion = (((lvlEntidad - 1) / 255) * (cantARestar * 10));
-        int num = 1000 - (1000 - (porcentage * 10) - interpolacion);
-        return 1000 - num;
-    }*/
+        key = "xp";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, xp);
+
+        key = "lvl";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, lvl);
+
+        return objetoBase;
+    }
+
     private static int numDe1000ConInterpolarFromNivel(int porcentage, int cantARestar, int lvlEntidad) {
-    int valorBase = porcentage * 10;
-    int valorFinal = (porcentage - cantARestar) * 10;
-    int resultado =  Math.round(valorBase + (valorFinal - valorBase) * ((lvlEntidad - 1) / (float) 255.0));
-    
-    return resultado;
-}
+        int valorBase = porcentage * 10;
+        int valorFinal = (porcentage - cantARestar) * 10;
+        int resultado =  Math.round(valorBase + (valorFinal - valorBase) * ((lvlEntidad - 1) / (float) 255.0));
+        
+        return resultado;
+    }
     public static Object gachaEquipamiento(int lvlEntidad, boolean esGeneral, boolean... gachaArmas){
         if (lvlEntidad > 256 || lvlEntidad < 1) {
             throw new EquipamientoException("Probabilidades del gacha erroneas por el limite del nivel");
@@ -263,6 +279,9 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         }
         durabilidad = getDurabilidadMax();
     }
+    /*public Class StringToEquipamiento(String subtipoEquipamiento){
+        Investigar
+    }*/
     @Override
     public String toString() {
         return nombre;

@@ -74,7 +74,7 @@ public class Personaje extends Entidad {
      * @return Nuevo objeto de clase Personaje con los parametros otorgados o {@code PersonajeExcepcion} si algun valor no es valido.
      */
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
-        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);//TODO areglar que devuelve null en todos los stats 
+        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
         if (raza == null) {
             this.raza = Raza.HUMANO;
         }else{

@@ -3,6 +3,9 @@ package UD4.Rol.Objetos.Entidades;
 import java.util.Random;
 import org.json.JSONObject;
 import UD4.Rol.Objetos.Equipamiento.Equipamiento;
+import UD4.Rol.Objetos.Equipamiento.Armadura.*;
+import UD4.Rol.Objetos.Equipamiento.Arma.*;
+import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
@@ -300,5 +303,176 @@ public abstract class Entidad{
     public String toString(){
         String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
         return nombreYVida;
+    }
+
+    public boolean equipar(Equipamiento equip) {
+        if (equip == null) {
+            throw new EquipamientoException("Equipamiento nulo");
+        }
+        int slot = -1; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
+        if (equip instanceof Casco) {
+            slot = 0;
+        } else if (equip instanceof Pechera) {
+            slot = 1;
+        } else if (equip instanceof Pantalon) {
+            slot = 2;
+        } else if (equip instanceof Botas) {
+            slot = 3;
+        } else if (equip instanceof Arma) {
+            slot = 4;
+        } else {
+            throw new EquipamientoException("Tipo de equipamiento no equipable");
+        }
+
+        if (equipamientoEquipado[slot] != null) {
+            Equipamiento antiguo = quitarEquipamiento(slot);
+            for (int i = 0; i < equipamientoGuardado.length; i++) {//TODO que solo se puedan equipar cosas desde el equipoGuardado y tras convertir a null la posición del equipamiento a equipar
+                if (equipamientoGuardado[i] == null) {
+                    equipamientoGuardado[i] = antiguo;
+                    break;
+                }
+            }
+        }
+        equipamientoEquipado[slot] = equip;
+        return true;
+    }
+
+    public Equipamiento quitarEquipamiento(int slot) {
+        if (slot < 0 || slot >= equipamientoEquipado.length) {
+            throw new EquipamientoException("Slot inválido");
+        }
+        Equipamiento antiguo = equipamientoEquipado[slot];
+        equipamientoEquipado[slot] = null;
+        return antiguo;
+    }
+
+    public Equipamiento quitarEquipamiento(Equipamiento equip) {
+        if (equip == null) { return null; }
+        for (int i = 0; i < equipamientoEquipado.length; i++) {
+            if (equipamientoEquipado[i] != null && equipamientoEquipado[i].equals(equip)) {
+                Equipamiento antiguo = equipamientoEquipado[i];
+                equipamientoEquipado[i] = null;
+                return antiguo;
+            }
+        }
+        return null;
+    }
+
+    public String getEquipamientoEquipado() {
+        String inventario = "Equipamiento activo:\n-------------------\n";
+        for (int i = 0; i < equipamientoEquipado.length; i++) {
+            String parte;
+            switch (i) {
+                case 0 -> parte = "Casco: ";
+                case 1 -> parte = "Pechera: ";
+                case 2 -> parte = "Pantalón: ";
+                case 3 -> parte = "Botas: ";
+                case 4 -> parte = "Arma: ";
+                default -> parte = "Error: ";
+            };
+            if (equipamientoEquipado[i] != null) {
+                inventario += (i + 1) + " - " + parte + equipamientoEquipado[i].getNombre() + " " + equipamientoEquipado[i].getDurabilidadString() + "\n";
+            } else {
+                inventario += (i + 1) + " - " + parte + "vacío\n";
+            }
+        }
+        return inventario;
+    }
+    public String getEquipamientoGuardado() {
+        JSONObject ArmasJson = new JSONObject();
+        JSONObject ArmadurasJson = new JSONObject();
+        String[] partes = new String[] {"Cascos", "Pecheras", "Pantalónes", "Botas", "Espadas", "Baritas", "Mazas"};
+        String inventario = "Equipamiento guardado\n-------------------\n";
+        for (int i = 0; i < equipamientoGuardado.length; i++) {
+            Equipamiento este = equipamientoGuardado[i];
+            if (este != null) {
+                String parte;
+                if (este instanceof Armadura) {
+                    if (este instanceof Casco) {
+                        parte = partes[0];
+                    } else if (este instanceof Pechera) {
+                        parte = partes[1];
+                    } else if (este instanceof Pantalon) {
+                        parte = partes[2];
+                    } else if (este instanceof Botas) {
+                        parte = partes[3];
+                    } else {
+                        parte = "Errors";
+                    }
+                    ArmadurasJson.append(parte, este.getJsonObject());
+                } else {
+                    if (este instanceof Espada) {
+                        parte = partes[4];
+                    } else if (este instanceof Barita) {
+                        parte = partes[5];
+                    } else if (este instanceof Maza) {
+                        parte = partes[6];
+                    } else {
+                        parte = "Errors";
+                    }
+                    ArmasJson.append(parte, este.getJsonObject());
+                }
+            }
+        }
+        String txt = "";
+        if (ArmasJson.length() > 0) {
+            txt = ArmasJson.toString(1);
+            /*Equipamiento este;
+            for (int i = 0; i < partes.length; i++) {
+                try {
+                    switch (i) {
+                        case 0:
+                            este = new Casco(ArmasJson.optJSONObject(partes[i]));
+                            break;
+                        case 1:
+                            este = new Pechera(ArmasJson.optJSONObject(partes[i]));
+                            break;
+                        case 2:
+                            este = new Pantalon(ArmasJson.optJSONObject(partes[i]));
+                            break;
+                        case 3:
+                            este = new Botas(ArmasJson.optJSONObject(partes[i]));
+                            break;
+                        case 4:
+                            este = new Espada(ArmasJson.optJSONObject(partes[i]));
+                            break;
+                        case 5:
+                            este = new Barita(ArmasJson.optJSONObject(partes[i]));
+                            break;
+                        case 6:
+                            este = new Maza(ArmasJson.optJSONObject(partes[i]));
+                            break;
+                        
+                        default:
+                            throw new EquipamientoException();
+                    }
+                    /*switch (i) {
+                        case 0 -> 
+                        case 1 -> 
+                        case 2 -> 
+                        case 3 -> 
+                        case 4 -> 
+                        case 5 -> 
+                        case 6 -> 
+                        case 7 -> 
+                    };*//*
+                    
+                } catch (Exception e) {}
+                txt += "\t" + este.toString() + "\n";
+            }*/
+            inventario += "ARMAS:\n" + txt + "\n";
+        }
+        if (ArmadurasJson.length() > 0) {
+            txt = ArmadurasJson.toString(1);
+            inventario += "ARMADURAS:\n" + txt + "\n";
+        }
+        if (ArmasJson.length() == 0 && ArmadurasJson.length() == 0) {
+            inventario += "No hay equipamiento guardado.\n";
+        }
+        return inventario;
+    }
+
+    public Equipamiento[] getArrayEquipado() {
+        return java.util.Arrays.copyOf(equipamientoEquipado, equipamientoEquipado.length);
     }
 }

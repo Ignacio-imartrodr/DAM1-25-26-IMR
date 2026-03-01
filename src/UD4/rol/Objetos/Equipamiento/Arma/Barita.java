@@ -18,6 +18,36 @@ public class Barita extends Arma {
     int agilidad = 7;
     final static String KEY = "Barita";
 
+    public Barita(JSONObject barita){
+        this(barita.getString("rareza"));
+        int comparador;
+        this.nombre = super.nombre = barita.getString("nombre");
+        this.rareza = super.rareza = (Rareza) barita.get("rareza");
+        comparador = barita.getInt("durabilidad");
+        if (comparador >= 1) {
+            this.durabilidad = super.durabilidad = comparador;
+        } else {
+            throw new EquipamientoException("Error con el Json de Barita");
+        }
+        
+        comparador = barita.getInt("xp");
+        if (comparador >= 0 && comparador <= 999) {
+            this.xp = super.xp = comparador;
+        } else {
+            throw new EquipamientoException("Error con el Json de Barita");
+        }
+
+        this.lvl = super.lvl= (byte) barita.get("lvl");
+
+        comparador = barita.getInt("fuerza");
+        if (comparador >= 1) {
+            this.fuerza = super.fuerza = comparador;
+        } else {
+            throw new EquipamientoException("Error con el Json de Barita");
+        }
+        this.habilidad = super.habilidad = barita.optString("habilidad");
+        this.objetoBase = super.objetoBase = getJsonObject();
+    }
     public Barita(String rareza){
         int num = Util.UbiObjetoEnArray(Rareza.StringToRareza(rareza), Rareza.toArray());
         if (num > 1) {
@@ -37,14 +67,15 @@ public class Barita extends Arma {
         this.afinidad = super.afinidad;
         this.habilidad = super.habilidad;
         this.fuerza = (int) Math.round(super.fuerza * 0.8);
-        this.objetoBase = super.objetoBase = getBaritaJsonObject(); 
+        this.objetoBase = super.objetoBase = getJsonObject(); 
     }
     protected void subirNivel(byte lvlsUp){
         super.subirNivel(lvlsUp);
-        agilidad += Math.round(agilidad * 0.1);
+        agilidad -= Math.round(agilidad * 0.15);
         this.fuerza = (int) Math.round(super.fuerza * 0.8);
     }
-    public JSONObject getBaritaJsonObject() {
+    public JSONObject getJsonObject() {
+        objetoBase = super.getJsonObject();
         String key = "agilidad";
         if (objetoBase.opt(key) != null) {
             objetoBase.remove(key);

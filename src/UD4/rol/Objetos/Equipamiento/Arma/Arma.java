@@ -23,7 +23,7 @@ public abstract class Arma extends Equipamiento {
         this.fuerza = getFuerzaBase();
         this.afinidad = new Afinidad(super.objetoBase.getString("afinidad"));
         this.habilidad = getHabilidad();
-        this.objetoBase = super.objetoBase = getArmaJsonObject();
+        this.objetoBase = super.objetoBase = getJsonObject();
     }
     private String getHabilidad() {
         String habilidad;
@@ -60,25 +60,8 @@ public abstract class Arma extends Equipamiento {
         }
         return fuerza;
     }
-    protected JSONObject getArmaJsonObject() {
-        String key = "durabilidad";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, durabilidad);
-
-        key = "xp";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, xp);
-
-        key = "lvl";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, lvl);
-
+    public JSONObject getJsonObject() {
+        objetoBase = super.getJsonObject();
         return objetoBase;
     }
     protected void subirNivel(byte lvlsUp){
