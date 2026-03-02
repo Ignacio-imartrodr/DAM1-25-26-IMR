@@ -2,7 +2,18 @@ package UD4.Rol.Objetos.Entidades;
 
 import java.util.Arrays;
 import org.json.JSONObject;
+
 import UD4.Rol.Objetos.*;
+import UD4.Rol.Objetos.Equipamiento.Equipamiento;
+import UD4.Rol.Objetos.Equipamiento.Arma.Arma;
+import UD4.Rol.Objetos.Equipamiento.Arma.Barita;
+import UD4.Rol.Objetos.Equipamiento.Arma.Espada;
+import UD4.Rol.Objetos.Equipamiento.Arma.Maza;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Armadura;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Botas;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Casco;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Pantalon;
+import UD4.Rol.Objetos.Equipamiento.Armadura.Pechera;
 import UD4.Rol.Utilidades.*;
 
 /**
@@ -13,6 +24,7 @@ public class Personaje extends Entidad {
     private int id = -1;
     protected Raza raza;
     private Item[] bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
+    protected Equipamiento[] equipamientoGuardado = new Equipamiento[50];
     
     protected int asignarBonusRaza(int stat){
         int num;
@@ -321,6 +333,122 @@ public class Personaje extends Entidad {
             bolsa = Items.sort(bolsa);
         }
         return fueUsado;
+    }
+    public Boolean gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
+        boolean estaLleno = true;
+        for (int i = 0; i < equipamientoGuardado.length; i++) {
+            if (equipamientoGuardado[i] == null) {
+                equipamientoGuardado[i] = (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
+                estaLleno = false;
+            }
+        }
+        return !estaLleno;
+    }
+    @Override
+    public boolean equipar(Equipamiento equip) {
+        if (equip == null) {
+            throw new EquipamientoException("Equipamiento nulo");
+        }
+        int slot = -1; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
+        if (equip instanceof Casco) {
+            slot = 0;
+        } else if (equip instanceof Pechera) {
+            slot = 1;
+        } else if (equip instanceof Pantalon) {
+            slot = 2;
+        } else if (equip instanceof Botas) {
+            slot = 3;
+        } else if (equip instanceof Arma) {
+            slot = 4;
+        } else {
+            throw new EquipamientoException("Tipo de equipamiento no equipable");
+        }
+
+        if (equipamientoEquipado[slot] != null) {
+            Equipamiento antiguo = quitarEquipamiento(slot);
+            for (int i = 0; i < equipamientoGuardado.length; i++) {//TODO que solo se puedan equipar cosas desde el equipoGuardado y tras convertir a null la posición del equipamiento a equipar
+                if (equipamientoGuardado[i].compareTo(equip) == 0) {
+                    antiguo.setId(i);
+                    equipamientoGuardado[i] = antiguo;
+                    break;
+                }
+            }
+        }
+        equipamientoEquipado[slot] = equip;
+        return true;
+    }
+    public Equipamiento quitarEquipamiento(int slot) {
+        if (slot < 0 || slot >= equipamientoEquipado.length) {
+            throw new EquipamientoException("Slot inválido");
+        }
+        Equipamiento antiguo = equipamientoEquipado[slot];
+        equipamientoEquipado[slot] = null;
+        return antiguo;
+    }
+
+    public Equipamiento quitarEquipamiento(Equipamiento equip) {
+        if (equip == null) { return null; }
+        for (int i = 0; i < equipamientoEquipado.length; i++) {
+            if (equipamientoEquipado[i] != null && equipamientoEquipado[i].equals(equip)) {
+                Equipamiento antiguo = equipamientoEquipado[i];
+                equipamientoEquipado[i] = null;
+                return antiguo;
+            }
+        }
+        return null;
+    }
+    public String getEquipamientoGuardado() {
+        Equipamiento[] armas = new Equipamiento[0];
+        Equipamiento[] armaduras = new Equipamiento[0];
+        String separador = "-----------------------\n";
+        String inventario = "Equipamiento guardado\n=====================\n";
+        for (int i = 0; i < equipamientoGuardado.length; i++) {
+            Equipamiento este = equipamientoGuardado[i];
+            if (este != null) {
+                if (este instanceof Armadura) {
+                    armaduras = Arrays.copyOf(armaduras, armaduras.length + 1);
+                    if (este instanceof Casco || este instanceof Pechera || este instanceof Pantalon || este instanceof Botas) {
+                        armaduras[armaduras.length - 1] = este;
+                    } else {
+                        throw new EquipamientoException();
+                    }
+                } else {
+                    armas = Arrays.copyOf(armas, armas.length + 1);
+                    if (este instanceof Espada || este instanceof Barita || este instanceof Maza) {
+                        armas[armas.length - 1] = este;
+                    } else {
+                        throw new EquipamientoException();
+                    }
+                }
+            }
+        }
+        Util.sortArray(equipamientoGuardado);
+        Arrays.sort(armaduras);
+        Arrays.sort(armas);
+        int id = 0;
+        if (armas.length > 0) {
+            inventario += "ARMAS:\n\n";
+            for (int i = 0; i < armas.length; i++) {
+                armas[i].setId(id);
+                inventario += (armas[i].getId() + 1) + " - " + armas[i].getString();
+                inventario += separador;
+                id++;
+            }
+            inventario += "\n";
+        }
+        if (armaduras.length > 0) {
+            inventario += "ARMADURAS:\n\n";
+            for (int i = 0; i < armaduras.length; i++) {
+                armaduras[i].setId(id);
+                inventario += (armaduras[i].getId() + 1) + " - " + armaduras[i].getString();
+                inventario += separador;
+                id++;
+            }
+        }
+        if (armas.length == 0 && armaduras.length == 0) {
+            inventario += "No hay equipamiento guardado.\n";
+        }
+        return inventario;
     }
     @Override
     public JSONObject toJsonObject(){

@@ -257,10 +257,19 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         }
         return equipamientoObtenido;
     }
-    protected void reparar(){
-        //TODO
+    protected void reparar(Equipamiento equip){
+        int rep = -(Math.round(equip.durabilidad * (float) 0.75));
+        int max = getDurabilidadMax();
+        if (rep + durabilidad < max) {
+            this.perderDurabilidad(rep);
+        } else {
+            durabilidad = max;
+        }
     }
     public boolean perderDurabilidad(int dañoRecivido){
+        if (dañoRecivido > durabilidad) {
+            dañoRecivido = durabilidad;
+        }
         durabilidad -= dañoRecivido;
         return estaRoto();
     }

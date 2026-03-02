@@ -1,6 +1,5 @@
 package UD4.Rol.Objetos.Entidades;
 
-import java.util.Arrays;
 import java.util.Random;
 import org.json.JSONObject;
 import UD4.Rol.Objetos.Equipamiento.Equipamiento;
@@ -20,7 +19,6 @@ public abstract class Entidad{
     protected int puntosVida;
     protected boolean habilidadRazaActiva = true;
     protected Equipamiento[] equipamientoEquipado = new Equipamiento[5];
-    protected Equipamiento[] equipamientoGuardado = new Equipamiento[50];
     protected static int vidaMin = 50;
     protected final static int EXP_MAX = 256999;
 
@@ -140,9 +138,8 @@ public abstract class Entidad{
         String fuerza = "Fuerza: " + this.fuerza;
         String agilidad = "Agilidad: " + this.agilidad;
         String constitucion = "Constitución: " + this.constitucion;
-        String overAll = "OverAll: " + (this.fuerza + this.agilidad + this.constitucion);
 
-        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion, overAll);
+        ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion);
         return ficha;
     }
 
@@ -282,15 +279,8 @@ public abstract class Entidad{
         }
         return num;
     }
-    public Boolean gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
-        boolean estaLleno = true;
-        for (int i = 0; i < equipamientoGuardado.length; i++) {
-            if (equipamientoGuardado[i] == null) {
-                equipamientoGuardado[i] = (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
-                estaLleno = false;
-            }
-        }
-        return !estaLleno;
+    public Equipamiento equipamientoSemiRnd(boolean esGeneral, boolean... gachaArmas){
+        return (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
     }
 
     public JSONObject toJsonObject(){
@@ -333,13 +323,7 @@ public abstract class Entidad{
         }
 
         if (equipamientoEquipado[slot] != null) {
-            Equipamiento antiguo = quitarEquipamiento(slot);
-            for (int i = 0; i < equipamientoGuardado.length; i++) {//TODO que solo se puedan equipar cosas desde el equipoGuardado y tras convertir a null la posición del equipamiento a equipar
-                if (equipamientoGuardado[i] == null) {
-                    equipamientoGuardado[i] = antiguo;
-                    break;
-                }
-            }
+            throw new EquipamientoException("Slot ocupado");
         }
         equipamientoEquipado[slot] = equip;
         return true;
@@ -386,59 +370,7 @@ public abstract class Entidad{
         }
         return inventario;
     }
-    public String getEquipamientoGuardado() {
-        Equipamiento[] armas = new Equipamiento[0];
-        Equipamiento[] armaduras = new Equipamiento[0];
-        String separador = "-----------------------\n";
-        String inventario = "Equipamiento guardado\n=====================\n";
-        for (int i = 0; i < equipamientoGuardado.length; i++) {
-            Equipamiento este = equipamientoGuardado[i];
-            if (este != null) {
-                if (este instanceof Armadura) {
-                    armaduras = Arrays.copyOf(armaduras, armaduras.length + 1);
-                    if (este instanceof Casco || este instanceof Pechera || este instanceof Pantalon || este instanceof Botas) {
-                        armaduras[armaduras.length - 1] = este;
-                    } else {
-                        throw new EquipamientoException();
-                    }
-                } else {
-                    armas = Arrays.copyOf(armas, armas.length + 1);
-                    if (este instanceof Espada || este instanceof Barita || este instanceof Maza) {
-                        armas[armas.length - 1] = este;
-                    } else {
-                        throw new EquipamientoException();
-                    }
-                }
-            }
-        }
-        Util.sortArray(equipamientoGuardado);
-        Arrays.sort(armaduras);
-        Arrays.sort(armas);
-        int id = 0;
-        if (armas.length > 0) {
-            inventario += "ARMAS:\n\n";
-            for (int i = 0; i < armas.length; i++) {
-                armas[i].setId(id);
-                inventario += (armas[i].getId() + 1) + " - " + armas[i].getString();
-                inventario += separador;
-                id++;
-            }
-            inventario += "\n";
-        }
-        if (armaduras.length > 0) {
-            inventario += "ARMADURAS:\n\n";
-            for (int i = 0; i < armaduras.length; i++) {
-                armaduras[i].setId(id);
-                inventario += (armaduras[i].getId() + 1) + " - " + armaduras[i].getString();
-                inventario += separador;
-                id++;
-            }
-        }
-        if (armas.length == 0 && armaduras.length == 0) {
-            inventario += "No hay equipamiento guardado.\n";
-        }
-        return inventario;
-    }
+    
 
     public Equipamiento[] getArrayEquipado() {
         return java.util.Arrays.copyOf(equipamientoEquipado, equipamientoEquipado.length);
