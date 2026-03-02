@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import UD4.Rol.Objetos.Equipamiento.Equipamiento;
 import UD4.Rol.Utilidades.RarezaException;
 
-public abstract class Armadura extends Equipamiento {//TODO Arreglar
+public abstract class Armadura extends Equipamiento {
     //Solo puede ser una pieza: Casco, Pechera, Pantalon o Botas y el Personaje solo puede tener equipado uno de cada 
     int constitucion = getConstitucion();
     String encantamiento;//TODO crear en Json
@@ -18,7 +18,7 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
         this.durabilidad = super.durabilidad;
         this.xp = super.xp;
         this.lvl = super.lvl;
-        this.encantamiento = getEncantamiento();//TODO crearlo en Json
+        this.encantamiento = getEncantamiento();
         this.objetoBase = super.objetoBase = getJsonObject();
     }
 
