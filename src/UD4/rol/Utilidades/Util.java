@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import UD4.Rol.Objetos.Entidades.Personaje;
 
 /**
@@ -21,6 +20,29 @@ import UD4.Rol.Objetos.Entidades.Personaje;
  */
 
 public class Util {
+    public static int nullOfArrayToEnd(Object[] x){
+        boolean conNull = false;
+        int firtPosNull = x.length;
+        for (Object item : x) {
+            if (item == null) {
+                conNull = true;
+                break;
+            }
+        }
+        if (conNull) {
+            for (int i = 0, j = x.length - 1; i < j; i++) {
+                if (x[i] == null) {
+                    while (x[j] == null) {
+                        j--;
+                    }
+                    x[i] = x[j];
+                    x[j] = null;
+                }
+                firtPosNull = j;
+            }
+        }
+        return firtPosNull;
+    }
     public static Object[] swap(Object[] x, int a, int b) {
         Object t = x[a];
         x[a] = x[b];

@@ -62,6 +62,28 @@ public abstract class Armadura extends Equipamiento {//TODO Arreglar
     }
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
+        String key = "constitucion";
+        if (objetoBase.opt(key) != null) {
+            objetoBase.remove(key);
+        }
+        objetoBase.accumulate(key, constitucion);
+
+        if (getEncantamiento() != null) {
+            key = "encantamiento";
+            if (objetoBase.opt(key) != null) {
+                objetoBase.remove(key);
+            }
+            objetoBase.accumulate(key, encantamiento);
+        }
+        
         return objetoBase;
+    }
+    public String getString(){
+        String este = super.getString();
+        este += "Constitución: " + this.constitucion + "\n";
+        if (getEncantamiento() != null) {
+            este += "Habilidad: " + getEncantamiento() + "\n";
+        }
+        return este;
     }
 }

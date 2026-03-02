@@ -10,6 +10,7 @@ import UD4.Rol.Utilidades.RarezaException;
 import UD4.Rol.Utilidades.Util;
 
 public abstract class Equipamiento implements Comparable<Equipamiento>{
+    protected int id;
     private String tipo;
     private String subtipo;
     protected JSONObject objetoBase;
@@ -50,6 +51,10 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
     }
     public int getLvl() { //rango: [1 a 256]
         return ((int) lvl) + CONVERSOR;
+    }
+    
+    public int getId() {
+        return id;
     }
     protected int getDurabilidadMax() {
         int durabilidadMax;
@@ -100,6 +105,23 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         objetoBase.accumulate(key, lvl);
 
         return objetoBase;
+    }
+    public String getString(){
+        String este = "";
+        este += getNombre() + "\n";
+        este += "Rareza: " + getRareza() + "\n";
+        este += "Durabilidad: " + getDurabilidadString() + "\n";
+        este += "Nivel: " + getLvl() + "\n";
+        este += "Experiencia: " + getXp() + "\n";
+        return este;
+    }
+
+    public void setId(int id) {
+        if (id >= 0) {
+            this.id = id;
+        } else {
+            throw new EquipamientoException("Id no valido");
+        }
     }
 
     private static int numDe1000ConInterpolarFromNivel(int porcentage, int cantARestar, int lvlEntidad) {
