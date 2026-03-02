@@ -20,11 +20,15 @@ import UD4.Rol.Objetos.Entidades.Personaje;
  */
 
 public class Util {
+    public static void sortArray(Object[] x){
+        int lastNoNull = nullOfArrayToEnd(x);
+        Arrays.sort(x, 0, lastNoNull);
+    }
     public static int nullOfArrayToEnd(Object[] x){
         boolean conNull = false;
-        int firtPosNull = x.length;
-        for (Object item : x) {
-            if (item == null) {
+        int lastNoNull = x.length;
+        for (Object obj : x) {
+            if (obj == null) {
                 conNull = true;
                 break;
             }
@@ -38,10 +42,12 @@ public class Util {
                     x[i] = x[j];
                     x[j] = null;
                 }
-                firtPosNull = j;
+                lastNoNull = j;
             }
+        } else {
+            return -1;
         }
-        return firtPosNull;
+        return lastNoNull;
     }
     public static Object[] swap(Object[] x, int a, int b) {
         Object t = x[a];

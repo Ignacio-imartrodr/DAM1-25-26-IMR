@@ -1,7 +1,6 @@
 package UD4.Rol.Objetos.Equipamiento.Armadura;
 
 import org.json.JSONObject;
-
 import UD4.Rol.Objetos.Equipamiento.Rareza;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.Util;

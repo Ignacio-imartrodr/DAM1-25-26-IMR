@@ -54,7 +54,7 @@ public enum Items {
     }
     public static Item[] sort(Item[] x){
         boolean conNull = false;
-        int firtPosNull = x.length;
+        int lastNoNull = x.length;
         for (Item item : x) {
             if (item == null) {
                 conNull = true;
@@ -70,7 +70,7 @@ public enum Items {
                     x[i] = x[j];
                     x[j] = null;
                 }
-                firtPosNull = j;
+                lastNoNull = j;
             }
         }
         /* Ignorar
@@ -79,8 +79,8 @@ public enum Items {
                 x = (Item[]) Util.swap(x, j, j-1);
             }
         }*/
-        Arrays.sort(x,0, firtPosNull);
-        x = Arrays.copyOf(x, firtPosNull);
+        Arrays.sort(x,0, lastNoNull);
+        x = Arrays.copyOf(x, lastNoNull);
         return x;
     }
     public static int cantidadItem(Item[] t, Item clave){

@@ -411,7 +411,7 @@ public abstract class Entidad{
                 }
             }
         }
-        //Arrays.sort(equipamientoGuardado);TODO implementar el sort de util que mueve los null
+        Util.sortArray(equipamientoGuardado);
         Arrays.sort(armaduras);
         Arrays.sort(armas);
         int id = 0;
