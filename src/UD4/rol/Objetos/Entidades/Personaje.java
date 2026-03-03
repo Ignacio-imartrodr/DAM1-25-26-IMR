@@ -342,7 +342,7 @@ public class Personaje extends Entidad {
      * 
      * @param esGeneral {@code true} para cualquier equipamiento, {@code false} para escoger entre armas y armaduras.
      * @param gachaArmas {@code true} para obtener un arma, {@code false} para obtener una armadura. (no es necesario introducirlo si {@code esGeneral} es false).
-     * @return Equipamiento obtenido o {@code null} si el {@code equipamienoGuardado} está lleno.
+     * @return Equipamiento obtenido y lo guarda en {@code equipamienoGuardado} o {@code null} si el {@code equipamienoGuardado} está lleno.
      */
     public Equipamiento gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
         for (int i = 0; i < equipamientoGuardado.length; i++) {
