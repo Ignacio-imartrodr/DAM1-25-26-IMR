@@ -332,7 +332,11 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         if (rarezaComp != 0) { return rarezaComp; }
 
         //Si son de la misma Rareza, comparar por Lvl
-        return Byte.compare(this.lvl, other.lvl);
+        int lvlComp = Byte.compare(this.lvl, other.lvl);
+        if (lvlComp != 0) { return lvlComp; }
+
+        //Si son del mismo Lvl, comparar por xp
+        return Integer.compare(this.xp, other.xp);
     }
     // Métodos auxiliares para definir el orden real (es como un indice de prioridad)
     private int getPrioridadTipo(String tipo) {
@@ -353,6 +357,60 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             case "MAZA" -> 7;
             default -> throw new EquipamientoException("Subtipo sin orden asignado asignado");
         };
+    }
+    @Override
+    public int hashCode() {//TODO investigar
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
+        result = prime * result + ((subtipo == null) ? 0 : subtipo.hashCode());
+        result = prime * result + ((objetoBase == null) ? 0 : objetoBase.hashCode());
+        result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+        result = prime * result + ((rareza == null) ? 0 : rareza.hashCode());
+        result = prime * result + durabilidad;
+        result = prime * result + xp;
+        result = prime * result + lvl;
+        return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Equipamiento other = (Equipamiento) obj;
+        if (tipo == null) {
+            if (other.tipo != null)
+                return false;
+        } else if (!tipo.equals(other.tipo))
+            return false;
+        if (subtipo == null) {
+            if (other.subtipo != null)
+                return false;
+        } else if (!subtipo.equals(other.subtipo))
+            return false;
+        if (objetoBase == null) {
+            if (other.objetoBase != null)
+                return false;
+        } else if (!objetoBase.equals(other.objetoBase))
+            return false;
+        if (nombre == null) {
+            if (other.nombre != null)
+                return false;
+        } else if (!nombre.equals(other.nombre))
+            return false;
+        if (rareza != other.rareza)
+            return false;
+        if (durabilidad != other.durabilidad)
+            return false;
+        if (xp != other.xp)
+            return false;
+        if (lvl != other.lvl)
+            return false;
+        return true;
     }
     
 }

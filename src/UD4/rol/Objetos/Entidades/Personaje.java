@@ -313,10 +313,14 @@ public class Personaje extends Entidad {
             }
         return nombreYHabilidad;
     }
-    public void mostrar(){
-        String ficha = super.getFicha("Personaje");
+    public String getFicha(){
+        String ficha = getFicha("Personaje");
         String nombreRaza = this.raza.toString();
         ficha += "\nRaza: " + nombreRaza;
+        return ficha;
+    }
+    public void mostrar(){
+        String ficha = getFicha();
         System.out.println(ficha);
     }
     
@@ -334,22 +338,29 @@ public class Personaje extends Entidad {
         }
         return fueUsado;
     }
-    public Boolean gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
-        boolean estaLleno = true;
+    /**
+     * 
+     * @param esGeneral {@code true} para cualquier equipamiento, {@code false} para escoger entre armas y armaduras.
+     * @param gachaArmas {@code true} para obtener un arma, {@code false} para obtener una armadura. (no es necesario introducirlo si {@code esGeneral} es false).
+     * @return Equipamiento obtenido o {@code null} si el {@code equipamienoGuardado} está lleno.
+     */
+    public Equipamiento gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
         for (int i = 0; i < equipamientoGuardado.length; i++) {
             if (equipamientoGuardado[i] == null) {
-                equipamientoGuardado[i] = (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
-                estaLleno = false;
+                Equipamiento e = (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
+                equipamientoGuardado[i] = e;
+                Util.sortArray(equipamientoGuardado);
+                return e;
             }
         }
-        return !estaLleno;
+        return null;
     }
     @Override
     public boolean equipar(Equipamiento equip) {
         if (equip == null) {
             throw new EquipamientoException("Equipamiento nulo");
         }
-        int slot = -1; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
+        int slot; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
         if (equip instanceof Casco) {
             slot = 0;
         } else if (equip instanceof Pechera) {
@@ -370,6 +381,7 @@ public class Personaje extends Entidad {
                 if (equipamientoGuardado[i].compareTo(equip) == 0) {
                     antiguo.setId(i);
                     equipamientoGuardado[i] = antiguo;
+                    Util.sortArray(equipamientoGuardado);
                     break;
                 }
             }
@@ -385,7 +397,6 @@ public class Personaje extends Entidad {
         equipamientoEquipado[slot] = null;
         return antiguo;
     }
-
     public Equipamiento quitarEquipamiento(Equipamiento equip) {
         if (equip == null) { return null; }
         for (int i = 0; i < equipamientoEquipado.length; i++) {
@@ -395,7 +406,7 @@ public class Personaje extends Entidad {
                 return antiguo;
             }
         }
-        return null;
+        throw new EquipamientoException("Equipamiento no equipado");
     }
     public String getEquipamientoGuardado() {
         Equipamiento[] armas = new Equipamiento[0];
