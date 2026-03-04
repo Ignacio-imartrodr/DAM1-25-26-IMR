@@ -9,7 +9,7 @@ import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
-public abstract class Entidad{
+public abstract class Entidad implements Comparable<Entidad>{
     protected String nombre;
     protected int fuerza = 0;
     protected int agilidad = 0;
@@ -321,7 +321,7 @@ public abstract class Entidad{
         } else {
             throw new EquipamientoException("Tipo de equipamiento no equipable");
         }
-
+        equip.setId(slot);
         if (equipamientoEquipado[slot] != null) {
             throw new EquipamientoException("Slot ocupado");
         }
@@ -370,9 +370,12 @@ public abstract class Entidad{
         }
         return inventario;
     }
-    
-
     public Equipamiento[] getArrayEquipado() {
         return java.util.Arrays.copyOf(equipamientoEquipado, equipamientoEquipado.length);
+    }
+    @Override
+    public int compareTo(Entidad other) {
+        int classComp = Integer.compare(this.agilidad, other.agilidad);
+        return classComp; 
     }
 }

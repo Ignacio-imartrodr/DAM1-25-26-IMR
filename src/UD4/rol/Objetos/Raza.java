@@ -3,7 +3,6 @@ package UD4.Rol.Objetos;
 import java.util.Arrays;
 
 import UD4.Rol.Objetos.Entidades.Personaje;
-import UD4.Rol.Utilidades.Habilidades;
 import UD4.Rol.Utilidades.PersonajeException;
 
 /**
@@ -66,34 +65,54 @@ public enum Raza implements Habilidades {
     }
     
     @Override
-    public String getHabilidadDescription() {
-        String nombreYHabilidad = "";
+    public String getHabilidadName() {
+        String nombreHabilidad = "";
         switch (this) {
                 case HUMANO:
-                    nombreYHabilidad = "Furor Heróico (buffea todas sus estadisticas en un 50% hasta terminar proximo turno)";
+                    nombreHabilidad = "Furor Heróico";
                     break;
                 case ELFO:
-                    nombreYHabilidad = "Madre naturaleza (Añade a los puntos de vida el 50% de vida máx)";
+                    nombreHabilidad = "Madre naturaleza";
                     break;
                 case ENANO:
-                    nombreYHabilidad = "Crear (Fabrica un objeto aleatorio)";
+                    nombreHabilidad = "Crear";
                     break;
                 case HOBBIT:
-                    nombreYHabilidad = "Steal (Roba la habillidad de raza de su enemigo por un turno)"; //Vigila a donde te apunta con su habilidad jajaja
+                    nombreHabilidad = "Steal"; //Vigila a donde te apunta con su habilidad jajaja
                     break;
                 case ORCO:
-                    nombreYHabilidad = "Mamporro (Golpea al enemigo con el doble de fuerza)";
+                    nombreHabilidad = "Mamporro";
                     break;
                 case TROLL:
-                    nombreYHabilidad = "Regeneración (Se cura un 15% de su vida máx durante 3 turnos)";
+                    nombreHabilidad = "Regeneración";
                     break;
             }
-        return nombreYHabilidad;
+        return nombreHabilidad;
     }
     @Override
-    public void getHabilidad() {
-        // TODO Auto-generated method stub
-        
+    public String getHabilidadDescription() {
+        String descripcion = "";
+        switch (this) {
+                case HUMANO:
+                    descripcion = "Furor Heróico (buffea todas sus estadisticas en un 50% hasta terminar proximo turno)";
+                    break;
+                case ELFO:
+                    descripcion = "Madre naturaleza (Añade a los puntos de vida el 50% de vida máx)";
+                    break;
+                case ENANO:
+                    descripcion = "Crear (Fabrica un objeto aleatorio)";
+                    break;
+                case HOBBIT:
+                    descripcion = "Roba la habillidad de raza de su enemigo por un turno";
+                    break;
+                case ORCO:
+                    descripcion = "Golpea al enemigo con el doble de fuerza";
+                    break;
+                case TROLL:
+                    descripcion = "Se cura un 15% de su vida máx durante 3 turnos";
+                    break;
+            }
+        return descripcion;
     }
     @Override
     public String toString() {

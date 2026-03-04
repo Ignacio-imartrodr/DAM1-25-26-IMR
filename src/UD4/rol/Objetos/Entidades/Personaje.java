@@ -5,7 +5,6 @@ import org.json.JSONObject;
 
 import UD4.Rol.Objetos.*;
 import UD4.Rol.Objetos.Equipamiento.Equipamiento;
-import UD4.Rol.Objetos.Equipamiento.Arma.Arma;
 import UD4.Rol.Objetos.Equipamiento.Arma.Barita;
 import UD4.Rol.Objetos.Equipamiento.Arma.Espada;
 import UD4.Rol.Objetos.Equipamiento.Arma.Maza;
@@ -303,9 +302,18 @@ public class Personaje extends Entidad {
         System.out.println(ficha);
     }
     
-    public boolean usarObjeto(Item item){
+    public boolean usarObjeto(int pos) {
+        if (pos >= bolsa.length || pos <= 0) {
+            return false;
+        }
+        bolsa = Items.sort(bolsa);
+        quitarObjetoDeBolsa(bolsa[pos]);
+        return true;
+    }
+    private boolean quitarObjetoDeBolsa(Item item){
         boolean fueUsado = false;
         if (item != null) {
+            bolsa = Items.sort(bolsa);
             for (int i = 0; i < bolsa.length; i++) {
                 if (item.compareTo(bolsa[i]) == 0) {
                     bolsa[i] = null;
@@ -336,37 +344,27 @@ public class Personaje extends Entidad {
     }
     @Override
     public boolean equipar(Equipamiento equip) {
-        if (equip == null) {
-            throw new EquipamientoException("Equipamiento nulo");
-        }
-        int slot; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
-        if (equip instanceof Casco) {
-            slot = 0;
-        } else if (equip instanceof Pechera) {
-            slot = 1;
-        } else if (equip instanceof Pantalon) {
-            slot = 2;
-        } else if (equip instanceof Botas) {
-            slot = 3;
-        } else if (equip instanceof Arma) {
-            slot = 4;
-        } else {
-            throw new EquipamientoException("Tipo de equipamiento no equipable");
-        }
-
-        if (equipamientoEquipado[slot] != null) {
-            Equipamiento antiguo = quitarEquipamiento(slot);
-            for (int i = 0; i < equipamientoGuardado.length; i++) {//TODO que solo se puedan equipar cosas desde el equipoGuardado y tras convertir a null la posición del equipamiento a equipar
-                if (equipamientoGuardado[i].compareTo(equip) == 0) {
-                    antiguo.setId(i);
-                    equipamientoGuardado[i] = antiguo;
-                    Util.sortArray(equipamientoGuardado);
-                    break;
+        try {
+            return super.equipar(equip);
+        } catch (Exception e) {
+            int slot = equip.getId();
+            if (slot != -1) {
+                Equipamiento antiguo = quitarEquipamiento(slot);
+                for (int i = 0; i < equipamientoGuardado.length; i++) {//TODO que solo se puedan equipar cosas desde el equipoGuardado y tras convertir a null la posición del equipamiento a equipar
+                    if (equipamientoGuardado[i].equals(equip)) {
+                        equipamientoGuardado[i] = antiguo;
+                        Util.sortArray(equipamientoGuardado);
+                        for (int j = 0; j < equipamientoGuardado.length; j++) {
+                            equipamientoGuardado[j].setId(j);
+                        }
+                        break;
+                    }
                 }
+                equipamientoEquipado[slot] = equip;
+                return true;
             }
         }
-        equipamientoEquipado[slot] = equip;
-        return true;
+        return false;
     }
     public Equipamiento quitarEquipamiento(int slot) {
         if (slot < 0 || slot >= equipamientoEquipado.length) {
@@ -450,7 +448,7 @@ public class Personaje extends Entidad {
     public String toCsvString(){
         return super.toCsvString() + "," + raza + "\n";
     }
-
+    
     public static void main(String[] args) {
         Personaje p = new Personaje("pureba");
         p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas"), null};
@@ -461,7 +459,7 @@ public class Personaje extends Entidad {
         String ubNom = accion + " - ";
         int ubNomObjeto = bolsa.indexOf(ubNom)+ ubNom.length();
         accion = bolsa.substring(ubNomObjeto, ubNomObjeto + bolsa.substring(ubNomObjeto).indexOf(" ("));
-        Item objeto = new Item(accion); 
-        p.usarObjeto(objeto);
+        //Item objeto = new Item(accion); 
+        //p.usarObjeto(objeto);
     }
 }
