@@ -3,15 +3,17 @@ package UD4.Rol.Objetos;
 import java.util.Arrays;
 
 import UD4.Rol.Objetos.Entidades.Personaje;
+import UD4.Rol.Utilidades.Habilidades;
 import UD4.Rol.Utilidades.PersonajeException;
 
 /**
  * @author Ignacio MR
  */
 
-public enum Raza {
+public enum Raza implements Habilidades {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
+    public boolean habilidadActiva = true;//TODO comprobar funcionamiento
     public static Raza[] toArray(){
         Raza[] razas = new Raza[0];
         for (Raza raza : Raza.values()) {
@@ -61,6 +63,37 @@ public enum Raza {
             }
         int[] bonus = new int[] {bonusFuerza, bonusAgilidad, bonusConstitucion, cura};
         return bonus;
+    }
+    
+    @Override
+    public String getHabilidadDescription() {
+        String nombreYHabilidad = "";
+        switch (this) {
+                case HUMANO:
+                    nombreYHabilidad = "Furor Heróico (buffea todas sus estadisticas en un 50% hasta terminar proximo turno)";
+                    break;
+                case ELFO:
+                    nombreYHabilidad = "Madre naturaleza (Añade a los puntos de vida el 50% de vida máx)";
+                    break;
+                case ENANO:
+                    nombreYHabilidad = "Crear (Fabrica un objeto aleatorio)";
+                    break;
+                case HOBBIT:
+                    nombreYHabilidad = "Steal (Roba la habillidad de raza de su enemigo por un turno)"; //Vigila a donde te apunta con su habilidad jajaja
+                    break;
+                case ORCO:
+                    nombreYHabilidad = "Mamporro (Golpea al enemigo con el doble de fuerza)";
+                    break;
+                case TROLL:
+                    nombreYHabilidad = "Regeneración (Se cura un 15% de su vida máx durante 3 turnos)";
+                    break;
+            }
+        return nombreYHabilidad;
+    }
+    @Override
+    public void getHabilidad() {
+        // TODO Auto-generated method stub
+        
     }
     @Override
     public String toString() {

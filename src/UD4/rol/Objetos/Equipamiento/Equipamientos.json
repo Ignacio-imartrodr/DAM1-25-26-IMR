@@ -23,7 +23,9 @@
             },
             {
                 "nombre": "Casco de adamantium",
-                "rareza": "CHAOTIC"
+                "rareza": "CHAOTIC",
+                "encantamiento": "Resistencia a efectos",
+                "descripcion": "Los efectos adversos afectan un 50% menos"
             }
         ],
         "Pechera": [
@@ -49,7 +51,9 @@
             },
             {
                 "nombre": "Pechera de adamantium",
-                "rareza": "CHAOTIC"
+                "rareza": "CHAOTIC",
+                "encantamiento": "Espinas",
+                "descripcion": "Devuelves el 20% del daño recivido (no aplica a efectos)"
             }
         ],
         "Pantalon": [
@@ -75,7 +79,9 @@
             },
             {
                 "nombre": "Pantalón de adamantium",
-                "rareza": "CHAOTIC"
+                "rareza": "CHAOTIC",
+                "encantamiento": "Bolsillo",
+                "descripcion": "Tienes un hueco más de items en la bolsa"
             }
         ],
         "Botas": [
@@ -101,7 +107,9 @@
             },
             {
                 "nombre": "Botas de adamantium",
-                "rareza": "CHAOTIC"
+                "rareza": "CHAOTIC",
+                "encantamiento": "Paso veloz",
+                "descripcion": "Aumenta un 30% tu agilidad"
             }
         ]
     },

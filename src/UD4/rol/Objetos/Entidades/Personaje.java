@@ -173,7 +173,7 @@ public class Personaje extends Entidad {
     }
     
     public boolean isHabilidadRazaActiva() {
-        return habilidadRazaActiva;
+        return this.raza.habilidadActiva;
     }
     public static String getRazasStats() {
         String fichas = "";
@@ -256,21 +256,20 @@ public class Personaje extends Entidad {
                                 break;
                             }
                         }
-                        Item itemRnd = Items.getItemRnd();
+                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         if (bolsaLlena) {
-                            bolsa = Arrays.copyOf(bolsa, bolsa.length + 1);
-                            bolsa[bolsa.length - 1] = itemRnd;
+                            return -1;
                         } else {
+                            Item itemRnd = Items.getItemRnd();
                             for (int i = 0; i < bolsa.length; i++) {
                                 if (bolsa[i] == null) {
                                     bolsa[i] = itemRnd;
                                     break;
                                 }
                             }
+                            bolsa = Items.sort(bolsa);
+                            System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
                         }
-                        bolsa = Items.sort(bolsa);
-                        System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
-                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;
                     case HOBBIT:
                         haceEfecto = false;
@@ -290,27 +289,7 @@ public class Personaje extends Entidad {
         return haceEfecto ? turnosEfecto : -1;
     }
     public String stringHabilidadRaza(){
-        String nombreYHabilidad = "";
-        switch (this.raza) {
-                case HUMANO:
-                    nombreYHabilidad = "Furor Heróico (buffea todas sus estadisticas en un 50% hasta terminar proximo turno)";
-                    break;
-                case ELFO:
-                    nombreYHabilidad = "Madre naturaleza (Añade a los puntos de vida el 50% de vida máx)";
-                    break;
-                case ENANO:
-                    nombreYHabilidad = "Crear (Fabrica un objeto aleatorio)";
-                    break;
-                case HOBBIT:
-                    nombreYHabilidad = "Steal (Roba la habillidad de raza de su enemigo por un turno)"; //Vigila a donde te apunta con su habilidad jajaja
-                    break;
-                case ORCO:
-                    nombreYHabilidad = "Mamporro (Golpea al enemigo con el doble de fuerza)";
-                    break;
-                case TROLL:
-                    nombreYHabilidad = "Regeneración (Se cura un 15% de su vida máx durante 3 turnos)";
-                    break;
-            }
+        String nombreYHabilidad = this.raza.getHabilidadDescription();
         return nombreYHabilidad;
     }
     public String getFicha(){
@@ -471,6 +450,7 @@ public class Personaje extends Entidad {
     public String toCsvString(){
         return super.toCsvString() + "," + raza + "\n";
     }
+
     public static void main(String[] args) {
         Personaje p = new Personaje("pureba");
         p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas"), null};

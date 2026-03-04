@@ -80,7 +80,6 @@ public enum Items {
             }
         }*/
         Arrays.sort(x,0, lastNoNull);
-        x = Arrays.copyOf(x, lastNoNull);
         return x;
     }
     public static int cantidadItem(Item[] t, Item clave){
