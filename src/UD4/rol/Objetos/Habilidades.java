@@ -6,9 +6,7 @@ public interface Habilidades {
     boolean isHabilidadActiva();
     void quitarHabilidad();
     void activarHabilidad();
-
     default String getHabilidad(){
         return getHabilidadName() + " (" + getHabilidadDescription() + ")";
     }
-    //TODO terminar
 }

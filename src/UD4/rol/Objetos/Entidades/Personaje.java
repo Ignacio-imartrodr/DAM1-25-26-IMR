@@ -142,7 +142,7 @@ public class Personaje extends Entidad {
         return bonus;
     }
     public void setId(int id) {
-        if (id <= 0) {
+        if (id >= 0) {
             this.id = id;
         } else {
             throw new PersonajeException("Id invalida");
@@ -172,7 +172,7 @@ public class Personaje extends Entidad {
     }
     
     public boolean isHabilidadRazaActiva() {
-        return this.raza.habilidadActiva;
+        return this.raza.isHabilidadActiva();
     }
     public static String getRazasStats() {
         String fichas = "";
@@ -227,13 +227,13 @@ public class Personaje extends Entidad {
         Items.sort(bolsa);
     }
     public void quitarHabilidadRaza(){
-        this.habilidadRazaActiva = super.habilidadRazaActiva = false; 
+        this.raza.quitarHabilidad();
     }
     public void activarHabilidadRaza(){
-        this.habilidadRazaActiva = super.habilidadRazaActiva = true; 
+        this.raza.activarHabilidad();
     }
     public byte duracionHabilidadRaza(Personaje enemigo){
-        boolean haceEfecto = habilidadRazaActiva;
+        boolean haceEfecto = isHabilidadRazaActiva();
         byte turnosEfecto = -1;
         if (haceEfecto) {
             boolean esHobbit = getRaza().equals(Raza.HOBBIT);
@@ -288,7 +288,7 @@ public class Personaje extends Entidad {
         return haceEfecto ? turnosEfecto : -1;
     }
     public String stringHabilidadRaza(){
-        String nombreYHabilidad = this.raza.getHabilidadDescription();
+        String nombreYHabilidad = this.raza.getHabilidad();
         return nombreYHabilidad;
     }
     public String getFicha(){

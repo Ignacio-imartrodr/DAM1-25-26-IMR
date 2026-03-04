@@ -12,7 +12,7 @@ import UD4.Rol.Utilidades.PersonajeException;
 public enum Raza implements Habilidades {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
-    public boolean habilidadActiva = true;//TODO comprobar funcionamiento
+    private boolean habilidadActiva = true;//TODO comprobar funcionamiento
     public static Raza[] toArray(){
         Raza[] razas = new Raza[0];
         for (Raza raza : Raza.values()) {
@@ -49,7 +49,6 @@ public enum Raza implements Habilidades {
                     cura = -(personaje.getVidaMax()/2);
                     break;
                 case ENANO:
-                    System.out.println("Juego en desarrollo, habilidad aún no implementada :(");
                     break;
                 case HOBBIT:
                     break;
@@ -63,7 +62,6 @@ public enum Raza implements Habilidades {
         int[] bonus = new int[] {bonusFuerza, bonusAgilidad, bonusConstitucion, cura};
         return bonus;
     }
-    
     @Override
     public String getHabilidadName() {
         String nombreHabilidad = "";
@@ -113,6 +111,21 @@ public enum Raza implements Habilidades {
                     break;
             }
         return descripcion;
+    }
+    @Override
+    public boolean isHabilidadActiva() {
+        return this.habilidadActiva;
+    }
+    
+    @Override
+    public void activarHabilidad() {
+        this.habilidadActiva = true;
+        
+    }
+    @Override
+    public void quitarHabilidad() {
+        this.habilidadActiva = false;
+        
     }
     @Override
     public String toString() {

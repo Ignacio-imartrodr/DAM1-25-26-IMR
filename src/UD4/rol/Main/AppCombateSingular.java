@@ -427,7 +427,7 @@ public class AppCombateSingular {
                                 System.out.println("Saliendo de la bolsa...");
                                 break;
                             }
-                            personajeActuando.usarObjeto(objeto);
+                            personajeActuando.usarObjeto(ubNomObjeto);
                             
                             switch (Items.stringToItems(objeto.getNombre())) {
                                 case POCION_VIDA: //Cura

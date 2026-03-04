@@ -17,7 +17,6 @@ public abstract class Entidad implements Comparable<Entidad>{
     protected byte nivel= -128; //rango: [-128 a 127]
     protected int experiencia = 0;
     protected int puntosVida;
-    protected boolean habilidadRazaActiva = true;
     protected Equipamiento[] equipamientoEquipado = new Equipamiento[5];
     protected static int vidaMin = 50;
     protected final static int EXP_MAX = 256999;
