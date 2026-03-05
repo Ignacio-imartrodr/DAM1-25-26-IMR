@@ -1,8 +1,8 @@
-package UD4.Rol.Objetos.Equipamiento.Armadura;
+package UD4.Rol.Entity.Equipamiento.Armadura;
 
 import org.json.JSONObject;
 
-import UD4.Rol.Objetos.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Utilidades.RarezaException;
 
 public abstract class Armadura extends Equipamiento {

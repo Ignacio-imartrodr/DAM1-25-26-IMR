@@ -1,47 +1,49 @@
-package UD4.Rol.Objetos.Equipamiento.Armadura;
+package UD4.Rol.Entity.Equipamiento.Armadura;
 
 import org.json.JSONObject;
-import UD4.Rol.Objetos.Equipamiento.Rareza;
+
+import UD4.Rol.Entity.Equipamiento.Rareza;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.Util;
 
-public class Casco extends Armadura {
-    final static String KEY = "Casco";
-    public Casco(JSONObject casco){
-        this(casco.getString("rareza"));
+public class Pantalon extends Armadura {
+    final static String KEY = "Pantalon";
+
+    public Pantalon(JSONObject pantalon){
+        this(pantalon.getString("rareza"));
         int comparador;
-        this.nombre = super.nombre = casco.getString("nombre");
-        this.rareza = super.rareza = (Rareza) casco.get("rareza");
-        comparador = casco.getInt("durabilidad");
+        this.nombre = super.nombre = pantalon.getString("nombre");
+        this.rareza = super.rareza = (Rareza) pantalon.get("rareza");
+        comparador = pantalon.getInt("durabilidad");
         if (comparador >= 1) {
             this.durabilidad = super.durabilidad = comparador;
         } else {
             throw new EquipamientoException("Error con el Json de Maza");
         }
         
-        comparador = casco.getInt("xp");
+        comparador = pantalon.getInt("xp");
         if (comparador >= 0 && comparador <= 999) {
             this.xp = super.xp = comparador;
         } else {
             throw new EquipamientoException("Error con el Json de Maza");
         }
 
-        this.lvl = super.lvl= (byte) casco.get("lvl");
+        this.lvl = super.lvl= (byte) pantalon.get("lvl");
 
-        comparador = casco.getInt("constitucion");
+        comparador = pantalon.getInt("constitucion");
         if (comparador >= 1) {
             this.constitucion = super.constitucion = comparador;
         } else {
             throw new EquipamientoException("Error con el Json de Maza");
         }
-        this.encantamiento = super.encantamiento = casco.optString("encantamiento");
+        this.encantamiento = super.encantamiento = pantalon.optString("encantamiento");
         this.objetoBase = super.objetoBase = getJsonObject();
     }
-    public Casco(String rareza){
+    public Pantalon(String rareza){
         int num = Util.UbiObjetoEnArray(Rareza.StringToRareza(rareza), Rareza.toArray());
         this(num);
     }
-    public Casco(int num){
+    public Pantalon(int num){
         super(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;

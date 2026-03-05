@@ -1,11 +1,11 @@
-package UD4.Rol.Main;
+package UD4.Rol.Boundary;
 
 import java.util.Arrays;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import UD4.Rol.Objetos.Entidades.Personaje;
+import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.*;
 
 /** 

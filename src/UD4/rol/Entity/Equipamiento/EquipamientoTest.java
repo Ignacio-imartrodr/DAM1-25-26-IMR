@@ -1,8 +1,8 @@
-package UD4.Rol.Objetos.Equipamiento;
+package UD4.Rol.Entity.Equipamiento;
 
-import UD4.Rol.Objetos.Equipamiento.Armadura.*;
-import UD4.Rol.Objetos.Entidades.Personaje;
-import UD4.Rol.Objetos.Equipamiento.Arma.*;
+import UD4.Rol.Entity.Entidades.Personaje;
+import UD4.Rol.Entity.Equipamiento.Arma.*;
+import UD4.Rol.Entity.Equipamiento.Armadura.*;
 import UD4.Rol.Utilidades.EquipamientoException;
 
 public class EquipamientoTest {

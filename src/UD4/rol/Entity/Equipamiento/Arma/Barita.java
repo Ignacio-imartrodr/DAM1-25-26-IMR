@@ -1,15 +1,15 @@
-package UD4.Rol.Objetos.Equipamiento.Arma;
+package UD4.Rol.Entity.Equipamiento.Arma;
 
 import java.util.Arrays;
 
 import org.json.JSONObject;
 
-import UD4.Rol.Objetos.Equipamiento.Equipamiento;
-import UD4.Rol.Objetos.Equipamiento.Rareza;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Botas;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Casco;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Pantalon;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Pechera;
+import UD4.Rol.Entity.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Equipamiento.Rareza;
+import UD4.Rol.Entity.Equipamiento.Armadura.Botas;
+import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
+import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
+import UD4.Rol.Entity.Equipamiento.Armadura.Pechera;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.Util;
 

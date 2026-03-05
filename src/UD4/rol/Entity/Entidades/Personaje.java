@@ -1,18 +1,18 @@
-package UD4.Rol.Objetos.Entidades;
+package UD4.Rol.Entity.Entidades;
 
 import java.util.Arrays;
 import org.json.JSONObject;
 
-import UD4.Rol.Objetos.*;
-import UD4.Rol.Objetos.Equipamiento.Equipamiento;
-import UD4.Rol.Objetos.Equipamiento.Arma.Barita;
-import UD4.Rol.Objetos.Equipamiento.Arma.Espada;
-import UD4.Rol.Objetos.Equipamiento.Arma.Maza;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Armadura;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Botas;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Casco;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Pantalon;
-import UD4.Rol.Objetos.Equipamiento.Armadura.Pechera;
+import UD4.Rol.Entity.*;
+import UD4.Rol.Entity.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Equipamiento.Arma.Barita;
+import UD4.Rol.Entity.Equipamiento.Arma.Espada;
+import UD4.Rol.Entity.Equipamiento.Arma.Maza;
+import UD4.Rol.Entity.Equipamiento.Armadura.Armadura;
+import UD4.Rol.Entity.Equipamiento.Armadura.Botas;
+import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
+import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
+import UD4.Rol.Entity.Equipamiento.Armadura.Pechera;
 import UD4.Rol.Utilidades.*;
 
 /**

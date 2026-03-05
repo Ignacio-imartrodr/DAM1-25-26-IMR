@@ -1,4 +1,4 @@
-package UD4.Rol.Objetos.Equipamiento;
+package UD4.Rol.Entity.Equipamiento;
 
 import java.util.Arrays;
 

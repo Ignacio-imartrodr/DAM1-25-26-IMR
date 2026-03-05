@@ -1,8 +1,8 @@
-package UD4.Rol.Objetos;
+package UD4.Rol.Entity;
 
 import java.util.Arrays;
 
-import UD4.Rol.Objetos.Entidades.Personaje;
+import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.PersonajeException;
 
 /**

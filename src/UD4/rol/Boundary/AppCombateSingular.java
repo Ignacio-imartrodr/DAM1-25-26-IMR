@@ -1,12 +1,12 @@
-package UD4.Rol.Main;
+package UD4.Rol.Boundary;
 
 import java.util.Arrays;
 import java.util.Random;
 
 import org.json.JSONObject;
 
-import UD4.Rol.Objetos.*;
-import UD4.Rol.Objetos.Entidades.Personaje;
+import UD4.Rol.Entity.*;
+import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.ItemException;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;

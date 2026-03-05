@@ -1,10 +1,11 @@
-package UD4.Rol.Objetos.Equipamiento;
+package UD4.Rol.Entity.Equipamiento;
 
 import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import UD4.Rol.Objetos.Equipamiento.Arma.*;
-import UD4.Rol.Objetos.Equipamiento.Armadura.*;
+
+import UD4.Rol.Entity.Equipamiento.Arma.*;
+import UD4.Rol.Entity.Equipamiento.Armadura.*;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.RarezaException;
 import UD4.Rol.Utilidades.Util;

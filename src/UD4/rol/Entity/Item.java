@@ -1,4 +1,4 @@
-package UD4.Rol.Objetos;
+package UD4.Rol.Entity;
 
 import UD4.Rol.Utilidades.ItemException;
 
