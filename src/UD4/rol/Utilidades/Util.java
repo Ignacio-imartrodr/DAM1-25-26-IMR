@@ -20,7 +20,7 @@ import UD4.Rol.Entity.Entidades.Personaje;
  * @author Ignacio MR (HM Profesor Óscar de programación)
  */
 
-public class Util {
+public abstract class Util {
     public static void sortArray(Object[] x){
         int lastNoNull = nullOfArrayToEnd(x);
         Arrays.sort(x, 0, lastNoNull);

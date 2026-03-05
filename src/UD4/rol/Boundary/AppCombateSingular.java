@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.json.JSONObject;
 
+import UD4.Rol.Control.Creacion;
 import UD4.Rol.Entity.*;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.ItemException;
@@ -102,7 +103,7 @@ public class AppCombateSingular {
                         }
                     }
                     if (rutaFichero.endsWith(".json")) {
-                        if (Util.UbiObjetoEnArray(personaje, AppCreaPersonaje.getPersonajesJson(rutaFichero)) == -1) {
+                        if (Util.UbiObjetoEnArray(personaje, Creacion.getPersonajesJson(rutaFichero)) == -1) {
                             Util.writePersonajeToJson(rutaFichero, true, "Personajes", personaje.toJsonObject());
                             repetir = false;
                         }
@@ -132,7 +133,7 @@ public class AppCombateSingular {
             System.out.print("¿Quieres cargar personajes desde " + rutaFile + "? (S/n): ");
             if (Util.escogerOpcion("S", "n")) {
                 if (rutaFile.endsWith(".csv")) {
-                    personajesFichero = AppCreaPersonaje.getPersonajesCsv(rutaFile);
+                    personajesFichero = Creacion.getPersonajesCsv(rutaFile);
                     if (personajesFichero.length == 0) {
                         System.out.println("El fichero no contenía personajes");
                     }
@@ -143,7 +144,7 @@ public class AppCombateSingular {
                         while (errorUrl) {
                             errorUrl = false;
                             try {
-                                personajesFichero = AppCreaPersonaje.getPersonajesJson(rutaFile);
+                                personajesFichero = Creacion.getPersonajesJson(rutaFile);
                                 if (personajesFichero.length == 0) {
                                     System.out.println("El Json no contenía personajes");
                                 }
@@ -163,7 +164,7 @@ public class AppCombateSingular {
                             }
                         }
                     } else {
-                        personajesFichero = AppCreaPersonaje.getPersonajesJson(rutaFile);
+                        personajesFichero = Creacion.getPersonajesJson(rutaFile);
                         if (personajesFichero.length == 0) {
                             System.out.println("El fichero no contenía personajes");
                         }
@@ -287,7 +288,7 @@ public class AppCombateSingular {
             personajesCreados[id] = personaje;
             id++;
         }
-        AppCreaPersonaje.mostrarPersonajes(personajesCreados);
+        Creacion.getStringPersonajes(personajesCreados);
         bucleGuardadoPersonajes(personajesCreados);
 
         Personaje[] personajesEnBatalla = new Personaje[2];
