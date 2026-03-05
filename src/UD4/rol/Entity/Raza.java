@@ -62,6 +62,53 @@ public enum Raza implements Habilidades {
         int[] bonus = new int[] {bonusFuerza, bonusAgilidad, bonusConstitucion, cura};
         return bonus;
     }
+    public String[] arrayBonusRaza() {
+        String bonusFuerza = "x";
+        String bonusAgilidad = "x";
+        String bonusConstitucion = "x";
+        switch (this) {
+                case HUMANO:
+                    bonusFuerza = "x";
+                    bonusAgilidad = "x";
+                    bonusConstitucion = "x";
+                    break;
+                case ELFO:
+                    bonusFuerza = "-5";
+                    bonusAgilidad = "+15";
+                    bonusConstitucion = "-10";
+                    break;
+                case ENANO:
+                    bonusFuerza = "+5";
+                    bonusAgilidad = "-15";
+                    bonusConstitucion = "+10";
+                    break;
+                case HOBBIT:
+                    bonusFuerza = "-10";
+                    bonusAgilidad = "+20";
+                    bonusConstitucion = "-5";
+                    break;
+                case ORCO:
+                    bonusFuerza = "+15";
+                    bonusAgilidad = "-25";
+                    bonusConstitucion = "+10";
+                    break;
+                case TROLL:
+                    bonusFuerza = "+10";
+                    bonusAgilidad = "-25";
+                    bonusConstitucion = "+15";
+                    break;
+            }
+        String[] bonus = {bonusFuerza, bonusAgilidad, bonusConstitucion};
+        return bonus;
+    }
+    public static String getRazasStats() {
+        String fichas = "";
+        for (Raza raza : Raza.toArray()) {
+            String[] bonus = raza.arrayBonusRaza();
+            fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
+        }
+        return fichas;
+    }
     @Override
     public String getHabilidadName() {
         String nombreHabilidad = "";

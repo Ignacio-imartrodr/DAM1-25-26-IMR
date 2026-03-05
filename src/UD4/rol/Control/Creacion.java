@@ -79,5 +79,52 @@ public abstract class Creacion {
         } catch (Exception x) {}
         return personajesExtraidos;
     }
-    
+    public static Personaje modPersonaje(String valor, Personaje p){
+        
+        String nombre = p.getNombre();
+        String raza = String.valueOf(p.getRaza());
+        String fuerza = String.valueOf(p.getFuerza());
+        String agilidad = String.valueOf(p.getAgilidad());
+        String constitucion = String.valueOf(p.getConstitucion());
+        String nivel = String.valueOf(p.getNivel());
+        String experiencia = String.valueOf(p.getExperiencia());
+        valor = valor.toUpperCase();
+        switch (valor) {
+            case "NOMBRE":
+                valor = Util.pedirPorTeclado(false);
+                p = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia,
+                        true);
+                break;
+            case "RAZA":
+                valor = Util.pedirPorTeclado(false);
+                p = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia,
+                        true);
+                break;
+            case "FUERZA":
+                valor = Util.pedirPorTeclado(true);
+                p = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia,
+                        true);
+                break;
+            case "AGILIDAD":
+                valor = Util.pedirPorTeclado(true);
+                p = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, true);
+                break;
+            case "CONSTITUCION":
+                valor = Util.pedirPorTeclado(true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, true);
+                break;
+            case "NIVEL":
+                valor = Util.pedirPorTeclado(true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia,
+                        true);
+                break;
+            case "EXPERIENCIA":
+                valor = Util.pedirPorTeclado(true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, true);
+                break;
+            default:
+                throw new PersonajeException();
+        }
+        return p;
+    }
 }

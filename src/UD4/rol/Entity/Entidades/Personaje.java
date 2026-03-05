@@ -33,7 +33,7 @@ public class Personaje extends Entidad {
             case 2 ->num = super.constitucion;
             default -> throw new PersonajeException("Stat rng no existente");
         };
-        String[] bonus = arrayBonusRaza(raza);
+        String[] bonus = raza.arrayBonusRaza();
         int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
         if (num + bonusStat < 1) {
             num = 1;
@@ -102,45 +102,7 @@ public class Personaje extends Entidad {
         Items.sort(this.bolsa);
     }
     
-    protected static String[] arrayBonusRaza(Raza raza) {
-        String bonusFuerza = "x";
-        String bonusAgilidad = "x";
-        String bonusConstitucion = "x";
-        switch (raza) {
-                case HUMANO:
-                    bonusFuerza = "x";
-                    bonusAgilidad = "x";
-                    bonusConstitucion = "x";
-                    break;
-                case ELFO:
-                    bonusFuerza = "-5";
-                    bonusAgilidad = "+15";
-                    bonusConstitucion = "-10";
-                    break;
-                case ENANO:
-                    bonusFuerza = "+5";
-                    bonusAgilidad = "-15";
-                    bonusConstitucion = "+10";
-                    break;
-                case HOBBIT:
-                    bonusFuerza = "-10";
-                    bonusAgilidad = "+20";
-                    bonusConstitucion = "-5";
-                    break;
-                case ORCO:
-                    bonusFuerza = "+15";
-                    bonusAgilidad = "-25";
-                    bonusConstitucion = "+10";
-                    break;
-                case TROLL:
-                    bonusFuerza = "+10";
-                    bonusAgilidad = "-25";
-                    bonusConstitucion = "+15";
-                    break;
-            }
-        String[] bonus = {bonusFuerza, bonusAgilidad, bonusConstitucion};
-        return bonus;
-    }
+    
     public void setId(int id) {
         if (id >= 0) {
             this.id = id;
@@ -174,16 +136,8 @@ public class Personaje extends Entidad {
     public boolean isHabilidadRazaActiva() {
         return this.raza.isHabilidadActiva();
     }
-    public static String getRazasStats() {
-        String fichas = "";
-        for (Raza raza : Raza.toArray()) {
-            String[] bonus = arrayBonusRaza(raza);
-            fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
-        }
-        return fichas;
-    }
     
-    public void crearPersonaje(){
+    public void crearPersonaje(){//TODO pasar a Boundary - AppCreaPersonaje
         System.out.print("Nombre del personaje: ");
         nombre = Util.pedirPorTeclado(false);
         while (nombre == null) {
@@ -296,10 +250,6 @@ public class Personaje extends Entidad {
         String nombreRaza = this.raza.toString();
         ficha += "\nRaza: " + nombreRaza;
         return ficha;
-    }
-    public void mostrar(){
-        String ficha = getFicha();
-        System.out.println(ficha);
     }
     
     public boolean usarObjeto(int pos) {

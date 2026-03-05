@@ -2,6 +2,7 @@ package UD4.Rol.Boundary;
 
 import java.util.Arrays;
 import UD4.Rol.Control.Creacion;
+import UD4.Rol.Entity.Raza;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.*;
 
@@ -21,9 +22,9 @@ public class AppCreaPersonaje {
             System.out.print("¿Quieres crear un nuevo personaje? (S/n): ");
             if (Util.escogerOpcion("s", "n")) {
                 Personaje personaje = new Personaje();
-                System.out.println("\nRazas disponibles:\n\n" + Personaje.getRazasStats());
+                System.out.println("\nRazas disponibles:\n\n" + Raza.getRazasStats());
                 personaje.crearPersonaje();
-                personaje.mostrar();
+                System.out.println(personaje.getFicha());
                 System.out.println("¿Es el personaje correcto? (S/n):");
                 if (Util.escogerOpcion("s", "n")) {
                     personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
@@ -59,55 +60,16 @@ public class AppCreaPersonaje {
                 if (i != skip){
                     boolean modificar;
                     do {
-                        personajesArray[i].mostrar();
+                        System.out.println(personajesArray[i].getFicha());
                         System.out.print("¿Quieres modificar este personaje? (S/n): ");
                         if (Util.escogerOpcion("S", "n")) {
                             modificar  = true;
-                            String nombre = personajesArray[i].getNombre();
-                            String raza = String.valueOf(personajesArray[i].getRaza());
-                            String fuerza = String.valueOf(personajesArray[i].getFuerza());
-                            String agilidad = String.valueOf(personajesArray[i].getAgilidad());
-                            String constitucion = String.valueOf(personajesArray[i].getConstitucion());
-                            String nivel = String.valueOf(personajesArray[i].getNivel());
-                            String experiencia = String.valueOf(personajesArray[i].getExperiencia());
                             System.out.print("¿Que valor quieres modificar?");
                             System.out.println("Nombre, raza, fuerza, agilidad, constitucion, nivel o experiencia");
                             String valor = Util.pedirPorTeclado(false);
-                            if (!(valor == null)) {
+                            if (valor != null) {
                                 try {
-                                    valor = valor.toUpperCase();
-                                    switch (valor) {
-                                        case "NOMBRE":
-                                            valor = Util.pedirPorTeclado(false);
-                                            personajesArray[i] = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia, true);
-                                            break;
-                                        case "RAZA":
-                                            valor = Util.pedirPorTeclado(false);
-                                            personajesArray[i] = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia, true);
-                                            break;
-                                        case "FUERZA":
-                                            valor = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia, true);
-                                            break;
-                                        case "AGILIDAD":
-                                            valor = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, true);
-                                            break;
-                                        case "CONSTITUCION":
-                                            valor = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, true);
-                                            break;
-                                        case "NIVEL":
-                                            valor = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia, true);
-                                            break;
-                                        case "EXPERIENCIA":
-                                            valor = Util.pedirPorTeclado(true);
-                                            personajesArray[i] = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, true);
-                                            break;
-                                        default:
-                                            throw new PersonajeException();
-                                    }
+                                    personajesArray[i] = Creacion.modPersonaje(valor, personajesArray[i]);
                                 } catch (Exception e) {
                                     System.out.println("Valor no válido.");
                                 }
