@@ -32,8 +32,7 @@ public abstract class Entidad implements Comparable<Entidad>{
         this.nivel = 0;
         this.experiencia = 0;
     }
-    protected Entidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
-        
+    protected Entidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Equipamiento[] equipamientoEquipado, boolean yaExistente){
         try {
             nombre = nombre.strip();
         } catch (NullPointerException e) {
@@ -55,6 +54,17 @@ public abstract class Entidad implements Comparable<Entidad>{
                 this.constitucion = Integer.parseInt(constitucion);
                 this.nivel = (byte) Integer.parseInt(nivel);
                 this.experiencia = Integer.parseInt(experiencia);
+            }
+            if (equipamientoEquipado == null || (equipamientoEquipado.length >= 0 && equipamientoEquipado.length <= this.equipamientoEquipado.length)) {
+                if (equipamientoEquipado != null) {
+                    for (int i = 0; i < equipamientoEquipado.length; i++) {
+                        if (equipamientoEquipado[i] != null) {
+                            this.equipar(equipamientoEquipado[i]);
+                        }
+                    }
+                }
+            } else {
+                throw new EquipamientoException("Equipamiento equipado invalido");
             }
         } else {
             this.fuerza = asignarStatRnd(fuerza);
@@ -249,7 +259,7 @@ public abstract class Entidad implements Comparable<Entidad>{
         }
         return daño;
     }
-    protected String pedirStatRng(){
+    protected String pedirStatRng(){//TODO mover a Boundary
         String texto = Util.pedirPorTeclado(true);
         final int MIN = 1;
         final int MAX = 100;
@@ -375,7 +385,15 @@ public abstract class Entidad implements Comparable<Entidad>{
     }
     @Override
     public int compareTo(Entidad other) {
-        int classComp = Integer.compare(this.agilidad, other.agilidad);
-        return classComp; 
+        int agilidadComp = Integer.compare(this.agilidad, other.agilidad);
+        if (agilidadComp != 0) { return agilidadComp; }
+        int constComp = Integer.compare(this.constitucion, other.constitucion);
+        if (constComp != 0) { return agilidadComp; }
+        int fuerzaComp = Integer.compare(this.fuerza, other.fuerza);
+        if (fuerzaComp != 0) { return agilidadComp; }
+        int nivelComp = Integer.compare(this.nivel, other.nivel);
+        if (nivelComp != 0) { return nivelComp; }
+        int expComp = Integer.compare(this.experiencia, other.experiencia);
+        return expComp;
     }
 }

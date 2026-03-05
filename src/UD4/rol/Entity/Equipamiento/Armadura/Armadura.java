@@ -22,7 +22,7 @@ public abstract class Armadura extends Equipamiento {
         this.objetoBase = super.objetoBase = getJsonObject();
     }
 
-    protected String getEncantamiento() {
+    public String getEncantamiento() {
         String encantamiento;
         if (objetoBase.opt("encantamiento") != null) {
             encantamiento = objetoBase.getString("encantamiento");

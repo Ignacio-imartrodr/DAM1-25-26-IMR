@@ -21,9 +21,9 @@ import UD4.Rol.Utilidades.*;
 
 public class Personaje extends Entidad {
     private int id = -1;
-    protected Raza raza;
-    private Item[] bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
-    protected Equipamiento[] equipamientoGuardado = new Equipamiento[50];
+    private Raza raza;
+    private Item[] bolsa = null;
+    private Equipamiento[] equipamientoGuardado = new Equipamiento[50];
     
     protected int asignarBonusRaza(int stat){
         int num;
@@ -53,7 +53,6 @@ public class Personaje extends Entidad {
         super();
         this.id = -1;
         this.raza = null;
-        Items.sort(this.bolsa);
     }
 
     /**
@@ -63,7 +62,7 @@ public class Personaje extends Entidad {
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} dado.
      */
     public Personaje(String nombre){
-        this(nombre, null, null, null, null, null, null, false);
+        this(nombre, null, null, null, null, null, null);
     }
     /**
      * Crea un objeto unicamente con el nombre.
@@ -73,7 +72,7 @@ public class Personaje extends Entidad {
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} y la {@code raza} dados.
      */
     public Personaje(String nombre, String raza){
-        this(nombre, raza, null, null, null, null, null, false);
+        this(nombre, raza, null, null, null, null, null);
     }
     /**
      * Crea un objeto con los parametros como {@code String} convertiendolos a los tipos necesarios o instaurandolos como sus valores predefinidos.
@@ -84,8 +83,12 @@ public class Personaje extends Entidad {
      * @param   others  : Asignarles un valor entre 1 (inclusive) y 101 (exclusive) o null para el valor por defecto.
      * @return Nuevo objeto de clase Personaje con los parametros otorgados o {@code PersonajeExcepcion} si algun valor no es valido.
      */
-    public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
-        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
+    public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia){
+        this(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
+    }
+    public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Equipamiento[] equipamientoEquipado, Equipamiento[] equipamientoGuardado, Item[] bolsa, boolean yaExistente){
+        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, yaExistente);
+        
         if (raza == null) {
             this.raza = Raza.HUMANO;
         }else{
@@ -99,7 +102,16 @@ public class Personaje extends Entidad {
         this.agilidad = asignarBonusRaza(1);
         this.constitucion = asignarBonusRaza(2);
         this.id = -1;
-        Items.sort(this.bolsa);
+        if (yaExistente) {
+            if (bolsa.length == 3 || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {
+                this.bolsa = bolsa;
+            } else {
+                throw new ItemException("Tamaño de la bolsa incorrecto");
+            }
+            //TODO añadir equipamientoGuardado desde variable dada
+        } else {
+            bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
+        }
     }
     
     
@@ -116,7 +128,7 @@ public class Personaje extends Entidad {
     public Raza getRaza() {
         return raza;
     }
-    public String getBolsa(){
+    public String getStringBolsa(){
         this.bolsa = Items.sort(this.bolsa);
         String inventario = "Objetos disponibles:\n";
         for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
@@ -131,6 +143,9 @@ public class Personaje extends Entidad {
                 inventario += "-" + item.getNombre() + "\n";
             }
         }*/
+    }
+    public Item[] getBolsa() {
+        return bolsa;
     }
     
     public boolean isHabilidadRazaActiva() {
@@ -262,7 +277,7 @@ public class Personaje extends Entidad {
     }
     private boolean quitarObjetoDeBolsa(Item item){
         boolean fueUsado = false;
-        if (item != null) {
+        if (item != null && bolsa != null) {
             bolsa = Items.sort(bolsa);
             for (int i = 0; i < bolsa.length; i++) {
                 if (item.compareTo(bolsa[i]) == 0) {
@@ -403,7 +418,7 @@ public class Personaje extends Entidad {
         Personaje p = new Personaje("pureba");
         p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas"), null};
         /*p.bolsa = new Item[]{null, Items.getItemRnd(), new Item("Enredaderas"), Items.getItemRnd(), new Item("eNREDADEraS")};*/
-        String bolsa = p.getBolsa();
+        String bolsa = p.getStringBolsa();
         System.out.println(bolsa);
         String accion = "2";
         String ubNom = accion + " - ";

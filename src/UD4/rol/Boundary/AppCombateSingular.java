@@ -63,7 +63,7 @@ public class AppCombateSingular {
                 }
             }
             if (i != skip){
-                personajesCreados[i].mostrar();
+                System.out.println(personajesCreados[i].getFicha());
                 System.out.print("¿Quieres seleccionar este personaje? (S/n): ");
                 if (Util.escogerOpcion("S", "n")) {
                     personajesEnBatalla [j] = personajesCreados[i];
@@ -82,7 +82,7 @@ public class AppCombateSingular {
         String rutaFichero = null;
         String rutaPrevia = "";
         for (Personaje personaje : personajesCreados) {
-            personaje.mostrar();
+            System.out.println(personaje.getFicha());
             System.out.print("¿Quieres guardar este personaje? (S/n): ");
             if (Util.escogerOpcion("S", "n")) {
                 boolean repetir = true;
@@ -414,7 +414,7 @@ public class AppCombateSingular {
                         
                         case 4:
                             Item objeto;
-                            String bolsa = personajeActuando.getBolsa();
+                            String bolsa = personajeActuando.getStringBolsa();
                             System.out.println(bolsa);
                             System.out.println("Escoge Objeto (número de la izquierda) u otro número para cambiar de opción: ");
                             accion = Util.pedirPorTeclado(true);

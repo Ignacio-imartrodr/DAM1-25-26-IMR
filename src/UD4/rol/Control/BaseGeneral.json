@@ -1,0 +1,140 @@
+{
+    "Personajes": [
+        {
+            "Stats": {
+                "raza": "HUMANO",
+                "agilidad": 16,
+                "experiencia": 0,
+                "nombre": "a",
+                "fuerza": 51,
+                "constitucion": 77,
+                "nivel": 1,
+                "vidaMax": 127
+            },
+            "Equipamientos": {
+                "Equipado": [
+                    {},
+                    {
+                        "nombre": "Pechera de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {
+                        "nombre": "Pantalón de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {},
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    }
+                ],
+                "Guardado": [
+                    {
+                        "nombre": "Pechera de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {
+                        "nombre": "Pantalón de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    },
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    }
+                ]
+            },
+            "Bolsa": [
+                {},{},{}
+            ]
+        },
+        {
+            "Stats": {
+                "raza": "HUMANO",
+                "agilidad": 16,
+                "experiencia": 0,
+                "nombre": "a",
+                "fuerza": 51,
+                "constitucion": 77,
+                "nivel": 1,
+                "vidaMax": 127
+            },
+            "Equipamientos": {
+                "Equipado": [
+                    {},
+                    {
+                        "nombre": "Pechera de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {
+                        "nombre": "Pantalón de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {},
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    }
+                ],
+                "Guardado": [
+                    {
+                        "nombre": "Pechera de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {
+                        "nombre": "Pantalón de madera",
+                        "rareza": "RARE",
+                        "nivel": 1,
+                        "xp": 0
+                    },
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    },
+                    {
+                        "nombre": "Espada de Madera",
+                        "rareza": "COMMUN",
+                        "nivel": 1,
+                        "xp": 0,
+                        "afinidad": "CORTE"
+                    }
+                ]
+            },
+            "Bolsa": [
+                {},{},{}
+            ]
+        }
+    ]
+}
