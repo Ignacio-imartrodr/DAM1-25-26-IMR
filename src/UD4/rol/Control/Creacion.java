@@ -32,11 +32,33 @@ public abstract class Creacion {
             if (personajes.getJSONObject(i) != null) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject = personajes.getJSONObject(i);
+                
+
+                Equipamiento[] equipamientoEquipado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").length()];
+                for (int j = 0; j < equipamientoEquipado.length; j++) {
+                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").getJSONObject(j);
+                    equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
+                }
+
+                Equipamiento[] equipamientoGuardado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").length()];
+                for (int j = 0; j < equipamientoGuardado.length; j++) {
+                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").getJSONObject(j);
+                    equipamientoGuardado[j] = Equipamiento.newEquipamiento(equip);
+                }
+
                 Item[] bolsa = new Item[jsonObject.getJSONArray("bolsa").length()];
                 for (int j = 0; j < bolsa.length; j++) {
                     bolsa[j] = new Item(Items.stringToItems(jsonObject.getJSONArray("bolsa").getString(i)).name());
                 }
-                Personaje personaje = new Personaje(jsonObject.getString("nombre"), jsonObject.getString("raza"), jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), jsonObject.getString("constitucion"), jsonObject.getString("nivel"), jsonObject.getString("experiencia"), bolsa, true);
+                
+                Personaje personaje = new Personaje(
+                                                    jsonObject.getString("nombre"), jsonObject.getString("raza"), 
+                                                    jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), 
+                                                    jsonObject.getString("constitucion"), jsonObject.getString("nivel"), 
+                                                    jsonObject.getString("experiencia"), equipamientoEquipado, 
+                                                    equipamientoGuardado,  bolsa, true
+                                                    );
+
                 personajesJson = Arrays.copyOf(personajesJson, personajesJson.length + 1);
                 personajesJson[personajesJson.length - 1] = personaje;
             }
@@ -56,16 +78,32 @@ public abstract class Creacion {
             JSONObject pers = personajes.getJSONObject(i);
             if (pers != null && !pers.equals(persVacio)) {
                 JSONObject jsonObject = personajes.getJSONObject(i);
+
+                Equipamiento[] equipamientoEquipado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").length()];
+                for (int j = 0; j < equipamientoEquipado.length; j++) {
+                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").getJSONObject(j);
+                    equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
+                }
+
+                Equipamiento[] equipamientoGuardado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").length()];
+                for (int j = 0; j < equipamientoGuardado.length; j++) {
+                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").getJSONObject(j);
+                    equipamientoGuardado[j] = Equipamiento.newEquipamiento(equip);
+                }
+
                 Item[] bolsa = new Item[jsonObject.getJSONArray("bolsa").length()];
                 for (int j = 0; j < bolsa.length; j++) {
                     bolsa[j] = new Item(Items.stringToItems(jsonObject.getJSONArray("bolsa").getString(i)).name());
                 }
-                Equipamiento[] equipamientoEquipado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").length()];
-                for (int j = 0; j < equipamientoEquipado.length; j++) {
-                    equipamientoEquipado[j] = new Item(Items.stringToItems(jsonObject.getJSONArray("bolsa").getString(i)).name());
-                }
                 
-                Personaje personaje = new Personaje(jsonObject.getString("nombre"), jsonObject.getString("raza"), jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), jsonObject.getString("constitucion"), jsonObject.getString("nivel"), jsonObject.getString("experiencia"), bolsa, true);
+                Personaje personaje = new Personaje(
+                    jsonObject.getString("nombre"), jsonObject.getString("raza"), 
+                    jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), 
+                    jsonObject.getString("constitucion"), jsonObject.getString("nivel"), 
+                    jsonObject.getString("experiencia"), equipamientoEquipado, 
+                    equipamientoGuardado,  bolsa, true
+                );
+
                 personajesJson = Arrays.copyOf(personajesJson, personajesJson.length + 1);
                 personajesJson[personajesJson.length - 1] = personaje;
             }
@@ -109,31 +147,31 @@ public abstract class Creacion {
         switch (valor) {
             case "NOMBRE":
                 valor = Util.pedirPorTeclado(false);
-                p = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia, bolsa, true);
+                p = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, bolsa, true);
                 break;
             case "RAZA":
                 valor = Util.pedirPorTeclado(false);
-                p = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia, bolsa, true);
+                p = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia, null, null, bolsa, true);
                 break;
             case "FUERZA":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia, bolsa, true);
+                p = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia, null, null, bolsa, true);
                 break;
             case "AGILIDAD":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, null, null, bolsa, true);
                 break;
             case "CONSTITUCION":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, null, null, bolsa, true);
                 break;
             case "NIVEL":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia, null, null, bolsa, true);
                 break;
             case "EXPERIENCIA":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, null, null, bolsa, true);
                 break;
             default:
                 throw new PersonajeException();

@@ -23,12 +23,13 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
     private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
     private final static int XP_MAX = 256999;
     final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Objetos\\Equipamiento\\Equipamientos.json";
-
+    
     protected Equipamiento(String tipo, String subtipo, int num){
         try {
             JSONObject equipamiento = Util.rutaToJsonObject(RUTA_EQUIPAMIENTOS, tipo);
             JSONArray objetos = equipamiento.getJSONArray(subtipo);
             objetoBase = objetos.getJSONObject(num);
+            objetoBase.accumulate("class", subtipo);
             this.nombre = objetoBase.getString("nombre");
             this.rareza = Rareza.StringToRareza(objetoBase.getString("rareza"));
             this.durabilidad = getDurabilidadMax();
@@ -116,6 +117,41 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         este += "Experiencia: " + getXp() + "\n";
         return este;
     }
+    public static Equipamiento newEquipamiento(JSONObject equip){
+        Equipamiento equipamiento;
+        String clase;
+        try {
+            clase = equip.getString("class").toUpperCase();
+        } catch (Exception e) {
+            throw new EquipamientoException("El JsonObject no es un equipamiento");
+        }
+        switch (clase) {
+            case "CASCO":
+                equipamiento = new Casco(equip);
+                break;
+            case "PECHERA":
+                equipamiento = new Pechera(equip);
+                break;
+            case "PANTALON":
+                equipamiento = new Pantalon(equip);
+                break;
+            case "BOTAS":
+                equipamiento = new Botas(equip);
+                break;
+            case "ESPADA":
+                equipamiento = new Espada(equip);
+                break;
+            case "BARITA":
+                equipamiento = new Barita(equip);
+                break;
+            case "MAZA":
+                equipamiento = new Maza(equip);
+                break;
+            default:
+                throw new EquipamientoException("Equipamiento Erroneo");
+        }
+        return equipamiento;
+    }
 
     public void setId(int id) {
         if (id >= 0) {
@@ -176,9 +212,6 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
                 break;
             case 3:
                 key = "Botas";
-                break;
-            
-            default:
                 break;
         }
         
@@ -413,5 +446,4 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             return false;
         return true;
     }
-    
 }

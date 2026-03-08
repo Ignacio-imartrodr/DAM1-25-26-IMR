@@ -103,12 +103,23 @@ public class Personaje extends Entidad {
         this.constitucion = asignarBonusRaza(2);
         this.id = -1;
         if (yaExistente) {
-            if (bolsa.length == 3 || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {
+            if (bolsa.length == 3 || (bolsa.length == 4 && ((Pantalon) equipamientoGuardado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {
                 this.bolsa = bolsa;
             } else {
                 throw new ItemException("Tamaño de la bolsa incorrecto");
             }
-            //TODO añadir equipamientoGuardado desde variable dada
+            if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
+                if (equipamientoGuardado != null) {
+                    for (int i = 0; i < equipamientoGuardado.length; i++) {
+                        if (equipamientoGuardado[i] != null) {
+                            this.equipamientoGuardado[i] = equipamientoGuardado[i];
+                        }
+                    }
+                }
+                Util.sortArray(equipamientoGuardado);
+            } else {
+                throw new EquipamientoException("Equipamiento equipado invalido");
+            }
         } else {
             bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
         }
