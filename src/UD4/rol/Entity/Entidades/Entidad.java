@@ -55,7 +55,7 @@ public abstract class Entidad implements Comparable<Entidad>{
                 this.nivel = (byte) Integer.parseInt(nivel);
                 this.experiencia = Integer.parseInt(experiencia);
             }
-            if (equipamientoEquipado == null || (equipamientoEquipado.length >= 0 && equipamientoEquipado.length <= this.equipamientoEquipado.length)) {
+            if (equipamientoEquipado == null || (equipamientoEquipado.length == this.equipamientoEquipado.length)) {
                 if (equipamientoEquipado != null) {
                     for (int i = 0; i < equipamientoEquipado.length; i++) {
                         if (equipamientoEquipado[i] != null) {
@@ -295,17 +295,29 @@ public abstract class Entidad implements Comparable<Entidad>{
 
     public JSONObject toJsonObject(){
         JSONObject entidad = new JSONObject();
-        entidad.accumulate("nombre", nombre);
-        entidad.accumulate("fuerza", fuerza);
-        entidad.accumulate("agilidad", agilidad);
-        entidad.accumulate("constitucion", constitucion);
-        entidad.accumulate("nivel", nivel);
-        entidad.accumulate("experiencia", experiencia);
-        entidad.accumulate("vidaMax", getVidaMax());
+        JSONObject stats = new JSONObject();
+        JSONObject equipamientos = new JSONObject();
+        stats.accumulate("nombre", nombre);
+        stats.accumulate("fuerza", fuerza);
+        stats.accumulate("agilidad", agilidad);
+        stats.accumulate("constitucion", constitucion);
+        stats.accumulate("nivel", nivel);
+        stats.accumulate("experiencia", experiencia);
+        stats.accumulate("vidaMax", getVidaMax());
+        for (int i = 0; i < equipamientoEquipado.length; i++) {
+            if (equipamientoEquipado[i] == null) {
+                equipamientos.append("Equipado", new JSONObject());
+            } else {
+                equipamientos.append("Equipado", equipamientoEquipado[i].getJsonObject());
+            }
+        }
+        entidad.put("Stats", stats);
+        entidad.put("Equipamientos", equipamientos);
+        
         return entidad;
     }
     protected String toCsvString() {
-        return String.format("%s,%d,%d,%d,%d,%d,%d,%d", nombre, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax(), puntosVida);
+        return String.format("%s,%d,%d,%d,%d,%d,%d,", nombre, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
     }
     @Override
     public String toString(){

@@ -148,7 +148,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
                 equipamiento = new Maza(equip);
                 break;
             default:
-                throw new EquipamientoException("Equipamiento Erroneo");
+                throw new EquipamientoException("Error en el Equipamiento");
         }
         return equipamiento;
     }

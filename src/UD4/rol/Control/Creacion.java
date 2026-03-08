@@ -26,13 +26,12 @@ public abstract class Creacion {
         return texto;
     }
     public static Personaje[] getPersonajesJson(String ruta){
-        JSONArray personajes = new JSONArray(ruta);
-        Personaje[] personajesJson = new Personaje[0];
-        for (int i = 0; i < personajes.length(); i++) {
-            if (personajes.getJSONObject(i) != null) {
+        JSONArray personajesJson = new JSONArray(ruta);
+        Personaje[] personajes = new Personaje[0];
+        for (int i = 0; i < personajesJson.length(); i++) {
+            if (personajesJson.getJSONObject(i) != null) {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject = personajes.getJSONObject(i);
-                
+                jsonObject = personajesJson.getJSONObject(i);
 
                 Equipamiento[] equipamientoEquipado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").length()];
                 for (int j = 0; j < equipamientoEquipado.length; j++) {
@@ -59,25 +58,25 @@ public abstract class Creacion {
                                                     equipamientoGuardado,  bolsa, true
                                                     );
 
-                personajesJson = Arrays.copyOf(personajesJson, personajesJson.length + 1);
-                personajesJson[personajesJson.length - 1] = personaje;
+                personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                personajes[personajes.length - 1] = personaje;
             }
         }
-        return personajesJson;
+        return personajes;
     }
     public static Personaje[] getPersonajesJsonUrl(String ruta){
-        Personaje[] personajesJson = new Personaje[0];
-        JSONArray personajes;
+        Personaje[] personajes = new Personaje[0];
+        JSONArray personajesJson;
         try {
-            personajes = Util.urlToJsonArray(ruta, "Personajes");
+            personajesJson = Util.urlToJsonArray(ruta, "Personajes");
         } catch (Exception e) {
             throw new PersonajeException("Error en el formato de la web");
         }
-        for (int i = 0; i < personajes.length(); i++) {
+        for (int i = 0; i < personajesJson.length(); i++) {
             JSONObject persVacio = new JSONObject("");
-            JSONObject pers = personajes.getJSONObject(i);
+            JSONObject pers = personajesJson.getJSONObject(i);
             if (pers != null && !pers.equals(persVacio)) {
-                JSONObject jsonObject = personajes.getJSONObject(i);
+                JSONObject jsonObject = personajesJson.getJSONObject(i);
 
                 Equipamiento[] equipamientoEquipado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").length()];
                 for (int j = 0; j < equipamientoEquipado.length; j++) {
@@ -103,12 +102,12 @@ public abstract class Creacion {
                     jsonObject.getString("experiencia"), equipamientoEquipado, 
                     equipamientoGuardado,  bolsa, true
                 );
-
-                personajesJson = Arrays.copyOf(personajesJson, personajesJson.length + 1);
-                personajesJson[personajesJson.length - 1] = personaje;
+                personaje.setId(i);
+                personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                personajes[personajes.length - 1] = personaje;
             }
         }
-        return personajesJson;
+        return personajes;
     }
     public static Personaje[] getPersonajesCsv(String ruta){//TODO arreglar(faltan datos)
         String[] arrayPersonajes = Util.readFileToStringArray(ruta);

@@ -103,7 +103,7 @@ public class Personaje extends Entidad {
         this.constitucion = asignarBonusRaza(2);
         this.id = -1;
         if (yaExistente) {
-            if (bolsa.length == 3 || (bolsa.length == 4 && ((Pantalon) equipamientoGuardado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {
+            if (bolsa.length == 3 || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {//TODO probar que no haya problema en caso de no tener encantamiento en el pantalon
                 this.bolsa = bolsa;
             } else {
                 throw new ItemException("Tamaño de la bolsa incorrecto");
@@ -115,13 +115,17 @@ public class Personaje extends Entidad {
                             this.equipamientoGuardado[i] = equipamientoGuardado[i];
                         }
                     }
+                    Util.sortArray(equipamientoGuardado);
                 }
-                Util.sortArray(equipamientoGuardado);
             } else {
-                throw new EquipamientoException("Equipamiento equipado invalido");
+                throw new EquipamientoException("Equipamiento guardado invalido");
             }
         } else {
-            bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
+            if (((Pantalon) equipamientoEquipado[3]).getEncantamiento() != null && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo")) {
+                this.bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
+            } else {
+                this.bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
+            }
         }
     }
     
@@ -415,13 +419,30 @@ public class Personaje extends Entidad {
         return inventario;
     }
     @Override
-    public JSONObject toJsonObject(){
+    public JSONObject toJsonObject(){//TODO agregar info faltante para que se guarde como en "BaseGeneral.json"
         JSONObject personaje = super.toJsonObject();
-        personaje.accumulate("raza", this.raza);
+        JSONObject equipamientos = new JSONObject();
+        JSONObject stats = new JSONObject();
+        stats.accumulate("raza", this.raza);
+        personaje.accumulate("Stats", stats);
+        for (int i = 0; i < equipamientoGuardado.length; i++) {
+            if (equipamientoGuardado[i] != null) {
+                equipamientos.append("Guardado", equipamientoGuardado[i].getJsonObject());
+            }
+        }
+        for (int i = 0; i < bolsa.length; i++) {
+            if (bolsa[i] != null) {
+                personaje.accumulate("nombre", bolsa[i].getNombre());
+            } else {
+                personaje.accumulate("nombre", new JSONObject());
+            }
+        }
+        personaje.append("Equipamientos", equipamientos);
+        
         return personaje;
     }
     @Override
-    public String toCsvString(){
+    public String toCsvString(){//TODO agregar info faltante
         return super.toCsvString() + "," + raza + "\n";
     }
     
