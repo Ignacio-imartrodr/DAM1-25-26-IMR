@@ -43,7 +43,7 @@ public class Casco extends Armadura {
         this(num);
     }
     public Casco(int num){
-        super(KEY, num);
+        newArmadura(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
         this.durabilidad = super.durabilidad;

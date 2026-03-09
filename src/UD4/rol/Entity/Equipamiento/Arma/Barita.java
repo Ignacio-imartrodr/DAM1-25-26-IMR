@@ -58,7 +58,7 @@ public class Barita extends Arma {
         this(num);
     }
     public Barita(int num){
-        super(KEY, num);
+        newArma(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
         this.durabilidad = super.durabilidad;

@@ -43,7 +43,7 @@ public class Pechera extends Armadura {
         this(num);
     }
     public Pechera(int num){
-        super(KEY, num);
+        newArmadura(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
         this.durabilidad = super.durabilidad;

@@ -87,7 +87,7 @@ public class Personaje extends Entidad {
         this(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
     }
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Equipamiento[] equipamientoEquipado, Equipamiento[] equipamientoGuardado, Item[] bolsa, boolean yaExistente){
-        super(nombre, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, yaExistente);
+        newEntidad(nombre, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, yaExistente);
         
         if (raza == null) {
             this.raza = Raza.HUMANO;

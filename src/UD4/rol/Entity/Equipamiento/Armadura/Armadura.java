@@ -11,8 +11,8 @@ public abstract class Armadura extends Equipamiento {
     String encantamiento;
     final static String KEY = "Armadura";
 
-    Armadura(String pieza, int num){
-        super(KEY, pieza, num);
+    protected void newArmadura(String pieza, int num){
+        newEquipamiento(KEY, pieza, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
         this.durabilidad = super.durabilidad;

@@ -9,8 +9,7 @@ package UD4.Rol.Utilidades;
  *
  */
 public class AfinidadException extends RuntimeException {
-    @java.io.Serial
-    private static final long serialVersionUID = 2256477558314496007L;
+    
     /**
      * Constructs an {@code AfinidadException} with no detail
      * message.

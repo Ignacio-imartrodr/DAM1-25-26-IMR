@@ -44,7 +44,7 @@ public class Pantalon extends Armadura {
         this(num);
     }
     public Pantalon(int num){
-        super(KEY, num);
+        newArmadura(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
         this.durabilidad = super.durabilidad;

@@ -49,7 +49,7 @@ public class Espada extends Arma {
         this(num);
     }
     public Espada(int num){
-        super(KEY, num);
+        newArma(KEY, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
         this.afinidad = super.afinidad;

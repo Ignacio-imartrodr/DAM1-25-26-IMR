@@ -13,8 +13,8 @@ public abstract class Arma extends Equipamiento {
     protected int fuerza;
     final static String KEY = "Arma";
 
-    Arma(String subtipo, int num){
-        super(KEY, subtipo, num);
+    protected void newArma(String subtipo, int num){
+        newEquipamiento(KEY, subtipo, num);
         this.nombre = super.nombre;
         this.rareza = super.rareza;
         this.durabilidad = super.durabilidad;
