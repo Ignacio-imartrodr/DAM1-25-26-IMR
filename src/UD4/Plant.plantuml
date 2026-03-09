@@ -1,0 +1,68 @@
+@startuml a
+
+class NomeClase {
+    tipo1 atributo1
+    tipo2 atributo2
+    {static} tipo3 atributo3
+
+    método1()
+    int método2()
+    String método3(int a)
+    {static} método4()
+}
+
+@enduml
+@startuml
+
+class Titor
+class Curso
+Titor "1" -- "1" Curso
+
+class Provedor
+class Artigo
+Provedor "1" -- "0..*" Artigo
+
+class ViaxeCompartido
+class Persoa
+ViaxeCompartido "*" -- "*" Persoa
+
+@enduml
+@startuml
+class Persoa {
+    nome
+    apelidos
+    dataNacemento
+    direccion
+    telefono
+    calcularIdade()
+}
+
+Persoa <|-- Empregado
+
+class Empregado {
+    salario
+    dataIngreso
+    getSalario()
+    getAntiguedad()
+}
+@enduml
+@startuml
+class ContaBancaria {
+    #saldo
+    +ingresar()
+    +retirar()
+}
+
+class ContaAforro {
+    -interes
+    +aplicarInterese()
+}
+class ContaCorrente {
+    -limiteDescubierto
+    +permitirDescubierto
+}
+
+
+ContaBancaria <|-- ContaAforro
+ContaBancaria <|-- ContaCorrente
+@enduml

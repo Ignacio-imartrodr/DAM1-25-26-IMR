@@ -1,0 +1,74 @@
+@startuml Campionato Basket 3x3
+
+class Persoa {
+    -tipo1 nome
+    -tipo2 data
+    -tipo3 dni
+
+    +getNome()
+    +getData()
+    +getDni()
+    +setNome(tipo1 n)
+    +setData(tipo2 d)
+    +setDni(tipo3 s)
+}
+
+Persoa <|-- Xogador
+
+class Xogador {
+    -tipo1 dorsal
+    -tipo2 posicion
+
+    +getDorsal()
+    +getPosicion()
+    +setDorsal(tipo1 n)
+    +setPosicion(tipo2 d)
+}
+
+Persoa <|-- Arbitro
+
+class Arbitro {
+    -tipo1 numColex
+    -tipo2 anhosExp
+
+    +getNumColex()
+    +getAnhosExp()
+    +setNumColex(tipo1 n)
+    +setAnhosExp(tipo2 d)
+}
+
+class Equipo {
+    -tipo1 nome
+    -tipo2 corCamiseta
+    -tipo3 puntTotal
+
+    +getNome()
+    +getCorCamiseta()
+    +getPuntTota()
+    +setNome(tipo1 n)
+    +setCorCamiseta(tipo2 d)
+    +setPuntTota(tipo3 s)
+}
+
+class Partido {
+    -tipo1 data
+    -tipo2 hora
+    -tipo3 pista
+    -tipo4 resFinal
+
+    +getData()
+    +getHora()
+    +getPista()
+    +getResFinal()
+    +setData(tipo1 n)
+    +setHora(tipo2 d)
+    +setPista(tipo3 s)
+    +setResFinal(tipo4 r)
+    String método3(int a)
+    {static} método4()
+}
+
+Equipo "1" -- "3..4" Xogador
+Partido "1" -- "2" Equipo
+Partido "*" -- "1" Arbitro
+@enduml
