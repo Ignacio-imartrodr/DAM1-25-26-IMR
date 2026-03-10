@@ -54,6 +54,7 @@ public class Botas extends Armadura {
         this.constitucion = (int) Math.round(super.constitucion * 1.1);
         this.objetoBase = super.objetoBase = getJsonObject();
     }
+
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
 

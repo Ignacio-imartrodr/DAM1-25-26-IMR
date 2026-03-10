@@ -9,6 +9,7 @@ public abstract class Armadura extends Equipamiento {
     //Solo puede ser una pieza: Casco, Pechera, Pantalon o Botas y el Personaje solo puede tener equipado uno de cada 
     int constitucion = getConstitucion();
     String encantamiento;
+    String encantDesc;
     final static String KEY = "Armadura";
 
     protected void newArmadura(String pieza, int num){
@@ -18,11 +19,14 @@ public abstract class Armadura extends Equipamiento {
         this.durabilidad = super.durabilidad;
         this.xp = super.xp;
         this.lvl = super.lvl;
-        this.encantamiento = getEncantamiento();
+        this.encantamiento = optEncantamiento();
+        this.encantDesc = optEncantDesc();
         this.objetoBase = super.objetoBase = getJsonObject();
     }
-
-    public String getEncantamiento() {
+    public String getEncantamiento(){
+        return this.encantamiento;
+    }
+    private String optEncantamiento() {
         String encantamiento;
         if (objetoBase.opt("encantamiento") != null) {
             encantamiento = objetoBase.getString("encantamiento");
@@ -30,6 +34,18 @@ public abstract class Armadura extends Equipamiento {
             encantamiento = null;
         }
         return encantamiento;
+    }
+    public String getEncantDesc(){
+        return this.encantDesc;
+    }
+    private String optEncantDesc() {
+        String encantDesc;
+        if (objetoBase.opt("descripcion") != null) {
+            encantDesc = objetoBase.getString("descripcion");
+        } else {
+            encantDesc = null;
+        }   
+        return encantDesc;
     }
     protected int getConstitucion() {
         int constitucion = 0;
@@ -62,15 +78,6 @@ public abstract class Armadura extends Equipamiento {
     }
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
-        
-        if (getEncantamiento() != null) {
-            String key = "encantamiento";
-            if (objetoBase.opt(key) != null) {
-                objetoBase.remove(key);
-            }
-            objetoBase.accumulate(key, encantamiento);
-        }
-        
         return objetoBase;
     }
     public String getString(){
