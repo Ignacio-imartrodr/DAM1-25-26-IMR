@@ -12,7 +12,7 @@ import UD4.Rol.Utilidades.PersonajeException;
 public enum Raza implements Habilidades {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
-    private boolean habilidadActiva = true;//TODO comprobar funcionamiento
+    private boolean habilidadActiva = true;
     public static Raza[] toArray(){
         Raza[] razas = new Raza[0];
         for (Raza raza : Raza.values()) {

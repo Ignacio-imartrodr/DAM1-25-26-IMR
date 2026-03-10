@@ -394,8 +394,8 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             default -> throw new EquipamientoException("Subtipo sin orden asignado asignado");
         };
     }
-    @Override
-    public int hashCode() {//TODO investigar
+    /*@Override
+    public int hashCode() {//investigar
         final int prime = 31;
         int result = 1;
         result = prime * result + id;
@@ -408,7 +408,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         result = prime * result + xp;
         result = prime * result + lvl;
         return result;
-    }
+    }*/
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

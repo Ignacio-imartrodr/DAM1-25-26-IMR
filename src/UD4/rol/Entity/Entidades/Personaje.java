@@ -103,7 +103,7 @@ public class Personaje extends Entidad {
         this.constitucion = asignarBonusRaza(2);
         this.id = -1;
         if (yaExistente) {
-            if (bolsa.length == 3 || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {//TODO probar que no haya problema en caso de no tener encantamiento en el pantalon
+            if ((bolsa.length == 3 && !((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo")) || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {//TODO probar que no haya problema en caso de no tener encantamiento en el pantalon
                 this.bolsa = bolsa;
             } else {
                 throw new ItemException("Tamaño de la bolsa incorrecto");
@@ -127,6 +127,7 @@ public class Personaje extends Entidad {
                 this.bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
             }
         }
+        Util.sortArray(bolsa);
     }
     
     
@@ -166,50 +167,7 @@ public class Personaje extends Entidad {
     public boolean isHabilidadRazaActiva() {
         return this.raza.isHabilidadActiva();
     }
-    
-    public void crearPersonaje(){//TODO pasar a Boundary - AppCreaPersonaje
-        System.out.print("Nombre del personaje: ");
-        nombre = Util.pedirPorTeclado(false);
-        while (nombre == null) {
-            System.out.print("El persnaje necesita un nombre: ");
-            nombre = Util.pedirPorTeclado(false);          
-        }
-        nombre = nombre.strip();
-        System.out.println("Escoge una de las siguientes razas: orco, elfo, HUMANO, enano, hobbit o troll");
-        
-        for (boolean error = true; error;) {
-            try {
-                raza = Raza.StringToRaza(Util.pedirPorTeclado(false));
-                error = false;
-            } catch (PersonajeException e) {
-                System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
-                error = true;
-            }
-        }
 
-        System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
-        System.out.print("Fuerza: ");
-        super.fuerza = super.asignarStatRnd(pedirStatRng());
-        this.fuerza = asignarBonusRaza(0);
-        
-        System.out.print("Agilidad: ");
-        super.agilidad = super.asignarStatRnd(pedirStatRng());
-        this.agilidad = asignarBonusRaza(1);
-
-        System.out.print("Constitución: ");
-        super.constitucion = super.asignarStatRnd(pedirStatRng());
-        this.constitucion = asignarBonusRaza(2);
-        
-        System.out.print("Nivel: ");
-        this.nivel = super.nivel = (byte) pedirStatNoRng(false);
-        
-        System.out.println("Nivel de experiencia: ");
-        this.experiencia = super.experiencia = pedirStatNoRng(true);
-
-        puntosVida = getVidaMax();
-
-        Items.sort(bolsa);
-    }
     public void quitarHabilidadRaza(){
         this.raza.quitarHabilidad();
     }
@@ -424,7 +382,7 @@ public class Personaje extends Entidad {
         JSONObject equipamientos = new JSONObject();
         JSONObject stats = new JSONObject();
         stats.accumulate("raza", this.raza);
-        personaje.accumulate("Stats", stats);
+        personaje.accumulate("Stats", stats);//TODO revisar y arreglar
         for (int i = 0; i < equipamientoGuardado.length; i++) {
             if (equipamientoGuardado[i] != null) {
                 equipamientos.append("Guardado", equipamientoGuardado[i].getJsonObject());

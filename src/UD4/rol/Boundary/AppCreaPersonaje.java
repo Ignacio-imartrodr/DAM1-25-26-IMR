@@ -1,6 +1,8 @@
 package UD4.Rol.Boundary;
 
 import java.util.Arrays;
+import java.util.Random;
+
 import UD4.Rol.Control.Creacion;
 import UD4.Rol.Entity.Raza;
 import UD4.Rol.Entity.Entidades.Personaje;
@@ -15,6 +17,76 @@ import UD4.Rol.Utilidades.*;
  */
 
 public class AppCreaPersonaje {
+    private static Personaje crearPersonaje(){
+        Personaje personaje;
+        System.out.print("Nombre del personaje: ");
+        String nombre = Util.pedirPorTeclado(false);
+        while (nombre == null) {
+            System.out.print("El persnaje necesita un nombre: ");
+            nombre = Util.pedirPorTeclado(false);          
+        }
+        nombre = nombre.strip();
+        System.out.println("Escoge una de las siguientes razas: orco, elfo, HUMANO, enano, hobbit o troll");
+        String raza = "a";
+        for (boolean error = true; error;) {
+            try {
+                Raza razaVal = Raza.StringToRaza(Util.pedirPorTeclado(false));
+                raza = razaVal.toString();
+                error = false;
+            } catch (PersonajeException e) {
+                System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
+                error = true;
+            }
+        }
+
+        System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
+        System.out.print("Fuerza: ");
+        String fuerza = pedirStatRng();
+        
+        System.out.print("Agilidad: ");
+        String agilidad = pedirStatRng();
+
+        System.out.print("Constitución: ");
+        String constitucion = pedirStatRng();
+        
+        System.out.print("Nivel: ");
+        String nivel = pedirStatNoRng(false);
+        
+        System.out.println("Nivel de experiencia: ");
+        String experiencia = pedirStatNoRng(true);
+
+        personaje = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
+        return personaje;
+    }
+    private static String pedirStatRng(){
+        Random rnd = new Random();
+        int num = rnd.nextInt(100) + 1;
+        String texto = Util.pedirPorTeclado(true);
+        final int MIN = 1;
+        final int MAX = 100;
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
+            texto = Util.pedirPorTeclado(true);
+        }
+        if (texto == null) {
+            texto = String.valueOf(num);
+        }
+        return texto;
+    }
+    private static String pedirStatNoRng(boolean esXp){
+        String texto;
+        texto = Util.pedirPorTeclado(true);
+        final int MIN = esXp ? 0 : 1;
+        final int MAX = esXp ? 999 : 100;
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
+            texto = Util.pedirPorTeclado(true);
+        }
+        if (texto == null) {
+            texto = String.valueOf(MIN);
+        }
+        return texto;
+    }
     public static Personaje[] pedirPersonajes() {
         Personaje[] personajesNuevos = new Personaje[0];
         boolean seguir = true;
@@ -23,7 +95,7 @@ public class AppCreaPersonaje {
             if (Util.escogerOpcion("s", "n")) {
                 Personaje personaje = new Personaje();
                 System.out.println("\nRazas disponibles:\n\n" + Raza.getRazasStats());
-                personaje.crearPersonaje();
+                personaje = crearPersonaje();
                 System.out.println(personaje.getFicha());
                 System.out.println("¿Es el personaje correcto? (S/n):");
                 if (Util.escogerOpcion("s", "n")) {

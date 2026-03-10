@@ -8,7 +8,6 @@ import UD4.Rol.Entity.Equipamiento.Arma.*;
 import UD4.Rol.Entity.Equipamiento.Armadura.*;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.PersonajeException;
-import UD4.Rol.Utilidades.Util;
 
 public abstract class Entidad implements Comparable<Entidad>{
     protected String nombre;
@@ -251,36 +250,7 @@ public abstract class Entidad implements Comparable<Entidad>{
         }
         return daño;
     }
-    protected String pedirStatRng(){//TODO mover a Boundary
-        String texto = Util.pedirPorTeclado(true);
-        final int MIN = 1;
-        final int MAX = 100;
-        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
-            texto = Util.pedirPorTeclado(true);
-        }
-        if (texto == null) {
-            texto = String.valueOf(generarRnd1a100());
-        }
-        return texto;
-    }
-    protected int pedirStatNoRng(boolean esXp){
-        String texto;
-        int num;
-        texto = Util.pedirPorTeclado(true);
-        final int MIN = esXp ? 0 : 1;
-        final int MAX = esXp ? 999 : 100;
-        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
-            texto = Util.pedirPorTeclado(true);
-        }
-        if (texto == null) {
-            num = MIN;
-        } else {
-            num = Integer.parseInt(texto);
-        }
-        return num;
-    }
+    
     public Equipamiento equipamientoSemiRnd(boolean esGeneral, boolean... gachaArmas){
         return (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
     }
