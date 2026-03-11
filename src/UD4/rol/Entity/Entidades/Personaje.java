@@ -1,6 +1,8 @@
 package UD4.Rol.Entity.Entidades;
 
 import java.util.Arrays;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.*;
@@ -380,22 +382,25 @@ public class Personaje extends Entidad {
     public JSONObject toJsonObject(){//TODO agregar info faltante para que se guarde como en "BaseGeneral.json"
         JSONObject personaje = super.toJsonObject();
         JSONObject equipamientos = new JSONObject();
-        JSONObject stats = new JSONObject();
+        JSONObject stats = personaje.getJSONObject("Stats");
         stats.accumulate("raza", this.raza);
-        personaje.accumulate("Stats", stats);//TODO revisar y arreglar
+        personaje.remove("Stats");
+        personaje.accumulate("Stats", stats);
         for (int i = 0; i < equipamientoGuardado.length; i++) {
             if (equipamientoGuardado[i] != null) {
                 equipamientos.append("Guardado", equipamientoGuardado[i].getJsonObject());
             }
         }
-        for (int i = 0; i < bolsa.length; i++) {
-            if (bolsa[i] != null) {
-                personaje.accumulate("nombre", bolsa[i].getNombre());
+        JSONArray bolsa = new JSONArray();
+        for (int i = 0; i < this.bolsa.length; i++) {
+            if (this.bolsa[i] != null) {
+                bolsa.put(this.bolsa[i]);//TODO revisar y arreglar
             } else {
-                personaje.accumulate("nombre", new JSONObject());
+                bolsa.put(new JSONObject());
             }
         }
         personaje.append("Equipamientos", equipamientos);
+        personaje.accumulate("Bolsa", bolsa);
         
         return personaje;
     }

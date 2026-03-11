@@ -3,7 +3,7 @@ package UD4.Rol.Entity;
 import UD4.Rol.Utilidades.AfinidadException;
 import UD4.Rol.Utilidades.Util;
 
-public record Afinidad(String afinidad) implements Comparable<Afinidad>{//TODO entender funcionamiento para usarlo bien
+public record Afinidad(String afinidad) implements Comparable<Afinidad>{//realmente no necesita ser record y una class normal serviría, es solo para probarla
     
     static String[] afinidades = new String[] {"CORTE", "GOLPEO", "MAGIA"};
 
