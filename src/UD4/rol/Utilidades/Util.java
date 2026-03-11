@@ -35,7 +35,6 @@ public abstract class Util{
     }
     public static int nullOfArrayToEnd(Object[] x){
         boolean conNull = false;
-        int lastNoNull = 0;
         for (Object obj : x) {
             if (obj == null) {
                 conNull = true;
@@ -51,26 +50,23 @@ public abstract class Util{
                     if (o2 == null) { return -1; }
                     return 0;
                 }
-            };//TODO terminar y aplicar
-            for (int i = 0, j = x.length - 1; i < j; i++) {
-                while (x[j] == null && j > 0) {
-                    j--;
+            };//TODO investigar para sustituir por el de la API
+            Arrays.sort(x, Comparator.nullsLast((a, b) -> 0));
+            int bajo = 0;
+            int alto = x.length;
+            
+            while (bajo < alto) {
+                int medio = bajo + (alto - bajo);
+                if (x[medio] != null) {
+                    bajo = medio + 1;
+                } else {
+                    alto = medio;
                 }
-                lastNoNull = j;
-                if (x[i] == null && i < j) {
-                    x[i] = x[j];
-                    x[j] = null;
-                    while (x[j] == null && j > 0) {
-                        j--;
-                    }
-                    lastNoNull = j;
-                }
-                
             }
+            return (bajo < x.length && x[bajo] == null) ? bajo : -1;
         } else {
             return -1;
         }
-        return lastNoNull + 1;//TODO buscar con binarysearch
     }
     public static Object[] swap(Object[] x, int a, int b) {
         Object t = x[a];
