@@ -22,7 +22,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
     protected byte lvl = -128; //rango: [-128 a 127]
     private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
     private final static int XP_MAX = 256999;
-    final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Objetos\\Equipamiento\\Equipamientos.json";
+    final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Entity\\Equipamiento\\Equipamientos.json";
     
     protected void newEquipamiento(String tipo, String subtipo, int num){
         try {
@@ -355,7 +355,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
     }
     @Override
     public int compareTo(Equipamiento other) {
-        //Comparar por Tipo
+        //Comparar por Tipo (si es null va al final)
         int tipoComp = Integer.compare(getPrioridadTipo(this.tipo), getPrioridadTipo(other.tipo));
         if (tipoComp != 0) { return tipoComp; }
 
@@ -379,6 +379,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         return switch (tipo.toUpperCase()) {
             case "ARMADURA" -> 1;
             case "ARMA" -> 2;
+            case null -> 3;
             default -> throw new EquipamientoException("Tipo sin orden asignado asignado");
         };
     }

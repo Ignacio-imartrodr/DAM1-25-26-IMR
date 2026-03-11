@@ -9,6 +9,7 @@ import UD4.Rol.Entity.Item;
 import UD4.Rol.Entity.Items;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
@@ -176,5 +177,15 @@ public abstract class Creacion {
                 throw new PersonajeException();
         }
         return p;
+    }
+    public static void main(String[] args) {
+        //Personaje p = new Personaje("Prueba3");//TODO arreglar instanciador
+        Equipamiento[] equip = new Equipamiento[] {null, null, new Pantalon("CHAOTIC"), null, null};
+        Equipamiento[] guard = new Equipamiento[] {null, new Pantalon(2), null};
+        Personaje p1 = new Personaje("Prueba4", null, "50", "50", "50", "2", "45", equip, guard, new Item[4], true);
+        Personaje[] personajes = new Personaje[] {p1};
+        for (Personaje personaje : personajes) {
+            System.out.println(personaje.toJsonObject());
+        }
     }
 }

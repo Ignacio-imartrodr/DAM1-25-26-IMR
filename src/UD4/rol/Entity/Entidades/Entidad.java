@@ -69,11 +69,8 @@ public abstract class Entidad implements Comparable<Entidad>{
 
     /**
      * Asigna un valor valido a un stat o un valor random
-     * @param   texto   :
-     * @param   stat    : 0 para Fuerza, 1 para Agilidad o 2 para Constitucion
-     * @return
-     * 
-     * 
+     * @param   texto   : String con el valor numérico a asignar o null para num rnd de 1 a 100.
+     * @return Valor int adecuado.
      */
     protected int asignarStatRnd(String texto){
         int num;

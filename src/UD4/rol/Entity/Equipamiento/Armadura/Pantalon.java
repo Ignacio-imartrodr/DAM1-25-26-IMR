@@ -45,12 +45,6 @@ public class Pantalon extends Armadura {
     }
     public Pantalon(int num){
         newArmadura(KEY, num);
-        this.nombre = super.nombre;
-        this.rareza = super.rareza;
-        this.durabilidad = super.durabilidad;
-        this.xp = super.xp;
-        this.lvl = super.lvl;
-        this.encantamiento = super.encantamiento;
         this.constitucion = (int) Math.round(super.constitucion * 1.2);
         this.objetoBase = super.objetoBase = getJsonObject();
     }

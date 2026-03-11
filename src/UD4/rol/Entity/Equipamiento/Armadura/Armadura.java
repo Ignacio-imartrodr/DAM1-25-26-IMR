@@ -7,18 +7,14 @@ import UD4.Rol.Utilidades.RarezaException;
 
 public abstract class Armadura extends Equipamiento {
     //Solo puede ser una pieza: Casco, Pechera, Pantalon o Botas y el Personaje solo puede tener equipado uno de cada 
-    int constitucion = getConstitucion();
+    int constitucion;
     String encantamiento;
     String encantDesc;
     final static String KEY = "Armadura";
 
     protected void newArmadura(String pieza, int num){
         newEquipamiento(KEY, pieza, num);
-        this.nombre = super.nombre;
-        this.rareza = super.rareza;
-        this.durabilidad = super.durabilidad;
-        this.xp = super.xp;
-        this.lvl = super.lvl;
+        this.constitucion = getConstitucion();
         this.encantamiento = optEncantamiento();
         this.encantDesc = optEncantDesc();
         this.objetoBase = super.objetoBase = getJsonObject();

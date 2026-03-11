@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,14 +21,21 @@ import UD4.Rol.Entity.Entidades.Personaje;
  * @author Ignacio MR (HM Profesor Óscar de programación)
  */
 
-public abstract class Util {
+public abstract class Util{
+    
+    
+    
+
     public static void sortArray(Object[] x){
-        int lastNoNull = nullOfArrayToEnd(x);
-        Arrays.sort(x, 0, lastNoNull);
+        int firstNull = nullOfArrayToEnd(x);
+        if (firstNull == -1) {
+            firstNull = x.length;
+        }
+        Arrays.sort(x, 0, firstNull);
     }
     public static int nullOfArrayToEnd(Object[] x){
         boolean conNull = false;
-        int lastNoNull = x.length;
+        int lastNoNull = 0;
         for (Object obj : x) {
             if (obj == null) {
                 conNull = true;
@@ -35,20 +43,34 @@ public abstract class Util {
             }
         }
         if (conNull) {
+            class Comparador implements Comparator<Object>{
+                @Override
+                public int compare(Object o1, Object o2) {
+                    if (o1 == o2) { return 0; }
+                    if (o1 == null) { return 1; }
+                    if (o2 == null) { return -1; }
+                    return 0;
+                }
+            };//TODO terminar y aplicar
             for (int i = 0, j = x.length - 1; i < j; i++) {
-                if (x[i] == null) {
-                    while (x[j] == null) {
-                        j--;
-                    }
-                    x[i] = x[j];
-                    x[j] = null;
+                while (x[j] == null && j > 0) {
+                    j--;
                 }
                 lastNoNull = j;
+                if (x[i] == null && i < j) {
+                    x[i] = x[j];
+                    x[j] = null;
+                    while (x[j] == null && j > 0) {
+                        j--;
+                    }
+                    lastNoNull = j;
+                }
+                
             }
         } else {
             return -1;
         }
-        return lastNoNull;
+        return lastNoNull + 1;//TODO buscar con binarysearch
     }
     public static Object[] swap(Object[] x, int a, int b) {
         Object t = x[a];

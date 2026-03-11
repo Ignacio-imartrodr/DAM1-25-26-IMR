@@ -64,7 +64,7 @@ public class Personaje extends Entidad {
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} dado.
      */
     public Personaje(String nombre){
-        this(nombre, null, null, null, null, null, null);
+        this(nombre, null, null, null, null, null, null, null, null, null, false);
     }
     /**
      * Crea un objeto unicamente con el nombre.
@@ -74,7 +74,7 @@ public class Personaje extends Entidad {
      * @return Nuevo objeto de clase {@code Personaje} con balores predefinidos y el {@code nombre} y la {@code raza} dados.
      */
     public Personaje(String nombre, String raza){
-        this(nombre, raza, null, null, null, null, null);
+        this(nombre, raza, null, null, null, null, null, null, null, null, false);
     }
     /**
      * Crea un objeto con los parametros como {@code String} convertiendolos a los tipos necesarios o instaurandolos como sus valores predefinidos.
@@ -100,30 +100,39 @@ public class Personaje extends Entidad {
                 throw new PersonajeException("Raza no válida.");
             }
         }
-        this.fuerza = asignarBonusRaza(0);
-        this.agilidad = asignarBonusRaza(1);
-        this.constitucion = asignarBonusRaza(2);
+        this.fuerza = super.fuerza = asignarBonusRaza(0);
+        this.agilidad = super.agilidad = asignarBonusRaza(1);
+        this.constitucion = super.constitucion = asignarBonusRaza(2);
         this.id = -1;
         if (yaExistente) {
-            if ((bolsa.length == 3 && !((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo")) || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {//TODO probar que no haya problema en caso de no tener encantamiento en el pantalon
-                this.bolsa = bolsa;
+            if (equipamientoEquipado[2] != null && ((Pantalon) equipamientoEquipado[2]).getEncantamiento() != null) {
+                if ((bolsa.length == 3 && !((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo")) || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {
+                    this.bolsa = bolsa;
+                } else {
+                    throw new ItemException("Tamaño de la bolsa incorrecto");
+                }
             } else {
-                throw new ItemException("Tamaño de la bolsa incorrecto");
+                if (bolsa.length == 3) {
+                    this.bolsa = bolsa;
+                } else {
+                    throw new ItemException("Tamaño de la bolsa incorrecto");
+                }
             }
             if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
                 if (equipamientoGuardado != null) {
+                    Util.sortArray(equipamientoGuardado);
                     for (int i = 0; i < equipamientoGuardado.length; i++) {
                         if (equipamientoGuardado[i] != null) {
                             this.equipamientoGuardado[i] = equipamientoGuardado[i];
                         }
                     }
-                    Util.sortArray(equipamientoGuardado);
+                    Util.sortArray(this.equipamientoGuardado);
                 }
             } else {
                 throw new EquipamientoException("Equipamiento guardado invalido");
             }
         } else {
-            if (((Pantalon) equipamientoEquipado[3]).getEncantamiento() != null && ((Pantalon) equipamientoEquipado[3]).getEncantamiento().equalsIgnoreCase("Bolsillo")) {
+            if (((Pantalon) equipamientoEquipado[2]).getEncantamiento() != null && ((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo")) {
                 this.bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
             } else {
                 this.bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
