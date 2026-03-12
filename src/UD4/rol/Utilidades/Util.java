@@ -22,18 +22,22 @@ import UD4.Rol.Entity.Entidades.Personaje;
  */
 
 public abstract class Util{
-    
-    
-    
-
+    /**
+     * Ordena un array cuarquiera por su orden natural usando {@code Arrays.sort()} pero en caso de tener valores null los deja el final del array.
+     * 
+     * @param x : Array que será ordenado 
+     */
     public static void sortArray(Object[] x){
+        if (x == null || x .length == 0 || x.length == 1) {
+            return;
+        }
         int firstNull = nullOfArrayToEnd(x);
         if (firstNull == -1) {
             firstNull = x.length;
         }
         Arrays.sort(x, 0, firstNull);
     }
-    public static int nullOfArrayToEnd(Object[] x){
+    private static int nullOfArrayToEnd(Object[] x){
         boolean conNull = false;
         for (Object obj : x) {
             if (obj == null) {
@@ -42,7 +46,7 @@ public abstract class Util{
             }
         }
         if (conNull) {
-            class Comparador implements Comparator<Object>{
+            /*class Comparador implements Comparator<Object>{//TODO investigar para sustituir por el de la API
                 @Override
                 public int compare(Object o1, Object o2) {
                     if (o1 == o2) { return 0; }
@@ -50,20 +54,23 @@ public abstract class Util{
                     if (o2 == null) { return -1; }
                     return 0;
                 }
-            };//TODO investigar para sustituir por el de la API
-            Arrays.sort(x, Comparator.nullsLast((a, b) -> 0));
-            int bajo = 0;
-            int alto = x.length;
+            };
+            Comparador nullToEnd = new Comparador();
+            Arrays.sort(x, nullToEnd);*/
+            Arrays.sort(x, Comparator.nullsLast(null));
             
-            while (bajo < alto) {
-                int medio = bajo + (alto - bajo);
+            int izq = 0;
+            int der = x.length;
+            
+            while (izq < der) {
+                int medio = izq + (der - izq) / 2;
                 if (x[medio] != null) {
-                    bajo = medio + 1;
+                    izq = medio + 1;
                 } else {
-                    alto = medio;
+                    der = medio;
                 }
             }
-            return (bajo < x.length && x[bajo] == null) ? bajo : -1;
+            return (izq < x.length && x[izq] == null) ? izq : -1;
         } else {
             return -1;
         }
