@@ -265,9 +265,9 @@ public abstract class Entidad implements Comparable<Entidad>{
         stats.accumulate("vidaMax", getVidaMax());
         for (int i = 0; i < equipamientoEquipado.length; i++) {
             if (equipamientoEquipado[i] == null) {
-                equipamientos.append("Equipado", new JSONObject());
+                equipamientos.accumulate("Equipado", new JSONObject());
             } else {
-                equipamientos.append("Equipado", equipamientoEquipado[i].getJsonObject());
+                equipamientos.accumulate("Equipado", equipamientoEquipado[i].getJsonObject());
             }
         }
         entidad.put("Stats", stats);

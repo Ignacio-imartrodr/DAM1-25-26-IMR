@@ -46,7 +46,7 @@ public abstract class Util{
             }
         }
         if (conNull) {
-            /*class Comparador implements Comparator<Object>{//TODO investigar para sustituir por el de la API
+            /*class Comparador implements Comparator<Object>{   //Investigar para sustituir por el de la API
                 @Override
                 public int compare(Object o1, Object o2) {
                     if (o1 == o2) { return 0; }
@@ -91,18 +91,19 @@ public abstract class Util{
     public static JSONObject rutaToJsonObject(String ruta, String... key){
         try {
             String text = readFileToString(ruta);
-            JSONObject objetosArchivo = new JSONObject();
+            JSONObject objetosArchivo;
             JSONArray jsonArray;
             if (text.startsWith("{")) {
+                objetosArchivo = new JSONObject(text);
                 try {
-                    objetosArchivo = new JSONObject(text);
-                    jsonArray = new JSONArray(objetosArchivo.getJSONArray(key[0]));
-                    objetosArchivo = new JSONObject(jsonArray);
+                    if (key != null && key[0] != null) {
+                        objetosArchivo = objetosArchivo.getJSONObject(key[0]);
+                    }
                 } catch (Exception e) {
-                    objetosArchivo = new JSONObject(text);
-                    objetosArchivo = objetosArchivo.getJSONObject(key[0]);
-                    
+                    return objetosArchivo;
                 }
+            } else if (text.isEmpty() || text.isBlank()) {
+                objetosArchivo = null;
             } else {
                 jsonArray = new JSONArray(text);
                 objetosArchivo = new JSONObject(jsonArray);
@@ -360,16 +361,37 @@ public abstract class Util{
             e.printStackTrace();
         }
     }
-    public static void writePersonajeToJson(String filePath, boolean append, String key, JSONObject... personaje) {
+    public static void writeToJson(String filePath, boolean append, String key, JSONObject... personaje) {
         try {
-            JSONObject pers = append ? rutaToJsonObject(filePath, key) : new JSONObject();
-            for (Object object : personaje) {
-                pers.accumulate(key, object);
-            }    
+            JSONObject info = new JSONObject();
+            if (append) {
+                JSONObject oldInfo = rutaToJsonObject(filePath, key);
+                if (oldInfo != null) {
+                    try {
+                        JSONArray JsonArray = oldInfo.getJSONArray(key);
+                        for (int i = 0; i < JsonArray.length(); i++) {
+                            try {
+                                info.accumulate(key, JsonArray.getJSONObject(i));
+                            } catch (Exception e) {
+                                try {
+                                    info.accumulate(key, JsonArray.getJSONArray(i));
+                                } catch (Exception o) {
+                                    info.accumulate(key, JsonArray.get(i));
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        info.accumulate(key, oldInfo);
+                    }
+                }
+            }  
+            for (int i = 0; i < personaje.length; i++) {
+                info.accumulate(key, personaje[i]);
+            }
             borrarFicheroYCrearloVacio(filePath);
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
             FileWriter writer = new FileWriter(filePath, append);
-            writer.write(pers.toString());
+            writer.write(info.toString());
             // Cerramos el fichero
             writer.close();
         } catch (IOException e) {
@@ -462,7 +484,7 @@ public abstract class Util{
             }
         }
         if (personajes.length != 0) {
-            Util.writePersonajeToJson(rutaFichero, true, "Personajes", personajes);
+            Util.writeToJson(rutaFichero, true, "Personajes", personajes);
         } else{
             System.out.println("No había personajes que guardar");
         }

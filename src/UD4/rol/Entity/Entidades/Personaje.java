@@ -121,12 +121,9 @@ public class Personaje extends Entidad {
             if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
                 if (equipamientoGuardado != null) {
                     Util.sortArray(equipamientoGuardado);
-                    for (int i = 0; i < equipamientoGuardado.length; i++) {
-                        if (equipamientoGuardado[i] != null) {
-                            this.equipamientoGuardado[i] = equipamientoGuardado[i];
-                        }
+                    for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
+                        this.equipamientoGuardado[i] = equipamientoGuardado[i];
                     }
-                    Util.sortArray(this.equipamientoGuardado);
                 }
             } else {
                 throw new EquipamientoException("Equipamiento guardado invalido");
@@ -390,26 +387,33 @@ public class Personaje extends Entidad {
     @Override
     public JSONObject toJsonObject(){//TODO agregar info faltante para que se guarde como en "BaseGeneral.json"
         JSONObject personaje = super.toJsonObject();
-        JSONObject equipamientos = new JSONObject();
+        
         JSONObject stats = personaje.getJSONObject("Stats");
         stats.accumulate("raza", this.raza);
         personaje.remove("Stats");
         personaje.accumulate("Stats", stats);
-        for (int i = 0; i < equipamientoGuardado.length; i++) {
+
+        JSONObject equipamientos = personaje.getJSONObject("Equipamientos");
+        Util.sortArray(equipamientoGuardado);
+        equipamientos.put("Guardado", new JSONArray());
+        for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
             if (equipamientoGuardado[i] != null) {
                 equipamientos.append("Guardado", equipamientoGuardado[i].getJsonObject());
             }
         }
+        
         JSONArray bolsa = new JSONArray();
+        Util.sortArray(this.bolsa);
         for (int i = 0; i < this.bolsa.length; i++) {
             if (this.bolsa[i] != null) {
-                bolsa.put(this.bolsa[i]);//TODO revisar y arreglar
+                bolsa.put(this.bolsa[i]);
             } else {
                 bolsa.put(new JSONObject());
             }
         }
-        personaje.append("Equipamientos", equipamientos);
-        personaje.accumulate("Bolsa", bolsa);
+        personaje.remove("Equipamientos");
+        personaje.put("Equipamientos", equipamientos);
+        personaje.put("Bolsa", bolsa);
         
         return personaje;
     }

@@ -104,7 +104,7 @@ public class AppCombateSingular {
                     }
                     if (rutaFichero.endsWith(".json")) {
                         if (Util.UbiObjetoEnArray(personaje, Creacion.getPersonajesJson(rutaFichero)) == -1) {
-                            Util.writePersonajeToJson(rutaFichero, true, "Personajes", personaje.toJsonObject());
+                            Util.writeToJson(rutaFichero, true, "Personajes", personaje.toJsonObject());
                             repetir = false;
                         }
                     } else if (rutaFichero.endsWith(".csv")) {
@@ -219,7 +219,7 @@ public class AppCombateSingular {
                                 }
                             }
                             if (personajes.length != 0) {
-                                Util.writePersonajeToJson(rutaFichero, false, "Personajes", personajes);
+                                Util.writeToJson(rutaFichero, false, "Personajes", personajes);
                             } else{
                                 System.out.println("No había personajes que guardar");
                             }
