@@ -385,7 +385,7 @@ public class Personaje extends Entidad {
         return inventario;
     }
     @Override
-    public JSONObject toJsonObject(){//TODO agregar info faltante para que se guarde como en "BaseGeneral.json"
+    public JSONObject toJsonObject(){
         JSONObject personaje = super.toJsonObject();
         
         JSONObject stats = personaje.getJSONObject("Stats");
@@ -416,10 +416,6 @@ public class Personaje extends Entidad {
         personaje.put("Bolsa", bolsa);
         
         return personaje;
-    }
-    @Override
-    public String toCsvString(){//TODO agregar info faltante
-        return super.toCsvString() + "," + raza + "\n";
     }
     
     public static void main(String[] args) {

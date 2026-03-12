@@ -210,13 +210,7 @@ public abstract class Util{
         // Devolvemos el contenido del fichero como un String
         return lineas;
     }
-    public static void mostrarContenidoCSV(String filePath){
-        String[] contenidoCSV = readFileToStringArray(filePath);
-        for (String linea : contenidoCSV) {
-            //AlumnoLeerMostrar.mostrarAlumno(alumno);
-            System.out.println(linea);
-        }
-    }
+    
     private static Scanner sc = new Scanner(System.in,"Windows-1252");
 
     /**
@@ -341,26 +335,6 @@ public abstract class Util{
         return successful;
     }
 
-    /**
-     * Escribe una cadena de texto {@code str} en un archivo designado
-     * @param   str   : Texto que se añadirá al fichero.
-     * @param   filePath  : Ruta de la ubicación del archivo.
-     * @param   append  : {@code true} Para añadir al final del fichero o {@code false} para sustituir el principio del fichero
-     */
-    public static void writeStringToCsv(String str, String filePath) {
-        try {
-            // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
-            FileWriter writer = new FileWriter(filePath, true);
-
-            // Escribimos el String en el fichero
-            writer.write(str);
-
-            // Cerramos el fichero
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public static void writeToJson(String filePath, boolean append, String key, JSONObject... personaje) {
         try {
             JSONObject info = new JSONObject();

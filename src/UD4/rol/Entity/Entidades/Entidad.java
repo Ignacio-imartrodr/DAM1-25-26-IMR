@@ -275,9 +275,6 @@ public abstract class Entidad implements Comparable<Entidad>{
         
         return entidad;
     }
-    protected String toCsvString() {
-        return String.format("%s,%d,%d,%d,%d,%d,%d,", nombre, fuerza, agilidad, constitucion, nivel, experiencia, getVidaMax());
-    }
     @Override
     public String toString(){
         String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";

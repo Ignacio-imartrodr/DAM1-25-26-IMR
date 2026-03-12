@@ -17,7 +17,7 @@ import UD4.Rol.Utilidades.Util;
  * 
  * Crea un programa de consola que permita al usuario generar
  * y editar personajes de diferentes modos y guardarlos
- * en disco en un fichero de texto en formato JSON o CSV.
+ * en disco en un fichero de texto en formato JSON.
  */
 
 public class AppCombateSingular {
@@ -29,13 +29,12 @@ public class AppCombateSingular {
         String rutaFichero = null;
         while (restart) {
             restart = false;
-            System.out.print("¿Quieres dar una ruta? (S/n): ");
+            System.out.print("¿Quieres dar una ruta a fichero Json? (S/n): ");
             if (Util.escogerOpcion("s", "n")) {
-                System.out.println("OPCIONES: \nJson o Csv");
                 System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
                 rutaFichero = Util.pedirPorTeclado(false);
-                if ((rutaFichero == null) || (!rutaFichero.endsWith(".json") && !rutaFichero.endsWith(".csv"))) {
-                    System.out.println("La ruta debe dirigir a un fichero con extensión .csv o .json");
+                if ((rutaFichero == null) || !rutaFichero.endsWith(".json")) {
+                    System.out.println("La ruta debe dirigir a un fichero con extensión .json");
                     restart = true;
                 }
             } else {
@@ -87,7 +86,7 @@ public class AppCombateSingular {
             if (Util.escogerOpcion("S", "n")) {
                 boolean repetir = true;
                 while (repetir) {
-                    System.out.print("Ruta del fichero Json o Csv (Enter para usar ruta previa): ");
+                    System.out.print("Ruta del fichero Json (Enter para usar ruta previa): ");
                     for (boolean noRutaPrevia = true; noRutaPrevia;) {
                         noRutaPrevia = false;
                         rutaFichero = Util.pedirPorTeclado(false);
@@ -107,9 +106,6 @@ public class AppCombateSingular {
                             Util.writeToJson(rutaFichero, true, "Personajes", personaje.toJsonObject());
                             repetir = false;
                         }
-                    } else if (rutaFichero.endsWith(".csv")) {
-                        Util.writeStringToCsv(personaje.toCsvString(), rutaFichero);
-                        repetir = false;
                     } else {
                         System.out.println("Ruta no valida");
                         System.out.println( "¿Quieres intentar de nuevo? (S/n): ");
@@ -129,15 +125,10 @@ public class AppCombateSingular {
         boolean restart = true;
         while (restart) {
             restart = false;
-            System.out.println("Opciones: \nJson o Csv");
+            System.out.println("Opciones: Json");
             System.out.print("¿Quieres cargar personajes desde " + rutaFile + "? (S/n): ");
             if (Util.escogerOpcion("S", "n")) {
-                if (rutaFile.endsWith(".csv")) {
-                    personajesFichero = Creacion.getPersonajesCsv(rutaFile);
-                    if (personajesFichero.length == 0) {
-                        System.out.println("El fichero no contenía personajes");
-                    }
-                } else if (rutaFile.endsWith(".json") || rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
+                if (rutaFile.endsWith(".json") || rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
                     if (rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
                         boolean errorUrl = true;
                         String temp = rutaFile;
@@ -222,13 +213,6 @@ public class AppCombateSingular {
                                 Util.writeToJson(rutaFichero, false, "Personajes", personajes);
                             } else{
                                 System.out.println("No había personajes que guardar");
-                            }
-                        } else if (rutaFichero.endsWith(".csv")) {
-                            Util.borrarFicheroYCrearloVacio(rutaFichero);
-                            for (Personaje personaje : personajesCreados) {
-                                if (!(personaje == null)) {
-                                    Util.writeStringToCsv(personaje.toCsvString(), rutaFichero);
-                                }
                             }
                         } else {
                             System.out.println("Ruta no valida.");

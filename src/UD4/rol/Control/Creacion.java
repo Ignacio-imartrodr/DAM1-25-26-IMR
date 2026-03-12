@@ -111,29 +111,7 @@ public abstract class Creacion {
         }
         return personajes;
     }
-    public static Personaje[] getPersonajesCsv(String ruta){//TODO arreglar(faltan datos)
-        String[] arrayPersonajes = Util.readFileToStringArray(ruta);
-        Personaje[] personajesExtraidos = new Personaje[0];
-        try{
-            personajesExtraidos = new Personaje[arrayPersonajes.length];
-            String[] atributos;
-            int i = 0;
-            int idPers = 1;
-            for (String personaje : arrayPersonajes) {
-                atributos = new String[7];
-                atributos = personaje.split(",");//TODO implementar un switch segun la cantidad de atributos para usar distinto inicializador
-                try {
-                    Personaje newPersonaje = new Personaje(atributos[0], atributos[1], atributos[2], atributos[3], atributos[4], atributos[5], atributos[6]);
-                    personajesExtraidos[i]= newPersonaje;
-                    i++;
-                } catch (Exception e) {
-                    throw new PersonajeException("El personaje número " + idPers + "contiene un error.");
-                }
-                idPers++;
-            }
-        } catch (Exception x) {}
-        return personajesExtraidos;
-    }
+
     public static Personaje modPersonaje(String valor, Personaje p){
         
         String nombre = p.getNombre();
