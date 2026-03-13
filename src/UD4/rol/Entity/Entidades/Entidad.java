@@ -4,12 +4,9 @@ import java.util.Random;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
-import UD4.Rol.Entity.Equipamiento.Arma.*;
-import UD4.Rol.Entity.Equipamiento.Armadura.*;
-import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.PersonajeException;
 
-public abstract class Entidad implements Comparable<Entidad>{
+public abstract class Entidad implements Comparable<Entidad> {
     protected String nombre;
     protected int fuerza = 0;
     protected int agilidad = 0;
@@ -17,13 +14,12 @@ public abstract class Entidad implements Comparable<Entidad>{
     protected byte nivel= -128; //rango: [-128 a 127]
     protected int experiencia = 0;
     protected int puntosVida;
-    protected Equipamiento[] equipamientoEquipado = new Equipamiento[5];
     protected static int vidaMin = 50;
     protected final static int EXP_MAX = 256999;
 
     private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
 
-    protected void newEntidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Equipamiento[] equipamientoEquipado, boolean yaExistente){
+    protected void newEntidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
         try {
             nombre = nombre.strip();
         } catch (NullPointerException e) {
@@ -46,17 +42,7 @@ public abstract class Entidad implements Comparable<Entidad>{
                 this.nivel = (byte) Integer.parseInt(nivel);
                 this.experiencia = Integer.parseInt(experiencia);
             }
-            if (equipamientoEquipado == null || (equipamientoEquipado.length == this.equipamientoEquipado.length)) {
-                if (equipamientoEquipado != null) {
-                    for (int i = 0; i < equipamientoEquipado.length; i++) {
-                        if (equipamientoEquipado[i] != null) {
-                            this.equipar(equipamientoEquipado[i]);
-                        }
-                    }
-                }
-            } else {
-                throw new EquipamientoException("Equipamiento equipado invalido");
-            }
+            
         } else {
             this.fuerza = asignarStatRnd(fuerza);
             this.agilidad = asignarStatRnd(agilidad);
@@ -255,7 +241,6 @@ public abstract class Entidad implements Comparable<Entidad>{
     public JSONObject toJsonObject(){
         JSONObject entidad = new JSONObject();
         JSONObject stats = new JSONObject();
-        JSONObject equipamientos = new JSONObject();
         stats.accumulate("nombre", nombre);
         stats.accumulate("fuerza", fuerza);
         stats.accumulate("agilidad", agilidad);
@@ -263,15 +248,8 @@ public abstract class Entidad implements Comparable<Entidad>{
         stats.accumulate("nivel", nivel);
         stats.accumulate("experiencia", experiencia);
         stats.accumulate("vidaMax", getVidaMax());
-        for (int i = 0; i < equipamientoEquipado.length; i++) {
-            if (equipamientoEquipado[i] == null) {
-                equipamientos.accumulate("Equipado", new JSONObject());
-            } else {
-                equipamientos.accumulate("Equipado", equipamientoEquipado[i].getJsonObject());
-            }
-        }
+        
         entidad.put("Stats", stats);
-        entidad.put("Equipamientos", equipamientos);
         
         return entidad;
     }
@@ -281,76 +259,6 @@ public abstract class Entidad implements Comparable<Entidad>{
         return nombreYVida;
     }
 
-    public boolean equipar(Equipamiento equip) {
-        if (equip == null) {
-            throw new EquipamientoException("Equipamiento nulo");
-        }
-        int slot = -1; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
-        if (equip instanceof Casco) {
-            slot = 0;
-        } else if (equip instanceof Pechera) {
-            slot = 1;
-        } else if (equip instanceof Pantalon) {
-            slot = 2;
-        } else if (equip instanceof Botas) {
-            slot = 3;
-        } else if (equip instanceof Arma) {
-            slot = 4;
-        } else {
-            throw new EquipamientoException("Tipo de equipamiento no equipable");
-        }
-        equip.setId(slot);
-        if (equipamientoEquipado[slot] != null) {
-            throw new EquipamientoException("Slot ocupado");
-        }
-        equipamientoEquipado[slot] = equip;
-        return true;
-    }
-
-    public Equipamiento quitarEquipamiento(int slot) {
-        if (slot < 0 || slot >= equipamientoEquipado.length) {
-            throw new EquipamientoException("Slot inválido");
-        }
-        Equipamiento antiguo = equipamientoEquipado[slot];
-        equipamientoEquipado[slot] = null;
-        return antiguo;
-    }
-
-    public Equipamiento quitarEquipamiento(Equipamiento equip) {
-        if (equip == null) { return null; }
-        for (int i = 0; i < equipamientoEquipado.length; i++) {
-            if (equipamientoEquipado[i] != null && equipamientoEquipado[i].equals(equip)) {
-                Equipamiento antiguo = equipamientoEquipado[i];
-                equipamientoEquipado[i] = null;
-                return antiguo;
-            }
-        }
-        return null;
-    }
-
-    public String getEquipamientoEquipado() {
-        String inventario = "Equipamiento activo:\n-------------------\n";
-        for (int i = 0; i < equipamientoEquipado.length; i++) {
-            String parte;
-            switch (i) {
-                case 0 -> parte = "Casco: ";
-                case 1 -> parte = "Pechera: ";
-                case 2 -> parte = "Pantalón: ";
-                case 3 -> parte = "Botas: ";
-                case 4 -> parte = "Arma: ";
-                default -> parte = "Error: ";
-            };
-            if (equipamientoEquipado[i] != null) {
-                inventario += (i + 1) + " - " + parte + equipamientoEquipado[i].getNombre() + " " + equipamientoEquipado[i].getDurabilidadString() + "\n";
-            } else {
-                inventario += (i + 1) + " - " + parte + "vacío\n";
-            }
-        }
-        return inventario;
-    }
-    public Equipamiento[] getArrayEquipado() {
-        return java.util.Arrays.copyOf(equipamientoEquipado, equipamientoEquipado.length);
-    }
     @Override
     public int compareTo(Entidad other) {
         int agilidadComp = Integer.compare(this.agilidad, other.agilidad);

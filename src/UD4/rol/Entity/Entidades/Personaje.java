@@ -21,7 +21,7 @@ import UD4.Rol.Utilidades.*;
  * @author Ignacio MR
  */
 
-public class Personaje extends Entidad {
+public class Personaje extends Entidad implements EquipEquipado {
     private int id = -1;
     private Raza raza;
     private Item[] bolsa = null;
@@ -89,7 +89,7 @@ public class Personaje extends Entidad {
         this(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
     }
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Equipamiento[] equipamientoEquipado, Equipamiento[] equipamientoGuardado, Item[] bolsa, boolean yaExistente){
-        newEntidad(nombre, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, yaExistente);
+        newEntidad(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
         
         if (raza == null) {
             this.raza = Raza.HUMANO;
@@ -117,6 +117,18 @@ public class Personaje extends Entidad {
                 } else {
                     throw new ItemException("Tamaño de la bolsa incorrecto");
                 }
+            }
+            if (equipamientoEquipado == null || (equipamientoEquipado.length == EquipEquipado.equipamientoEquipado.length && EquipEquipado.isFormatoCorrecto(equipamientoEquipado))) {
+                if (equipamientoEquipado != null) {
+                    for (int i = 0; i < equipamientoEquipado.length; i++) {
+                        if (equipamientoEquipado[i] != null) {
+                            equipamientoEquipado[i].setId(i);
+                            EquipEquipado.super.setEquipado(equipamientoEquipado[i]);
+                        }
+                    }
+                }
+            } else {
+                throw new EquipamientoException("Equipamiento equipado invalido");
             }
             if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
                 if (equipamientoGuardado != null) {
@@ -289,48 +301,28 @@ public class Personaje extends Entidad {
         return null;
     }
     @Override
-    public boolean equipar(Equipamiento equip) {
-        try {
-            return super.equipar(equip);
-        } catch (Exception e) {
-            int slot = equip.getId();
-            if (slot != -1) {
-                Equipamiento antiguo = quitarEquipamiento(slot);
-                for (int i = 0; i < equipamientoGuardado.length; i++) {//TODO que solo se puedan equipar cosas desde el equipoGuardado y tras convertir a null la posición del equipamiento a equipar
-                    if (equipamientoGuardado[i].equals(equip)) {
-                        equipamientoGuardado[i] = antiguo;
-                        Util.sortArray(equipamientoGuardado);
-                        for (int j = 0; j < equipamientoGuardado.length; j++) {
-                            equipamientoGuardado[j].setId(j);
-                        }
-                        break;
+    public boolean setEquipado(Equipamiento equip) {
+        int slot = equip.getId();
+        if (slot != -1) {
+            Equipamiento antiguo = quitarEquipamiento(slot);
+            Util.sortArray(equipamientoGuardado);
+            for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
+                if (equipamientoGuardado[i].equals(equip)) {
+                    equipamientoGuardado[i] = antiguo;
+                    Util.sortArray(equipamientoGuardado);
+                    for (int j = 0; j < equipamientoGuardado.length; j++) {
+                        equipamientoGuardado[j].setId(j);
                     }
+                    
+                    equipamientoEquipado[slot] = equip;
+                    return true;
                 }
-                equipamientoEquipado[slot] = equip;
-                return true;
             }
+            equipamientoEquipado[slot] = antiguo;
         }
         return false;
     }
-    public Equipamiento quitarEquipamiento(int slot) {
-        if (slot < 0 || slot >= equipamientoEquipado.length) {
-            throw new EquipamientoException("Slot inválido");
-        }
-        Equipamiento antiguo = equipamientoEquipado[slot];
-        equipamientoEquipado[slot] = null;
-        return antiguo;
-    }
-    public Equipamiento quitarEquipamiento(Equipamiento equip) {
-        if (equip == null) { return null; }
-        for (int i = 0; i < equipamientoEquipado.length; i++) {
-            if (equipamientoEquipado[i] != null && equipamientoEquipado[i].equals(equip)) {
-                Equipamiento antiguo = equipamientoEquipado[i];
-                equipamientoEquipado[i] = null;
-                return antiguo;
-            }
-        }
-        throw new EquipamientoException("Equipamiento no equipado");
-    }
+    
     public String getEquipamientoGuardado() {
         Equipamiento[] armas = new Equipamiento[0];
         Equipamiento[] armaduras = new Equipamiento[0];
@@ -392,8 +384,16 @@ public class Personaje extends Entidad {
         stats.accumulate("raza", this.raza);
         personaje.remove("Stats");
         personaje.accumulate("Stats", stats);
+        
+        JSONObject equipamientos = new JSONObject();
 
-        JSONObject equipamientos = personaje.getJSONObject("Equipamientos");
+        for (int i = 0; i < equipamientoEquipado.length; i++) {
+            if (equipamientoEquipado[i] == null) {
+                equipamientos.accumulate("Equipado", new JSONObject());
+            } else {
+                equipamientos.accumulate("Equipado", equipamientoEquipado[i].getJsonObject());
+            }
+        }
         Util.sortArray(equipamientoGuardado);
         equipamientos.put("Guardado", new JSONArray());
         for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
@@ -411,7 +411,12 @@ public class Personaje extends Entidad {
                 bolsa.put(new JSONObject());
             }
         }
-        personaje.remove("Equipamientos");
+
+        if (personaje.opt("Equipamientos") != null) {
+            personaje.remove("Equipamientos");
+        }if (personaje.opt("Bolsa") != null) {
+            personaje.remove("Bolsa");
+        }
         personaje.put("Equipamientos", equipamientos);
         personaje.put("Bolsa", bolsa);
         
