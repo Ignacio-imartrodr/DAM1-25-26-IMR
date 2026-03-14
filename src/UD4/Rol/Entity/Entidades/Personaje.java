@@ -91,8 +91,9 @@ public class Personaje extends Entidad implements EquipEquipado {
             throw new EntidadException("El nombre es necesario para la construcción de Personaje y no puede ser \"null\" o estár en blanco, prueba \"Personaje()\" en su lugar");
         }
         this.vidaMin = 50;
-        this.minRndStat = 1;
-        this.maxRndStat = 100;
+        int minRndStat = 1;
+        int maxRndStat = 100;
+        this.minMaxRndStats = new int[] {minRndStat, maxRndStat, minRndStat, maxRndStat, minRndStat, maxRndStat};
         newEntidad(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
         
         if (raza == null) {
@@ -437,6 +438,14 @@ public class Personaje extends Entidad implements EquipEquipado {
         return personaje;
     }
     
+    
+    @Override
+    public String toString() {
+        String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
+        return nombreYVida;
+    }
+
+
     public static void main(String[] args) {
         Personaje p = new Personaje("pureba");
         p.bolsa = new Item[] {new Item("enredaderas"), new Item("bomba de humo"), new Item("enredaderas"), null};

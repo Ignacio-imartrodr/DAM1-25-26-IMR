@@ -15,8 +15,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     protected int experiencia;
     protected int puntosVida;
     protected int vidaMin;
-    protected int minRndStat;
-    protected int maxRndStat;
+    protected int[] minMaxRndStats;
 
     protected final static int EXP_MAX = 256999;
 
@@ -42,9 +41,9 @@ public abstract class Entidad implements Comparable<Entidad> {
             }
             
         } else {
-            this.fuerza = asignarStatRnd(fuerza);
-            this.agilidad = asignarStatRnd(agilidad);
-            this.constitucion = asignarStatRnd(constitucion);
+            this.fuerza = asignarStatRnd(fuerza, 0);
+            this.agilidad = asignarStatRnd(agilidad, 1);
+            this.constitucion = asignarStatRnd(constitucion, 2);
             this.nivel = (byte) asignarStatNoRng(false, nivel);
             this.experiencia = asignarStatNoRng(true, experiencia);
         }
@@ -56,13 +55,29 @@ public abstract class Entidad implements Comparable<Entidad> {
      * @param   texto   : String con el valor numérico a asignar o null para num rnd de 1 a 100.
      * @return Valor int adecuado.
      */
-    protected int asignarStatRnd(String texto){
+    protected int asignarStatRnd(String texto, int stat){
+        final int MIN;
+        final int MAX;
+        switch (stat) {
+            case 0 ->{
+                MIN = minMaxRndStats[0];
+                MAX = minMaxRndStats[1];}
+            case 1 ->{
+                MIN = minMaxRndStats[2];
+                MAX = minMaxRndStats[3];}
+            case 2 -> {
+                MIN = minMaxRndStats[4];
+                MAX = minMaxRndStats[5];}
+            default-> {
+                MIN = -1;
+                MAX = -1;}
+        }
         int num;
-        if ( !(texto == null) && (Integer.parseInt(texto) < minRndStat || Integer.parseInt(texto) > maxRndStat)) {
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             throw new EntidadException("Valores fuera de límites");
         }
         if (texto == null) {
-            num = generarRnd1MinAMax(minRndStat, maxRndStat);
+            num = generarRnd1MinAMax(MIN, MAX);
         } else {
             num = Integer.parseInt(texto);
         }
@@ -107,6 +122,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     public int getVidaMax(){
         return vidaMin + constitucion;
     }
+    public abstract String getFicha();
     protected String getFicha(String nombreEntidad){
         String ficha;
         String Cabecera = "Ficha " + nombreEntidad + " \n=================\n";
@@ -248,16 +264,9 @@ public abstract class Entidad implements Comparable<Entidad> {
         
         return entidad;
     }
-    @Override
-    public String toString(){
-        String nombre = "";
-        if (this.nombre != null) {
-            nombre = this.nombre;
-        }
-        String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
-        return nombreYVida;
-    }
 
+    abstract public String toString();
+    
     @Override
     public int compareTo(Entidad other) {
         int agilidadComp = Integer.compare(this.agilidad, other.agilidad);

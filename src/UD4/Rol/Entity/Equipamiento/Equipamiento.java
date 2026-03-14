@@ -162,12 +162,22 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             throw new EquipamientoException("Id no valido");
         }
     }
-
-    private static int numDe1000ConInterpolarFromNivel(int porcentage, int cantARestar, int lvlEntidad) {
+    /**
+     * Genera la probabilidad entre 1000 de obtener algo con un porcentage sobre 100 de {@code porcentage} según el 
+     * {@code lvlEntidad} que va de 1 a 256, el cual solo puede variar {@code porcentage} entre 0 y {@code diffMax}
+     * 
+     * @param porcentage    : Probabilidad base
+     * @param diffMax       : La máxima variación en el porcentaje según el {@code lvlEntidad}
+     * @param lvlEntidad    : Nivel de la entidad que va de 1 a 256 y definirá cuanta probabilidad varía
+     * @return  Resultado de la interpolación, un número entre 0 y 1000 que será la probabilidad alterada
+     *          según los parametros * 10 para mayor precisión debido al {@code Math.round}
+     */
+    private static int numDe1000ConInterpolarFromNivel(int porcentage, int diffMax, int lvlEntidad) {
+        //El "* 10" es para mejorar la precision por el round
         int valorBase = porcentage * 10;
-        int valorFinal = (porcentage - cantARestar) * 10;
+        int valorFinal = (porcentage - diffMax) * 10;
+        // Formula de interpolación para que la probabilidad varíe como quiero según el nivel (el -1 a lvlEntidad es para normalizarlo, que vaya de 0 a 255 en lugar de 1 a 256)
         int resultado =  Math.round(valorBase + (valorFinal - valorBase) * ((lvlEntidad - 1) / (float) 255.0));
-        
         return resultado;
     }
     public static Object gachaEquipamiento(int lvlEntidad, boolean esGeneral, boolean... gachaArmas){
@@ -217,53 +227,48 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
                 break;
         }
         
-        int[] prob = new int[1000];
         if (esArma) {
-            //conLvlMin: 40%     30% 20% 6% 4% || conLvlMax: 33%     28% 23% 9% 6%
+            //Con LvlMin: 40%     30% 20% 6% 4% || Con LvlMax: 33%     28% 23% 9% 6%
             int p0 = numDe1000ConInterpolarFromNivel(40, 7, lvlEntidad);
             int p1 = p0 + numDe1000ConInterpolarFromNivel(30, 2, lvlEntidad);
             int p2 = p1 + numDe1000ConInterpolarFromNivel(20, -3, lvlEntidad);
             int p3 = p2 + numDe1000ConInterpolarFromNivel(6, -3, lvlEntidad);
 
-            for (int i = 0; i < prob.length; i++) {
-                if (i < p0) {
-                    prob[i] = 0;
-                } else if (i < (p1)) {
-                    prob[i] = 1;
-                } else if (i < (p2)) {
-                    prob[i] = 2;
-                } else if (i < (p3)) {
-                    prob[i] = 3;
-                } else {
-                    prob[i] = 4;
-                }
+            int index = rng.nextInt(1000); //Es 1000 en vez de 100 para mejorar la precisión por el redondeo de la interpolación
+            if (index < p0) {
+                rnd = 0;
+            } else if (index < p1) {
+                rnd = 1;
+            } else if (index < p2) {
+                rnd = 2;
+            } else if (index < p3) {
+                rnd = 3;
+            } else {
+                rnd = 4;
             }
         } else {
-            // conLvlMin: 35% 30% 20% 10% 3% 2% || conLvlMax: 30% 27% 18% 15% 6% 4%
+            // Con LvlMin: 35% 30% 20% 10% 3% 2% || Con LvlMax: 30% 27% 18% 15% 6% 4%
             int p0 = numDe1000ConInterpolarFromNivel(35, 5, lvlEntidad);
             int p1 = p0 + numDe1000ConInterpolarFromNivel(30, 8, lvlEntidad);
             int p2 = p1 + numDe1000ConInterpolarFromNivel(20, 10, lvlEntidad);
             int p3 = p2 + numDe1000ConInterpolarFromNivel(10, 5, lvlEntidad);
             int p4 = p3 + numDe1000ConInterpolarFromNivel(3, 2, lvlEntidad);
-            
-            for (int i = 0; i < prob.length; i++) {
-                if (i < p0) {
-                    prob[i] = 0;
-                } else if (i < (p1)) {
-                    prob[i] = 1;
-                } else if (i < (p2)) {
-                    prob[i] = 2;
-                } else if (i < (p3)) {
-                    prob[i] = 3;
-                } else if (i < (p4)) {
-                    prob[i] = 4;
-                } else {
-                    prob[i] = 5;
-                }
+
+            int index = rng.nextInt(1000);//Es 1000 en vez de 100 para mejorar la precisión por el redondeo de la interpolación
+            if (index < p0) {
+                rnd = 0;
+            } else if (index < p1) {
+                rnd = 1;
+            } else if (index < p2) {
+                rnd = 2;
+            } else if (index < p3) {
+                rnd = 3;
+            } else if (index < p4) {
+                rnd = 4;
+            } else {
+                rnd = 5;
             }
         }
-        int random1000 = esArma ? rng.nextInt(prob.length) : rng.nextInt(prob.length);
-        rnd = (byte) (esArma ? prob[random1000] : prob[random1000]);
         try {
             switch (key) {
                 case "Espada":
