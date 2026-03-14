@@ -1,4 +1,4 @@
-package UD4.Rol.Entity;
+package UD4.Rol.Entity.Others;
 
 import UD4.Rol.Utilidades.ItemException;
 
@@ -7,7 +7,7 @@ import UD4.Rol.Utilidades.ItemException;
  */
 
 public class Item implements Comparable<Item>{
-    private String nombre;
+    private final Items item;
     private int sanar = 0;
     private int damage = 0;
     private int duracion = 1;
@@ -15,8 +15,8 @@ public class Item implements Comparable<Item>{
     private String description;
     public Item(String nombre) {
         Items items = Items.stringToItems(nombre);
-        this.nombre = items.toString();
-        switch (items) {
+        item = items;
+        switch (item) {
             case POCION_VIDA: //Cura
                 this.sanar = 75;
                 this.description = "Cura 75 puntos de vida (puede exceder vida máx)";
@@ -44,7 +44,7 @@ public class Item implements Comparable<Item>{
         }
     }
     public String getNombre() {
-        return nombre;
+        return item.toString();
     }
     public int getSanar() {
         return sanar;
@@ -67,7 +67,7 @@ public class Item implements Comparable<Item>{
     }
     @Override
     public String toString() {
-        return nombre;
+        return item.toString();
     }
     
 }

@@ -1,4 +1,4 @@
-package UD4.Rol.Entity;
+package UD4.Rol.Entity.Others;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Arma.*;

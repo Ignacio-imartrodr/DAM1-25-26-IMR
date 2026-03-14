@@ -5,16 +5,13 @@ import java.util.Arrays;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import UD4.Rol.Entity.*;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
-import UD4.Rol.Entity.Equipamiento.Arma.Barita;
-import UD4.Rol.Entity.Equipamiento.Arma.Espada;
-import UD4.Rol.Entity.Equipamiento.Arma.Maza;
-import UD4.Rol.Entity.Equipamiento.Armadura.Armadura;
-import UD4.Rol.Entity.Equipamiento.Armadura.Botas;
-import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
-import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
-import UD4.Rol.Entity.Equipamiento.Armadura.Pechera;
+import UD4.Rol.Entity.Equipamiento.Arma.*;
+import UD4.Rol.Entity.Equipamiento.Armadura.*;
+import UD4.Rol.Entity.Others.EquipEquipado;
+import UD4.Rol.Entity.Others.Item;
+import UD4.Rol.Entity.Others.Items;
+import UD4.Rol.Entity.Others.Raza;
 import UD4.Rol.Utilidades.*;
 
 /**
@@ -95,7 +92,7 @@ public class Personaje extends Entidad implements EquipEquipado {
             this.raza = Raza.HUMANO;
         }else{
             try {
-                this.raza = Raza.StringToRaza(raza);
+                this.raza = Raza.stringToRaza(raza);
             } catch (PersonajeException e) {
                 throw new PersonajeException("Raza no válida.");
             }
@@ -104,6 +101,11 @@ public class Personaje extends Entidad implements EquipEquipado {
         this.agilidad = super.agilidad = asignarBonusRaza(1);
         this.constitucion = super.constitucion = asignarBonusRaza(2);
         this.id = -1;
+
+        if (bolsa != null) {
+            Util.sortArray(bolsa);
+        }
+
         if (yaExistente) {
             if (equipamientoEquipado[2] != null && ((Pantalon) equipamientoEquipado[2]).getEncantamiento() != null) {
                 if ((bolsa.length == 3 && !((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo")) || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {
@@ -141,13 +143,18 @@ public class Personaje extends Entidad implements EquipEquipado {
                 throw new EquipamientoException("Equipamiento guardado invalido");
             }
         } else {
-            if (((Pantalon) equipamientoEquipado[2]).getEncantamiento() != null && ((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo")) {
-                this.bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
-            } else {
-                this.bolsa = Items.sort(new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()});
+            boolean tieneBolsillo = false;
+            if (equipamientoEquipado != null && equipamientoEquipado.length > 2 && equipamientoEquipado[2] instanceof Pantalon) {
+                String encantamiento = ((Pantalon) equipamientoEquipado[2]).getEncantamiento();
+                tieneBolsillo = encantamiento != null && encantamiento.equalsIgnoreCase("Bolsillo");
             }
+            if (tieneBolsillo) {
+                this.bolsa = new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()};
+            } else {
+                this.bolsa = new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()};
+            }
+            Util.sortArray(this.bolsa);
         }
-        Util.sortArray(bolsa);
     }
     
     
@@ -165,7 +172,7 @@ public class Personaje extends Entidad implements EquipEquipado {
         return raza;
     }
     public String getStringBolsa(){
-        this.bolsa = Items.sort(this.bolsa);
+        Util.sortArray(this.bolsa);
         String inventario = "Objetos disponibles:\n";
         for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
             cant = Items.cantidadItem(bolsa, bolsa[i]);
@@ -228,7 +235,7 @@ public class Personaje extends Entidad implements EquipEquipado {
                                     break;
                                 }
                             }
-                            bolsa = Items.sort(bolsa);
+                            Util.sortArray(bolsa);
                             System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
                         }
                         break;
@@ -264,14 +271,14 @@ public class Personaje extends Entidad implements EquipEquipado {
         if (pos >= bolsa.length || pos <= 0) {
             return false;
         }
-        bolsa = Items.sort(bolsa);
+        Util.sortArray(bolsa);
         quitarObjetoDeBolsa(bolsa[pos]);
         return true;
     }
     private boolean quitarObjetoDeBolsa(Item item){
         boolean fueUsado = false;
         if (item != null && bolsa != null) {
-            bolsa = Items.sort(bolsa);
+            Util.sortArray(bolsa);
             for (int i = 0; i < bolsa.length; i++) {
                 if (item.compareTo(bolsa[i]) == 0) {
                     bolsa[i] = null;
@@ -279,7 +286,7 @@ public class Personaje extends Entidad implements EquipEquipado {
                     break;
                 }
             }
-            bolsa = Items.sort(bolsa);
+            Util.sortArray(bolsa);
         }
         return fueUsado;
     }

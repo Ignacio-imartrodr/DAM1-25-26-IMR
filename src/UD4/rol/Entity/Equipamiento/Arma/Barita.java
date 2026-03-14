@@ -6,10 +6,7 @@ import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Rareza;
-import UD4.Rol.Entity.Equipamiento.Armadura.Botas;
-import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
-import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
-import UD4.Rol.Entity.Equipamiento.Armadura.Pechera;
+import UD4.Rol.Entity.Equipamiento.Armadura.*;
 import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.Util;
 

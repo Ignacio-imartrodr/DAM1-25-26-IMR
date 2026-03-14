@@ -296,6 +296,30 @@ public abstract class Util{
             return pedirPorTeclado(pideNumero);
         }
     }
+    /**
+     * Pide por teclado una ruta a un archivo Json.
+     * @return Ruta otorgada por teclado.
+     */
+    public static String pedirRuta(){
+        boolean restart = true;
+        String rutaFichero = null;
+        while (restart) {
+            restart = false;
+            System.out.print("¿Quieres dar una ruta a fichero Json? (S/n): ");
+            if (Util.escogerOpcion("s", "n")) {
+                System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
+                rutaFichero = Util.pedirPorTeclado(false);
+                if ((rutaFichero == null) || !rutaFichero.endsWith(".json")) {
+                    System.out.println("La ruta debe dirigir a un fichero con extensión .json");
+                    restart = true;
+                }
+            } else {
+                System.out.println("Ruta no guardada.");
+                rutaFichero = null;
+            }
+        }
+        return rutaFichero;
+    }
 
     /**
      * Busca la posición de un objeto en un array de ese objeto y si no existe devuelve -1.

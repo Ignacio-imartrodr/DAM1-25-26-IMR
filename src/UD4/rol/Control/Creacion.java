@@ -5,12 +5,12 @@ import java.util.Arrays;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import UD4.Rol.Entity.Item;
-import UD4.Rol.Entity.Items;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
 import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
+import UD4.Rol.Entity.Others.Item;
+import UD4.Rol.Entity.Others.Items;
 import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
@@ -27,41 +27,103 @@ public abstract class Creacion {
         }
         return texto;
     }
+    private static Personaje parsePersonajeFromJsonObject(JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return null;
+        }
+
+        JSONObject stats = jsonObject.optJSONObject("Stats");
+        String nombre = "SIN_NOMBRE";
+        String raza = "Humano";
+        String fuerza = "1";
+        String agilidad = "1";
+        String constitucion = "1";
+        String nivel = "1";
+        String experiencia = "0";
+        if (stats != null) {
+            nombre = stats.optString("nombre", nombre);
+            raza = stats.optString("raza", raza);
+            fuerza = String.valueOf(stats.optInt("fuerza", Integer.parseInt(fuerza)));
+            agilidad = String.valueOf(stats.optInt("agilidad", Integer.parseInt(agilidad)));
+            constitucion = String.valueOf(stats.optInt("constitucion", Integer.parseInt(constitucion)));
+            nivel = String.valueOf(stats.optInt("nivel", Integer.parseInt(nivel)));
+            experiencia = String.valueOf(stats.optInt("experiencia", Integer.parseInt(experiencia)));
+        }
+
+        Equipamiento[] equipamientoEquipado = null;
+        Equipamiento[] equipamientoGuardado = null;
+        JSONObject equipObj = jsonObject.optJSONObject("Equipamientos");
+        if (equipObj != null) {
+            JSONArray equipadoJson = equipObj.optJSONArray("Equipado");
+            if (equipadoJson != null) {
+                equipamientoEquipado = new Equipamiento[equipadoJson.length()];
+                for (int j = 0; j < equipadoJson.length(); j++) {
+                    JSONObject equip = equipadoJson.optJSONObject(j);
+                    if (equip != null) {
+                        equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
+                    }
+                }
+            }
+            JSONArray guardadoJson = equipObj.optJSONArray("Guardado");
+            if (guardadoJson != null) {
+                equipamientoGuardado = new Equipamiento[guardadoJson.length()];
+                for (int j = 0; j < guardadoJson.length(); j++) {
+                    JSONObject equip = guardadoJson.optJSONObject(j);
+                    if (equip != null) {
+                        equipamientoGuardado[j] = Equipamiento.newEquipamiento(equip);
+                    }
+                }
+            }
+        }
+
+        Item[] bolsa = null;
+        JSONArray bolsaJson = jsonObject.optJSONArray("Bolsa");
+        if (bolsaJson != null) {
+            bolsa = new Item[bolsaJson.length()];
+            for (int j = 0; j < bolsaJson.length(); j++) {
+                JSONObject itemObj = bolsaJson.optJSONObject(j);
+                if (itemObj != null) {
+                    String itemName = itemObj.optString("nombre", null);
+                    if (itemName != null && !itemName.isBlank()) {
+                        try {
+                            bolsa[j] = new Item(Items.stringToItems(itemName).name());
+                        } catch (Exception e) {
+                            bolsa[j] = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        try {
+            return new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, equipamientoGuardado, bolsa, true);
+        } catch (Exception e) {
+            throw new PersonajeException("Error creando personaje from JSON: " + e.getMessage());
+        }
+    }
+
     public static Personaje[] getPersonajesJson(String ruta){
-        JSONArray personajesJson = new JSONArray(ruta);
+        String contenido = Util.readFileToString(ruta);
+        if (contenido == null || contenido.isBlank()) {
+            throw new PersonajeException("Archivo JSON vacío o no encontrado");
+        }
+
+        JSONObject root = new JSONObject(contenido);
+        JSONArray personajesJson = root.optJSONArray("Personajes");
+        if (personajesJson == null) {
+            throw new PersonajeException("No se encontró la clave Personajes");
+        }
+
         Personaje[] personajes = new Personaje[0];
         for (int i = 0; i < personajesJson.length(); i++) {
-            if (personajesJson.getJSONObject(i) != null) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject = personajesJson.getJSONObject(i);
-
-                Equipamiento[] equipamientoEquipado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").length()];
-                for (int j = 0; j < equipamientoEquipado.length; j++) {
-                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").getJSONObject(j);
-                    equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
+            try {
+                Personaje p = parsePersonajeFromJsonObject(personajesJson.optJSONObject(i));
+                if (p != null) {
+                    personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                    personajes[personajes.length - 1] = p;
                 }
-
-                Equipamiento[] equipamientoGuardado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").length()];
-                for (int j = 0; j < equipamientoGuardado.length; j++) {
-                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").getJSONObject(j);
-                    equipamientoGuardado[j] = Equipamiento.newEquipamiento(equip);
-                }
-
-                Item[] bolsa = new Item[jsonObject.getJSONArray("bolsa").length()];
-                for (int j = 0; j < bolsa.length; j++) {
-                    bolsa[j] = new Item(Items.stringToItems(jsonObject.getJSONArray("bolsa").getString(i)).name());
-                }
-                
-                Personaje personaje = new Personaje(
-                                                    jsonObject.getString("nombre"), jsonObject.getString("raza"), 
-                                                    jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), 
-                                                    jsonObject.getString("constitucion"), jsonObject.getString("nivel"), 
-                                                    jsonObject.getString("experiencia"), equipamientoEquipado, 
-                                                    equipamientoGuardado,  bolsa, true
-                                                    );
-
-                personajes = Arrays.copyOf(personajes, personajes.length + 1);
-                personajes[personajes.length - 1] = personaje;
+            } catch (PersonajeException e) {
+                System.err.println("Personaje " + i + " ignorado: " + e.getMessage());
             }
         }
         return personajes;
@@ -75,38 +137,15 @@ public abstract class Creacion {
             throw new PersonajeException("Error en el formato de la web");
         }
         for (int i = 0; i < personajesJson.length(); i++) {
-            JSONObject persVacio = new JSONObject("");
-            JSONObject pers = personajesJson.getJSONObject(i);
-            if (pers != null && !pers.equals(persVacio)) {
-                JSONObject jsonObject = personajesJson.getJSONObject(i);
-
-                Equipamiento[] equipamientoEquipado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").length()];
-                for (int j = 0; j < equipamientoEquipado.length; j++) {
-                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Equipado").getJSONObject(j);
-                    equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
+            try {
+                Personaje personaje = parsePersonajeFromJsonObject(personajesJson.optJSONObject(i));
+                if (personaje != null) {
+                    personaje.setId(i);
+                    personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                    personajes[personajes.length - 1] = personaje;
                 }
-
-                Equipamiento[] equipamientoGuardado = new Equipamiento[jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").length()];
-                for (int j = 0; j < equipamientoGuardado.length; j++) {
-                    JSONObject equip = jsonObject.getJSONObject("Equipamiento").getJSONArray("Guardado").getJSONObject(j);
-                    equipamientoGuardado[j] = Equipamiento.newEquipamiento(equip);
-                }
-
-                Item[] bolsa = new Item[jsonObject.getJSONArray("bolsa").length()];
-                for (int j = 0; j < bolsa.length; j++) {
-                    bolsa[j] = new Item(Items.stringToItems(jsonObject.getJSONArray("bolsa").getString(i)).name());
-                }
-                
-                Personaje personaje = new Personaje(
-                    jsonObject.getString("nombre"), jsonObject.getString("raza"), 
-                    jsonObject.getString("fuerza"), jsonObject.getString("agilidad"), 
-                    jsonObject.getString("constitucion"), jsonObject.getString("nivel"), 
-                    jsonObject.getString("experiencia"), equipamientoEquipado, 
-                    equipamientoGuardado,  bolsa, true
-                );
-                personaje.setId(i);
-                personajes = Arrays.copyOf(personajes, personajes.length + 1);
-                personajes[personajes.length - 1] = personaje;
+            } catch (PersonajeException e) {
+                System.err.println("Personaje " + i + " ignorado (web): " + e.getMessage());
             }
         }
         return personajes;
@@ -158,12 +197,12 @@ public abstract class Creacion {
         return p;
     }
     public static void main(String[] args) {
-        //Personaje p = new Personaje("Prueba3");//TODO arreglar instanciador
+        Personaje p = new Personaje("Prueba3");
         Equipamiento[] equip = new Equipamiento[] {null, null, new Pantalon("CHAOTIC"), null, null};
         Equipamiento[] guard = new Equipamiento[] {null, new Pantalon(2), null};
         Personaje p1 = new Personaje("Prueba4", null, "50", "50", "50", "2", "45", equip, guard, new Item[4], true);
         Personaje p2 = new Personaje("Prueba5", "Elfo", "50", "50", "50", "2", "45", new Equipamiento[5], new Equipamiento[] {new Pantalon(3), new Casco(1)}, new Item[] {null, Items.getItemRnd(), null}, true);
-        Personaje[] personajes = new Personaje[] {p1, p2};
+        Personaje[] personajes = new Personaje[] {p, p1, p2};
         JSONObject[] todos = new JSONObject[0];
         for (Personaje personaje : personajes) {
             Util.writeToJson("src\\UD4\\Rol\\PersonajesGuardados.json", true, "Personajes", personaje.toJsonObject());

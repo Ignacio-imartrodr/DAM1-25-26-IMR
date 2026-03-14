@@ -1,4 +1,4 @@
-package UD4.Rol.Entity;
+package UD4.Rol.Entity.Others;
 
 import java.util.Arrays;
 
@@ -13,6 +13,7 @@ public enum Raza implements Habilidades {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
     private boolean habilidadActiva = true;
+
     public static Raza[] toArray(){
         Raza[] razas = new Raza[0];
         for (Raza raza : Raza.values()) {
@@ -21,7 +22,7 @@ public enum Raza implements Habilidades {
         }
         return razas;
     }
-    public static Raza StringToRaza(String respuesta){
+    public static Raza stringToRaza(String respuesta){
         Raza raza = HUMANO;
         if (respuesta == null) {
             raza = HUMANO;

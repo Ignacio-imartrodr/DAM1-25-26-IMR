@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 import UD4.Rol.Control.Creacion;
-import UD4.Rol.Entity.Raza;
 import UD4.Rol.Entity.Entidades.Personaje;
+import UD4.Rol.Entity.Others.Raza;
 import UD4.Rol.Utilidades.*;
 
 /** 
@@ -30,7 +30,7 @@ public class AppCreaPersonaje {
         String raza = "a";
         for (boolean error = true; error;) {
             try {
-                Raza razaVal = Raza.StringToRaza(Util.pedirPorTeclado(false));
+                Raza razaVal = Raza.stringToRaza(Util.pedirPorTeclado(false));
                 raza = razaVal.toString();
                 error = false;
             } catch (PersonajeException e) {
@@ -168,7 +168,7 @@ public class AppCreaPersonaje {
         System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
         if (Util.escogerOpcion("S", "n")) {
             String rutaFichero;
-            rutaFichero = AppCombateSingular.pedirRuta();
+            rutaFichero = Util.pedirRuta();
             if (!(rutaFichero == null)) {
                 temp = AppCombateSingular.cargarPersonajesDeArchivo(rutaFichero);
                 for (Personaje personaje : temp) {

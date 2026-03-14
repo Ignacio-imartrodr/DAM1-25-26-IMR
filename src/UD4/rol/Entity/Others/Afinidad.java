@@ -1,4 +1,4 @@
-package UD4.Rol.Entity;
+package UD4.Rol.Entity.Others;
 
 import UD4.Rol.Utilidades.AfinidadException;
 import UD4.Rol.Utilidades.Util;

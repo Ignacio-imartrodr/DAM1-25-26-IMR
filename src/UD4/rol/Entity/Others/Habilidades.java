@@ -1,4 +1,4 @@
-package UD4.Rol.Entity;
+package UD4.Rol.Entity.Others;
 
 public interface Habilidades {
     String getHabilidadName();

@@ -2,8 +2,8 @@ package UD4.Rol.Entity.Equipamiento.Arma;
 
 import org.json.JSONObject;
 
-import UD4.Rol.Entity.Afinidad;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Others.Afinidad;
 import UD4.Rol.Utilidades.RarezaException;
 
 public abstract class Arma extends Equipamiento {

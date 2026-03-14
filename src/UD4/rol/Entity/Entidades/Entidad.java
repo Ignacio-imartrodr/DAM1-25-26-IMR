@@ -219,7 +219,7 @@ public abstract class Entidad implements Comparable<Entidad> {
         }
         return vivo;
     }
-    public int atacar(Personaje enemigo){
+    public int atacar(Entidad enemigo){
         int puntAtaque = generarRnd1a100() + fuerza;
         int puntDefensa = generarRnd1a100() + enemigo.agilidad;
         int daño = puntDefensa - puntAtaque;
