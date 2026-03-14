@@ -3,7 +3,6 @@ package UD4.Rol.Entity.Others;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Arma.*;
 import UD4.Rol.Entity.Equipamiento.Armadura.*;
-
 import UD4.Rol.Utilidades.EquipamientoException;
 
 public interface EquipEquipado {

@@ -1,6 +1,7 @@
 package UD4.Rol.Control;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
 import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
 import UD4.Rol.Entity.Others.Item;
 import UD4.Rol.Entity.Others.Items;
-import UD4.Rol.Utilidades.PersonajeException;
+import UD4.Rol.Utilidades.EntidadException;
 import UD4.Rol.Utilidades.Util;
 
 public abstract class Creacion {
@@ -98,20 +99,20 @@ public abstract class Creacion {
         try {
             return new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, equipamientoGuardado, bolsa, true);
         } catch (Exception e) {
-            throw new PersonajeException("Error creando personaje from JSON: " + e.getMessage());
+            throw new EntidadException("Error creando personaje from JSON: " + e.getMessage());
         }
     }
 
     public static Personaje[] getPersonajesJson(String ruta){
         String contenido = Util.readFileToString(ruta);
         if (contenido == null || contenido.isBlank()) {
-            throw new PersonajeException("Archivo JSON vacío o no encontrado");
+            throw new EntidadException("Archivo JSON vacío o no encontrado");
         }
 
         JSONObject root = new JSONObject(contenido);
         JSONArray personajesJson = root.optJSONArray("Personajes");
         if (personajesJson == null) {
-            throw new PersonajeException("No se encontró la clave Personajes");
+            throw new EntidadException("No se encontró la clave Personajes");
         }
 
         Personaje[] personajes = new Personaje[0];
@@ -122,7 +123,7 @@ public abstract class Creacion {
                     personajes = Arrays.copyOf(personajes, personajes.length + 1);
                     personajes[personajes.length - 1] = p;
                 }
-            } catch (PersonajeException e) {
+            } catch (EntidadException e) {
                 System.err.println("Personaje " + i + " ignorado: " + e.getMessage());
             }
         }
@@ -134,7 +135,7 @@ public abstract class Creacion {
         try {
             personajesJson = Util.urlToJsonArray(ruta, "Personajes");
         } catch (Exception e) {
-            throw new PersonajeException("Error en el formato de la web");
+            throw new EntidadException("Error en el formato de la web");
         }
         for (int i = 0; i < personajesJson.length(); i++) {
             try {
@@ -144,11 +145,41 @@ public abstract class Creacion {
                     personajes = Arrays.copyOf(personajes, personajes.length + 1);
                     personajes[personajes.length - 1] = personaje;
                 }
-            } catch (PersonajeException e) {
+            } catch (EntidadException e) {
                 System.err.println("Personaje " + i + " ignorado (web): " + e.getMessage());
             }
         }
         return personajes;
+    }
+
+    public static String pedirStatRng(){
+        Random rnd = new Random();
+        int num = rnd.nextInt(100) + 1;
+        String texto = Util.pedirPorTeclado(true);
+        final int MIN = 1;
+        final int MAX = 100;
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
+            texto = Util.pedirPorTeclado(true);
+        }
+        if (texto == null) {
+            texto = String.valueOf(num);
+        }
+        return texto;
+    }
+    public static String pedirStatNoRng(boolean esXp){
+        String texto;
+        texto = Util.pedirPorTeclado(true);
+        final int MIN = esXp ? 0 : 1;
+        final int MAX = esXp ? 999 : 100;
+        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
+            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
+            texto = Util.pedirPorTeclado(true);
+        }
+        if (texto == null) {
+            texto = String.valueOf(MIN);
+        }
+        return texto;
     }
 
     public static Personaje modPersonaje(String valor, Personaje p){
@@ -192,7 +223,7 @@ public abstract class Creacion {
                 p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, null, null, bolsa, true);
                 break;
             default:
-                throw new PersonajeException();
+                throw new EntidadException();
         }
         return p;
     }

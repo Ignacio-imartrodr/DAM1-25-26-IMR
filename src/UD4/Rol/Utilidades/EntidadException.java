@@ -9,13 +9,13 @@ package UD4.Rol.Utilidades;
  * instance of this class.
  *
  */
-public class PersonajeException extends RuntimeException {
+public class EntidadException extends RuntimeException {
     
     /**
      * Constructs an {@code PersonajeException} with no detail
      * message.
      */
-    public PersonajeException() {
+    public EntidadException() {
         super();
     }
 
@@ -25,7 +25,7 @@ public class PersonajeException extends RuntimeException {
      *
      * @param   s   the detail message.
      */
-    public PersonajeException(String s) {
+    public EntidadException(String s) {
         super(s);
     }
 }

@@ -1,11 +1,11 @@
 package UD4.Rol.Boundary;
 
 import UD4.Rol.Control.Combate;
-import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
 import UD4.Rol.Entity.Entidades.Personaje;
+import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
 import UD4.Rol.Utilidades.Util;
 
-public class AppCombateGrupo {//TODO recrear a mi modo
+public class AppCombateMonstruos {//TODO recrear a mi modo
     public static void main(String[] args) {
         System.out.println("=== Combate de Grupo: Personajes vs Monstruos ===");
 

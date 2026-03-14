@@ -2,13 +2,13 @@ package UD4.Rol.Control;
 
 import java.util.Random;
 
+import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
 import UD4.Rol.Entity.Others.Item;
 import UD4.Rol.Entity.Others.Items;
 import UD4.Rol.Entity.Others.Raza;
-import UD4.Rol.Entity.Entidades.Personaje;
+import UD4.Rol.Utilidades.EntidadException;
 import UD4.Rol.Utilidades.ItemException;
-import UD4.Rol.Utilidades.PersonajeException;
 import UD4.Rol.Utilidades.Util;
 
 public class Combate {
@@ -16,7 +16,7 @@ public class Combate {
         return !turno;
     }
 
-    public static Personaje[] combateSingular(Personaje[] personajesEnBatalla, Personaje[] personajesCreados, int numCombatientes) {
+    public static Personaje[] combateSingular(Personaje[] personajesEnBatalla, Personaje[] personajesCreados, int numCombatientes) {//TODO añadir efectos de armadura y armas
         boolean batalla = true;
         while (batalla) {
             boolean turno;
@@ -78,7 +78,7 @@ public class Combate {
                                 try {
                                     personajeActuando.sumarExperiencia(xp);
                                     enemigo.sumarExperiencia(xp);
-                                } catch (PersonajeException e) {
+                                } catch (EntidadException e) {
                                     int xpRest = xp;
                                     for (; xpRest >= 125000; xpRest -= 125000) {
                                         personajeActuando.sumarExperiencia(125000);

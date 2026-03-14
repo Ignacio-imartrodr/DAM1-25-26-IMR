@@ -2,7 +2,7 @@ package UD4.Rol.Entity.Equipamiento;
 
 import java.util.Arrays;
 
-import UD4.Rol.Utilidades.PersonajeException;
+import UD4.Rol.Utilidades.EntidadException;
 
 public enum Rareza {
         COMMUN, SPECIAL, RARE, EPIC, LEGENDARY, CHAOTIC;
@@ -23,7 +23,7 @@ public enum Rareza {
             try {
                 rareza = Rareza.valueOf(respuesta.toUpperCase());
             } catch (Exception e) {
-                throw new PersonajeException("Rareza no válida.");
+                throw new EntidadException("Rareza no válida.");
             }
         }
         return rareza;

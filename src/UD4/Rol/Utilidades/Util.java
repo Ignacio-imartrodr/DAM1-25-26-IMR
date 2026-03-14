@@ -110,7 +110,7 @@ public abstract class Util{
             }
             return objetosArchivo;
         } catch (Exception e) {
-            throw new PersonajeException("Error obteniendo los objetos del archivo");
+            throw new EntidadException("Error obteniendo los objetos del archivo");
         }
     }
     /**
@@ -133,7 +133,7 @@ public abstract class Util{
             }
             return jsonArray;
         } catch (Exception e) {
-            throw new PersonajeException("Error obteniendo los objetos de la web");
+            throw new EntidadException("Error obteniendo los objetos de la web");
         }
     }
     /**

@@ -4,37 +4,35 @@ import java.util.Random;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
-import UD4.Rol.Utilidades.PersonajeException;
+import UD4.Rol.Utilidades.EntidadException;
 
 public abstract class Entidad implements Comparable<Entidad> {
     protected String nombre;
-    protected int fuerza = 0;
-    protected int agilidad = 0;
-    protected int constitucion = 0;
-    protected byte nivel= -128; //rango: [-128 a 127]
-    protected int experiencia = 0;
+    protected int fuerza;
+    protected int agilidad;
+    protected int constitucion;
+    protected byte nivel= -128; //rango: [-128 a 127] //el geter devolverá de [1 a 256]
+    protected int experiencia;
     protected int puntosVida;
-    protected static int vidaMin = 50;
+    protected int vidaMin;
+    protected int minRndStat;
+    protected int maxRndStat;
+
     protected final static int EXP_MAX = 256999;
 
     private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
 
     protected void newEntidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
-        try {
-            nombre = nombre.strip();
-        } catch (NullPointerException e) {
-            throw new PersonajeException("El valor \"null\" no es valido");
-        } catch (Exception b){
-            throw new PersonajeException("El valor de \"nombre\" no es valido");
-        }
         if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
-            throw new PersonajeException("El nombre es necesario para la construcción de este objeto y no puede ser \"null\" o estár en blanco, prueba \"Personaje()\" en su lugar");
+            this.nombre = null;
+        } else {
+            nombre = nombre.strip();
+            this.nombre = Character.toUpperCase(nombre.charAt(0)) + nombre.substring(1).toLowerCase();
         }
-        this.nombre = nombre;
         
         if (yaExistente) {
             if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
-                throw new PersonajeException("Valores fuera de límites");
+                throw new EntidadException("Valores fuera de límites");
             } else {
                 this.fuerza = Integer.parseInt(fuerza);
                 this.agilidad = Integer.parseInt(agilidad);
@@ -60,14 +58,11 @@ public abstract class Entidad implements Comparable<Entidad> {
      */
     protected int asignarStatRnd(String texto){
         int num;
-        final int MIN = 1;
-        final int MAX = 100;
-        
-        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            throw new PersonajeException("Valores fuera de límites");
+        if ( !(texto == null) && (Integer.parseInt(texto) < minRndStat || Integer.parseInt(texto) > maxRndStat)) {
+            throw new EntidadException("Valores fuera de límites");
         }
         if (texto == null) {
-            num = generarRnd1a100();
+            num = generarRnd1MinAMax(minRndStat, maxRndStat);
         } else {
             num = Integer.parseInt(texto);
         }
@@ -76,9 +71,9 @@ public abstract class Entidad implements Comparable<Entidad> {
     protected int asignarStatNoRng(boolean esXp, String texto){
         int num;
         final int MIN = esXp ? 0 : 1;
-        final int MAX = esXp ? 999 : 100;
-        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            throw new PersonajeException("Valores fuera de límites");
+        final int MAX = esXp ? 999 : 256;
+        if ( !(texto == null) && (Integer.parseInt(texto) <= MIN || Integer.parseInt(texto) >= MAX)) {
+            throw new EntidadException("Valores fuera de límites");
         }
         if (texto == null) {
             num = MIN;
@@ -138,14 +133,14 @@ public abstract class Entidad implements Comparable<Entidad> {
         perderVida(cura); // Al ser "cura" un valor negativo gana vida en vez de perderla
     }
     
-    protected static int generarRnd1a100(){
+    protected static int generarRnd1MinAMax(int min, int max){
         Random rnd = new Random();
-        int num = rnd.nextInt(100) + 1;
+        int num = rnd.nextInt(min, max + 1);
         return num;
     }
     public byte sumarExperiencia(int puntos){// La experiencia va de 0 a 999 y luego vuelve a 0
         if (puntos > EXP_MAX) {
-            throw new PersonajeException("Cantidad de experiencia excesiva para subir en una sola ejecución");
+            throw new EntidadException("Cantidad de experiencia excesiva para subir en una sola ejecución");
         }
         int lvlsUpIdeal = 0;
         /*if (puntos/1000 != 0) {
@@ -220,8 +215,8 @@ public abstract class Entidad implements Comparable<Entidad> {
         return vivo;
     }
     public int atacar(Entidad enemigo){
-        int puntAtaque = generarRnd1a100() + fuerza;
-        int puntDefensa = generarRnd1a100() + enemigo.agilidad;
+        int puntAtaque = generarRnd1MinAMax(1, 100) + fuerza;
+        int puntDefensa = generarRnd1MinAMax(1, 100) + enemigo.agilidad;
         int daño = puntDefensa - puntAtaque;
         if ( daño > 0) {
             if (daño > enemigo.puntosVida) {
@@ -255,6 +250,10 @@ public abstract class Entidad implements Comparable<Entidad> {
     }
     @Override
     public String toString(){
+        String nombre = "";
+        if (this.nombre != null) {
+            nombre = this.nombre;
+        }
         String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
         return nombreYVida;
     }

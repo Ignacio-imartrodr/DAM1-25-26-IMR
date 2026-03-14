@@ -225,7 +225,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             int p2 = p1 + numDe1000ConInterpolarFromNivel(20, -3, lvlEntidad);
             int p3 = p2 + numDe1000ConInterpolarFromNivel(6, -3, lvlEntidad);
 
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < prob.length; i++) {
                 if (i < p0) {
                     prob[i] = 0;
                 } else if (i < (p1)) {
@@ -246,7 +246,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             int p3 = p2 + numDe1000ConInterpolarFromNivel(10, 5, lvlEntidad);
             int p4 = p3 + numDe1000ConInterpolarFromNivel(3, 2, lvlEntidad);
             
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < prob.length; i++) {
                 if (i < p0) {
                     prob[i] = 0;
                 } else if (i < (p1)) {

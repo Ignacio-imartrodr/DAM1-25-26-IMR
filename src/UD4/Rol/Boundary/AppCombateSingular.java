@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import org.json.JSONObject;
 
-import UD4.Rol.Control.Creacion;
 import UD4.Rol.Control.Combate;
+import UD4.Rol.Control.Creacion;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.Util;
 
@@ -17,7 +17,7 @@ import UD4.Rol.Utilidades.Util;
  * en disco en un fichero de texto en formato JSON.
  */
 
-public class AppCombateSingular {
+public class AppCombateSingular {//TODO añadir y refactorizar cosas
     
     static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados, int cantidadASeleccionar) {
         Personaje[] personajesEnBatalla = new Personaje[cantidadASeleccionar];
@@ -55,6 +55,7 @@ public class AppCombateSingular {
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
         String rutaFichero = null;
         String rutaPrevia = "";
+        System.out.println(Creacion.getStringPersonajes(personajesCreados));
         for (Personaje personaje : personajesCreados) {
             System.out.println(personaje.getFicha());
             System.out.print("¿Quieres guardar este personaje? (S/n): ");
@@ -163,7 +164,7 @@ public class AppCombateSingular {
         }
         return personajesFichero;
     }
-    public static void bucleGuardadoPersonajes(Personaje[] personajesCreados){
+    public static void bucleGuardadoPersonajes(Personaje[] personajesCreados){//TODO que guarde en BaseGeneral
         boolean repetir = true;
         while (repetir) {
             repetir = false;
@@ -210,7 +211,7 @@ public class AppCombateSingular {
             }
         }
     }
-    private static Personaje[] getPersonajes(){ //TODO añadir y refactorizar cosas 
+    private static Personaje[] getPersonajes(){
         Personaje[] personajesCreados = new Personaje[0];
         Personaje[] temp;
         while (personajesCreados.length < 2) {
@@ -239,7 +240,6 @@ public class AppCombateSingular {
     }
     public static void main(String[] args) {
         int id = 0;
-        final int NUM_COMBATIENTES = 2; 
         Personaje[] personajesCreados;
         personajesCreados = getPersonajes();
         for (Personaje personaje : personajesCreados) {
@@ -247,22 +247,21 @@ public class AppCombateSingular {
             personajesCreados[id] = personaje;
             id++;
         }
-        Creacion.getStringPersonajes(personajesCreados);
         bucleGuardadoPersonajes(personajesCreados);
 
         Personaje[] personajesEnBatalla = new Personaje[2];
         if (personajesCreados.length > 2) {
-            personajesEnBatalla = seleccionarPersonajes(personajesCreados, NUM_COMBATIENTES);
+            personajesEnBatalla = seleccionarPersonajes(personajesCreados, 2);
             while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
                 System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
-                personajesEnBatalla = seleccionarPersonajes(personajesCreados, NUM_COMBATIENTES);
+                personajesEnBatalla = seleccionarPersonajes(personajesCreados, 2);
             }
         } else {
             personajesEnBatalla[0] = personajesCreados[0];
             personajesEnBatalla[1] = personajesCreados[1];
         }
         
-personajesCreados = Combate.combateSingular(personajesEnBatalla, personajesCreados, NUM_COMBATIENTES);
+        personajesCreados = Combate.combateSingular(personajesEnBatalla, personajesCreados, 2);
         bucleGuardadoPersonajes(personajesCreados);
     }
     

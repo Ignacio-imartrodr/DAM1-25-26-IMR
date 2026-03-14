@@ -1,9 +1,7 @@
 package UD4.Rol.Entity.Others;
 
-import java.util.Arrays;
-
 import UD4.Rol.Entity.Entidades.Personaje;
-import UD4.Rol.Utilidades.PersonajeException;
+import UD4.Rol.Utilidades.EntidadException;
 
 /**
  * @author Ignacio MR
@@ -12,30 +10,27 @@ import UD4.Rol.Utilidades.PersonajeException;
 public enum Raza implements Habilidades {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
-    private boolean habilidadActiva = true;
-
-    public static Raza[] toArray(){
-        Raza[] razas = new Raza[0];
-        for (Raza raza : Raza.values()) {
-            razas = Arrays.copyOf(razas, razas.length + 1);
-            razas[razas.length - 1] = raza;
-        }
-        return razas;
-    }
     public static Raza stringToRaza(String respuesta){
         Raza raza = HUMANO;
         if (respuesta == null) {
             raza = HUMANO;
         } else {
             try {
-                raza = Raza.valueOf(respuesta.toUpperCase());
+                raza = valueOf(respuesta.toUpperCase());
             } catch (Exception e) {
-                throw new PersonajeException("Raza no válida.");
+                throw new EntidadException("Raza no válida.");
             }
         }
         return raza;
     }
-    public static int[] buffHabilidad(Personaje personaje){
+    
+    public static int[] buffHabilidad(Object obj) {
+        Personaje personaje;
+        if (obj instanceof Personaje) {
+            personaje = (Personaje) obj;
+        } else {
+            return null;
+        }
         int bonusFuerza = 0;
         int bonusAgilidad = 0;
         int bonusConstitucion = 0;
@@ -104,7 +99,7 @@ public enum Raza implements Habilidades {
     }
     public static String getRazasStats() {
         String fichas = "";
-        for (Raza raza : Raza.toArray()) {
+        for (Raza raza : values()) {
             String[] bonus = raza.arrayBonusRaza();
             fichas += String.format("Raza: %s%n-------------%nFuerza: %s, Agilidad: %s, Constitución: %s%n%n", raza, bonus[0], bonus[1], bonus[2]);
         }
@@ -160,21 +155,7 @@ public enum Raza implements Habilidades {
             }
         return descripcion;
     }
-    @Override
-    public boolean isHabilidadActiva() {
-        return this.habilidadActiva;
-    }
-    
-    @Override
-    public void activarHabilidad() {
-        this.habilidadActiva = true;
-        
-    }
-    @Override
-    public void quitarHabilidad() {
-        this.habilidadActiva = false;
-        
-    }
+
     @Override
     public String toString() {
         String nombre;

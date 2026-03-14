@@ -1,7 +1,6 @@
 package UD4.Rol.Boundary;
 
 import java.util.Arrays;
-import java.util.Random;
 
 import UD4.Rol.Control.Creacion;
 import UD4.Rol.Entity.Entidades.Personaje;
@@ -33,7 +32,7 @@ public class AppCreaPersonaje {
                 Raza razaVal = Raza.stringToRaza(Util.pedirPorTeclado(false));
                 raza = razaVal.toString();
                 error = false;
-            } catch (PersonajeException e) {
+            } catch (EntidadException e) {
                 System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
                 error = true;
             }
@@ -41,51 +40,22 @@ public class AppCreaPersonaje {
 
         System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
         System.out.print("Fuerza: ");
-        String fuerza = pedirStatRng();
+        String fuerza = Creacion.pedirStatRng();
         
         System.out.print("Agilidad: ");
-        String agilidad = pedirStatRng();
+        String agilidad = Creacion.pedirStatRng();
 
         System.out.print("Constitución: ");
-        String constitucion = pedirStatRng();
+        String constitucion = Creacion.pedirStatRng();
         
         System.out.print("Nivel: ");
-        String nivel = pedirStatNoRng(false);
+        String nivel = Creacion.pedirStatNoRng(false);
         
         System.out.println("Nivel de experiencia: ");
-        String experiencia = pedirStatNoRng(true);
+        String experiencia = Creacion.pedirStatNoRng(true);
 
         personaje = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
         return personaje;
-    }
-    private static String pedirStatRng(){
-        Random rnd = new Random();
-        int num = rnd.nextInt(100) + 1;
-        String texto = Util.pedirPorTeclado(true);
-        final int MIN = 1;
-        final int MAX = 100;
-        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
-            texto = Util.pedirPorTeclado(true);
-        }
-        if (texto == null) {
-            texto = String.valueOf(num);
-        }
-        return texto;
-    }
-    private static String pedirStatNoRng(boolean esXp){
-        String texto;
-        texto = Util.pedirPorTeclado(true);
-        final int MIN = esXp ? 0 : 1;
-        final int MAX = esXp ? 999 : 100;
-        while ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
-            System.out.print("La estadística debe ser como mínimo " + MIN + " y como máximo " + MAX + ", da otro valor: ");
-            texto = Util.pedirPorTeclado(true);
-        }
-        if (texto == null) {
-            texto = String.valueOf(MIN);
-        }
-        return texto;
     }
     public static Personaje[] pedirPersonajes() {
         Personaje[] personajesNuevos = new Personaje[0];

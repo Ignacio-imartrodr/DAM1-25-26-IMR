@@ -30,7 +30,7 @@ public class Personaje extends Entidad implements EquipEquipado {
             case 0 ->num = super.fuerza;
             case 1 ->num = super.agilidad;
             case 2 ->num = super.constitucion;
-            default -> throw new PersonajeException("Stat rng no existente");
+            default -> throw new EntidadException("Stat rng no existente");
         };
         String[] bonus = raza.arrayBonusRaza();
         int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
@@ -86,6 +86,13 @@ public class Personaje extends Entidad implements EquipEquipado {
         this(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
     }
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Equipamiento[] equipamientoEquipado, Equipamiento[] equipamientoGuardado, Item[] bolsa, boolean yaExistente){
+        
+        if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
+            throw new EntidadException("El nombre es necesario para la construcción de Personaje y no puede ser \"null\" o estár en blanco, prueba \"Personaje()\" en su lugar");
+        }
+        this.vidaMin = 50;
+        this.minRndStat = 1;
+        this.maxRndStat = 100;
         newEntidad(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
         
         if (raza == null) {
@@ -93,8 +100,8 @@ public class Personaje extends Entidad implements EquipEquipado {
         }else{
             try {
                 this.raza = Raza.stringToRaza(raza);
-            } catch (PersonajeException e) {
-                throw new PersonajeException("Raza no válida.");
+            } catch (EntidadException e) {
+                throw new EntidadException("Raza no válida.");
             }
         }
         this.fuerza = super.fuerza = asignarBonusRaza(0);
@@ -162,7 +169,7 @@ public class Personaje extends Entidad implements EquipEquipado {
         if (id >= 0) {
             this.id = id;
         } else {
-            throw new PersonajeException("Id invalida");
+            throw new EntidadException("Id invalida");
         }
     }
     public int getId(){
@@ -251,7 +258,7 @@ public class Personaje extends Entidad implements EquipEquipado {
                         if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                         break;
                     default:
-                        throw new PersonajeException("Error con la habilidad de raza");
+                        throw new EntidadException("Error con la habilidad de raza");
                 }
         }
         return haceEfecto ? turnosEfecto : -1;

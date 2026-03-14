@@ -1,6 +1,5 @@
 package UD4.Rol.Entity.Others;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import UD4.Rol.Utilidades.*;
@@ -23,19 +22,11 @@ public enum Items {
         }
         
     }
-    public static Items[] toArray(){
-        Items[] items = new Items[0];
-        for (Items stat : Items.values()) {
-            items = Arrays.copyOf(items, items.length + 1);
-            items[items.length - 1] = stat;
-        }
-        return items;
-    }
+
     public static Item getItemRnd(){
         Random rnd = new Random();
-        Items[] itemsCreados = toArray();
-        int i = rnd.nextInt(itemsCreados.length - 1);
-        Item itemRnd = new Item(itemsCreados[i].name());
+        int i = rnd.nextInt(values().length - 1);
+        Item itemRnd = new Item(values()[i].name());
         return itemRnd;
 
     }
