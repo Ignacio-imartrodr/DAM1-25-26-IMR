@@ -19,7 +19,7 @@ public abstract class Entidad implements Comparable<Entidad> {
 
     protected final static int EXP_MAX = 256999;
 
-    private final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
+    protected final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
 
     protected void newEntidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
         if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
@@ -30,7 +30,7 @@ public abstract class Entidad implements Comparable<Entidad> {
         }
         
         if (yaExistente) {
-            if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < 1 || Integer.parseInt(experiencia) < 0 ) {
+            if (Integer.parseInt(constitucion) < 1 || Integer.parseInt(agilidad) < 1 || Integer.parseInt(fuerza) < 1 || Integer.parseInt(nivel) < -128 || Integer.parseInt(nivel) > 127 || Integer.parseInt(experiencia) < 0 ) {
                 throw new EntidadException("Valores fuera de límites");
             } else {
                 this.fuerza = Integer.parseInt(fuerza);
@@ -77,7 +77,7 @@ public abstract class Entidad implements Comparable<Entidad> {
             throw new EntidadException("Valores fuera de límites");
         }
         if (texto == null) {
-            num = generarRnd1MinAMax(MIN, MAX);
+            num = generarRndMinAMax(MIN, MAX);
         } else {
             num = Integer.parseInt(texto);
         }
@@ -87,13 +87,18 @@ public abstract class Entidad implements Comparable<Entidad> {
         int num;
         final int MIN = esXp ? 0 : 1;
         final int MAX = esXp ? 999 : 256;
-        if ( !(texto == null) && (Integer.parseInt(texto) <= MIN || Integer.parseInt(texto) >= MAX)) {
+        if ( !(texto == null) && (Integer.parseInt(texto) < MIN || Integer.parseInt(texto) > MAX)) {
             throw new EntidadException("Valores fuera de límites");
         }
         if (texto == null) {
             num = MIN;
         } else {
             num = Integer.parseInt(texto);
+            if (!esXp) {
+                for (int i = 0; i < num; i++) {
+                    if (subirNivel()) { nivel--; }
+                }
+            }
         }
         return num;
     }
@@ -149,7 +154,7 @@ public abstract class Entidad implements Comparable<Entidad> {
         perderVida(cura); // Al ser "cura" un valor negativo gana vida en vez de perderla
     }
     
-    protected static int generarRnd1MinAMax(int min, int max){
+    protected static int generarRndMinAMax(int min, int max){
         Random rnd = new Random();
         int num = rnd.nextInt(min, max + 1);
         return num;
@@ -231,8 +236,8 @@ public abstract class Entidad implements Comparable<Entidad> {
         return vivo;
     }
     public int atacar(Entidad enemigo){
-        int puntAtaque = generarRnd1MinAMax(1, 100) + fuerza;
-        int puntDefensa = generarRnd1MinAMax(1, 100) + enemigo.agilidad;
+        int puntAtaque = generarRndMinAMax(1, 100) + fuerza;
+        int puntDefensa = generarRndMinAMax(1, 100) + enemigo.agilidad;
         int daño = puntDefensa - puntAtaque;
         if ( daño > 0) {
             if (daño > enemigo.puntosVida) {

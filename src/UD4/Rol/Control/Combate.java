@@ -12,6 +12,8 @@ import UD4.Rol.Utilidades.ItemException;
 import UD4.Rol.Utilidades.Util;
 
 public class Combate {
+    public static final String PREFERENCIAS_ATAQUE = "1 - Vida\n2 - Ataque\n4 - Agilidad";
+
     public static boolean cambiarTurno(boolean turno) {
         return !turno;
     }
@@ -206,7 +208,7 @@ public class Combate {
         return personajesCreados;
     }
 
-    public static Personaje[] combateGrupo(Personaje[] personajes, Monstruo[] monstruos, Personaje[] personajesCreados) {
+    public static Personaje[] combateMonstruos(Personaje[] personajes, Monstruo[] monstruos, Personaje[] personajesCreados) {//TODO revisar
         boolean heroesVivos = true;
         boolean monstruosVivos = true;
         while (heroesVivos && monstruosVivos) {
@@ -323,6 +325,11 @@ public class Combate {
             }
         }
         return personajesEnBatalla;
+    }
+
+    public static void combateGrupo(Personaje[] equipo0, Personaje[] equipo1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'combateGrupo'");
     }
 }
 

@@ -260,13 +260,24 @@ public abstract class Util{
         String var;
         boolean sonNumeros = true;
         try {
-            var = sc.nextLine().strip();
+            var = sc.nextLine();
+            if (var == null) {
+                return null;
+            }
+            var = var.strip();
             if (var.equals("")|| var.isBlank() || var.isEmpty()) {
                 return null;
             }
             for (int i = 0; i < var.length() && pideNumero; i++) {
-                if (!Character.isDigit(var.charAt(i)) && var.charAt(i) != ',' && var.charAt(i) != '-' && var.charAt(i) != '+') {
-                    sonNumeros = false;
+                if (i == 0 && (var.charAt(0) == '-' || var.charAt(0) == '+')) {
+                    i++;
+                }
+                if (!Character.isDigit(var.charAt(i))) {
+                    if (var.charAt(i) != ',') {
+                        sonNumeros = false;
+                    } else if ((i + 1) >= var.length() || !Character.isDigit(var.charAt(i + 1))) {
+                        sonNumeros = false;
+                    }
                 }
             }
             if (!pideNumero) {
@@ -276,9 +287,11 @@ public abstract class Util{
                     String charIncorrectos1 = " ‚¡¢£�¤";//Para Windows-1252
                     String[] StringsIncorrectos = new String[] {charIncorrectos, charIncorrectos1};
                     for (int i = 0; i < var.length(); i++) {
-                        for (int j = 0; j < StringsIncorrectos.length; j++) {
-                            for (int k = 0; k < StringsIncorrectos[j].length(); k++) {
-                                var = var.replace(StringsIncorrectos[j].charAt(k), charCorrectos.charAt(k));
+                        if (!Character.isDigit(var.charAt(i))) {
+                            for (int j = 0; j < StringsIncorrectos.length; j++) {
+                                for (int k = 0; k < StringsIncorrectos[j].length(); k++) {
+                                    var = var.replace(StringsIncorrectos[j].charAt(k), charCorrectos.charAt(k));
+                                }
                             }
                         }
                     }
@@ -404,15 +417,17 @@ public abstract class Util{
      * @return {@code true} if {@code respuesta.equals(opcion1) || respuesta.equals("-1")}, {@code false} if {@code respuesta.equeals(opcion2)}.
      */
     public static boolean escogerOpcion(String opcion1, String opcion2){
-        
-        opcion1 = opcion1.toLowerCase();
-        opcion2 = opcion2.toLowerCase();
+        if (opcion1 == null || opcion2 == null) {
+            throw new NullPointerException("Debe asignarse el valor de ambas opciones");
+        }
+        opcion1 = opcion1.toUpperCase();
+        opcion2 = opcion2.length() > 1 ?  Character.toUpperCase(opcion2.charAt(0)) + opcion2.substring(1).toLowerCase() : opcion2.toLowerCase();
         
         String respuesta;
         boolean s = false;
         respuesta = Util.pedirPorTeclado(false);
         while (!(respuesta == null) && !respuesta.equalsIgnoreCase(opcion1) && !respuesta.equalsIgnoreCase(opcion2)) {
-            System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 +"\": ");
+            System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 +"\" (\"Enter\" para " + opcion1 + "): ");
             respuesta = Util.pedirPorTeclado(false);
         }
         if (respuesta == null || respuesta.equalsIgnoreCase(opcion1)) {

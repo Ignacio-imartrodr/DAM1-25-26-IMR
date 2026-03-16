@@ -5,7 +5,9 @@ import java.util.Random;
 import UD4.Rol.Entity.Entidades.Entidad;
 import UD4.Rol.Entity.Others.Especie;
 import UD4.Rol.Utilidades.EntidadException;
+
 public abstract class Monstruo extends Entidad {
+
     Especie especie;
     int vidaMax;
     
@@ -13,6 +15,9 @@ public abstract class Monstruo extends Entidad {
     protected void newMonstruo(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Especie especie, boolean yaExistente) {
         this.especie = especie;
         if (!yaExistente) { this.vidaMax = getVida(); }
+        if (nivel == null) {
+            nivel = String.valueOf(generarRndMinAMax(1, 256));
+        }
         newEntidad(nombre, fuerza, agilidad, constitucion, nivel, experiencia, yaExistente);
     }
 
@@ -49,7 +54,7 @@ public abstract class Monstruo extends Entidad {
         return nombre + "-"  + getEspecie() + " (" + getPuntosVida() + ")";
     }
 
-    public static Monstruo generaMonstruoAleatorio(){
+    public static Monstruo generaMonstruoAleatorio(int... nivelMonstruo){
         int i = rng.nextInt(10);
         //La probabilidad está en un % pero al todos ser divisores de 10 ahorro iteraciones en el for
         int p0 = Orco.probabilidad/10;
@@ -66,23 +71,29 @@ public abstract class Monstruo extends Entidad {
             especie = 2;
         } else if (i < (p3)) {
             especie = 3;
-        } else { //No debería ocurrir ya que con el if anterior ya cubrí los 10 de "i"
+        } else { //No debería ocurrir ya que con el if anterior ya cubrí las 10 posibilidades de "i"
             especie = 4;
         }
-
+        boolean conNivel = nivelMonstruo != null && nivelMonstruo.length > 0;
+        String nivel = null;
+        if (conNivel) {
+            if (nivelMonstruo[0] < 1 || nivelMonstruo[0] > 256) { throw new EntidadException("Nivel invalido"); }
+            nivelMonstruo[0] -= Entidad.CONVERSOR;
+            nivel = String.valueOf(nivelMonstruo[0]);
+        }
         Monstruo este;
         switch (Especie.numToEspecie(especie)) {
             case ARANHA:
-                este = new Aranha(null, null, null, null, null, null, false);
+                este = new Aranha(null, null, null, null, nivel, null, false);
                 break;
             case ORCO:
-                este = new Orco(null, null, null, null, null, null, false);
+                este = new Orco(null, null, null, null, nivel, null, false);
                 break;
             case TROLL:
-                este = new Troll(null, null, null, null, null, null, false);
+                este = new Troll(null, null, null, null, nivel, null, false);
                 break;
             case DRAGON:
-                este = new Dragon(null, null, null, null, null, null, false);
+                este = new Dragon(null, null, null, null, nivel, null, false);
                 break;
             default:
                 throw new EntidadException("Especie sin clase");

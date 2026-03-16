@@ -19,7 +19,7 @@ import UD4.Rol.Utilidades.Util;
 
 public class AppCombateSingular {//TODO añadir y refactorizar cosas
     
-    static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados, int cantidadASeleccionar) {
+    protected static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados, int cantidadASeleccionar) {
         Personaje[] personajesEnBatalla = new Personaje[cantidadASeleccionar];
         boolean esSiguiente = true;
         for (int i = -1, j = 0, skip = -1; j < personajesEnBatalla.length;) {
@@ -52,7 +52,7 @@ public class AppCombateSingular {//TODO añadir y refactorizar cosas
         }
         return personajesEnBatalla;
     }
-    private static void guardarPorPersonaje(Personaje[] personajesCreados){
+    protected static void guardarPorPersonaje(Personaje[] personajesCreados){
         String rutaFichero = null;
         String rutaPrevia = "";
         System.out.println(Creacion.getStringPersonajes(personajesCreados));
@@ -96,7 +96,7 @@ public class AppCombateSingular {//TODO añadir y refactorizar cosas
             }
         }    
     }
-    static Personaje[] cargarPersonajesDeArchivo(String rutaFile){
+    public static Personaje[] cargarPersonajesDeArchivo(String rutaFile){
         Personaje[] personajesFichero = new Personaje[0];
         boolean restart = true;
         while (restart) {
@@ -211,7 +211,7 @@ public class AppCombateSingular {//TODO añadir y refactorizar cosas
             }
         }
     }
-    private static Personaje[] getPersonajes(){
+    protected static Personaje[] getPersonajes(){
         Personaje[] personajesCreados = new Personaje[0];
         Personaje[] temp;
         while (personajesCreados.length < 2) {
