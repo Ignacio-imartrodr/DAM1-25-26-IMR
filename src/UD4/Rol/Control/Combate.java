@@ -1,7 +1,6 @@
 package UD4.Rol.Control;
 
 import java.util.Random;
-
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
 import UD4.Rol.Entity.Others.Item;
@@ -13,11 +12,75 @@ import UD4.Rol.Utilidades.Util;
 
 public class Combate {
     public static final String PREFERENCIAS_ATAQUE = "1 - Vida\n2 - Ataque\n4 - Agilidad";
-
-    public static boolean cambiarTurno(boolean turno) {
-        return !turno;
+    
+    public static Personaje[] cargarPersonajesDeArchivo(String rutaFile){   
+        Personaje[] personajesFichero = new Personaje[0];
+        boolean restart = true;
+        while (restart) {
+            restart = false;
+            System.out.println("Opciones: Json");
+            System.out.print("¿Quieres cargar personajes desde " + rutaFile + "? (S/n): ");
+            if (Util.escogerOpcion("S", "n")) {
+                if (rutaFile.endsWith(".json") || rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
+                    if (rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
+                        boolean errorUrl = true;
+                        String temp = rutaFile;
+                        while (errorUrl) {
+                            errorUrl = false;
+                            try {
+                                personajesFichero = Creacion.getPersonajesJson(rutaFile);
+                                if (personajesFichero.length == 0) {
+                                    System.out.println("El Json no contenía personajes");
+                                }
+                                System.out.print("¿Probar otra Url? (S/n): ");
+                                if (Util.escogerOpcion("S", "n")) {
+                                    errorUrl = true;
+                                }
+                            } catch (Exception e) {
+                                errorUrl = true;
+                                System.out.println("Error en la url");
+                                System.out.print("URL? (\"n\" para salir): ");
+                                temp = Util.pedirPorTeclado(false);
+                                if (temp.equalsIgnoreCase("n")) {
+                                    errorUrl = false;
+                                    restart = true;
+                                }
+                            }
+                        }
+                    } else {
+                        personajesFichero = Creacion.getPersonajesJson(rutaFile);
+                        if (personajesFichero.length == 0) {
+                            System.out.println("El fichero no contenía personajes");
+                        }
+                    }
+                } else {
+                    System.out.println("Error en la ruta");
+                    System.out.print("Ruta? (\"n\" para salir): ");
+                    rutaFile = Util.pedirPorTeclado(false);
+                    if (rutaFile.equalsIgnoreCase("n")) {
+                        System.out.println("personajes no cargados");
+                        restart = false;
+                    }
+                }
+            } else {
+                System.out.println("Quierres ingresar otra ruta? (S/n)");
+                if (Util.escogerOpcion("S", "n")) {
+                    System.out.print("Ruta? (\"n\" para salir): ");
+                    rutaFile = Util.pedirPorTeclado(false);
+                    if (rutaFile.equalsIgnoreCase("n")) {
+                        System.out.println("Personajes no cargados");
+                        restart = false;
+                    } else {
+                        restart = true;
+                    }
+                } else {
+                    System.out.println("No se han cargado personajes.");
+                    restart = false;
+                }
+            }
+        }
+        return personajesFichero;
     }
-
     public static Personaje[] combateSingular(Personaje[] personajesEnBatalla, Personaje[] personajesCreados, int numCombatientes) {//TODO añadir efectos de armadura y armas
         boolean batalla = true;
         while (batalla) {
@@ -182,7 +245,7 @@ public class Combate {
                 }
                 personajesEnBatalla[personajeEnTurno] = personajeActuando;
                 personajesEnBatalla[1 - personajeEnTurno] = enemigo;
-                turno = cambiarTurno(turno);
+                turno = Util.alternarBoolean(turno);
             }
             System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
             System.out.println("¿Otra batalla? (S/n)");
@@ -196,10 +259,10 @@ public class Combate {
                         }
                     }
                 }
-                personajesEnBatalla = seleccionarPersonajes(personajesCreados, numCombatientes);
+                personajesEnBatalla = Creacion.seleccionarPersonajes(personajesCreados, numCombatientes);
                 while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
                     System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
-                    personajesEnBatalla = seleccionarPersonajes(personajesCreados, numCombatientes);
+                    personajesEnBatalla = Creacion.seleccionarPersonajes(personajesCreados, numCombatientes);
                 }
             } else {
                 batalla = false;
@@ -293,39 +356,7 @@ public class Combate {
         return personajesCreados;
     }
 
-    public static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados, int cantidadASeleccionar) {
-        Personaje[] personajesEnBatalla = new Personaje[cantidadASeleccionar];
-        boolean esSiguiente = true;
-        for (int i = -1, j = 0, skip = -1; j < personajesEnBatalla.length;) {
-            if (esSiguiente) {
-                if (i == personajesCreados.length - 1) {
-                    i = 0;
-                } else {
-                    i++;
-                }
-            } else {
-                if (i == 0) {
-                    i = personajesCreados.length - 1;
-                } else {
-                    i--;
-                }
-            }
-            if (i != skip) {
-                System.out.println(personajesCreados[i].getFicha());
-                System.out.print("¿Quieres seleccionar este personaje? (S/n): ");
-                if (Util.escogerOpcion("S", "n")) {
-                    personajesEnBatalla[j] = personajesCreados[i];
-                    j++;
-                    skip = i;
-                }
-            }
-            if (j < personajesEnBatalla.length) {
-                System.out.println("Siguiente personaje o anterior? (S/a): ");
-                esSiguiente = Util.escogerOpcion("S", "a");
-            }
-        }
-        return personajesEnBatalla;
-    }
+   
 
     public static void combateGrupo(Personaje[] equipo0, Personaje[] equipo1) {
         // TODO Auto-generated method stub

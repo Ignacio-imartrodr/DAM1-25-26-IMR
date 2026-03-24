@@ -12,10 +12,45 @@ import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
 import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
 import UD4.Rol.Entity.Others.Item;
 import UD4.Rol.Entity.Others.Items;
+import UD4.Rol.Entity.Others.Raza;
 import UD4.Rol.Utilidades.EntidadException;
 import UD4.Rol.Utilidades.Util;
 
 public abstract class Creacion {
+    
+    public static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados, int cantidadASeleccionar) {
+        Personaje[] personajesEnBatalla = new Personaje[cantidadASeleccionar];
+        boolean esSiguiente = true;
+        for (int i = -1, j = 0, skip = -1; j < personajesEnBatalla.length;) {
+            if (esSiguiente) {
+                if (i == personajesCreados.length - 1) {
+                    i = 0;
+                } else {
+                    i++;
+                }
+            } else {
+                if (i == 0) {
+                    i = personajesCreados.length - 1;
+                } else {
+                    i--;
+                }
+            }
+            if (i != skip) {
+                System.out.println(personajesCreados[i].getFicha());
+                System.out.print("¿Quieres seleccionar este personaje? (S/n): ");
+                if (Util.escogerOpcion("S", "n")) {
+                    personajesEnBatalla[j] = personajesCreados[i];
+                    j++;
+                    skip = i;
+                }
+            }
+            if (j < personajesEnBatalla.length) {
+                System.out.println("Siguiente personaje o anterior? (S/a): ");
+                esSiguiente = Util.escogerOpcion("S", "a");
+            }
+        }
+        return personajesEnBatalla;
+    }
     public static String getStringPersonajes(Personaje[] personajesCreados) {
         String texto;
         if (personajesCreados != null && personajesCreados.length > 0) {
@@ -180,6 +215,71 @@ public abstract class Creacion {
             texto = String.valueOf(MIN);
         }
         return texto;
+    }
+
+    public static Personaje[] pedirPersonajes() {
+        Personaje[] personajesNuevos = new Personaje[0];
+        boolean seguir = true;
+        while (seguir) {
+            System.out.print("¿Quieres crear un nuevo personaje? (S/n): ");
+            if (Util.escogerOpcion("s", "n")) {
+                Personaje personaje = new Personaje();
+                System.out.println("\nRazas disponibles:\n\n" + Raza.getRazasStats());
+                personaje = crearPersonaje();
+                System.out.println(personaje.getFicha());
+                System.out.println("¿Es el personaje correcto? (S/n):");
+                if (Util.escogerOpcion("s", "n")) {
+                    personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
+                    personajesNuevos[personajesNuevos.length - 1] = personaje;
+                }
+            } else {
+                System.out.println();
+                seguir = false;
+            }
+        }
+        return personajesNuevos;
+
+    }
+    private static Personaje crearPersonaje(){
+        Personaje personaje;
+        System.out.print("Nombre del personaje: ");
+        String nombre = Util.pedirPorTeclado(false);
+        while (nombre == null) {
+            System.out.print("El persnaje necesita un nombre: ");
+            nombre = Util.pedirPorTeclado(false);          
+        }
+        nombre = nombre.strip();
+        System.out.println("Escoge una de las siguientes razas: orco, elfo, HUMANO, enano, hobbit o troll");
+        String raza = "a";
+        for (boolean error = true; error;) {
+            try {
+                Raza razaVal = Raza.stringToRaza(Util.pedirPorTeclado(false));
+                raza = razaVal.toString();
+                error = false;
+            } catch (EntidadException e) {
+                System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
+                error = true;
+            }
+        }
+
+        System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
+        System.out.print("Fuerza: ");
+        String fuerza = Creacion.pedirStatRng();
+        
+        System.out.print("Agilidad: ");
+        String agilidad = Creacion.pedirStatRng();
+
+        System.out.print("Constitución: ");
+        String constitucion = Creacion.pedirStatRng();
+        
+        System.out.print("Nivel: ");
+        String nivel = Creacion.pedirStatNoRng(false);
+        
+        System.out.println("Nivel de experiencia: ");
+        String experiencia = Creacion.pedirStatNoRng(true);
+
+        personaje = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
+        return personaje;
     }
 
     public static Personaje modPersonaje(String valor, Personaje p){

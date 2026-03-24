@@ -502,4 +502,7 @@ public abstract class Util{
             System.out.println("No había personajes que guardar");
         }
     }
+    public static boolean alternarBoolean(boolean b) {
+        return !b;
+    }
 }
