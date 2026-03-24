@@ -2,9 +2,9 @@ package UD4.Rol.Boundary;
 
 import java.util.Arrays;
 
+import UD4.Rol.Control.Combate;
 import UD4.Rol.Control.Creacion;
 import UD4.Rol.Entity.Entidades.Personaje;
-import UD4.Rol.Entity.Others.Raza;
 import UD4.Rol.Utilidades.*;
 
 /** 
@@ -16,69 +16,7 @@ import UD4.Rol.Utilidades.*;
  */
 
 public class AppCreaPersonaje {
-    private static Personaje crearPersonaje(){
-        Personaje personaje;
-        System.out.print("Nombre del personaje: ");
-        String nombre = Util.pedirPorTeclado(false);
-        while (nombre == null) {
-            System.out.print("El persnaje necesita un nombre: ");
-            nombre = Util.pedirPorTeclado(false);          
-        }
-        nombre = nombre.strip();
-        System.out.println("Escoge una de las siguientes razas: orco, elfo, HUMANO, enano, hobbit o troll");
-        String raza = "a";
-        for (boolean error = true; error;) {
-            try {
-                Raza razaVal = Raza.stringToRaza(Util.pedirPorTeclado(false));
-                raza = razaVal.toString();
-                error = false;
-            } catch (EntidadException e) {
-                System.out.println("Raza no válida. Introduce uno de las siguientes: orco, elfo, HUMANO, enano, hobbit o troll");
-                error = true;
-            }
-        }
-
-        System.out.println("Introduce las siguientes estadísticas. Si quieres que se generen aleatoriamente, pulsa \"Enter\" sin introducir ningún valor.");
-        System.out.print("Fuerza: ");
-        String fuerza = Creacion.pedirStatRng();
-        
-        System.out.print("Agilidad: ");
-        String agilidad = Creacion.pedirStatRng();
-
-        System.out.print("Constitución: ");
-        String constitucion = Creacion.pedirStatRng();
-        
-        System.out.print("Nivel: ");
-        String nivel = Creacion.pedirStatNoRng(false);
-        
-        System.out.println("Nivel de experiencia: ");
-        String experiencia = Creacion.pedirStatNoRng(true);
-
-        personaje = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, null, false);
-        return personaje;
-    }
-    public static Personaje[] pedirPersonajes() {
-        Personaje[] personajesNuevos = new Personaje[0];
-        boolean seguir = true;
-        while (seguir) {
-            System.out.print("¿Quieres crear un nuevo personaje? (S/n): ");
-            if (Util.escogerOpcion("s", "n")) {
-                Personaje personaje = new Personaje();
-                System.out.println("\nRazas disponibles:\n\n" + Raza.getRazasStats());
-                personaje = crearPersonaje();
-                System.out.println(personaje.getFicha());
-                System.out.println("¿Es el personaje correcto? (S/n):");
-                if (Util.escogerOpcion("s", "n")) {
-                    personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
-                    personajesNuevos[personajesNuevos.length - 1] = personaje;
-                }
-            } else {
-                System.out.println();
-                seguir = false;
-            }
-        }
-        return personajesNuevos;
-    }
+    
     public static void modificarPersonagesArray(Personaje[] personajesArray){
         Creacion.getStringPersonajes(personajesArray);
         boolean esSiguiente = true;
@@ -140,7 +78,7 @@ public class AppCreaPersonaje {
             String rutaFichero;
             rutaFichero = Util.pedirRuta();
             if (!(rutaFichero == null)) {
-                temp = AppCombateSingular.cargarPersonajesDeArchivo(rutaFichero);
+                temp = Combate.cargarPersonajesDeArchivo(rutaFichero);
                 for (Personaje personaje : temp) {
                     personaje.setId(id); 
                     personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
@@ -149,7 +87,7 @@ public class AppCreaPersonaje {
                 }
             }
         }
-        temp = pedirPersonajes();
+        temp = Creacion.pedirPersonajes();
         for (Personaje personaje : temp) {
             personaje.setId(id); 
             personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);

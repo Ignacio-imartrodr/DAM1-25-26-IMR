@@ -3,6 +3,8 @@ package UD4.Rol.Boundary;
 import java.util.Random;
 
 import UD4.Rol.Control.Combate;
+import UD4.Rol.Control.Creacion;
+import UD4.Rol.Control.Guardado;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
 import UD4.Rol.Utilidades.Util;
@@ -11,7 +13,7 @@ public class AppCombateMonstruos {//TODO recrear a mi modo
     public static void main(String[] args) {
         System.out.println("=== Personajes vs Monstruos ===");
 
-        Personaje[] personajes = AppCreaPersonaje.pedirPersonajes();
+        Personaje[] personajes = Creacion.pedirPersonajes();
         for (int i = 0; i < personajes.length; i++) {
             personajes[i].setId(i);
         }
@@ -83,6 +85,6 @@ public class AppCombateMonstruos {//TODO recrear a mi modo
         personajesCreados = Combate.combateMonstruos(personajes, monstruos, personajesCreados);
 
         System.out.println("El combate de grupo ha finalizado.");
-        AppCombateSingular.bucleGuardadoPersonajes(personajesCreados);
+        Guardado.GuardadoPersonajes(personajesCreados);
     }
 }
