@@ -338,7 +338,7 @@ public class Personaje extends Entidad implements EquipEquipado {
         return false;
     }
     
-    public String getEquipamientoGuardado() {
+    public String getStringEquipamientoGuardado() {
         Equipamiento[] armas = new Equipamiento[0];
         Equipamiento[] armaduras = new Equipamiento[0];
         String separador = "-----------------------\n";
@@ -391,12 +391,20 @@ public class Personaje extends Entidad implements EquipEquipado {
         }
         return inventario;
     }
+    
+    public Equipamiento[] getEquipamientoGuardado() {
+        return equipamientoGuardado;
+    }
+
     @Override
-    public JSONObject toJsonObject(){
+    public JSONObject toJsonObject() throws EntidadException{
         JSONObject personaje = super.toJsonObject();
         
         JSONObject stats = personaje.getJSONObject("Stats");
         stats.accumulate("raza", this.raza);
+        if (id < 0) {
+            throw new EntidadException("Es necesario asignar la id según la posicion del personaje en la BaseGeneral");
+        }
         personaje.remove("Stats");
         personaje.accumulate("Stats", stats);
         
@@ -443,6 +451,38 @@ public class Personaje extends Entidad implements EquipEquipado {
     public String toString() {
         String nombreYVida = nombre + " (" + puntosVida + "/" + getVidaMax() + ")";
         return nombreYVida;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Personaje other = (Personaje) obj;
+        if (raza != other.raza)
+            return false;
+        if (nombre != other.nombre)
+            return false;
+        if (!Arrays.equals(bolsa, other.bolsa))
+            return false;
+        if (!Arrays.equals(equipamientoGuardado, other.equipamientoGuardado))
+            return false;
+        if (!Arrays.equals(getEquipamientoEquipado(), other.getEquipamientoEquipado()))
+            return false;
+        if (nivel != other.nivel)
+            return false;
+        if (experiencia != other.experiencia)
+            return false;
+        if (fuerza != other.fuerza)
+            return false;
+        if (agilidad != other.agilidad)
+            return false;
+        if (constitucion != other.constitucion)
+            return false;
+        return true;
     }
 
 

@@ -1,6 +1,8 @@
 package UD4.Rol.Entity.Entidades;
 
 import java.util.Random;
+
+
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
@@ -254,7 +256,7 @@ public abstract class Entidad implements Comparable<Entidad> {
         return (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
     }
 
-    public JSONObject toJsonObject(){
+    public JSONObject toJsonObject() {
         JSONObject entidad = new JSONObject();
         JSONObject stats = new JSONObject();
         stats.accumulate("nombre", nombre);
@@ -271,7 +273,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     }
 
     abstract public String toString();
-    
+    abstract public boolean equals(Object other);
     @Override
     public int compareTo(Entidad other) {
         int agilidadComp = Integer.compare(this.agilidad, other.agilidad);

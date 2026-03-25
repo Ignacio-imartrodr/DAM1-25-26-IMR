@@ -23,9 +23,9 @@ import UD4.Rol.Entity.Entidades.Personaje;
 
 public abstract class Util{
     /**
-     * Ordena un array cuarquiera por su orden natural usando {@code Arrays.sort()} pero en caso de tener valores null los deja el final del array.
+     * Ordena un array cuarquiera por su orden natural usando {@code Arrays.sort()} pero en caso de tener valores null los deja al final del array.
      * 
-     * @param x : Array que será ordenado 
+     * @param x : Array de un tipo que implementa {@code compareTo} y que será ordenado
      */
     public static void sortArray(Object[] x){
         if (x == null || x .length == 0 || x.length == 1) {
@@ -491,7 +491,12 @@ public abstract class Util{
         JSONObject pers = new JSONObject();
         for (Personaje personaje : personajesCreados) {
             if (!(personaje == null)) {
-                pers = personaje.toJsonObject();
+                try {
+                    pers = personaje.toJsonObject();
+                } catch (Exception e) {
+                    personaje.setId(0);
+                    pers = personaje.toJsonObject();
+                }
                 personajes = Arrays.copyOf(personajes, personajes.length + 1);
                 personajes[personajes.length - 1] = pers;
             }

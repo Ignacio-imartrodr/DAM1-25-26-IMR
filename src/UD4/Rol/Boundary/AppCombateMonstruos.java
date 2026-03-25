@@ -85,6 +85,6 @@ public class AppCombateMonstruos {//TODO recrear a mi modo
         personajesCreados = Combate.combateMonstruos(personajes, monstruos, personajesCreados);
 
         System.out.println("El combate de grupo ha finalizado.");
-        Guardado.GuardadoPersonajes(personajesCreados);
+        Guardado.guardadoPersonajes(personajesCreados);
     }
 }

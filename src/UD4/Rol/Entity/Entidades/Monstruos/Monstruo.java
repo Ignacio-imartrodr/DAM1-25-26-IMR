@@ -54,6 +54,37 @@ public abstract class Monstruo extends Entidad {
         return nombre + "-"  + getEspecie() + " (" + getPuntosVida() + ")";
     }
 
+    
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((especie == null) ? 0 : especie.hashCode());
+        result = prime * result + vidaMax;
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Monstruo other = (Monstruo) obj;
+        if (especie != other.especie)
+            return false;
+        if (vidaMax != other.vidaMax)
+            return false;
+        if (nivel != other.nivel)
+            return false;
+        return true;
+    }
+
+
     public static Monstruo generaMonstruoAleatorio(int... nivelMonstruo){
         int i = rng.nextInt(10);
         //La probabilidad está en un % pero al todos ser divisores de 10 ahorro iteraciones en el for

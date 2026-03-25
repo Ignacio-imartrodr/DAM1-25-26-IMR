@@ -63,13 +63,13 @@ public abstract class Creacion {
         }
         return texto;
     }
-    private static Personaje parsePersonajeFromJsonObject(JSONObject jsonObject) {
+    public static Personaje getPersonajeFromJsonObject(JSONObject jsonObject) throws EntidadException {
         if (jsonObject == null) {
             return null;
         }
 
         JSONObject stats = jsonObject.optJSONObject("Stats");
-        String nombre = "SIN_NOMBRE";
+        String nombre = null;
         String raza = "Humano";
         String fuerza = "1";
         String agilidad = "1";
@@ -134,11 +134,11 @@ public abstract class Creacion {
         try {
             return new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, equipamientoGuardado, bolsa, true);
         } catch (Exception e) {
-            throw new EntidadException("Error creando personaje from JSON: " + e.getMessage());
+            throw new EntidadException("Error creando personaje from JsonObject: " + e.getMessage());
         }
     }
 
-    public static Personaje[] getPersonajesJson(String ruta){
+    public static Personaje[] getPersonajesFromJson(String ruta){
         String contenido = Util.readFileToString(ruta);
         if (contenido == null || contenido.isBlank()) {
             throw new EntidadException("Archivo JSON vacío o no encontrado");
@@ -150,16 +150,23 @@ public abstract class Creacion {
             throw new EntidadException("No se encontró la clave Personajes");
         }
 
+        boolean esBaseGeneral = false;
+        if (ruta.equals(Guardado.RUTA_BASE_GENERAL)) {
+            esBaseGeneral = true;
+        }
         Personaje[] personajes = new Personaje[0];
         for (int i = 0; i < personajesJson.length(); i++) {
             try {
-                Personaje p = parsePersonajeFromJsonObject(personajesJson.optJSONObject(i));
+                Personaje p = getPersonajeFromJsonObject(personajesJson.optJSONObject(i));
                 if (p != null) {
+                    if (esBaseGeneral) {
+                        p.setId(i);
+                    }
                     personajes = Arrays.copyOf(personajes, personajes.length + 1);
                     personajes[personajes.length - 1] = p;
                 }
             } catch (EntidadException e) {
-                System.err.println("Personaje " + i + " ignorado: " + e.getMessage());
+                System.err.println("Personaje " + i + " ignorado por error: " + e.getMessage());
             }
         }
         return personajes;
@@ -174,7 +181,7 @@ public abstract class Creacion {
         }
         for (int i = 0; i < personajesJson.length(); i++) {
             try {
-                Personaje personaje = parsePersonajeFromJsonObject(personajesJson.optJSONObject(i));
+                Personaje personaje = getPersonajeFromJsonObject(personajesJson.optJSONObject(i));
                 if (personaje != null) {
                     personaje.setId(i);
                     personajes = Arrays.copyOf(personajes, personajes.length + 1);

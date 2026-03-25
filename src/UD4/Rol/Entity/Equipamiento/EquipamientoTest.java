@@ -52,10 +52,10 @@ public class EquipamientoTest {
             System.out.println("✓ Casco3 equipado. El casco1 debe estar en equipamientoGuardado.");
 
             System.out.println("\n========== PRUEBA 4: Mostrar equipamientoEquipado ==========");
-            System.out.println(p.getEquipamientoEquipado());
+            System.out.println(p.getStringEquipamientoEquipado());
 
             System.out.println("\n========== PRUEBA 5: Verificar array equipamientoEquipado ==========");
-            Equipamiento[] equipados = p.getArrayEquipado();
+            Equipamiento[] equipados = p.getEquipamientoEquipado();
             System.out.println("Items equipados (acceso directo):");
             String[] nombresSlots = {"Casco", "Pechera", "Pantalón", "Botas", "Arma"};
             for (int i = 0; i < equipados.length; i++) {
@@ -67,7 +67,7 @@ public class EquipamientoTest {
             }
 
             System.out.println("\n========== PRUEBA 6: Mostrar equipamientoGuardado ==========");
-            System.out.println(p.getEquipamientoGuardado());
+            System.out.println(p.getStringEquipamientoGuardado());
 
             System.out.println("\n========== PRUEBA 7: Quitar equipamiento ==========");
             System.out.println("Retirando casco (slot 0)...");
@@ -75,7 +75,7 @@ public class EquipamientoTest {
             System.out.println("✓ Retirado: " + (retirado != null ? retirado.getNombre() : "null"));
 
             System.out.println("\nEquipamiento actualizado:");
-            equipados = p.getArrayEquipado();
+            equipados = p.getEquipamientoEquipado();
             for (int i = 0; i < equipados.length; i++) {
                 if (equipados[i] != null) {
                     System.out.println("  Slot " + i + ": " + equipados[i].getNombre());

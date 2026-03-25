@@ -2,22 +2,33 @@ package UD4.Rol.Control;
 
 import java.util.Arrays;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.Util;
 
 public class Guardado {
+    public static final String RUTA_BASE_GENERAL = "src\\UD4\\Rol\\Control\\BaseGeneral.json";
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
-        String rutaFichero = "src\\UD4\\Rol\\Control\\BaseGeneral.json";
+        //String rutaFichero = "src\\UD4\\Rol\\Control\\BaseGeneral.json";
+        JSONArray persBaseGeneral = Util.rutaToJsonObject(RUTA_BASE_GENERAL).getJSONArray("Personajes");
         System.out.println(Creacion.getStringPersonajes(personajesCreados));
         for (Personaje personaje : personajesCreados) {
             System.out.println(personaje.getFicha());
             System.out.print("¿Quieres guardar este personaje? (S/n): ");
             if (Util.escogerOpcion("S", "n")) {
-                if (Util.UbiObjetoEnArray(personaje, Creacion.getPersonajesJson(rutaFichero)) == -1) {
-                    Util.writeToJson(rutaFichero, true, "Personajes", personaje.toJsonObject());
-                } else {
+                JSONObject perJsonObject;
+                try {
+                    perJsonObject = personaje.toJsonObject();
+                } catch (Exception e) {
+                    personaje.setId(persBaseGeneral.length());
+                    perJsonObject = personaje.toJsonObject();
+                }
+                //TODO revisar condiciones en casa 
+                if (persBaseGeneral.opt(personaje.getId()) == null || !(persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("nombre").equals(perJsonObject.getJSONObject("Stats").getString("nombre")) && persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("raza").equals(perJsonObject.getJSONObject("Stats").getString("raza")))) {
+                    Util.writeToJson(RUTA_BASE_GENERAL, true, "Personajes", perJsonObject);
+                } else if (!(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
                     //TODO crear en Util una funcion para sobreescribirlo 
                 }
                 /* 
@@ -60,7 +71,7 @@ public class Guardado {
             }
         }    
     }
-    public static void GuardadoPersonajes(Personaje[] personajesCreados){//TODO que guarde en BaseGeneral
+    public static void guardadoPersonajes(Personaje[] personajesCreados){//TODO que guarde en BaseGeneral
         boolean repetir = true;
         while (repetir) {
             repetir = false;

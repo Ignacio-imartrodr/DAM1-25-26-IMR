@@ -80,7 +80,7 @@ public interface EquipEquipado {
         return null;
     }
 
-    default public String getEquipamientoEquipado() {
+    default public String getStringEquipamientoEquipado() {
         String inventario = "Equipamiento activo:\n-------------------\n";
         for (int i = 0; i < equipamientoEquipado.length; i++) {
             String parte;
@@ -100,7 +100,7 @@ public interface EquipEquipado {
         }
         return inventario;
     }
-    default public Equipamiento[] getArrayEquipado() {
+    default public Equipamiento[] getEquipamientoEquipado() {
         return java.util.Arrays.copyOf(equipamientoEquipado, equipamientoEquipado.length);
     }
 }
