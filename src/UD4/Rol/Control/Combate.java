@@ -3,11 +3,6 @@ package UD4.Rol.Control;
 import java.util.Random;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
-import UD4.Rol.Entity.Others.Item;
-import UD4.Rol.Entity.Others.Items;
-import UD4.Rol.Entity.Others.Raza;
-import UD4.Rol.Utilidades.EntidadException;
-import UD4.Rol.Utilidades.ItemException;
 import UD4.Rol.Utilidades.Util;
 
 public class Combate {

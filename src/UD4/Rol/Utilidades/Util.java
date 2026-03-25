@@ -85,8 +85,8 @@ public abstract class Util{
      * Lee y carga el contenido de una web por url en formato {@code Json} a un array de {@code Json} 
      * 
      * @param ruta Es la ruta del archivo Json.
-     * @param key Es el parametro que contiene los objetos o null si solo es el array en la web
-     * @return {@code JsonArray} de la librería json.JSONArray con el contenido del archivo Json.
+     * @param key Es el parametro que contiene los objetos o null si quieres todo el contenido
+     * @return {@code JsonObject} de la librería json.JSONObject con el contenido del archivo Json.
      */
     public static JSONObject rutaToJsonObject(String ruta, String... key){
         try {
@@ -96,8 +96,29 @@ public abstract class Util{
             if (text.startsWith("{")) {
                 objetosArchivo = new JSONObject(text);
                 try {
-                    if (key != null && key[0] != null) {
-                        objetosArchivo = objetosArchivo.getJSONObject(key[0]);
+                    if (key != null){
+                        JSONArray arrayArchivo = null;
+                        for (String cod : key) {//TODO revisar
+                            if (cod != null) {
+                                if (arrayArchivo == null) {
+                                    if (objetosArchivo.optJSONObject(cod) != null) {
+                                        objetosArchivo = objetosArchivo.getJSONObject(cod);
+                                    } else if (objetosArchivo.optJSONArray(cod) != null) {
+                                        arrayArchivo = objetosArchivo.getJSONArray(cod);
+                                    }
+                                } else {
+                                    if (arrayArchivo.optJSONObject(Integer.valueOf(cod)) != null) {
+                                        objetosArchivo = arrayArchivo.getJSONObject(Integer.valueOf(cod));
+                                        arrayArchivo = null;
+                                    } else if (arrayArchivo.optJSONArray(Integer.valueOf(cod)) != null) {
+                                        arrayArchivo = arrayArchivo.getJSONArray(Integer.valueOf(cod));
+                                    }
+                                }
+                            }
+                        }
+                        if (arrayArchivo != null) {
+                            objetosArchivo = new JSONObject(arrayArchivo);
+                        }
                     }
                 } catch (Exception e) {
                     return objetosArchivo;
@@ -372,7 +393,7 @@ public abstract class Util{
         return successful;
     }
 
-    public static void writeToJson(String filePath, boolean append, String key, JSONObject... personaje) {
+    public static void writeToJson(String filePath, boolean append, String key, JSONObject... object) {
         try {
             JSONObject info = new JSONObject();
             if (append) {
@@ -396,8 +417,53 @@ public abstract class Util{
                     }
                 }
             }  
-            for (int i = 0; i < personaje.length; i++) {
-                info.accumulate(key, personaje[i]);
+            for (int i = 0; i < object.length; i++) {
+                info.accumulate(key, object[i]);
+            }
+            borrarFicheroYCrearloVacio(filePath);
+            // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
+            FileWriter writer = new FileWriter(filePath, append);
+            writer.write(info.toString());
+            // Cerramos el fichero
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void OverrideJsonObjectInJson(String filePath, Object[] keysToUb, JSONObject... object) {
+        try {
+            JSONObject info = new JSONObject();
+            JSONObject oldInfo = rutaToJsonObject(filePath);
+            if (oldInfo != null) {
+                for (int i = 0; i < keysToUb.length; i++) {
+                    if (oldInfo.optJSONArray(keysToUb[i]) != null) {//TODO arreglar y verificar que funciona
+                        JSONArray JsonArray = oldInfo.getJSONArray(keysToUb[i]);
+                        for (int j = 0; j < JsonArray.length(); j++) {
+                            try {
+                                info.accumulate(keysToUb, JsonArray.getJSONObject(j));
+                            } catch (Exception e) {
+                                try {
+                                    info.accumulate(keysToUb, JsonArray.getJSONArray(j));
+                                } catch (Exception o) {
+                                    info.accumulate(keysToUb, JsonArray.get(j));
+                                }
+                            }
+                        }
+                    } else if (oldInfo.optJSONObject(keysToUb[i]) != null) {
+                        
+                    } else {
+                        throw new EntidadException("Error sustituyendo el JsonObject");
+                    }
+                }
+                try {
+                    
+                } catch (Exception e) {
+                    info.accumulate(keysToUb, oldInfo);
+                }
+            }
+
+            for (int i = 0; i < object.length; i++) {
+                info.accumulate(keysToUb, object[i]);
             }
             borrarFicheroYCrearloVacio(filePath);
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
