@@ -452,9 +452,6 @@ public abstract class Util{
         try {
             JSONObject oldInfo = rutaToJsonObject(filePath);
             JSONObject info = rutaToJsonObject(filePath);//TODO revisar como funciona el query
-            for (JSONObject jsonObject : oldInfo.) {
-                
-            }
             /*if (oldInfo != null) {
 
                 for (int i = 0; i < keysToUb.length; i++) {
