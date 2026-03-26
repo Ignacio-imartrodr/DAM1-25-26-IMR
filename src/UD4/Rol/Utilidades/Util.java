@@ -393,7 +393,15 @@ public abstract class Util{
         return successful;
     }
 
-    public static boolean writeToJson(String filePath, boolean append, String key, JSONObject... object) {
+    /**
+     * Guarda cada Objeto {@code JSONObject} en la ubicacion indicada (todo en la misma posición)
+     * @param filePath ruta del archivo.json 
+     * @param key Key del objeto para insertarlo
+     * @param object Objeto/s a insertar en el Json (en la misma ubicación).
+     * @param append indica si quieres añadir información al Json con {@code true} o si borra la inforamción ya existente y lo añade en un Json en blanco.
+     * @return {@code true} si se ejecutó con exito o {@code false} si hubo un error y no se modificó el Json 
+     */
+    public static boolean writeToJson(String filePath, boolean append, String key, JSONObject... object) {//TODO revisar
         try {
             JSONObject info = new JSONObject();
             if (append) {
@@ -432,10 +440,21 @@ public abstract class Util{
             return false;
         }
     }
+
+    /**
+     * Guarda cada Objeto {@code JSONObject} en la ubicacion indicada (todo en la misma posición)
+     * @param filePath ruta del archivo.json 
+     * @param keysToUb seríe de key/s y/o números para ubicr el {@code JSONObject} dentro del Json
+     * @param object Objeto/s a insertar en el Json (en la misma ubicación)
+     * @return {@code true} si se ejecutó con exito o {@code false} si no existía el objeto a sustituír o si hubo un error y no se modificó el Json 
+     */
     public static boolean OverrideJsonObjectInJson(String filePath, Object[] keysToUb, JSONObject... object) {
         try {
-            JSONObject info;
             JSONObject oldInfo = rutaToJsonObject(filePath);
+            JSONObject info = rutaToJsonObject(filePath);//TODO revisar como funciona el query
+            for (JSONObject jsonObject : oldInfo.) {
+                
+            }
             /*if (oldInfo != null) {
 
                 for (int i = 0; i < keysToUb.length; i++) {
@@ -465,9 +484,9 @@ public abstract class Util{
                 }
             }*/
             try {
-                if (keysToUb != null) {
+                if (keysToUb != null) {// TODO arreglar y terminar
                     JSONArray arrayArchivo = null;
-                    for (Object obj : keysToUb) {// TODO arreglar y terminar
+                    for (Object obj : keysToUb) {
                         String llave = null;
                         int cod = -1;
                         if (obj instanceof String) {
@@ -479,14 +498,14 @@ public abstract class Util{
                         }
                         if (llave != null) {
                             if (arrayArchivo == null) {
-                                if (oldInfo.optJSONObject(llave) != null) {
-                                    oldInfo = oldInfo.getJSONObject(llave);
-                                } else if (oldInfo.optJSONArray(llave) != null) {
-                                    arrayArchivo = oldInfo.getJSONArray(llave);
+                                if (info.optJSONObject(llave) != null) {
+                                    info = info.getJSONObject(llave);
+                                } else if (info.optJSONArray(llave) != null) {
+                                    arrayArchivo = info.getJSONArray(llave);
                                 }
                             } else {
                                 if (arrayArchivo.optJSONObject(Integer.valueOf(llave)) != null) {
-                                    oldInfo = arrayArchivo.getJSONObject(Integer.valueOf(llave));
+                                    info = arrayArchivo.getJSONObject(Integer.valueOf(llave));
                                     arrayArchivo = null;
                                 } else if (arrayArchivo.optJSONArray(Integer.valueOf(llave)) != null) {
                                     arrayArchivo = arrayArchivo.getJSONArray(Integer.valueOf(llave));
@@ -494,14 +513,14 @@ public abstract class Util{
                             }
                         } else if (cod >= 0) {
                             if (arrayArchivo == null) {
-                                if (oldInfo.optJSONObject(String.valueOf(cod)) != null) {
-                                    oldInfo = oldInfo.getJSONObject(String.valueOf(cod));
-                                } else if (oldInfo.optJSONArray(String.valueOf(cod)) != null) {
-                                    arrayArchivo = oldInfo.getJSONArray(String.valueOf(cod));
+                                if (info.optJSONObject(String.valueOf(cod)) != null) {
+                                    info = info.getJSONObject(String.valueOf(cod));
+                                } else if (info.optJSONArray(String.valueOf(cod)) != null) {
+                                    arrayArchivo = info.getJSONArray(String.valueOf(cod));
                                 }
                             } else {
                                 if (arrayArchivo.optJSONObject(cod) != null) {
-                                    oldInfo = arrayArchivo.getJSONObject(cod);
+                                    info = arrayArchivo.getJSONObject(cod);
                                     arrayArchivo = null;
                                 } else if (arrayArchivo.optJSONArray(cod) != null) {
                                     arrayArchivo = arrayArchivo.getJSONArray(cod);
@@ -510,19 +529,19 @@ public abstract class Util{
                         }
                     }
                     if (arrayArchivo != null) {
-                        oldInfo = new JSONObject(arrayArchivo);
+                        info = new JSONObject(arrayArchivo);
                     }
                 }
             } catch (Exception e) {
                 // TODO: handle exception
             }
             for (int i = 0; i < object.length; i++) {
-                info.accumulate(keysToUb, object[i]);
+                oldInfo.accumulate(keysToUb, object[i]);
             }
             borrarFicheroYCrearloVacio(filePath);
             // Creamos un objeto FileWriter que nos permitirá escribir en el fichero
-            FileWriter writer = new FileWriter(filePath, append);
-            writer.write(info.toString());
+            FileWriter writer = new FileWriter(filePath, true);
+            writer.write(oldInfo.toString());
             // Cerramos el fichero
             writer.close();
         } catch (IOException e) {
