@@ -467,25 +467,44 @@ public abstract class Util{
             try {
                 if (keysToUb != null) {
                     JSONArray arrayArchivo = null;
-                    for (Object obj : keysToUb) {// TODO arreglar
+                    for (Object obj : keysToUb) {// TODO arreglar y terminar
                         String llave = null;
                         int cod = -1;
                         if (obj instanceof String) {
                             llave = (String) obj;
+                            cod = -1;
+                        } else if (obj instanceof int) {
+                            cod = (int) obj;
+                            llave = null;
                         }
                         if (llave != null) {
                             if (arrayArchivo == null) {
-                                if (oldInfo.optJSONObject(cod) != null) {
-                                    oldInfo = oldInfo.getJSONObject(cod);
-                                } else if (oldInfo.optJSONArray(cod) != null) {
-                                    arrayArchivo = oldInfo.getJSONArray(cod);
+                                if (oldInfo.optJSONObject(llave) != null) {
+                                    oldInfo = oldInfo.getJSONObject(llave);
+                                } else if (oldInfo.optJSONArray(llave) != null) {
+                                    arrayArchivo = oldInfo.getJSONArray(llave);
                                 }
                             } else {
-                                if (arrayArchivo.optJSONObject(Integer.valueOf(cod)) != null) {
-                                    oldInfo = arrayArchivo.getJSONObject(Integer.valueOf(cod));
+                                if (arrayArchivo.optJSONObject(Integer.valueOf(llave)) != null) {
+                                    oldInfo = arrayArchivo.getJSONObject(Integer.valueOf(llave));
                                     arrayArchivo = null;
-                                } else if (arrayArchivo.optJSONArray(Integer.valueOf(cod)) != null) {
-                                    arrayArchivo = arrayArchivo.getJSONArray(Integer.valueOf(cod));
+                                } else if (arrayArchivo.optJSONArray(Integer.valueOf(llave)) != null) {
+                                    arrayArchivo = arrayArchivo.getJSONArray(Integer.valueOf(llave));
+                                }
+                            }
+                        } else if (cod >= 0) {
+                            if (arrayArchivo == null) {
+                                if (oldInfo.optJSONObject(String.valueOf(cod)) != null) {
+                                    oldInfo = oldInfo.getJSONObject(String.valueOf(cod));
+                                } else if (oldInfo.optJSONArray(String.valueOf(cod)) != null) {
+                                    arrayArchivo = oldInfo.getJSONArray(String.valueOf(cod));
+                                }
+                            } else {
+                                if (arrayArchivo.optJSONObject(cod) != null) {
+                                    oldInfo = arrayArchivo.getJSONObject(cod);
+                                    arrayArchivo = null;
+                                } else if (arrayArchivo.optJSONArray(cod) != null) {
+                                    arrayArchivo = arrayArchivo.getJSONArray(cod);
                                 }
                             }
                         }
