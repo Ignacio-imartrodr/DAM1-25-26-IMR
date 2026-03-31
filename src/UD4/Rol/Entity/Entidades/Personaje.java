@@ -87,7 +87,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     }
     public Personaje(String nombre, String raza, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, Equipamiento[] equipamientoEquipado, Equipamiento[] equipamientoGuardado, Item[] bolsa, boolean yaExistente){
         
-        if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
+        if (nombre == null || nombre.isBlank()) {
             throw new EntidadException("El nombre es necesario para la construcción de Personaje y no puede ser \"null\" o estár en blanco, prueba \"Personaje()\" en su lugar");
         }
         this.vidaMin = 50;

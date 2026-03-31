@@ -24,7 +24,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     protected final static short CONVERSOR = 129; // Para pasar entre lvl y nivel
 
     protected void newEntidad(String nombre, String fuerza, String agilidad, String constitucion, String nivel, String experiencia, boolean yaExistente){
-        if (nombre == null || nombre.isEmpty() || nombre.isBlank()) {
+        if (nombre == null || nombre.isBlank()) {
             this.nombre = null;
         } else {
             nombre = nombre.strip();
