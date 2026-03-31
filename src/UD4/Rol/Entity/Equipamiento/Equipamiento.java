@@ -26,7 +26,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
     
     protected void newEquipamiento(String tipo, String subtipo, int num){
         try {
-            JSONObject equipamiento = Util.rutaToJsonObject(RUTA_EQUIPAMIENTOS, tipo);
+            JSONObject equipamiento = Util.rutaJsonToObjectJson(RUTA_EQUIPAMIENTOS, tipo);
             JSONArray objetos = equipamiento.getJSONArray(subtipo);
             objetoBase = objetos.getJSONObject(num);
             objetoBase.accumulate("class", subtipo);

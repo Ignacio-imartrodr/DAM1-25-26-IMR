@@ -82,57 +82,57 @@ public abstract class Util{
         return x;
     }
     /**
-     * Lee y carga el contenido de un fichero en formato {@code Json} por su ruta relativa a un Objeto de {@code JSONObject} 
+     * Lee y carga el contenido de un fichero en formato {@code Json} por su ruta relativa a un Objeto de {@code JSONObject} o {@code JSONArray}
      * 
      * @param ruta Es la ruta del archivo Json.
      * @param keysToUb Es el parametro que contiene los objetos o null si quieres todo el contenido
-     * @return {@code JsonObject} de la librería json.JSONObject con el contenido del archivo Json o {@code null} si hubo un fallo con las rutas.
+     * @return {@code JsonObject} o {@code JSONArray} de la librería json-20220320 con el contenido del archivo Json o {@code null} si hubo un fallo con la ruta, keysToUb o el formato del Json.
      */
-    public static JSONObject rutaToJsonObject(String ruta, Object... keysToUb){
+    public static Object rutaJsonToObjectJson(String ruta, Object... keysToUb){
         if (ruta == null || ruta.isBlank()) {
             return null;
         }
         try {
+            Object objectJson;
             String text = readFileToString(ruta);
             String jsonPointer = getJsonPointer(keysToUb);
 
-            JSONObject objetosArchivo;
-            JSONArray jsonArray;
+            JSONObject jo;
+            JSONArray ja;
             if (text.startsWith("{")) {
-                objetosArchivo = new JSONObject(text);
+                jo = new JSONObject(text);
+                objectJson = jo;
                 if (jsonPointer != null) {
                     Object obj;
-                    obj = objetosArchivo.query(jsonPointer);
+                    obj = jo.query(jsonPointer);
                     if (obj instanceof JSONObject) {
-                        objetosArchivo = (JSONObject) obj;
+                        jo = (JSONObject) obj;
                     } else if (obj instanceof JSONArray) {
-                        jsonArray = (JSONArray) obj;
-                        objetosArchivo = new JSONObject(jsonArray);
+                        ja = (JSONArray) obj;
+                        objectJson = ja;
                     } else {
-                        objetosArchivo = new JSONObject(obj);
+                        objectJson = null;
                     }
                 }
             } else if (text.startsWith("[")) {
-                jsonArray = new JSONArray(text);
+                ja = new JSONArray(text);
+                objectJson = ja;
                 if (jsonPointer != null) {
-                    Object obj;
-                    obj = jsonArray.query(jsonPointer);
-                    if (obj instanceof JSONObject) {
-                        objetosArchivo = (JSONObject) obj;
-                    } else if (obj instanceof JSONArray) {
-                        jsonArray = (JSONArray) obj;
-                        objetosArchivo = new JSONObject();
-                        objetosArchivo.put(jsonPointer.split("/")[keysToUb.length - 1], jsonArray);
+                    objectJson = ja.query(jsonPointer);
+                    if (objectJson instanceof JSONObject) {
+                        jo = (JSONObject) objectJson;
+                        objectJson = jo;
+                    } else if (objectJson instanceof JSONArray) {
+                        ja = (JSONArray) objectJson;
+                        objectJson = ja;
                     } else {
-                        objetosArchivo = new JSONObject(obj);
+                        objectJson = null;
                     }
-                } else {
-                    objetosArchivo = new JSONObject(jsonArray);
                 }
             } else {
-                objetosArchivo = null;
+                objectJson = null;
             }
-            return objetosArchivo;
+            return objectJson;
         } catch (Exception e) {
             return null;
         }
@@ -419,7 +419,7 @@ public abstract class Util{
                 if (text.startsWith("[")) {
                     infoArray = new JSONArray(text);
                 } else if (text.startsWith("{")) {
-                    infObj = rutaToJsonObject(filePath);
+                    infObj = rutaJsonToObjectJson(filePath);
                 } else if (text.isBlank()) {
                     
                     // Este caso es el mismo que no append
@@ -601,9 +601,17 @@ public abstract class Util{
             } else {
                 objLocation = infoArray.query(jsonPointer);
             }
+            
+            // Validar que objLocation no sea null
+            if (objLocation == null) {
+                return false;
+            }
 
             // Si key es null, la ubicación es un JSONArray
             if (key == null) {
+                if (!(objLocation instanceof JSONArray)) {
+                    return false;
+                }
                 arrayLocation = (JSONArray) objLocation;
                 if (object.length == 1) {
                     arrayLocation.put(object[0]);
@@ -613,6 +621,17 @@ public abstract class Util{
                     }
                 }
                 objLocation = arrayLocation;
+                
+                // -----Recrear información-----
+                Object oldInfo = infObj != null ? infObj : infoArray;
+                Object resultadoRecreacion = recreacionJsonObjectOArray(keysToUb, objLocation, oldInfo);
+                if (resultadoRecreacion instanceof JSONObject) {
+                    infObj = (JSONObject) resultadoRecreacion;
+                } else if (resultadoRecreacion instanceof JSONArray) {
+                    infoArray = (JSONArray) resultadoRecreacion;
+                } else {
+                    return false;
+                }
 
             // Si key no es null
             } else {
@@ -706,37 +725,47 @@ public abstract class Util{
      * @return El árbol JSON reconstruido desde la raíz, o {@code null} si hay error.
      */
     private static Object recreacionJsonObjectOArray(Object[] keysToUb, Object modifiedElement, Object original) {
-        JSONObject info = null;
-        JSONArray arrayArchivo = null;
+        JSONObject recreObj = null;
+        JSONArray recreArray = null;
         JSONObject originalObj = null;
         JSONArray originalArray = null;
 
         if (modifiedElement instanceof JSONObject) {
-            info = (JSONObject) modifiedElement;
+            recreObj = (JSONObject) modifiedElement;
         } else if (modifiedElement instanceof JSONArray) {
-            arrayArchivo = (JSONArray) modifiedElement;
+            recreArray = (JSONArray) modifiedElement;
         } else {
             return null;
         }
 
         if (original instanceof JSONObject) {
             originalObj = (JSONObject) original;
-        } else if (modifiedElement instanceof JSONArray) {
+        } else if (original instanceof JSONArray) {
             originalArray = (JSONArray) original;
         } else {
             return null;
         }
 
-        String llave = null;
-        int cod = -1;
+        String llaveActual = null;
+        int codActual = -1;
         String jsonPointer;
-        Object obj;
+        Object objAux;
         
         // For de recreación: reconstruir desde el penúltimo elemento hasta la raíz
         for (int i = keysToUb.length - 2; i >= 0; i--) {
-            // --------------Recuparar la información no susutituida-----------------
-            JSONObject objAux = null;
-            JSONArray arAux = null;
+            // Extraer key/cod del nivel actual (i+1)
+            Object keyObj = keysToUb[i + 1];
+            String llave = null;
+            int cod = -1;
+            if (keyObj instanceof String) {
+                llave = (String) keyObj;
+            } else if (keyObj instanceof int) {
+                cod = (int) keyObj;
+            }
+            
+            // --------------Recuperar la información no sustituida-----------------
+            JSONObject joAux = null;
+            JSONArray jaAux = null;
 
             jsonPointer = getJsonPointer(Arrays.copyOf(keysToUb, i + 1));
             jsonPointer = jsonPointer.substring(0, jsonPointer.lastIndexOf("/"));
@@ -744,124 +773,132 @@ public abstract class Util{
             // Consultar desde el original apropiado
             if (originalObj != null) {
                 if (jsonPointer.isBlank()) {
-                    obj = originalObj;
+                    objAux = originalObj;
                 } else {
-                    obj = originalObj.query(jsonPointer);
+                    objAux = originalObj.query(jsonPointer);
                 }
             } else {
                 if (jsonPointer.isBlank()) {
-                    obj = originalArray;
+                    objAux = originalArray;
                 } else {
-                    obj = originalArray.query(jsonPointer);
+                    objAux = originalArray.query(jsonPointer);
                 }
             }
 
-            if (obj instanceof JSONObject) {
-                objAux = (JSONObject) obj;
-            } else if (obj instanceof JSONArray) {
-                arAux = (JSONArray) obj;
+            if (objAux instanceof JSONObject) {
+                joAux = (JSONObject) objAux;
+            } else if (objAux instanceof JSONArray) {
+                jaAux = (JSONArray) objAux;
             } else {
                 return null;
             }
-            // --------------Reemplazar la sustituída-------------
-            if (objAux != null) {
-                if (info != null) {
+            // --------------Reemplazar la sustituida-------------
+            if (joAux != null) {
+                if (recreObj != null) {
                     if (llave != null) {
-                        objAux.put(llave, info);
+                        joAux.put(llave, recreObj);
                     } else {
-                        objAux.put(String.valueOf(cod), info);
+                        joAux.put(String.valueOf(cod), recreObj);
                     }
                 } else {
                     if (llave != null) {
-                        objAux.put(llave, arrayArchivo);
+                        joAux.put(llave, recreArray);
                     } else {
-                        objAux.put(String.valueOf(cod), arrayArchivo);
+                        joAux.put(String.valueOf(cod), recreArray);
                     }
                 }
             } else {
-                if (info != null) {
+                if (recreObj != null) {
                     if (llave != null) {
-                        arAux.put(Integer.valueOf(llave), info);
+                        try {
+                            jaAux.put(Integer.valueOf(llave), recreObj);
+                        } catch (NumberFormatException e) {
+                            return null;
+                        }
                     } else {
-                        arAux.put(cod, info);
+                        jaAux.put(cod, recreObj);
                     }
                 } else {
                     if (llave != null) {
-                        arAux.put(Integer.valueOf(llave), arrayArchivo);
+                        try {
+                            jaAux.put(Integer.valueOf(llave), recreArray);
+                        } catch (NumberFormatException e) {
+                            return null;
+                        }
                     } else {
-                        arAux.put(cod, arrayArchivo);
+                        jaAux.put(cod, recreArray);
                     }
                 }
             }
 
-            // ---------------Agregar la key correspondiente----------------
-            obj = keysToUb[i];
-            llave = null;
-            cod = -1;
-            if (obj instanceof String) {
-                llave = (String) obj;
-            } else if (obj instanceof int) {
-                cod = (int) obj;
+            // ---------------Agregar la key correspondiente para la siguiente iteración----------------
+            objAux = keysToUb[i];
+            llaveActual = null;
+            codActual = -1;
+            if (objAux instanceof String) {
+                llaveActual = (String) objAux;
+            } else if (objAux instanceof int) {
+                codActual = (int) objAux;
             }
             
-            if (objAux != null) {
-                info = new JSONObject();
-                if (llave != null) {
-                    info.put(llave, objAux);
+            if (joAux != null) {
+                recreObj = new JSONObject();
+                if (llaveActual != null) {
+                    recreObj.put(llaveActual, joAux);
                 } else {
-                    info.put(String.valueOf(cod), objAux);
+                    recreObj.put(String.valueOf(codActual), joAux);
                 }
             } else if (i >= 1) {
-                arrayArchivo = new JSONArray();
-                if (llave != null) {
-                    arrayArchivo.put(Integer.valueOf(llave), arAux);
+                recreArray = new JSONArray();
+                if (llaveActual != null) {
+                    recreArray.put(Integer.valueOf(llaveActual), jaAux);
                 } else {
-                    arrayArchivo.put(cod, arAux);
+                    recreArray.put(codActual, jaAux);
                 }
             }
         }
         
         // Construcción final desde la raíz
-        obj = keysToUb[0];
-        llave = null;
-        cod = -1;
-        if (obj instanceof String) {
-            llave = (String) obj;
-        } else if (obj instanceof int) {
-            cod = (int) obj;
+        objAux = keysToUb[0];
+        String llaveRaiz = null;
+        int codRaiz = -1;
+        if (objAux instanceof String) {
+            llaveRaiz = (String) objAux;
+        } else if (objAux instanceof int) {
+            codRaiz = (int) objAux;
         }
         
         if (originalObj != null) {
-            // Root es JSONObject
+            // Es JSONObject
             JSONObject root = new JSONObject();
-            if (arrayArchivo != null) {
-                if (llave != null) {
-                    root.put(llave, arrayArchivo);
+            if (recreArray != null) {
+                if (llaveRaiz != null) {
+                    root.put(llaveRaiz, recreArray);
                 } else {
-                    root.put(String.valueOf(cod), arrayArchivo);
+                    root.put(String.valueOf(codRaiz), recreArray);
                 }
             } else {
-                if (llave != null) {
-                    root.put(llave, info);
+                if (llaveRaiz != null) {
+                    root.put(llaveRaiz, recreObj);
                 } else {
-                    root.put(String.valueOf(cod), info);
+                    root.put(String.valueOf(codRaiz), recreObj);
                 }
             }
             return root;
         } else {
-            // Root es JSONArray
+            // Es JSONArray
             JSONArray root = new JSONArray();
-            if (info != null) {
-                if (llave != null) {
-                    root.put(Integer.valueOf(llave), info);
+            if (recreObj != null) {
+                if (llaveRaiz != null) {
+                    root.put(Integer.valueOf(llaveRaiz), recreObj);
                 } else {
-                    root.put(cod, info);
+                    root.put(codRaiz, recreObj);
                 }
             } else {
-                if (llave != null) {
-                    root.put(Integer.valueOf(llave), arrayArchivo);
+                if (llaveRaiz != null) {
+                    root.put(Integer.valueOf(llaveRaiz), recreArray);
                 } else {
-                    root.put(cod, arrayArchivo);
+                    root.put(codRaiz, recreArray);
                 }
             }
             return root;
@@ -872,18 +909,27 @@ public abstract class Util{
      * Guarda cada Objeto {@code JSONObject} en la ubicacion indicada (todo en la misma posición)
      * @param filePath ruta del archivo.json 
      * @param keysToUb seríe de key/s y/o números para ubicr el {@code JSONObject} dentro del Json
-     * @param JsonObject Objeto/s a insertar en el Json (en la misma ubicación)
+     * @param jsonObject Objeto/s a insertar en el Json (en la misma ubicación)
      * @return {@code true} si se ejecutó con exito o {@code false} si no existía el objeto a sustituír o si hubo un error y no se modificó el Json 
      */
-    public static boolean overrideJsonObjectInJson(String filePath, Object[] keysToUb, JSONObject... JsonObject) {
+    public static boolean overrideJsonObjectInJson(String filePath, Object[] keysToUb, JSONObject... jsonObject) {
         try {
-            if (keysToUb == null || keysToUb.length == 0 || JsonObject == null || JsonObject.length == 0) {
+            if (keysToUb == null || keysToUb.length == 0 || jsonObject == null || jsonObject.length == 0) {
                 return false;
             }
             
-            // Read the full JSON file
-            JSONObject root = rutaToJsonObject(filePath);
-            if (root == null) {
+            // Read the full JSON file (puede ser JSONObject o JSONArray)
+            String text = readFileToString(filePath);
+            if (text == null || text.isBlank()) {
+                return false;
+            }
+            
+            Object root = null;
+            if (text.startsWith("{")) {
+                root = new JSONObject(text);
+            } else if (text.startsWith("[")) {
+                root = new JSONArray(text);
+            } else {
                 return false;
             }
             
@@ -903,8 +949,29 @@ public abstract class Util{
             String parentPointer = fullPointer.substring(0, lastSlashIndex);
             String finalKey = fullPointer.substring(lastSlashIndex + 1);
             
-            // Get the parent object
-            Object parentObj = root.query(parentPointer);
+            // Get the parent object - manejar correctamente JSONObject y JSONArray
+            Object parentObj = null;
+            try {
+                if (root instanceof JSONObject) {
+                    JSONObject rootObj = (JSONObject) root;
+                    if (parentPointer.isBlank()) {
+                        parentObj = rootObj;
+                    } else {
+                        parentObj = rootObj.query(parentPointer);
+                    }
+                } else if (root instanceof JSONArray) {
+                    JSONArray rootArray = (JSONArray) root;
+                    if (parentPointer.isBlank()) {
+                        parentObj = rootArray;
+                    } else {
+                        parentObj = rootArray.query(parentPointer);
+                    }
+                } else {
+                    return false;
+                }
+            } catch (Exception e) {
+                return false;
+            }
             if (parentObj == null) {
                 return false;
             }
@@ -931,22 +998,26 @@ public abstract class Util{
                     }
                 }
                 // Then override with new data
-                for (String key : JsonObject[0].keySet()) {
-                    merged.put(key, JsonObject[0].get(key));
+                for (String key : jsonObject[0].keySet()) {
+                    merged.put(key, jsonObject[0].get(key));
                 }
                 
                 parent.put(finalKey, merged);
-                for (int i = 1; i < JsonObject.length; i++) {
-                    parent.accumulate(finalKey, JsonObject[i]);
+                // Merge de todos los objetos si hay múltiples
+                for (int i = 1; i < jsonObject.length; i++) {
+                    for (String key : jsonObject[i].keySet()) {
+                        merged.put(key, jsonObject[i].get(key));
+                    }
                 }
+                parent.put(finalKey, merged);
             } else if (parentObj instanceof JSONArray) {
                 JSONArray parent = (JSONArray) parentObj;
                 try {
                     int index = Integer.parseInt(finalKey);
-                    parent.put(index, JsonObject[0]);
+                    parent.put(index, jsonObject[0]);
                     // For multiple objects in a JSONArray, just put them at subsequent indices
-                    for (int i = 1; i < JsonObject.length; i++) {
-                        parent.put(index + i, JsonObject[i]);
+                    for (int i = 1; i < jsonObject.length; i++) {
+                        parent.put(index + i, jsonObject[i]);
                     }
                 } catch (NumberFormatException e) {
                     return false;

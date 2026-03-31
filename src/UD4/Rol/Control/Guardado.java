@@ -12,7 +12,7 @@ public class Guardado {
     public static final String RUTA_BASE_GENERAL = "src\\UD4\\Rol\\Control\\BaseGeneral.json";
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
         //String rutaFichero = "src\\UD4\\Rol\\Control\\BaseGeneral.json";
-        JSONArray persBaseGeneral = Util.rutaToJsonObject(RUTA_BASE_GENERAL).getJSONArray("Personajes");
+        JSONArray persBaseGeneral = Util.rutaJsonToObjectJson(RUTA_BASE_GENERAL).getJSONArray("Personajes");
         System.out.println(Creacion.getStringPersonajes(personajesCreados));
         for (Personaje personaje : personajesCreados) {
             System.out.println(personaje.getFicha());
