@@ -752,199 +752,128 @@ public abstract class Util {
     }
 
     /**
+     * Clona un elemento JSON (JSONObject o JSONArray) creando una copia independiente mediante serialización/deserialización.
+     * 
+     * @param element Elemento a clonar
+     * @return Copia clonada del elemento, o null si no es JSONObject/JSONArray
+     */
+    private static Object cloneJsonElement(Object element) {
+        try {
+            if (element instanceof JSONObject) {
+                JSONObject orig = (JSONObject) element;
+                return new JSONObject(orig.toString());
+            } else if (element instanceof JSONArray) {
+                JSONArray orig = (JSONArray) element;
+                return new JSONArray(orig.toString());
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
+    }
+
+    /**
      * Reconstruye recursivamente el árbol JSON desde la raíz, preservando elementos
      * no modificados después de una alteración profunda.
      * 
      * @param keysToUb        Ruta a la ubicación donde se realizó la modificación.
-     * @param modifiedElement El elemento (JSONObject o JSONArray) que fue
-     *                        modificado.
-     * @param originalObj     JSONObject original para consultar partes no
-     *                        modificadas, o {@code null} si la raíz es JSONArray.
-     * @param originalArray   JSONArray original para consultar partes no
-     *                        modificadas, o {@code null} si la raíz es JSONObject.
-     * @return El árbol JSON reconstruido desde la raíz, o {@code null} si hay
-     *         error.
+     * @param modifiedElement El elemento (JSONObject o JSONArray) que fue modificado.
+     * @param original        JSONObject o JSONArray original para consultar partes no modificadas.
+     * @return Árbol JSON reconstruido desde la raíz, o {@code null} si hay error.
      */
     private static Object recreacionJsonObjectOArray(Object[] keysToUb, Object modifiedElement, Object original) {
-        JSONObject recreObj = null;
-        JSONArray recreArray = null;
-        JSONObject originalObj = null;
-        JSONArray originalArray = null;
-
-        if (modifiedElement instanceof JSONObject) {
-            recreObj = (JSONObject) modifiedElement;
-        } else if (modifiedElement instanceof JSONArray) {
-            recreArray = (JSONArray) modifiedElement;
-        } else {
+        if (keysToUb == null || keysToUb.length == 0 || modifiedElement == null || original == null || !(original instanceof JSONObject || original instanceof JSONArray)) {
             return null;
         }
-
-        if (original instanceof JSONObject) {
-            originalObj = (JSONObject) original;
-        } else if (original instanceof JSONArray) {
-            originalArray = (JSONArray) original;
-        } else {
-            return null;
-        }
-
-        String llaveActual = null;
-        int codActual = -1;
-        String jsonPointer;
-        Object objAux;
-
-        // For de recreación: reconstruir desde el penúltimo elemento hasta la raíz
-        for (int i = keysToUb.length - 2; i >= 0; i--) {
-            // Extraer key/cod del nivel actual (i+1)
-            Object keyObj = keysToUb[i + 1];
-            String llave = null;
+        Object current = modifiedElement;
+        
+        // Procesar desde el final del Json hacia el principio (de abajo hacia arriba)
+        for (int i = keysToUb.length - 1; i > 0; i--) {
+            Object keyObj = keysToUb[i];
+            
+            // Obtener la clave/índice del elemento padre
+            String key = null;
             int cod = -1;
+            
             if (keyObj instanceof String) {
-                llave = (String) keyObj;
-            } else if (keyObj instanceof int) {
-                cod = (int) keyObj;
-            }
-
-            // --------------Recuperar la información no sustituida-----------------
-            JSONObject joAux = null;
-            JSONArray jaAux = null;
-
-            jsonPointer = getJsonPointer(Arrays.copyOf(keysToUb, i + 1));
-            jsonPointer = jsonPointer.substring(0, jsonPointer.lastIndexOf("/"));
-
-            // Consultar desde el original apropiado
-            if (originalObj != null) {
-                if (jsonPointer.isBlank()) {
-                    objAux = originalObj;
-                } else {
-                    objAux = originalObj.query(jsonPointer);
+                key = (String) keyObj;
+                try {
+                    cod = Integer.valueOf(key);
+                } catch (Exception e) {
+                    // Ignorar
                 }
-            } else {
-                if (jsonPointer.isBlank()) {
-                    objAux = originalArray;
-                } else {
-                    objAux = originalArray.query(jsonPointer);
-                }
-            }
-
-            if (objAux instanceof JSONObject) {
-                joAux = (JSONObject) objAux;
-            } else if (objAux instanceof JSONArray) {
-                jaAux = (JSONArray) objAux;
+            } else if (keyObj instanceof Integer) {
+                cod = (Integer) keyObj;
             } else {
                 return null;
             }
-            // --------------Reemplazar la sustituida-------------
-            if (joAux != null) {
-                if (recreObj != null) {
-                    if (llave != null) {
-                        joAux.put(llave, recreObj);
-                    } else {
-                        joAux.put(String.valueOf(cod), recreObj);
-                    }
+            
+            String parentPointer = getJsonPointer(Arrays.copyOf(keysToUb, i));
+            
+            // Reconstruír
+            try {
+                // Obtener valores anteriores 
+                Object parentObj = null;
+                if (original instanceof JSONObject) {
+                    parentObj = ((JSONObject) original).query(parentPointer);
+                } else if (original instanceof JSONArray) {
+                    parentObj = ((JSONArray) original).query(parentPointer);
                 } else {
-                    if (llave != null) {
-                        joAux.put(llave, recreArray);
-                    } else {
-                        joAux.put(String.valueOf(cod), recreArray);
-                    }
+                    return null;
                 }
-            } else {
-                if (recreObj != null) {
-                    if (llave != null) {
-                        try {
-                            jaAux.put(Integer.valueOf(llave), recreObj);
-                        } catch (NumberFormatException e) {
-                            return null;
-                        }
-                    } else {
-                        jaAux.put(cod, recreObj);
-                    }
+                
+                // Clonar el padre para no modificar el original
+                Object clonedParent = cloneJsonElement(parentObj);
+                
+                if (clonedParent instanceof JSONObject && key != null) {
+                    ((JSONObject) clonedParent).put(key, current);
+                    current = clonedParent;
+                } else if (clonedParent instanceof JSONArray && cod >= 0) {
+                    ((JSONArray) clonedParent).put(cod, current);
+                    current = clonedParent;
                 } else {
-                    if (llave != null) {
-                        try {
-                            jaAux.put(Integer.valueOf(llave), recreArray);
-                        } catch (NumberFormatException e) {
-                            return null;
-                        }
-                    } else {
-                        jaAux.put(cod, recreArray);
-                    }
+                    return null;
                 }
-            }
-
-            // ---------------Agregar la key correspondiente para la siguiente
-            // iteración----------------
-            objAux = keysToUb[i];
-            llaveActual = null;
-            codActual = -1;
-            if (objAux instanceof String) {
-                llaveActual = (String) objAux;
-            } else if (objAux instanceof int) {
-                codActual = (int) objAux;
-            }
-
-            if (joAux != null) {
-                recreObj = new JSONObject();
-                if (llaveActual != null) {
-                    recreObj.put(llaveActual, joAux);
-                } else {
-                    recreObj.put(String.valueOf(codActual), joAux);
-                }
-            } else if (i >= 1) {
-                recreArray = new JSONArray();
-                if (llaveActual != null) {
-                    recreArray.put(Integer.valueOf(llaveActual), jaAux);
-                } else {
-                    recreArray.put(codActual, jaAux);
-                }
+            } catch (Exception e) {
+                return null;// Fallo con el query que indica error con keysToUb
             }
         }
-
-        // Construcción final desde la raíz
-        objAux = keysToUb[0];
-        String llaveRaiz = null;
-        int codRaiz = -1;
-        if (objAux instanceof String) {
-            llaveRaiz = (String) objAux;
-        } else if (objAux instanceof int) {
-            codRaiz = (int) objAux;
-        }
-
-        if (originalObj != null) {
-            // Es JSONObject
-            JSONObject root = new JSONObject();
-            if (recreArray != null) {
-                if (llaveRaiz != null) {
-                    root.put(llaveRaiz, recreArray);
+        
+        // Última iteración: conectar con el original
+        try {
+            Object firstKey = keysToUb[0];
+            if (firstKey instanceof String) {
+                String key = (String) firstKey;
+                if (original instanceof JSONObject) {
+                    JSONObject jo = (JSONObject) cloneJsonElement(original);
+                    jo.put(key, current);
+                    current = jo;
                 } else {
-                    root.put(String.valueOf(codRaiz), recreArray);
+                    int index;
+                    try {
+                        index = Integer.valueOf(key);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                    if (original instanceof JSONArray) {
+                        JSONArray ja = (JSONArray) cloneJsonElement(original);
+                        ja.put(index, current);
+                        current = ja;
+                    }
                 }
-            } else {
-                if (llaveRaiz != null) {
-                    root.put(llaveRaiz, recreObj);
-                } else {
-                    root.put(String.valueOf(codRaiz), recreObj);
-                }
-            }
-            return root;
-        } else {
-            // Es JSONArray
-            JSONArray root = new JSONArray();
-            if (recreObj != null) {
-                if (llaveRaiz != null) {
-                    root.put(Integer.valueOf(llaveRaiz), recreObj);
-                } else {
-                    root.put(codRaiz, recreObj);
-                }
-            } else {
-                if (llaveRaiz != null) {
-                    root.put(Integer.valueOf(llaveRaiz), recreArray);
-                } else {
-                    root.put(codRaiz, recreArray);
+            } else if (firstKey instanceof Integer) {
+                int index = (Integer) firstKey;
+                if (original instanceof JSONArray) {
+                    JSONArray ja = (JSONArray) cloneJsonElement(original);
+                    ja.put(index, current);
+                    current = ja;
                 }
             }
-            return root;
+        } catch (Exception e) {
+            return null;
         }
+        
+        return current;
     }
 
     /**
