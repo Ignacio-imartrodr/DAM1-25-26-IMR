@@ -24,9 +24,9 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
     private final static int XP_MAX = 256999;
     final static protected String RUTA_EQUIPAMIENTOS = "src\\UD4\\Rol\\Entity\\Equipamiento\\Equipamientos.json";
     
-    protected void newEquipamiento(String tipo, String subtipo, int num){
+    protected void newEquipamiento(String tipo, String subtipo, int num){//TODO que solo se guarde el nombre y durabilidad restante en el json y apartir de ahí con el Json "Equipamiento" sacas el resto
         try {
-            JSONObject equipamiento = Util.rutaJsonToObjectJson(RUTA_EQUIPAMIENTOS, tipo);
+            JSONObject equipamiento = (JSONObject) Util.rutaJsonToObjectJson(RUTA_EQUIPAMIENTOS, tipo);
             JSONArray objetos = equipamiento.getJSONArray(subtipo);
             objetoBase = objetos.getJSONObject(num);
             objetoBase.accumulate("class", subtipo);

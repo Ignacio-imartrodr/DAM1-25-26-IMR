@@ -1,1 +1,145 @@
-{"Personajes":[{"Stats":{"raza":"HUMANO","agilidad":59,"experiencia":0,"nombre":"Prueba3","fuerza":53,"constitucion":42,"nivel":1,"vidaMax":92},"Equipamientos":{"Equipado":[{},{},{"descripcion":"Tienes un hueco más de items en la bolsa","lvl":-128,"durabilidad":10000,"xp":0,"encantamiento":"Bolsillo","nombre":"Pantalón de adamantium","rareza":"CHAOTIC","class":"Pantalon","constitucion":103},{},{}],"Guardado":[]},"Bolsa":["Bomba de humo","Enredaderas","Enredaderas"]},{"Stats":{"raza":"HUMANO","agilidad":50,"experiencia":45,"nombre":"Prueba4","fuerza":50,"constitucion":50,"nivel":2,"vidaMax":100},"Equipamientos":{"Equipado":[{},{},{"descripcion":"Tienes un hueco más de items en la bolsa","lvl":-128,"durabilidad":10000,"xp":0,"encantamiento":"Bolsillo","nombre":"Pantalón de adamantium","rareza":"CHAOTIC","class":"Pantalon","constitucion":103},{},{}],"Guardado":[{"lvl":-128,"durabilidad":5500,"xp":0,"nombre":"Pantalón de cobre","rareza":"RARE","class":"Pantalon","constitucion":71}]},"Bolsa":[{},{},{},{}]},{"Stats":{"raza":"ELFO","agilidad":65,"experiencia":45,"nombre":"Prueba5","fuerza":45,"constitucion":40,"nivel":2,"vidaMax":90},"Equipamientos":{"Equipado":[{},{},{"descripcion":"Tienes un hueco más de items en la bolsa","lvl":-128,"durabilidad":10000,"xp":0,"encantamiento":"Bolsillo","nombre":"Pantalón de adamantium","rareza":"CHAOTIC","class":"Pantalon","constitucion":103},{},{}],"Guardado":[{"lvl":-128,"durabilidad":4000,"xp":0,"nombre":"Casco de madera","rareza":"SPECIAL","class":"Casco","constitucion":50},{"lvl":-128,"durabilidad":7000,"xp":0,"nombre":"Pantalón de hierro","rareza":"EPIC","class":"Pantalon","constitucion":82}]},"Bolsa":["Bomba de humo",{},{}]}]}
+{
+    "Personajes": [
+        {
+            "Stats": {
+                "raza": "HUMANO",
+                "agilidad": 59,
+                "experiencia": 0,
+                "nombre": "Prueba3",
+                "fuerza": 53,
+                "constitucion": 42,
+                "nivel": 1,
+                "vidaMax": 92
+            },
+            "Equipamientos": {
+                "Equipado": [
+                    {},
+                    {},
+                    {
+                        "descripcion": "Tienes un hueco más de items en la bolsa",
+                        "lvl": -128,
+                        "durabilidad": 10000,
+                        "xp": 0,
+                        "encantamiento": "Bolsillo",
+                        "nombre": "Pantalón de adamantium",
+                        "rareza": "CHAOTIC",
+                        "class": "Pantalon",
+                        "constitucion": 103
+                    },
+                    {},
+                    {}
+                ],
+                "Guardado": []
+            },
+            "Bolsa": [
+                "Bomba de humo",
+                "Enredaderas",
+                "Enredaderas"
+            ]
+        },
+        {
+            "Stats": {
+                "raza": "HUMANO",
+                "agilidad": 50,
+                "experiencia": 45,
+                "nombre": "Prueba4",
+                "fuerza": 50,
+                "constitucion": 50,
+                "nivel": 2,
+                "vidaMax": 100
+            },
+            "Equipamientos": {
+                "Equipado": [
+                    {},
+                    {},
+                    {
+                        "descripcion": "Tienes un hueco más de items en la bolsa",
+                        "lvl": -128,
+                        "durabilidad": 10000,
+                        "xp": 0,
+                        "encantamiento": "Bolsillo",
+                        "nombre": "Pantalón de adamantium",
+                        "rareza": "CHAOTIC",
+                        "class": "Pantalon",
+                        "constitucion": 103
+                    },
+                    {},
+                    {}
+                ],
+                "Guardado": [
+                    {
+                        "lvl": -128,
+                        "durabilidad": 5500,
+                        "xp": 0,
+                        "nombre": "Pantalón de cobre",
+                        "rareza": "RARE",
+                        "class": "Pantalon",
+                        "constitucion": 71
+                    }
+                ]
+            },
+            "Bolsa": [
+                {},
+                {},
+                {},
+                {}
+            ]
+        },
+        {
+            "Stats": {
+                "raza": "ELFO",
+                "agilidad": 65,
+                "experiencia": 45,
+                "nombre": "Prueba5",
+                "fuerza": 45,
+                "constitucion": 40,
+                "nivel": 2,
+                "vidaMax": 90
+            },
+            "Equipamientos": {
+                "Equipado": [
+                    {},
+                    {},
+                    {
+                        "descripcion": "Tienes un hueco más de items en la bolsa",
+                        "lvl": -128,
+                        "durabilidad": 10000,
+                        "xp": 0,
+                        "encantamiento": "Bolsillo",
+                        "nombre": "Pantalón de adamantium",
+                        "rareza": "CHAOTIC",
+                        "class": "Pantalon",
+                        "constitucion": 103
+                    },
+                    {},
+                    {}
+                ],
+                "Guardado": [
+                    {
+                        "lvl": -128,
+                        "durabilidad": 4000,
+                        "xp": 0,
+                        "nombre": "Casco de madera",
+                        "rareza": "SPECIAL",
+                        "class": "Casco",
+                        "constitucion": 50
+                    },
+                    {
+                        "lvl": -128,
+                        "durabilidad": 7000,
+                        "xp": 0,
+                        "nombre": "Pantalón de hierro",
+                        "rareza": "EPIC",
+                        "class": "Pantalon",
+                        "constitucion": 82
+                    }
+                ]
+            },
+            "Bolsa": [
+                "Bomba de humo",
+                {},
+                {}
+            ]
+        }
+    ]
+}

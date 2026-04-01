@@ -341,12 +341,12 @@ public abstract class Creacion {
         Personaje p1 = new Personaje("Prueba4", null, "50", "50", "50", "2", "45", equip, guard, new Item[4], true);
         Personaje p2 = new Personaje("Prueba5", "Elfo", "50", "50", "50", "2", "45", new Equipamiento[5], new Equipamiento[] {new Pantalon(3), new Casco(1)}, new Item[] {null, Items.getItemRnd(), null}, true);
         Personaje[] personajes = new Personaje[] {p, p1, p2};
-        JSONObject[] todos = new JSONObject[0];
+        Object[] todos = new JSONObject[0];
         for (Personaje personaje : personajes) {
-            Util.writeToJson("src\\UD4\\Rol\\PersonajesGuardados.json", true, "Personajes", personaje.toJsonObject());
+            Util.writeToJson("src\\UD4\\Rol\\PersonajesGuardados.json", true,null, new Object[]{"Personajes"}, personaje.toJsonObject());
             todos = Arrays.copyOf(todos,todos.length + 1);
             todos[todos.length -1] = personaje.toJsonObject();
         }
-        Util.writeToJson("src\\UD4\\Rol\\PersonajesGuardados.json", false, "Personajes", todos);
+        Util.writeToJson("src\\UD4\\Rol\\PersonajesGuardados.json", false, null, new Object[]{"Personajes"}, todos);
     }
 }
