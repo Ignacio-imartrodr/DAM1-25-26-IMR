@@ -113,21 +113,12 @@ public class Personaje extends Entidad implements EquipEquipado {
         if (bolsa != null) {
             Util.sortArray(bolsa);
         }
-
+        boolean tieneBolsillo = false;
+        if (equipamientoEquipado != null && equipamientoEquipado.length > 2 && equipamientoEquipado[2] instanceof Pantalon) {
+            String encantamiento = ((Pantalon) equipamientoEquipado[2]).getEncantamiento();
+            tieneBolsillo = encantamiento != null && encantamiento.equalsIgnoreCase("Bolsillo");
+        }
         if (yaExistente) {
-            if (equipamientoEquipado[2] != null && ((Pantalon) equipamientoEquipado[2]).getEncantamiento() != null) {
-                if ((bolsa.length == 3 && !((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo")) || (bolsa.length == 4 && ((Pantalon) equipamientoEquipado[2]).getEncantamiento().equalsIgnoreCase("Bolsillo"))) {
-                    this.bolsa = bolsa;
-                } else {
-                    throw new ItemException("Tamaño de la bolsa incorrecto");
-                }
-            } else {
-                if (bolsa.length == 3) {
-                    this.bolsa = bolsa;
-                } else {
-                    throw new ItemException("Tamaño de la bolsa incorrecto");
-                }
-            }
             if (equipamientoEquipado == null || (equipamientoEquipado.length == EquipEquipado.equipamientoEquipado.length && EquipEquipado.isFormatoCorrecto(equipamientoEquipado))) {
                 if (equipamientoEquipado != null) {
                     for (int i = 0; i < equipamientoEquipado.length; i++) {
@@ -140,6 +131,27 @@ public class Personaje extends Entidad implements EquipEquipado {
             } else {
                 throw new EquipamientoException("Equipamiento equipado invalido");
             }
+            if (bolsa != null) {
+                if (tieneBolsillo) {
+                    if (bolsa.length == 4) {
+                        this.bolsa = bolsa;
+                    } else {
+                        throw new ItemException("Tamaño de la bolsa incorrecto");
+                    }
+                } else {
+                    if (bolsa.length == 3) {
+                        this.bolsa = bolsa;
+                    } else {
+                        throw new ItemException("Tamaño de la bolsa incorrecto");
+                    }
+                }
+            } else {
+                if (tieneBolsillo) {
+                    bolsa = new Item[4];
+                } else {
+                    bolsa = new Item[3];
+                }
+            }
             if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
                 if (equipamientoGuardado != null) {
                     Util.sortArray(equipamientoGuardado);
@@ -151,11 +163,6 @@ public class Personaje extends Entidad implements EquipEquipado {
                 throw new EquipamientoException("Equipamiento guardado invalido");
             }
         } else {
-            boolean tieneBolsillo = false;
-            if (equipamientoEquipado != null && equipamientoEquipado.length > 2 && equipamientoEquipado[2] instanceof Pantalon) {
-                String encantamiento = ((Pantalon) equipamientoEquipado[2]).getEncantamiento();
-                tieneBolsillo = encantamiento != null && encantamiento.equalsIgnoreCase("Bolsillo");
-            }
             if (tieneBolsillo) {
                 this.bolsa = new Item[] {Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd(), Items.getItemRnd()};
             } else {
@@ -405,8 +412,7 @@ public class Personaje extends Entidad implements EquipEquipado {
         if (id < 0) {
             throw new EntidadException("Es necesario asignar la id según la posicion del personaje en la BaseGeneral");
         }
-        personaje.remove("Stats");
-        personaje.accumulate("Stats", stats);
+        personaje.put("Stats", stats);
         
         JSONObject equipamientos = new JSONObject();
 
@@ -433,12 +439,6 @@ public class Personaje extends Entidad implements EquipEquipado {
             } else {
                 bolsa.put(new JSONObject());
             }
-        }
-
-        if (personaje.opt("Equipamientos") != null) {
-            personaje.remove("Equipamientos");
-        }if (personaje.opt("Bolsa") != null) {
-            personaje.remove("Bolsa");
         }
         personaje.put("Equipamientos", equipamientos);
         personaje.put("Bolsa", bolsa);

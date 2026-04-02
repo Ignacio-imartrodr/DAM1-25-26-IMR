@@ -12,7 +12,7 @@ public class Guardado {
     public static final String RUTA_BASE_GENERAL = "src\\UD4\\Rol\\Control\\BaseGeneral.json";
     private static void guardarPorPersonaje(Personaje[] personajesCreados){
         //String rutaFichero = "src\\UD4\\Rol\\Control\\BaseGeneral.json";
-        JSONArray persBaseGeneral = Util.rutaJsonToObjectJson(RUTA_BASE_GENERAL).getJSONArray("Personajes");
+        JSONArray persBaseGeneral = (JSONArray) Util.rutaJsonToObjectJson(RUTA_BASE_GENERAL,"Personajes");
         System.out.println(Creacion.getStringPersonajes(personajesCreados));
         for (Personaje personaje : personajesCreados) {
             System.out.println(personaje.getFicha());
@@ -27,12 +27,12 @@ public class Guardado {
                 }
                 //TODO revisar condiciones en casa 
                 if (persBaseGeneral.opt(personaje.getId()) == null || !(persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("nombre").equals(perJsonObject.getJSONObject("Stats").getString("nombre")) && persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("raza").equals(perJsonObject.getJSONObject("Stats").getString("raza")))) {
-                    Util.writeToJson(RUTA_BASE_GENERAL, true, "Personajes", perJsonObject);
+                    Util.writeToJson(RUTA_BASE_GENERAL, true, "Personajes", null, perJsonObject);
                 } else if (!(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
-                    //TODO crear en Util una funcion para sobreescribirlo 
+                    Util.overrideJson(RUTA_BASE_GENERAL, new Object[]{"Personaje", personaje.getId()}, perJsonObject);
                 }
-                /* 
-                    //----CODIGO DESCARTADO POR AGRUPACION DE INFORMACION EN "BaseGeneral.json"----
+                /* Ignorar
+                    ----CODIGO DESCARTADO POR AGRUPACION DE INFORMACION EN "BaseGeneral.json"----
                 String rutaFichero = null;
                 String rutaPrevia = "";
                 boolean repetir = true;
