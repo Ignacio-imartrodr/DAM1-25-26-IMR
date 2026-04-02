@@ -889,8 +889,7 @@ public abstract class Util {
      *         objeto a sustituír o si hubo un error y no se modificó el Json
      */
     public static boolean overrideJson(String ruta, Object[] keysToUb, Object... object) {
-        if (object == null || object.length <= 0 || ruta == null || ruta.isBlank() || keysToUb == null
-                || keysToUb.length == 0) {
+        if (object == null || object.length <= 0 || ruta == null || ruta.isBlank() || keysToUb == null || keysToUb.length == 0) {
             return false;// Nada donde guardar o que escribir
         }
 
@@ -911,47 +910,50 @@ public abstract class Util {
         Object objAux = keysToUb[keysToUb.length - 1];
         String key = null;
         int cod = -1;
+
         // Validar keysToUb (String jsonPointer)
         if (jsonPointer != null) {
             if (objAux instanceof String) {
                 key = (String) objAux;
                 try {
-                    Integer.valueOf(key);
+                    cod = Integer.valueOf(key);
                 } catch (Exception e) {
                     // Ignorar, se maneja adelante en la validación
                 }
-            } else if (objAux instanceof int) {
-                cod = (int) objAux;
+            } else if (objAux instanceof Integer) {
+                cod = (Integer) objAux;
             } // No puede ser otra cosa por la verificación en la función "getJsonPointer"
-
-            try {
-                if (infObj != null) {
-                    objAux = infObj.query(jsonPointer.substring(0, jsonPointer.lastIndexOf("/")));
-                    if (objAux instanceof JSONObject) {
-                        if (!((JSONObject) objAux).has(key)) {
-                            return false;
-                        }
-                    } else {
-                        if (((JSONArray) objAux).opt(cod) == null) {
-                            return false;
-                        }
-                    }
-                } else {
-                    objAux = infoArray.query(jsonPointer.substring(0, jsonPointer.lastIndexOf("/")));
-                    if (objAux instanceof JSONObject) {
-                        if (!((JSONObject) objAux).has(key)) {
-                            return false;
-                        }
-                    } else {
-                        if (((JSONArray) objAux).opt(cod) == null) {
-                            return false;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                return false;
-            }
         } else {
+            return false;
+        }
+
+        try {
+            // Extraer el elemento padre si existe, si no hay padre (primer nivel), usar la raíz
+            int lastSlashIndex = jsonPointer.lastIndexOf("/");
+            if (lastSlashIndex > 0) {
+
+                // Hay padre (está en nivel anidado)
+                String parentPointer = jsonPointer.substring(0, lastSlashIndex);
+                if (infObj != null) {
+                    objAux = infObj.query(parentPointer);
+                } else {
+                    objAux = infoArray.query(parentPointer);
+                }
+            } else {
+
+                // Es primer nivel, usar la raíz
+                objAux = infObj != null ? infObj : infoArray;
+            }
+            if (objAux instanceof JSONObject) {
+                if (!((JSONObject) objAux).has(key)) {
+                    return false;// NO existe la key
+                }
+            } else {
+                if (((JSONArray) objAux).opt(cod) == null) {
+                    return false;// No existe el cod
+                }
+            }
+        } catch (Exception e) {
             return false;
         }
 
@@ -961,7 +963,7 @@ public abstract class Util {
         // objAux será un JSONObject o JSONArray debido a la validación de jsonPointer
         if (objAux instanceof JSONObject) {
             infObj = (JSONObject) objAux;
-            if (infObj.has(key)) {
+            if (!infObj.has(key)) {
                 return false;
             }
             if (object.length == 1) {
@@ -976,7 +978,7 @@ public abstract class Util {
             objAux = infObj;
         } else {
             infoArray = (JSONArray) objAux;
-            if (infoArray.opt(cod) != null) {
+            if (infoArray.opt(cod) == null) {
                 return false;
             }
             if (object.length == 1) {
@@ -991,14 +993,20 @@ public abstract class Util {
             objAux = infoArray;
         }
 
-        // -----Recrear información-----
-        resultadoRecreacion = recreacionJsonObjectOArray(Arrays.copyOf(keysToUb, keysToUb.length - 1), objAux, oldInfo);
-        if (resultadoRecreacion instanceof JSONObject) {
-            infObj = (JSONObject) resultadoRecreacion;
-        } else if (resultadoRecreacion instanceof JSONArray) {
-            infoArray = (JSONArray) resultadoRecreacion;
-        } else {
-            return false;
+        // -----Asignar información-----
+
+        // Si es primer nivel (keysToUb.length == 1), no es necesario recrear
+        if (keysToUb.length > 1) {
+
+            // Recrear para niveles anidados y asignar
+            resultadoRecreacion = recreacionJsonObjectOArray(Arrays.copyOf(keysToUb, keysToUb.length - 1), objAux, oldInfo);
+            if (resultadoRecreacion instanceof JSONObject) {
+                infObj = (JSONObject) resultadoRecreacion;
+            } else if (resultadoRecreacion instanceof JSONArray) {
+                infoArray = (JSONArray) resultadoRecreacion;
+            } else {
+                return false;
+            }
         }
         try {
             borrarFicheroYCrearloVacio(ruta);
@@ -1010,7 +1018,6 @@ public abstract class Util {
             e.printStackTrace();
             return false;
         }
-        
     }
 
     /**
