@@ -120,6 +120,7 @@ public abstract class Util {
                     obj = jo.query(jsonPointer);
                     if (obj instanceof JSONObject) {
                         jo = (JSONObject) obj;
+                        objectJson = jo;
                     } else if (obj instanceof JSONArray) {
                         ja = (JSONArray) obj;
                         objectJson = ja;
@@ -740,8 +741,8 @@ public abstract class Util {
                 llave = (String) obj;
                 cod = -1;
                 jsonPointer += "/" + llave;
-            } else if (obj instanceof int) {
-                cod = (int) obj;
+            } else if (obj instanceof Integer) {
+                cod = (Integer) obj;
                 llave = null;
                 jsonPointer += "/" + String.valueOf(cod);
             } else {
@@ -868,6 +869,8 @@ public abstract class Util {
                     ja.put(index, current);
                     current = ja;
                 }
+            } else {
+                return null; // Tipo inválido en firstKey
             }
         } catch (Exception e) {
             return null;
