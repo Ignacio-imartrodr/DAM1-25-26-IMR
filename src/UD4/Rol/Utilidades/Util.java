@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+/* ---------Descartado temporalmente---------
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+*/
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -49,7 +51,7 @@ public abstract class Util {
             }
         }
         if (conNull) {
-            /*
+            /* Ignorar
              * class Comparador implements Comparator<Object>{ //Investigar para sustituir
              * por el de la API
              * 
@@ -162,7 +164,8 @@ public abstract class Util {
      * @return {@code JsonArray} de la librería json.JSONArray con el contenido de
      *         la web.
      */
-    public static JSONArray urlToJsonArray(String url, String key) {
+    /* ---------Descartada temporalmente---------
+    public static JSONArray urlToJsonArray(String url, String key) { // Reformar metodo para que sea como ruta to ObjectJson
         try {
             String web = getJsonFromUrl(url);
             JSONObject webPersonajes;
@@ -177,7 +180,7 @@ public abstract class Util {
         } catch (Exception e) {
             throw new EntidadException("Error obteniendo los objetos de la web");
         }
-    }
+    }*/
 
     /**
      * Lee y carga el contenido de un fichero de texto a un array de {@code String}
@@ -396,7 +399,7 @@ public abstract class Util {
      * @return Ubicación de {@code objetivo} si está en el array {@code array} o
      *         {@code -1} si {@code objetivo} NO está en el array {@code array}
      */
-    public static int UbiObjetoEnArray(Object objetivo, Object[] array) { // Verificar como lo compara
+    public static int UbiObjetoEnArray(Object objetivo, Object[] array) {
         for (int i = 0; i < array.length; i++) {
             if (array[i].equals(objetivo)) {
                 return i;
@@ -1063,6 +1066,7 @@ public abstract class Util {
      * @param url : Enlace al Archivo.json
      * @return {@code String} con el contenido del Archivo.json
      */
+    /* ---------Descartada temporalmente---------
     private static String getJsonFromUrl(String url) throws IOException, InterruptedException {
         // Configuración del proxy del sistema
         System.setProperty("java.net.useSystemProxies", "true");
@@ -1082,10 +1086,7 @@ public abstract class Util {
         String json = resp.body();
         return json;
     }
-
-    public static boolean alternarBoolean(boolean b) {
-        return !b;
-    }
+    */
 
     public static void main(String[] args) {
         // String personajes = "";
