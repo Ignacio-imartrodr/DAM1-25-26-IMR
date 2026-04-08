@@ -10,6 +10,7 @@ import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
 import UD4.Rol.Entity.Equipamiento.Armadura.Pantalon;
+import UD4.Rol.Entity.Others.EquipEquipado;
 import UD4.Rol.Entity.Others.Item;
 import UD4.Rol.Entity.Others.Items;
 import UD4.Rol.Entity.Others.Raza;
@@ -18,44 +19,50 @@ import UD4.Rol.Utilidades.Util;
 
 public abstract class Creacion {
     
-    public static Personaje[] seleccionarPersonajes(Personaje[] personajesCreados, int cantidadASeleccionar) {
-        Personaje[] personajesEnBatalla = new Personaje[cantidadASeleccionar];
+    public static Personaje[] seleccionarPersonajes(Personaje[] personajes, int cantidadASeleccionar) {
+        if (cantidadASeleccionar < 1 || personajes.length == 0 || personajes == null || personajes.length < cantidadASeleccionar) {
+            return null;
+        }
+        if (personajes.length == cantidadASeleccionar) {
+            return personajes;
+        }
+        Personaje[] personajesSelec = new Personaje[cantidadASeleccionar];
         boolean esSiguiente = true;
-        for (int i = -1, j = 0, skip = -1; j < personajesEnBatalla.length;) {
+        for (int i = -1, j = 0, skip = -1; j < personajesSelec.length;) {
             if (esSiguiente) {
-                if (i == personajesCreados.length - 1) {
+                if (i == personajes.length - 1) {
                     i = 0;
                 } else {
                     i++;
                 }
             } else {
                 if (i == 0) {
-                    i = personajesCreados.length - 1;
+                    i = personajes.length - 1;
                 } else {
                     i--;
                 }
             }
             if (i != skip) {
-                System.out.println(personajesCreados[i].getFicha());
+                System.out.println(personajes[i].getFicha());
                 System.out.print("¿Quieres seleccionar este personaje? (S/n): ");
                 if (Util.escogerOpcion("S", "n")) {
-                    personajesEnBatalla[j] = personajesCreados[i];
+                    personajesSelec[j] = personajes[i];
                     j++;
                     skip = i;
                 }
             }
-            if (j < personajesEnBatalla.length) {
+            if (j < personajesSelec.length) {
                 System.out.println("Siguiente personaje o anterior? (S/a): ");
                 esSiguiente = Util.escogerOpcion("S", "a");
             }
         }
-        return personajesEnBatalla;
+        return personajesSelec;
     }
-    public static String getStringPersonajes(Personaje[] personajesCreados) {
+    public static String getStringPersonajes(Personaje[] personajes) {
         String texto;
-        if (personajesCreados != null && personajesCreados.length > 0) {
-            texto = "\nPersonajes disponibles:\n";
-            for (Personaje personaje : personajesCreados) {
+        if (personajes != null && personajes.length > 0) {
+            texto = "\nPersonajes:\n";
+            for (Personaje personaje : personajes) {
                 texto += personaje.getFicha() + "\n________________________\n";
             }
         } else {
@@ -63,12 +70,20 @@ public abstract class Creacion {
         }
         return texto;
     }
-    public static Personaje getPersonajeFromJsonObject(JSONObject jsonObject) throws EntidadException {
-        if (jsonObject == null) {
+
+    /**
+     * Transforma un Objeto {@code JSONObject} ya formateado en un {@code Personaje}
+     * 
+     * @param persJO {@code JSONObject} con formato de {@code Personaje}
+     * @return {@code Personaje} formado por {@code persJO} o null si ocurre un fallo
+     */
+    public static Personaje getPersonajeFromJsonObject(JSONObject persJO) {
+        if (persJO == null) {
+            System.err.println("el JSONObject es null");
             return null;
         }
 
-        JSONObject stats = jsonObject.optJSONObject("Stats");
+        JSONObject stats = persJO.optJSONObject("Stats");
         String nombre = null;
         String raza = "Humano";
         String fuerza = "1";
@@ -84,11 +99,14 @@ public abstract class Creacion {
             constitucion = String.valueOf(stats.optInt("constitucion", Integer.parseInt(constitucion)));
             nivel = String.valueOf(stats.optInt("nivel", Integer.parseInt(nivel)));
             experiencia = String.valueOf(stats.optInt("experiencia", Integer.parseInt(experiencia)));
+        } else {
+            System.err.println("Faltan las stats");
+            return null;
         }
 
         Equipamiento[] equipamientoEquipado = null;
         Equipamiento[] equipamientoGuardado = null;
-        JSONObject equipObj = jsonObject.optJSONObject("Equipamientos");
+        JSONObject equipObj = persJO.optJSONObject("Equipamientos");
         if (equipObj != null) {
             JSONArray equipadoJson = equipObj.optJSONArray("Equipado");
             if (equipadoJson != null) {
@@ -96,9 +114,21 @@ public abstract class Creacion {
                 for (int j = 0; j < equipadoJson.length(); j++) {
                     JSONObject equip = equipadoJson.optJSONObject(j);
                     if (equip != null) {
-                        equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
+                        try {
+                            equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
+                        } catch (Exception e) {
+                            System.err.println("Error con el esquipamientoEquipado:" + e.getMessage());
+                            return null;
+                        }
                     }
                 }
+                if (!EquipEquipado.isFormatoCorrecto(equipamientoEquipado)) {
+                    System.err.println("Error en el formato de EquipamientoEquipado");
+                    return null;
+                }
+            } else {
+                System.err.println("Falta el EquipamientoEquipado");
+                return null;
             }
             JSONArray guardadoJson = equipObj.optJSONArray("Guardado");
             if (guardadoJson != null) {
@@ -110,10 +140,13 @@ public abstract class Creacion {
                     }
                 }
             }
+        } else {
+            System.err.println("Falta el equipamiento");
+            return null;
         }
 
         Item[] bolsa = null;
-        JSONArray bolsaJson = jsonObject.optJSONArray("Bolsa");
+        JSONArray bolsaJson = persJO.optJSONArray("Bolsa");
         if (bolsaJson != null) {
             bolsa = new Item[bolsaJson.length()];
             for (int j = 0; j < bolsaJson.length(); j++) {
@@ -134,44 +167,76 @@ public abstract class Creacion {
         try {
             return new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia, equipamientoEquipado, equipamientoGuardado, bolsa, true);
         } catch (Exception e) {
-            throw new EntidadException("Error creando personaje from JsonObject: " + e.getMessage());
+            System.err.println("Error creando personaje from JsonObject: " + e.getMessage());
+            return null;
         }
     }
 
-    public static Personaje[] getPersonajesFromJson(String ruta){
-        String contenido = Util.readFileToString(ruta);
-        if (contenido == null || contenido.isBlank()) {
-            throw new EntidadException("Archivo JSON vacío o no encontrado");
-        }
-
-        JSONObject root = new JSONObject(contenido);
-        JSONArray personajesJson = root.optJSONArray("Personajes");
-        if (personajesJson == null) {
-            throw new EntidadException("No se encontró la clave Personajes");
+    public static Personaje[] getPersonajesFromJson(String ruta, Object... keysToPers){
+        Object contenido = Util.rutaJsonToObjectJson(ruta, keysToPers);
+        if (contenido == null) {
+            System.err.println("Archivo JSON vacío o no encontrado");
+            return null;
         }
 
         boolean esBaseGeneral = false;
         if (ruta.equals(Guardado.RUTA_BASE_GENERAL)) {
             esBaseGeneral = true;
         }
+
+        String key = "Personajes";
+        JSONObject rootJO = null;
+        JSONArray personajesJson;
+        if (esBaseGeneral) {
+            rootJO = (JSONObject) contenido;
+            personajesJson = rootJO.optJSONArray(key);
+        } else {
+            if (contenido instanceof JSONObject) {
+                rootJO = (JSONObject) contenido;
+                if (rootJO.has(key)) {
+                    if (rootJO.get(key) instanceof JSONArray) {
+                        personajesJson = rootJO.getJSONArray(key);
+                    } else {
+                        return null;
+                    }
+                } else {
+                    if (getPersonajeFromJsonObject(rootJO) == null) {
+                        return null;
+                    } else {
+                        return new Personaje[]{getPersonajeFromJsonObject(rootJO)};
+                    }
+                }
+            } else {
+                personajesJson = (JSONArray) contenido;
+            }
+                
+        }
+        
+        
+        if (personajesJson == null) {
+            System.err.println("No se encontró Personajes en la clave");
+            return null;
+        }
+
+        
         Personaje[] personajes = new Personaje[0];
         for (int i = 0; i < personajesJson.length(); i++) {
-            try {
-                Personaje p = getPersonajeFromJsonObject(personajesJson.optJSONObject(i));
-                if (p != null) {
-                    if (esBaseGeneral) {
-                        p.setId(i);
-                    }
-                    personajes = Arrays.copyOf(personajes, personajes.length + 1);
-                    personajes[personajes.length - 1] = p;
+            Personaje p = getPersonajeFromJsonObject(personajesJson.optJSONObject(i));
+            if (p != null) {
+                if (esBaseGeneral) {
+                    p.setId(i);
                 }
-            } catch (EntidadException e) {
-                System.err.println("Personaje " + i + " ignorado por error: " + e.getMessage());
+                personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                personajes[personajes.length - 1] = p;
+            } else {
+                //La función "getPersonajeFromJsonObject" lanza un System.err.println con la causa del error por el que se ignora el personaje
+                System.err.println("Por lo que se ignoró el Personaje " + i);
             }
         }
         return personajes;
     }
-    public static Personaje[] getPersonajesJsonUrl(String ruta){
+    /* ---------Descartada temporalmente---------
+    public static Personaje[] getPersonajesJsonUrl(String ruta){//Revisar
         Personaje[] personajes = new Personaje[0];
         JSONArray personajesJson;
         try {
@@ -180,20 +245,20 @@ public abstract class Creacion {
             throw new EntidadException("Error en el formato de la web");
         }
         for (int i = 0; i < personajesJson.length(); i++) {
-            try {
-                Personaje personaje = getPersonajeFromJsonObject(personajesJson.optJSONObject(i));
-                if (personaje != null) {
-                    personaje.setId(i);
-                    personajes = Arrays.copyOf(personajes, personajes.length + 1);
-                    personajes[personajes.length - 1] = personaje;
-                }
-            } catch (EntidadException e) {
-                System.err.println("Personaje " + i + " ignorado (web): " + e.getMessage());
+            
+            Personaje personaje = getPersonajeFromJsonObject(personajesJson.optJSONObject(i));
+            if (personaje != null) {
+                personaje.setId(i);
+                personajes = Arrays.copyOf(personajes, personajes.length + 1);
+                personajes[personajes.length - 1] = personaje;
+            } else {
+                //La función "getPersonajeFromJsonObject" lanza un System.err.println con la causa del error por el que se ignora el personaje
+                System.err.println("Por lo que se ignoró el Personaje " + i);
             }
         }
         return personajes;
     }
-
+    */
     public static String pedirStatRng(){
         Random rnd = new Random();
         int num = rnd.nextInt(100) + 1;
