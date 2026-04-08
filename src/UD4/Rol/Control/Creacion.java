@@ -171,7 +171,74 @@ public abstract class Creacion {
             return null;
         }
     }
-
+    public static Personaje[] cargarPersonajesDeArchivo(String rutaFile){   
+        Personaje[] personajesFichero = new Personaje[0];
+        boolean restart = true;
+        while (restart) {
+            restart = false;
+            System.out.println("Opciones: Json");
+            System.out.print("¿Quieres cargar personajes desde " + rutaFile + "? (S/n): ");
+            if (Util.escogerOpcion("S", "n")) {
+                if (rutaFile.endsWith(".json") || rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
+                    if (rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
+                        boolean errorUrl = true;
+                        String temp = rutaFile;
+                        while (errorUrl) {
+                            errorUrl = false;
+                            try {
+                                personajesFichero = Creacion.getPersonajesFromJson(rutaFile);
+                                if (personajesFichero.length == 0) {
+                                    System.out.println("El Json no contenía personajes");
+                                }
+                                System.out.print("¿Probar otra Url? (S/n): ");
+                                if (Util.escogerOpcion("S", "n")) {
+                                    errorUrl = true;
+                                }
+                            } catch (Exception e) {
+                                errorUrl = true;
+                                System.out.println("Error en la url");
+                                System.out.print("URL? (\"n\" para salir): ");
+                                temp = Util.pedirPorTeclado(false);
+                                if (temp.equalsIgnoreCase("n")) {
+                                    errorUrl = false;
+                                    restart = true;
+                                }
+                            }
+                        }
+                    } else {
+                        personajesFichero = Creacion.getPersonajesFromJson(rutaFile);
+                        if (personajesFichero.length == 0) {
+                            System.out.println("El fichero no contenía personajes");
+                        }
+                    }
+                } else {
+                    System.out.println("Error en la ruta");
+                    System.out.print("Ruta? (\"n\" para salir): ");
+                    rutaFile = Util.pedirPorTeclado(false);
+                    if (rutaFile.equalsIgnoreCase("n")) {
+                        System.out.println("personajes no cargados");
+                        restart = false;
+                    }
+                }
+            } else {
+                System.out.println("Quierres ingresar otra ruta? (S/n)");
+                if (Util.escogerOpcion("S", "n")) {
+                    System.out.print("Ruta? (\"n\" para salir): ");
+                    rutaFile = Util.pedirPorTeclado(false);
+                    if (rutaFile.equalsIgnoreCase("n")) {
+                        System.out.println("Personajes no cargados");
+                        restart = false;
+                    } else {
+                        restart = true;
+                    }
+                } else {
+                    System.out.println("No se han cargado personajes.");
+                    restart = false;
+                }
+            }
+        }
+        return personajesFichero;
+    }
     public static Personaje[] getPersonajesFromJson(String ruta, Object... keysToPers){
         Object contenido = Util.rutaJsonToObjectJson(ruta, keysToPers);
         if (contenido == null) {
@@ -296,7 +363,6 @@ public abstract class Creacion {
             System.out.print("¿Quieres crear un nuevo personaje? (S/n): ");
             if (Util.escogerOpcion("s", "n")) {
                 Personaje personaje = new Personaje();
-                System.out.println("\nRazas disponibles:\n\n" + Raza.getRazasStats());
                 personaje = crearPersonaje();
                 System.out.println(personaje.getFicha());
                 System.out.println("¿Es el personaje correcto? (S/n):");
@@ -317,12 +383,13 @@ public abstract class Creacion {
         System.out.print("Nombre del personaje: ");
         String nombre = Util.pedirPorTeclado(false);
         while (nombre == null) {
-            System.out.print("El persnaje necesita un nombre: ");
+            System.out.print("El personaje necesita un nombre: ");
             nombre = Util.pedirPorTeclado(false);          
         }
         nombre = nombre.strip();
-        System.out.println("Escoge una de las siguientes razas: orco, elfo, HUMANO, enano, hobbit o troll");
-        String raza = "a";
+        System.out.println("Escoge una de las siguientes razas (Enter para Humano): ");
+        System.out.println(Raza.getRazasStats());
+        String raza = "e";
         for (boolean error = true; error;) {
             try {
                 Raza razaVal = Raza.stringToRaza(Util.pedirPorTeclado(false));

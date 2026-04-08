@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import UD4.Rol.Control.Combate;
 import UD4.Rol.Control.Creacion;
+import UD4.Rol.Control.Guardado;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Utilidades.*;
 
@@ -70,30 +71,77 @@ public class AppCreaPersonaje {
         }
     }
     public static void main(String[] args) {
-        int id = 0;
         Personaje[] personajesNuevos = new Personaje[0];
         Personaje[] temp;
-        System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
-        if (Util.escogerOpcion("S", "n")) {
-            String rutaFichero;
-            rutaFichero = Util.pedirRuta();
-            if (!(rutaFichero == null)) {
-                temp = Combate.cargarPersonajesDeArchivo(rutaFichero);
-                for (Personaje personaje : temp) {
-                    personaje.setId(id); 
-                    personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
-                    personajesNuevos[personajesNuevos.length - 1] = personaje;
-                    id++;
-                }
+        System.out.println("-----------App para Creación y Manejo de Personajes-----------");
+        System.out.println("Opciones:\n1 - Cargar Personajes de un archivo\n2 - Crear personajes nuevos\n3 - Modificar personajes de la Base General\n4 - Salir");
+        int num = Integer.valueOf(Util.pedirPorTeclado(true));
+        for (boolean fin = false; !fin;) {
+            switch (num) {
+                case 1 :
+                    String rutaFichero;
+                    rutaFichero = Util.pedirRuta();
+                    for (boolean repetir = true; repetir;) {
+                        repetir = false;
+                        if (!(rutaFichero == null)) {
+                            Object[] keysToPers = new Object[0];
+                            System.out.print("¿Quieres especificar las claves hasta el array de personajes? (s/N): ");
+                            if (Util.escogerOpcion("N", "s")) {
+                                temp = Creacion.getPersonajesFromJson(rutaFichero);
+                                if (temp != null) {
+                                    for (Personaje personaje : temp) {
+                                        personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
+                                        personajesNuevos[personajesNuevos.length - 1] = personaje;
+                                    }
+                                } else {
+                                    System.err.println("Error con el archivo");
+                                }
+                            } else{
+                                String key;
+                                do {
+                                    System.out.print("Clave (Enter vacía para finalizar): ");
+                                    key = Util.pedirPorTeclado(false);
+                                } while (key != null);
+                                temp = Creacion.getPersonajesFromJson(rutaFichero, keysToPers);
+                                if (temp != null) {
+                                    for (Personaje personaje : temp) {
+                                        personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
+                                        personajesNuevos[personajesNuevos.length - 1] = personaje;
+                                    }
+                                } else {
+                                    System.err.println("Error con el archivo");
+                                }
+                            }
+                        } else {
+                            System.err.println("Error con la ruta");
+                        }
+                        System.out.print("¿Quieres dar otra ruta? (S/n): ");
+                        if (Util.escogerOpcion("S", "n")) {
+                            repetir = true;
+                        }
+                    }
+                    Guardado.guardadoPersonajes(personajesNuevos);
+                    break;
+                case 2 ://TODO terminar
+                    break;
+                case 3 ://TODO terminar
+                    break;
+                case 4 :
+                    fin = true;
+                    break;
+                default:
+                    fin = false;
+                    break;
             }
         }
+        
         temp = Creacion.pedirPersonajes();
         for (Personaje personaje : temp) {
-            personaje.setId(id); 
             personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
             personajesNuevos[personajesNuevos.length - 1] = personaje;
-            id++;
         }
+        Guardado.guardadoPersonajes(personajesNuevos);
+        System.out.println("Quieres ");
         modificarPersonagesArray(personajesNuevos);
     }
 }

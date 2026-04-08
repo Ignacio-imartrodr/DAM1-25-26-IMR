@@ -308,7 +308,7 @@ public abstract class Util {
      * 
      * @param pideNumero Indica si tiene que verificar que la entrada por teclado
      *                   sea numérica.
-     * @return {@code String} con el resulatado del teclado o "-1" si está vacía.
+     * @return {@code String} con el resulatado del teclado o {@code null} si está vacía.
      */
     public static String pedirPorTeclado(boolean pideNumero) {
         String var;
@@ -1096,19 +1096,20 @@ public abstract class Util {
         Personaje prueba2 = new Personaje("prueba2");
         personajesCreados[0] = prueba;
         personajesCreados[1] = prueba1;
-        personajesCreados[2] = prueba2;/*
-                                        * for (Personaje personaje : personajesCreados) {
-                                        * if (!(personaje == null)) {
-                                        * personajes += personaje.toJsonString()+",\n";
-                                        * }
-                                        * }
-                                        * if (!personajes.equals("")) {
-                                        * personajes = personajes.substring(0, personajes.lastIndexOf(","));
-                                        * writeStringToJson(personajes, "src\\UD4\\rol\\PersonajesGuardados.json",
-                                        * true);
-                                        * }
-                                        */
+        personajesCreados[2] = prueba2;
         /*
+         * for (Personaje personaje : personajesCreados) {
+         * if (!(personaje == null)) {
+         * personajes += personaje.toJsonString()+",\n";
+         * }
+         * }
+         * if (!personajes.equals("")) {
+         * personajes = personajes.substring(0, personajes.lastIndexOf(","));
+         * writeStringToJson(personajes, "src\\UD4\\rol\\PersonajesGuardados.json",
+         * true);
+         * }
+         *
+         *
          * JSONObject pers = new JSONObject();
          * pers.accumulate("Personajes", prueba.toJsonObject());
          * pers.accumulate("Personajes", prueba1.toJsonObject());

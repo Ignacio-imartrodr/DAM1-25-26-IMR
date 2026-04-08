@@ -78,7 +78,7 @@ public class Guardado {
         boolean repetir = true;
         while (repetir) {
             repetir = false;
-            System.out.println("¿Quieres guardar los personajes? (S/n): ");
+            System.out.println("¿Quieres guardar algún personaje? (S/n): ");
             if (Util.escogerOpcion("S", "n")) {
                 System.out.println("¿Quieres guardar todos los personajes creados y cargados? (S/n): ");
                 if (Util.escogerOpcion("S", "n")) {
