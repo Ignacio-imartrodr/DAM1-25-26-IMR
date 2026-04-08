@@ -241,7 +241,7 @@ public class AppCombateSingular {
                 }
                 personajesEnBatalla[personajeEnTurno] = personajeActuando;
                 personajesEnBatalla[1 - personajeEnTurno] = enemigo;
-                turno = Util.alternarBoolean(turno);
+                turno = !turno;
             }
             System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
             System.out.println("¿Otra batalla? (S/n)");
