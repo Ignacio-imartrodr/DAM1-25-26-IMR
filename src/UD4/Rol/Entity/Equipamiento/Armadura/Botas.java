@@ -18,14 +18,14 @@ public class Botas extends Armadura {
         if (comparador >= 1) {
             this.durabilidad = super.durabilidad = comparador;
         } else {
-            throw new EquipamientoException("Error con el Json de Maza");
+            throw new EquipamientoException("Error con el Json de Botas");
         }
         
         comparador = botas.getInt("xp");
         if (comparador >= 0 && comparador <= 999) {
             this.xp = super.xp = comparador;
         } else {
-            throw new EquipamientoException("Error con el Json de Maza");
+            throw new EquipamientoException("Error con el Json de Botas");
         }
 
         this.lvl = super.lvl= (byte) botas.get("lvl");
@@ -34,7 +34,7 @@ public class Botas extends Armadura {
         if (comparador >= 1) {
             this.constitucion = super.constitucion = comparador;
         } else {
-            throw new EquipamientoException("Error con el Json de Maza");
+            throw new EquipamientoException("Error con el Json de Botas");
         }
         this.encantamiento = super.encantamiento = botas.optString("encantamiento");
         this.objetoBase = super.objetoBase = getJsonObject();
@@ -57,12 +57,8 @@ public class Botas extends Armadura {
 
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
-
-        String key = "constitucion";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, constitucion);
+        objetoBase.put("constitucion", constitucion);
+        objetoBase.put("class", KEY);
 
         return objetoBase;
     }

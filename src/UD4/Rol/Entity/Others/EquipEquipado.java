@@ -9,6 +9,9 @@ public interface EquipEquipado {
     public Equipamiento[] equipamientoEquipado = new Equipamiento[5];
 
     public static boolean isFormatoCorrecto(Equipamiento[] equipamientoEquipado) {
+        if (equipamientoEquipado.length != 5) {
+            return false;
+        }
         if (!(equipamientoEquipado[0] instanceof Casco || equipamientoEquipado[0] == null)) {
             return false;
         }

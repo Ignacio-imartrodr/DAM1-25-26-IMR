@@ -67,11 +67,8 @@ public class Espada extends Arma {
     }
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
-        String key = "fuerza";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, fuerza);
+        objetoBase.put("fuerza", fuerza);
+        objetoBase.put("class", KEY);
         
         return objetoBase;
     }

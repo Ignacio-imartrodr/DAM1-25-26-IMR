@@ -17,14 +17,14 @@ public class Pechera extends Armadura {
         if (comparador >= 1) {
             this.durabilidad = super.durabilidad = comparador;
         } else {
-            throw new EquipamientoException("Error con el Json de Maza");
+            throw new EquipamientoException("Error con el Json de Pechera");
         }
         
         comparador = pechera.getInt("xp");
         if (comparador >= 0 && comparador <= 999) {
             this.xp = super.xp = comparador;
         } else {
-            throw new EquipamientoException("Error con el Json de Maza");
+            throw new EquipamientoException("Error con el Json de Pechera");
         }
 
         this.lvl = super.lvl= (byte) pechera.get("lvl");
@@ -33,7 +33,7 @@ public class Pechera extends Armadura {
         if (comparador >= 1) {
             this.constitucion = super.constitucion = comparador;
         } else {
-            throw new EquipamientoException("Error con el Json de Maza");
+            throw new EquipamientoException("Error con el Json de Pechera");
         }
         this.encantamiento = super.encantamiento = pechera.optString("encantamiento");
         this.objetoBase = super.objetoBase = getJsonObject();
@@ -55,12 +55,8 @@ public class Pechera extends Armadura {
     }
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
-
-        String key = "constitucion";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, constitucion);
+        objetoBase.put("constitucion", constitucion);
+        objetoBase.put("class", KEY);
 
         return objetoBase;
     }

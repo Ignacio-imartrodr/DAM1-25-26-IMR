@@ -73,17 +73,9 @@ public class Barita extends Arma {
     }
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
-        String key = "agilidad";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, agilidad);
-
-        key = "fuerza";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, fuerza);
+        objetoBase.put("agilidad", agilidad);
+        objetoBase.put("fuerza", fuerza);
+        objetoBase.put("class", KEY);
 
         return objetoBase;
     }

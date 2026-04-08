@@ -18,13 +18,15 @@
                         "nombre": "Pechera de madera",
                         "rareza": "RARE",
                         "nivel": 1,
-                        "xp": 0
+                        "xp": 0,
+                        "class":"Pechera"
                     },
                     {
                         "nombre": "Pantalón de madera",
                         "rareza": "RARE",
                         "nivel": 1,
-                        "xp": 0
+                        "xp": 0,
+                        "class":"Pantalon"
                     },
                     {},
                     {
@@ -40,13 +42,15 @@
                         "nombre": "Pechera de madera",
                         "rareza": "RARE",
                         "nivel": 1,
-                        "xp": 0
+                        "xp": 0,
+                        "class":"Pechera"
                     },
                     {
                         "nombre": "Pantalón de madera",
                         "rareza": "RARE",
                         "nivel": 1,
-                        "xp": 0
+                        "xp": 0,
+                        "class":"Pantalon"
                     },
                     {
                         "nombre": "Espada de Madera",
@@ -90,13 +94,17 @@
                         "nombre": "Pechera de madera",
                         "rareza": "RARE",
                         "nivel": 1,
-                        "xp": 0
+                        "xp": 0,
+                        "class":"Pechera"
                     },
                     {
                         "nombre": "Pantalón de adamantium",
                         "rareza": "CHAOTIC",
+                        "nivel":1,
+                        "xp":0,
                         "encantamiento": "Bolsillo",
-                        "descripcion": "Tienes un hueco más de items en la bolsa"
+                        "descripcion": "Tienes un hueco más de items en la bolsa",
+                        "class":"Pantalon"
                     },
                     {},
                     {
@@ -112,13 +120,15 @@
                         "nombre": "Pechera de madera",
                         "rareza": "RARE",
                         "nivel": 1,
-                        "xp": 0
+                        "xp": 0,
+                        "class":"Pechera"
                     },
                     {
                         "nombre": "Pantalón de madera",
                         "rareza": "RARE",
                         "nivel": 1,
-                        "xp": 0
+                        "xp": 0,
+                        "class":"Pantalon"
                     },
                     {
                         "nombre": "Espada de Madera",
@@ -145,6 +155,7 @@
         }
     ],
     "Invocacion": [
+        "Nada aún",
         {"mensaje": "todabía por pensar si crear e implementar"}
     ]
 }

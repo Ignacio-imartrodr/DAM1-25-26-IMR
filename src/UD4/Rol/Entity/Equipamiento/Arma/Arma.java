@@ -62,16 +62,8 @@ public abstract class Arma extends Equipamiento {
     }
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
-        String key = "afinidad";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, afinidad);
-        key = "habilidad";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, habilidad);
+        objetoBase.put("afinidad", afinidad);
+        objetoBase.put("habilidad", habilidad);
 
         return objetoBase;
     }

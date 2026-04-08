@@ -39,7 +39,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         this.tipo = tipo;
         this.subtipo = subtipo;
     }
-    public static Equipamiento newEquipamiento(JSONObject equip){
+    public static Equipamiento newEquipamiento(JSONObject equip) throws EquipamientoException {
         Equipamiento equipamiento;
         String clase;
         try {
@@ -70,7 +70,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
                 equipamiento = new Maza(equip);
                 break;
             default:
-                throw new EquipamientoException("Error en el Equipamiento");
+                throw new EquipamientoException("Error en la clase del Equipamiento");
         }
         return equipamiento;
     }
@@ -124,23 +124,9 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         return durabilidadMax;
     }
     public JSONObject getJsonObject(){
-        String key = "durabilidad";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, durabilidad);
-
-        key = "xp";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, xp);
-
-        key = "lvl";
-        if (objetoBase.opt(key) != null) {
-            objetoBase.remove(key);
-        }
-        objetoBase.accumulate(key, lvl);
+        objetoBase.put("durabilidad", durabilidad);
+        objetoBase.put("xp", xp);
+        objetoBase.put("lvl", lvl);
 
         return objetoBase;
     }
