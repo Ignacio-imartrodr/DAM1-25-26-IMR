@@ -1,8 +1,6 @@
 package UD4.Rol.Boundary;
 
 import java.util.Arrays;
-
-import UD4.Rol.Control.Combate;
 import UD4.Rol.Control.Creacion;
 import UD4.Rol.Control.Guardado;
 import UD4.Rol.Entity.Entidades.Personaje;
@@ -19,13 +17,14 @@ import UD4.Rol.Utilidades.*;
 public class AppCreaPersonaje {
     
     public static void modificarPersonagesArray(Personaje[] personajesArray){
-        Creacion.getStringPersonajes(personajesArray);
         boolean esSiguiente = true;
         boolean salir = false;
         for (int i = -1, skip = -1; !salir;) {
-            System.out.println("¿Quieres modificar algún personaje? (S/n)");
+            Creacion.getStringPersonajes(personajesArray);
+            System.out.println("¿Quieres modificar algúno de estos personajes? (S/n)");
             if (Util.escogerOpcion("S", "n")) {
-                if (esSiguiente) {
+                //Personaje persSelec = Creacion.seleccionarPersonajes(personajesArray, 1)[0];
+                if (esSiguiente) {//TODO cambiar por la funcion de elección ^^
                     if (i == personajesArray.length -1) {
                         i = 0;
                     } else {
@@ -73,10 +72,10 @@ public class AppCreaPersonaje {
     public static void main(String[] args) {
         Personaje[] personajesNuevos = new Personaje[0];
         Personaje[] temp;
-        System.out.println("-----------App para Creación y Manejo de Personajes-----------");
-        System.out.println("Opciones:\n1 - Cargar Personajes de un archivo\n2 - Crear personajes nuevos\n3 - Modificar personajes de la Base General\n4 - Salir");
-        int num = Integer.valueOf(Util.pedirPorTeclado(true));
         for (boolean fin = false; !fin;) {
+            System.out.println("-----------App para Creación y Manejo de Personajes-----------");
+            System.out.println("Opciones:\n1 - Cargar Personajes de un archivo\n2 - Crear personajes nuevos\n3 - Modificar personajes de la Base General\n4 - Salir");
+            int num = Integer.valueOf(Util.pedirPorTeclado(true));
             switch (num) {
                 case 1 :
                     String rutaFichero;
@@ -122,26 +121,27 @@ public class AppCreaPersonaje {
                     }
                     Guardado.guardadoPersonajes(personajesNuevos);
                     break;
-                case 2 ://TODO terminar
+                case 2 :
+                    temp = Creacion.pedirPersonajes();
+                    for (Personaje personaje : temp) {
+                        personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
+                        personajesNuevos[personajesNuevos.length - 1] = personaje;
+                    }
+                    Guardado.guardadoPersonajes(personajesNuevos);
                     break;
                 case 3 ://TODO terminar
+                    modificarPersonagesArray(personajesNuevos);
+                    Guardado.guardadoPersonajes(personajesNuevos);
                     break;
                 case 4 :
                     fin = true;
                     break;
                 default:
+                    System.out.println("Escoge uno de los cuatro números de las opciones");
                     fin = false;
                     break;
             }
         }
         
-        temp = Creacion.pedirPersonajes();
-        for (Personaje personaje : temp) {
-            personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
-            personajesNuevos[personajesNuevos.length - 1] = personaje;
-        }
-        Guardado.guardadoPersonajes(personajesNuevos);
-        System.out.println("Quieres ");
-        modificarPersonagesArray(personajesNuevos);
     }
 }
