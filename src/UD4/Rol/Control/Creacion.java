@@ -44,16 +44,14 @@ public abstract class Creacion {
             }
             if (i != skip) {
                 System.out.println(personajes[i].getFicha());
-                System.out.print("¿Quieres seleccionar este personaje? (S/n): ");
-                if (Util.escogerOpcion("S", "n")) {
+                if (Util.escogerOpcion("S", "n", "¿Quieres seleccionar este personaje? (S/n): ")) {
                     personajesSelec[j] = personajes[i];
                     j++;
                     skip = i;
                 }
             }
             if (j < personajesSelec.length) {
-                System.out.println("Siguiente personaje o anterior? (S/a): ");
-                esSiguiente = Util.escogerOpcion("S", "a");
+                esSiguiente = Util.escogerOpcion("S", "a", "Siguiente personaje o anterior? (S/a): ");
             }
         }
         return personajesSelec;
@@ -177,8 +175,7 @@ public abstract class Creacion {
         while (restart) {
             restart = false;
             System.out.println("Opciones: Json");
-            System.out.print("¿Quieres cargar personajes desde " + rutaFile + "? (S/n): ");
-            if (Util.escogerOpcion("S", "n")) {
+            if (Util.escogerOpcion("S", "n", "¿Quieres cargar personajes desde " + rutaFile + "? (S/n)")) {
                 if (rutaFile.endsWith(".json") || rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
                     if (rutaFile.startsWith("www.http") || rutaFile.startsWith("http")) {
                         boolean errorUrl = true;
@@ -190,8 +187,7 @@ public abstract class Creacion {
                                 if (personajesFichero.length == 0) {
                                     System.out.println("El Json no contenía personajes");
                                 }
-                                System.out.print("¿Probar otra Url? (S/n): ");
-                                if (Util.escogerOpcion("S", "n")) {
+                                if (Util.escogerOpcion("S", "n", "¿Probar otra Url? (S/n)")) {
                                     errorUrl = true;
                                 }
                             } catch (Exception e) {
@@ -221,8 +217,7 @@ public abstract class Creacion {
                     }
                 }
             } else {
-                System.out.println("Quierres ingresar otra ruta? (S/n)");
-                if (Util.escogerOpcion("S", "n")) {
+                if (Util.escogerOpcion("S", "n", "Quierres ingresar otra ruta? (S/n)")) {
                     System.out.print("Ruta? (\"n\" para salir): ");
                     rutaFile = Util.pedirPorTeclado(false);
                     if (rutaFile.equalsIgnoreCase("n")) {
@@ -360,13 +355,11 @@ public abstract class Creacion {
         Personaje[] personajesNuevos = new Personaje[0];
         boolean seguir = true;
         while (seguir) {
-            System.out.print("¿Quieres crear un nuevo personaje? (S/n): ");
-            if (Util.escogerOpcion("s", "n")) {
+            if (Util.escogerOpcion("s", "n", "¿Quieres crear un nuevo personaje? (S/n)")) {
                 Personaje personaje = new Personaje();
                 personaje = crearPersonaje();
                 System.out.println(personaje.getFicha());
-                System.out.println("¿Es el personaje correcto? (S/n):");
-                if (Util.escogerOpcion("s", "n")) {
+                if (Util.escogerOpcion("s", "n", "¿Es el personaje correcto? (S/n)")) {
                     personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
                     personajesNuevos[personajesNuevos.length - 1] = personaje;
                 }
@@ -422,7 +415,8 @@ public abstract class Creacion {
     }
 
     public static Personaje modPersonaje(String valor, Personaje p){
-        
+        Equipamiento[] equipado = p.getEquipamientoEquipado();
+        Equipamiento[] guardado = p.getEquipamientoGuardado();
         String nombre = p.getNombre();
         String raza = String.valueOf(p.getRaza());
         String fuerza = String.valueOf(p.getFuerza());
@@ -435,31 +429,69 @@ public abstract class Creacion {
         switch (valor) {
             case "NOMBRE":
                 valor = Util.pedirPorTeclado(false);
-                p = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia, null, null, bolsa, true);
+                p = new Personaje(valor, raza, fuerza, agilidad, constitucion, nivel, experiencia, equipado, guardado, bolsa, true);
                 break;
             case "RAZA":
                 valor = Util.pedirPorTeclado(false);
-                p = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia, null, null, bolsa, true);
+                p = new Personaje(nombre, valor, fuerza, agilidad, constitucion, nivel, experiencia, equipado, guardado, bolsa, true);
                 break;
             case "FUERZA":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia, null, null, bolsa, true);
+                p = new Personaje(nombre, raza, valor, agilidad, constitucion, nivel, experiencia, equipado, guardado, bolsa, true);
                 break;
             case "AGILIDAD":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, null, null, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, valor, constitucion, nivel, experiencia, equipado, guardado, bolsa, true);
                 break;
             case "CONSTITUCION":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, null, null, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, valor, nivel, experiencia, equipado, guardado, bolsa, true);
                 break;
             case "NIVEL":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia, null, null, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, valor, experiencia, equipado, guardado, bolsa, true);
                 break;
             case "EXPERIENCIA":
                 valor = Util.pedirPorTeclado(true);
-                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, null, null, bolsa, true);
+                p = new Personaje(nombre, raza, fuerza, agilidad, constitucion, nivel, valor, equipado, guardado, bolsa, true);
+                break;
+            case "EQUIPAMIENTO":
+                if (guardado == null || guardado.length == 0) {
+                    return null;
+                }
+                for (boolean repetir = true; repetir;) {
+                    System.out.println(p.getStringEquipamientoEquipado());
+                    System.out.println(p.getStringEquipamientoGuardado());
+                    if (Util.escogerOpcion("S", "n", "Quieres modificar el equipamiento equipado? (S/n)")) {
+                        System.out.println("Que equipapiento guardado quieres equipar? (número [-1 para desequipar]) ");
+                        valor = Util.pedirPorTeclado(true);
+                        if (valor.equals("-1")) {
+                            do {
+                                System.out.println("Que parte quieres desequipar? (número [-1 para cancelar])");
+                                valor = Util.pedirPorTeclado(true);
+                                if (p.getEquipamientoEquipado()[Integer.valueOf(valor) - 1] == null) {
+                                    System.out.println("Escoge una parte con equipamiento");
+                                } else {
+                                    try {
+                                        p.quitarEquipamiento(Integer.valueOf(valor) - 1);
+                                    } catch (Exception e) {
+                                        System.out.println("Escoge una parte con equipamiento");
+                                    }
+                                }
+                            } while (!valor.equals("-1"));
+                        } else {
+                            try {
+                                if (!(p.equipar(p.getEquipamientoGuardado()[Integer.valueOf(valor) - 1]))){
+                                    System.out.println("Escoge uno de los equipamientos guardados (número)");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Escoge uno de los equipamientos guardados (número)");
+                            }
+                        }
+                    } else {
+                        repetir = false;
+                    }
+                }
                 break;
             default:
                 throw new EntidadException();

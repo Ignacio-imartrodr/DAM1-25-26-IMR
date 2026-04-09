@@ -68,8 +68,7 @@ public class AppCombateMonstruos {//TODO recrear a mi modo
                 preferencia = Integer.parseInt(opcion);
             }
             if (opcion != null) {
-                System.out.println("Atacar primero al que tiene \"Mayor\" o \"Menor\" stat? (\"Enter\" para \"Mayor\"):");
-                orden = Util.escogerOpcion("Mayor", "Menor");
+                orden = Util.escogerOpcion("Mayor", "Menor", "Atacar primero al que tiene \"Mayor\" o \"Menor\" stat? (\"Enter\" para \"Mayor\")");
                 opcion = orden ? "Mayor" : "Menor";
             }
         }

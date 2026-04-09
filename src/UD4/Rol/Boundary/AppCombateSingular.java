@@ -28,8 +28,7 @@ public class AppCombateSingular {
         Personaje[] personajesCreados = new Personaje[0];
         Personaje[] temp;
         while (personajesCreados.length < 2) {
-            System.out.print("¿Quieres cargar los personajes de un archivo? (S/n): ");
-            if (Util.escogerOpcion("S", "n")) {
+            if (Util.escogerOpcion("S", "n", "¿Quieres cargar los personajes de un archivo? (S/n)")) {
                 String rutaFichero;
                 rutaFichero = Util.pedirRuta();
                 if (!(rutaFichero == null)) {
@@ -244,8 +243,7 @@ public class AppCombateSingular {
                 turno = !turno;
             }
             System.out.println("\nEl ganador es " + (personajesEnBatalla[0].estaVivo() ? personajesEnBatalla[0].toString() : personajesEnBatalla[1].toString()));
-            System.out.println("¿Otra batalla? (S/n)");
-            if (Util.escogerOpcion("S", "n")) {
+            if (Util.escogerOpcion("S", "n", "¿Otra batalla? (S/n)")) {
                 personajesEnBatalla[0].curar();
                 personajesEnBatalla[1].curar();
                 for (int i = 0; i < posDeCombatientesEnCreados.length; i++) {

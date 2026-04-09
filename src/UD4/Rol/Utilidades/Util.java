@@ -374,8 +374,7 @@ public abstract class Util {
         String rutaFichero = null;
         while (restart) {
             restart = false;
-            System.out.print("¿Quieres dar una ruta a fichero Json? (S/n): ");
-            if (Util.escogerOpcion("s", "n")) {
+            if (Util.escogerOpcion("s", "n", "¿Quieres dar una ruta a un fichero Json? (S/n)")) {
                 System.out.print("Ruta del fichero (Ej| src\\UD4\\rol\\archivo.extensión): ");
                 rutaFichero = Util.pedirPorTeclado(false);
                 if ((rutaFichero == null) || !rutaFichero.endsWith(".json")) {
@@ -1037,7 +1036,7 @@ public abstract class Util {
      *         {@code respuesta.equals(opcion1) || respuesta.equals("-1")},
      *         {@code false} if {@code respuesta.equeals(opcion2)}.
      */
-    public static boolean escogerOpcion(String opcion1, String opcion2) {
+    public static boolean escogerOpcion(String opcion1, String opcion2, String pregunta) {
         if (opcion1 == null || opcion2 == null) {
             throw new NullPointerException("Debe asignarse el valor de ambas opciones");
         }
@@ -1047,10 +1046,11 @@ public abstract class Util {
 
         String respuesta;
         boolean s = false;
+        System.out.println(pregunta);
         respuesta = Util.pedirPorTeclado(false);
         while (!(respuesta == null) && !respuesta.equalsIgnoreCase(opcion1) && !respuesta.equalsIgnoreCase(opcion2)) {
-            System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 + "\" (\"Enter\" para "
-                    + opcion1 + "): ");
+            System.out.print("Responde unicamente con \"" + opcion1 + "\" o \"" + opcion2 + "\" (\"Enter\" para " + opcion1 + "): ");
+            System.out.println(pregunta);
             respuesta = Util.pedirPorTeclado(false);
         }
         if (respuesta == null || respuesta.equalsIgnoreCase(opcion1)) {

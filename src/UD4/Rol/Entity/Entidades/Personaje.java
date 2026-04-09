@@ -23,7 +23,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     private Raza raza;
     private Item[] bolsa = null;
     private Equipamiento[] equipamientoGuardado = new Equipamiento[50];
-    
+
     protected int asignarBonusRaza(int stat){
         int num;
         switch (stat) {
@@ -119,12 +119,28 @@ public class Personaje extends Entidad implements EquipEquipado {
             tieneBolsillo = encantamiento != null && encantamiento.equalsIgnoreCase("Bolsillo");
         }
         if (yaExistente) {
-            if (equipamientoEquipado == null || (equipamientoEquipado.length == EquipEquipado.equipamientoEquipado.length && EquipEquipado.isFormatoCorrecto(equipamientoEquipado))) {
+            if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
+                if (equipamientoGuardado != null) {
+                    Util.sortArray(equipamientoGuardado);
+                    for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
+                        this.equipamientoGuardado[i] = equipamientoGuardado[i];
+                    }
+                }
+            } else {
+                throw new EquipamientoException("Equipamiento guardado invalido");
+            }
+            if (equipamientoEquipado == null || EquipEquipado.isFormatoCorrecto(equipamientoEquipado)) {
                 if (equipamientoEquipado != null) {
                     for (int i = 0; i < equipamientoEquipado.length; i++) {
                         if (equipamientoEquipado[i] != null) {
                             equipamientoEquipado[i].setId(i);
-                            EquipEquipado.super.setEquipado(equipamientoEquipado[i]);
+                            if (!EquipEquipado.super.setEquipado(equipamientoEquipado[i])){
+                                equipamientoGuardado = Arrays.copyOf(equipamientoGuardado, equipamientoGuardado.length + 1);
+                                Equipamiento old = EquipEquipado.super.quitarEquipamiento(i);
+                                old.setId(equipamientoGuardado.length -1);
+                                equipamientoGuardado[equipamientoGuardado.length - 1] = old;
+                                EquipEquipado.super.setEquipado(equipamientoEquipado[i]);
+                            }
                         }
                     }
                 }
@@ -151,16 +167,6 @@ public class Personaje extends Entidad implements EquipEquipado {
                 } else {
                     bolsa = new Item[3];
                 }
-            }
-            if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
-                if (equipamientoGuardado != null) {
-                    Util.sortArray(equipamientoGuardado);
-                    for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
-                        this.equipamientoGuardado[i] = equipamientoGuardado[i];
-                    }
-                }
-            } else {
-                throw new EquipamientoException("Equipamiento guardado invalido");
             }
         } else {
             if (tieneBolsillo) {
@@ -314,7 +320,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     public Equipamiento gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
         for (int i = 0; i < equipamientoGuardado.length; i++) {
             if (equipamientoGuardado[i] == null) {
-                Equipamiento e = (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
+                Equipamiento e = Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
                 equipamientoGuardado[i] = e;
                 Util.sortArray(equipamientoGuardado);
                 return e;
@@ -327,7 +333,7 @@ public class Personaje extends Entidad implements EquipEquipado {
         int slot = equip.getId();
         if (slot != -1) {
             Equipamiento antiguo = quitarEquipamiento(slot);
-            Util.sortArray(equipamientoGuardado);
+            Util.sortArray(equipamientoGuardado);//TODO revisar
             for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
                 if (equipamientoGuardado[i].equals(equip)) {
                     equipamientoGuardado[i] = antiguo;
@@ -344,35 +350,47 @@ public class Personaje extends Entidad implements EquipEquipado {
         }
         return false;
     }
-    
+    public void guardarEquipamiento(Equipamiento equip){
+        Arrays.copyOf(equipamientoGuardado, equipamientoGuardado.length + 1);
+        equipamientoGuardado[equipamientoGuardado.length - 1] = equip;
+        Util.sortArray(equipamientoGuardado);
+        for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
+            equipamientoGuardado[i].setId(i);
+        }
+    }
     public String getStringEquipamientoGuardado() {
-        Equipamiento[] armas = new Equipamiento[0];
-        Equipamiento[] armaduras = new Equipamiento[0];
+        Util.sortArray(equipamientoGuardado);
+        Equipamiento[] armas;
+        Equipamiento[] armaduras;
         String separador = "-----------------------\n";
         String inventario = "Equipamiento guardado\n=====================\n";
+        int lenthArmadura = equipamientoGuardado.length;
+        int lastArma = equipamientoGuardado.length;
         for (int i = 0; i < equipamientoGuardado.length; i++) {
             Equipamiento este = equipamientoGuardado[i];
-            if (este != null) {
-                if (este instanceof Armadura) {
-                    armaduras = Arrays.copyOf(armaduras, armaduras.length + 1);
-                    if (este instanceof Casco || este instanceof Pechera || este instanceof Pantalon || este instanceof Botas) {
-                        armaduras[armaduras.length - 1] = este;
-                    } else {
-                        throw new EquipamientoException();
-                    }
-                } else {
-                    armas = Arrays.copyOf(armas, armas.length + 1);
-                    if (este instanceof Espada || este instanceof Barita || este instanceof Maza) {
-                        armas[armas.length - 1] = este;
-                    } else {
-                        throw new EquipamientoException();
-                    }
+            if (este == null) {
+                lastArma = i;
+                if (lenthArmadura == equipamientoGuardado.length) {
+                    lenthArmadura = i;
                 }
+                break;
+            }
+            if (este instanceof Arma && i < lenthArmadura) {
+                lenthArmadura = i;
             }
         }
-        Util.sortArray(equipamientoGuardado);
-        Arrays.sort(armaduras);
-        Arrays.sort(armas);
+        if (lenthArmadura > 0) {
+            armaduras = Arrays.copyOf(equipamientoGuardado, lenthArmadura);
+            Arrays.sort(armaduras);
+        } else {
+            armaduras = new Equipamiento[0];
+        }
+        if (lenthArmadura - lastArma > 0) {
+            armas = Arrays.copyOfRange(equipamientoGuardado, lenthArmadura, lastArma);
+            Arrays.sort(armas);
+        } else {
+            armas = new Equipamiento[0];
+        }
         int id = 0;
         if (armas.length > 0) {
             inventario += "ARMAS:\n\n";

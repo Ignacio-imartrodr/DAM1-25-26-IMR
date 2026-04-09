@@ -16,8 +16,7 @@ public class Guardado {
         for (Personaje personaje : personajesCreados) {
             if (personaje != null) {
                 System.out.println(personaje.getFicha());
-                System.out.print("¿Quieres guardar este personaje? (S/n): ");
-                if (Util.escogerOpcion("S", "n")) {
+                if (Util.escogerOpcion("S", "n", "¿Quieres guardar este personaje? (S/n)")) {
                     JSONObject persJO;
                     try {
                         persJO = personaje.toJsonObject();
@@ -61,8 +60,7 @@ public class Guardado {
                             }
                         } else {
                             System.out.println("Ruta no valida");
-                            System.out.println( "¿Quieres intentar de nuevo? (S/n): ");
-                            if (!Util.escogerOpcion("S", "n")) {
+                            if (!Util.escogerOpcion("S", "n", "¿Quieres intentar de nuevo? (S/n)")) {
                                 System.out.println("Personaje no guardado.");
                                 repetir = false;
                             }
@@ -78,10 +76,8 @@ public class Guardado {
         boolean repetir = true;
         while (repetir) {
             repetir = false;
-            System.out.println("¿Quieres guardar algún personaje? (S/n): ");
-            if (Util.escogerOpcion("S", "n")) {
-                System.out.println("¿Quieres guardar todos los personajes creados y cargados? (S/n): ");
-                if (Util.escogerOpcion("S", "n")) {
+            if (Util.escogerOpcion("S", "n", "¿Quieres guardar algún personaje? (S/n)")) {
+                if (Util.escogerOpcion("S", "n", "¿Quieres guardar todos los personajes creados y cargados? (S/n)")) {
                     String rutaFichero;
                     rutaFichero = RUTA_BASE_GENERAL;
                     if (!(rutaFichero == null)) {
@@ -114,8 +110,7 @@ public class Guardado {
                         }
                     }
                 } else{
-                    System.out.println("¿Quieres elegir individualmente si guardar cada personaje creado y cargado? (S/n): ");
-                    if (Util.escogerOpcion("S", "n")) {
+                    if (Util.escogerOpcion("S", "n", "¿Quieres elegir individualmente si guardar cada personaje creado y cargado? (S/n)")) {
                         guardarPorPersonaje(personajesCreados);
                     } else {
                         System.out.println("Personajes no guardados.");

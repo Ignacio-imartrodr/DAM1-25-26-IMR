@@ -166,7 +166,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         int resultado =  Math.round(valorBase + (valorFinal - valorBase) * ((lvlEntidad - 1) / (float) 255.0));
         return resultado;
     }
-    public static Object gachaEquipamiento(int lvlEntidad, boolean esGeneral, boolean... gachaArmas){
+    public static Equipamiento gachaEquipamiento(int lvlEntidad, boolean esGeneral, boolean... gachaArmas){
         if (lvlEntidad > 256 || lvlEntidad < 1) {
             throw new EquipamientoException("Probabilidades del gacha erroneas por el limite del nivel");
         }
@@ -282,7 +282,10 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         } catch (Exception e) {
             throw new EquipamientoException("Equipamiento no existente");
         }
-        return equipamientoObtenido;
+        return (Equipamiento) equipamientoObtenido;
+    }
+    public static Equipamiento gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
+        return gachaEquipamiento(1, esGeneral, gachaArmas);
     }
     protected void reparar(Equipamiento equip){
         int rep = -(Math.round(equip.durabilidad * (float) 0.75));
@@ -370,8 +373,8 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         return switch (tipo.toUpperCase()) {
             case "ARMADURA" -> 1;
             case "ARMA" -> 2;
-            case null -> 3;
-            default -> throw new EquipamientoException("Tipo sin orden asignado asignado");
+            case null -> 4;
+            default -> 3;//Tipo sin orden asignado asignado
         };
     }
     private int getPrioridadSubtipo(String subtipo) {
@@ -383,7 +386,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             case "ESPADA" -> 5;
             case "BARITA" -> 6;
             case "MAZA" -> 7;
-            default -> throw new EquipamientoException("Subtipo sin orden asignado asignado");
+            default -> 8;//"Subtipo sin orden asignado asignado"
         };
     }
     /*@Override

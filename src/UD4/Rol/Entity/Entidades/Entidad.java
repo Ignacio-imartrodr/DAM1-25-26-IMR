@@ -253,7 +253,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     }
     
     public Equipamiento equipamientoSemiRnd(boolean esGeneral, boolean... gachaArmas){
-        return (Equipamiento) Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
+        return Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
     }
 
     public JSONObject toJsonObject() {
@@ -285,6 +285,8 @@ public abstract class Entidad implements Comparable<Entidad> {
         int nivelComp = Integer.compare(this.nivel, other.nivel);
         if (nivelComp != 0) { return nivelComp; }
         int expComp = Integer.compare(this.experiencia, other.experiencia);
-        return expComp;
+        if (expComp != 0) { return nivelComp; }
+        int nomComp = (this.nombre).compareTo(other.nombre);
+        return nomComp;
     }
 }

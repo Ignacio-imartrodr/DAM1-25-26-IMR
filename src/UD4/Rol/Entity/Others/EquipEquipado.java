@@ -53,9 +53,9 @@ public interface EquipEquipado {
         
     }
     default boolean setEquipado(Equipamiento equip) {
-    //  Ejemplo basico
-    int slot = equip.getId();
-    if (equipamientoEquipado[slot] != null) {
+        //  Ejemplo basico a para modificar en implementación
+        int slot = equip.getId();
+        if (equipamientoEquipado[slot] != null) {
             return false;
         }
         equipamientoEquipado[slot] = equip;
