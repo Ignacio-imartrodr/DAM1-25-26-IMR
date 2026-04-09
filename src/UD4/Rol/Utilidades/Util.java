@@ -41,8 +41,7 @@ public abstract class Util {
         }
         Arrays.sort(x, 0, firstNull);
     }
-
-    private static int nullOfArrayToEnd(Object[] x) {
+    public static int nullOfArrayToEnd(Object[] x) {
         boolean conNull = false;
         for (Object obj : x) {
             if (obj == null) {
@@ -164,7 +163,8 @@ public abstract class Util {
      * @return {@code JsonArray} de la librería json.JSONArray con el contenido de
      *         la web.
      */
-    /* ---------Descartada temporalmente---------
+    /* Ignorar
+        ---------Descartada temporalmente---------
     public static JSONArray urlToJsonArray(String url, String key) { // Reformar metodo para que sea como ruta to ObjectJson
         try {
             String web = getJsonFromUrl(url);
@@ -369,7 +369,7 @@ public abstract class Util {
      * 
      * @return Ruta otorgada por teclado.
      */
-    public static String pedirRuta() {
+    public static String pedirRutaAJson() {
         boolean restart = true;
         String rutaFichero = null;
         while (restart) {
@@ -1040,6 +1040,9 @@ public abstract class Util {
         if (opcion1 == null || opcion2 == null) {
             throw new NullPointerException("Debe asignarse el valor de ambas opciones");
         }
+        if (pregunta == null) {
+            throw new NullPointerException("Debe asignarse una pregunta");
+        }
         opcion1 = opcion1.toUpperCase();
         opcion2 = opcion2.length() > 1 ? Character.toUpperCase(opcion2.charAt(0)) + opcion2.substring(1).toLowerCase()
                 : opcion2.toLowerCase();
@@ -1066,7 +1069,8 @@ public abstract class Util {
      * @param url : Enlace al Archivo.json
      * @return {@code String} con el contenido del Archivo.json
      */
-    /* ---------Descartada temporalmente---------
+    /* Ignorar
+        ---------Descartada temporalmente---------
     private static String getJsonFromUrl(String url) throws IOException, InterruptedException {
         // Configuración del proxy del sistema
         System.setProperty("java.net.useSystemProxies", "true");

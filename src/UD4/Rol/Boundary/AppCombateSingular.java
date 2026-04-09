@@ -1,8 +1,6 @@
 package UD4.Rol.Boundary;
 
-import java.util.Arrays;
 import java.util.Random;
-
 import UD4.Rol.Control.Combate;
 import UD4.Rol.Control.Creacion;
 import UD4.Rol.Control.Guardado;
@@ -23,58 +21,20 @@ import UD4.Rol.Utilidades.Util;
  */
 
 public class AppCombateSingular {
-
-    private static Personaje[] getPersonajes(){//TODO implementar "BaseGeneral.json"
-        Personaje[] personajesCreados = new Personaje[0];
-        Personaje[] temp;
-        while (personajesCreados.length < 2) {
-            if (Util.escogerOpcion("S", "n", "¿Quieres cargar los personajes de un archivo? (S/n)")) {
-                String rutaFichero;
-                rutaFichero = Util.pedirRuta();
-                if (!(rutaFichero == null)) {
-                    temp = Combate.cargarPersonajesDeArchivo(rutaFichero);
-                    for (Personaje personaje : temp) {
-                        personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
-                        personajesCreados[personajesCreados.length - 1] = personaje;
-                    }
-                }
-            }
-            temp = Creacion.pedirPersonajes();
-            for (Personaje personaje : temp) {
-                personajesCreados = Arrays.copyOf(personajesCreados, personajesCreados.length + 1);
-                personajesCreados[personajesCreados.length - 1] = personaje;
-            }
-            if (personajesCreados.length < 2) {
-                System.out.println("Se necesitan al menos 2 personajes para la batalla.");
-            }
-        }
-        return personajesCreados;
-    }
     public static void main(String[] args) {
-        Personaje[] personajesCreados;
-        personajesCreados = getPersonajes();
-        Guardado.guardadoPersonajes(personajesCreados);
-
-        Personaje[] personajesEnBatalla = new Personaje[2];
-        if (personajesCreados.length > 2) {
-            personajesEnBatalla = Creacion.seleccionarPersonajes(personajesCreados, 2);
-            while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
-                System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
-                personajesEnBatalla = Creacion.seleccionarPersonajes(personajesCreados, 2);
-            }
-        } else {
-            personajesEnBatalla[0] = personajesCreados[0];
-            personajesEnBatalla[1] = personajesCreados[1];
+        final int CANTIDAD_COMBATIENTES = 2;
+        Personaje[] personajesGuardados = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
+        System.out.println("-----------App de Combate PvsP-----------");
+        if (!Combate.validarCantCombatientes(personajesGuardados, CANTIDAD_COMBATIENTES)) {
+            return;
         }
-        int[] posDeCombatientesEnCreados = new int[0];
-        for (int i = 0; i < personajesEnBatalla.length; i++) {
-            for (int j = 0; j < personajesCreados.length; j++) {
-                if (personajesCreados[j].equals(personajesEnBatalla[i])) {
-                    Arrays.copyOf(posDeCombatientesEnCreados, posDeCombatientesEnCreados.length + 1);
-                    posDeCombatientesEnCreados[posDeCombatientesEnCreados.length - 1] = j;
-                }
-            }
-        }        
+        Personaje[] personajesEnBatalla = new Personaje[2];
+        if (personajesGuardados.length > 2) {
+            personajesEnBatalla = Creacion.seleccionarPersonajes(personajesGuardados, CANTIDAD_COMBATIENTES);
+        } else {
+            personajesEnBatalla[0] = personajesGuardados[0];
+            personajesEnBatalla[1] = personajesGuardados[1];
+        }
         
         //TODO añadir efectos de armadura y armas
         boolean batalla = true;
@@ -246,19 +206,19 @@ public class AppCombateSingular {
             if (Util.escogerOpcion("S", "n", "¿Otra batalla? (S/n)")) {
                 personajesEnBatalla[0].curar();
                 personajesEnBatalla[1].curar();
-                for (int i = 0; i < posDeCombatientesEnCreados.length; i++) {
-                    personajesCreados[posDeCombatientesEnCreados[i]] = personajesEnBatalla[i];
+                for (int i = 0; i < personajesEnBatalla.length; i++) {
+                    personajesGuardados[personajesEnBatalla[i].getId()] = personajesEnBatalla[i];
                 }
-                personajesEnBatalla = Creacion.seleccionarPersonajes(personajesCreados, 2);
+                personajesEnBatalla = Creacion.seleccionarPersonajes(personajesGuardados, 2);
                 while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
                     System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
-                    personajesEnBatalla = Creacion.seleccionarPersonajes(personajesCreados, 2);
+                    personajesEnBatalla = Creacion.seleccionarPersonajes(personajesGuardados, 2);
                 }
             } else {
                 batalla = false;
             }
         }
 
-        Guardado.guardadoPersonajes(personajesCreados);
+        Guardado.guardadoPersonajes(personajesGuardados);
     }
 }

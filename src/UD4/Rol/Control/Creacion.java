@@ -28,7 +28,8 @@ public abstract class Creacion {
         }
         Personaje[] personajesSelec = new Personaje[cantidadASeleccionar];
         boolean esSiguiente = true;
-        for (int i = -1, j = 0, skip = -1; j < personajesSelec.length;) {
+        Integer[] skip = new Integer[] {-1};
+        for (int i = -1, cantGuardada = 0; cantGuardada < cantidadASeleccionar;) {
             if (esSiguiente) {
                 if (i == personajes.length - 1) {
                     i = 0;
@@ -42,15 +43,16 @@ public abstract class Creacion {
                     i--;
                 }
             }
-            if (i != skip) {
+            if (Arrays.binarySearch(skip, i) < 0) {// Esto previene que se seleccione más de una vez el mismo personaje
                 System.out.println(personajes[i].getFicha());
                 if (Util.escogerOpcion("S", "n", "¿Quieres seleccionar este personaje? (S/n): ")) {
-                    personajesSelec[j] = personajes[i];
-                    j++;
-                    skip = i;
+                    personajesSelec[cantGuardada] = personajes[i];
+                    cantGuardada++;
+                    skip = Arrays.copyOf(skip, skip.length + 1);
+                    skip[skip.length - 1] = i;
                 }
             }
-            if (j < personajesSelec.length) {
+            if (cantGuardada < personajesSelec.length) {
                 esSiguiente = Util.escogerOpcion("S", "a", "Siguiente personaje o anterior? (S/a): ");
             }
         }
@@ -169,6 +171,8 @@ public abstract class Creacion {
             return null;
         }
     }
+    /*Ignorar
+        --------------Descartada temporalmente----------------
     public static Personaje[] cargarPersonajesDeArchivo(String rutaFile){   
         Personaje[] personajesFichero = new Personaje[0];
         boolean restart = true;
@@ -234,6 +238,7 @@ public abstract class Creacion {
         }
         return personajesFichero;
     }
+    */
     public static Personaje[] getPersonajesFromJson(String ruta, Object... keysToPers){
         Object contenido = Util.rutaJsonToObjectJson(ruta, keysToPers);
         if (contenido == null) {
@@ -291,13 +296,14 @@ public abstract class Creacion {
                 personajes = Arrays.copyOf(personajes, personajes.length + 1);
                 personajes[personajes.length - 1] = p;
             } else {
-                //La función "getPersonajeFromJsonObject" lanza un System.err.println con la causa del error por el que se ignora el personaje
+                //La función "getPersonajeFromJsonObject" lanza un System.err.println con la causa del error por el que se ignora al personaje
                 System.err.println("Por lo que se ignoró el Personaje " + i);
             }
         }
         return personajes;
     }
-    /* ---------Descartada temporalmente---------
+    /*Ignorar
+        --------------Descartada temporalmente--------------
     public static Personaje[] getPersonajesJsonUrl(String ruta){//Revisar
         Personaje[] personajes = new Personaje[0];
         JSONArray personajesJson;

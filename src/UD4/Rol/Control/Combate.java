@@ -1,6 +1,8 @@
 package UD4.Rol.Control;
 
 import java.util.Random;
+
+import UD4.Rol.Boundary.AppCreaPersonaje;
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
 import UD4.Rol.Utilidades.Util;
@@ -8,6 +10,20 @@ import UD4.Rol.Utilidades.Util;
 public class Combate {
     public static final String PREFERENCIAS_ATAQUE = "1 - Vida\n2 - Ataque\n4 - Agilidad";
     
+    public static boolean validarCantCombatientes(Personaje[] personajesGuardados, int fightersNeeded){
+        while (personajesGuardados.length < fightersNeeded) {
+            System.out.println("No hay suficientes personajes guardados para jugar");
+            if (Util.escogerOpcion("S", "n", "Quieres ejecutar la app de creación de Personajes para añadir más?")) {
+                System.out.println("_______________________________________________________");
+                AppCreaPersonaje.main(null);
+                System.out.println("_______________________________________________________");
+                personajesGuardados = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
     public static Personaje[] combateSingular(Personaje[] personajesEnBatalla, Personaje[] personajesCreados, int numCombatientes) {
         return personajesCreados;
     }

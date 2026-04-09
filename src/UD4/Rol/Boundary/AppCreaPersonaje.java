@@ -17,7 +17,7 @@ import UD4.Rol.Utilidades.*;
 
 public class AppCreaPersonaje {
     
-    public static void modificarPersonagesArray(Personaje[] personajesArray){
+    private static void modificarPersonagesArray(Personaje[] personajesArray){
         for (boolean salir = false; !salir;) {
             Arrays.sort(personajesArray);
             int posPers = -1;
@@ -69,9 +69,9 @@ public class AppCreaPersonaje {
                     String rutaFichero;
                     for (boolean repetir = true; repetir;) {
                         repetir = false;
-                        rutaFichero = Util.pedirRuta();
-                        if (!rutaFichero.equals(Guardado.RUTA_BASE_GENERAL)) {
-                            if (!(rutaFichero == null)) {
+                        rutaFichero = Util.pedirRutaAJson();
+                        if (rutaFichero != null) {
+                            if (!rutaFichero.equals(Guardado.RUTA_BASE_GENERAL)) {
                                 Object[] keysToPers = new Object[0];
                                 if (Util.escogerOpcion("N", "s", "¿Quieres especificar las claves hasta el array de personajes? (s/N)")) {
                                     temp = Creacion.getPersonajesFromJson(rutaFichero);
@@ -100,10 +100,10 @@ public class AppCreaPersonaje {
                                     }
                                 }
                             } else {
-                                System.err.println("Error con la ruta");
+                                System.out.println("Los personajes de la Base General ya están añadidos");
                             }
                         } else {
-                            System.out.println("Los personajes de la Base General ya están añadidos");
+                            System.err.println("Error con la ruta");
                         }
                         if (Util.escogerOpcion("S", "n", "¿Quieres dar otra ruta? (S/n)")) {
                             repetir = true;
@@ -123,7 +123,7 @@ public class AppCreaPersonaje {
                     modificarPersonagesArray(personajesNuevos);
                     Guardado.guardadoPersonajes(personajesNuevos);
                     break;
-                case 4 ://TODO terminar
+                case 4 :
                     System.out.println("---------Gacha de Equipamiento---------");
                     System.out.println("Info:\n- Hay un gacha de Armas, otro de Armaduras y uno de ambos. Escogerás en cual probar suerte despues.\n- Puedes seleccionar un personaje que obtendrá el equipamiento para que tenga un buff de probabilidad en mayor rareza según su nivel o hacer un lanzamiento genérico y escoger que personaje lo obtendrá.");
                     boolean esGeneral = false;
@@ -146,12 +146,13 @@ public class AppCreaPersonaje {
                         System.out.printf("Obtuviste %s de rareza %s!", equipObt.getNombre(), equipObt.getRareza().toString());
                     } else {
                         equipObt = Equipamiento.gachaEquipamiento(esGeneral, esArmas);
-                        System.out.printf("Obtuviste %s de rareza %s!", equipObt.getNombre(), equipObt.getRareza().toString());
-                        System.out.println("Que personaje lo guardará?");
+                        System.out.printf("Obtuviste \"%s\" de rareza %s!", equipObt.getNombre(), equipObt.getRareza().toString());
+                        System.out.println(Creacion.getStringPersonajes(personajesNuevos));
+                        System.out.println("Cual lo guardará?");
                         persSelec = Creacion.seleccionarPersonajes(personajesNuevos, 1)[0];
-                        persSelec.e
+                        persSelec.guardarEquipamiento(equipObt);                        
                     }
-                    
+                    Guardado.guardadoPersonajes(personajesNuevos);
                     break;
                 case 5 :
                     fin = true;
