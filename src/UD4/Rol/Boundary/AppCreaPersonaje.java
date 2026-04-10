@@ -57,8 +57,8 @@ public class AppCreaPersonaje {
             }
         }
     }
-    public static void main(String[] args) {
-        Personaje[] personajesNuevos = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
+    public static void main(Personaje[] personajesBaseGeneral) {
+        Personaje[] personajesNuevos = Arrays.copyOf(personajesBaseGeneral, personajesBaseGeneral.length);
         Personaje[] temp;
         for (boolean fin = false; !fin;) {
             System.out.println("-----------App para Creación y Manejo de Personajes-----------");

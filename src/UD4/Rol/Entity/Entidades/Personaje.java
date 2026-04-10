@@ -333,7 +333,7 @@ public class Personaje extends Entidad implements EquipEquipado {
         int slot = equip.getId();
         if (slot != -1) {
             Equipamiento antiguo = quitarEquipamiento(slot);
-            Util.sortArray(equipamientoGuardado);//TODO revisar
+            Util.sortArray(equipamientoGuardado);
             for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
                 if (equipamientoGuardado[i].equals(equip)) {
                     equipamientoGuardado[i] = antiguo;

@@ -10,14 +10,14 @@ import UD4.Rol.Utilidades.Util;
 public class Combate {
     public static final String PREFERENCIAS_ATAQUE = "1 - Vida\n2 - Ataque\n4 - Agilidad";
     
-    public static boolean validarCantCombatientes(Personaje[] personajesGuardados, int fightersNeeded){
-        while (personajesGuardados.length < fightersNeeded) {
+    public static boolean validarCantCombatientes(Personaje[] personajesBaseGeneral, int fightersNeeded){
+        while (personajesBaseGeneral.length < fightersNeeded) {
             System.out.println("No hay suficientes personajes guardados para jugar");
             if (Util.escogerOpcion("S", "n", "Quieres ejecutar la app de creación de Personajes para añadir más?")) {
                 System.out.println("_______________________________________________________");
-                AppCreaPersonaje.main(null);
+                AppCreaPersonaje.main(personajesBaseGeneral);
                 System.out.println("_______________________________________________________");
-                personajesGuardados = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
+                personajesBaseGeneral = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
             } else {
                 return false;
             }

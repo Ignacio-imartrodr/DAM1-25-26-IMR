@@ -10,13 +10,12 @@ import UD4.Rol.Entity.Entidades.Monstruos.Monstruo;
 import UD4.Rol.Utilidades.Util;
 
 public class AppCombateMonstruos {//TODO recrear a mi modo
-    public static void main(String[] args) {
-        System.out.println("=== Personajes vs Monstruos ===");
+    public static void main(Personaje[] personajesBaseGeneral) {
 
-        Personaje[] personajes = Creacion.pedirPersonajes();
-        for (int i = 0; i < personajes.length; i++) {
-            personajes[i].setId(i);
-        }
+        System.out.println("------------App de Combate Personaje vs Monstruo------------");
+
+
+        Combate.validarCantCombatientes(personajesBaseGeneral, );
 
         int cantidadMonstruos = -1;
         int nivelMonstruos = -1;
@@ -79,9 +78,9 @@ public class AppCombateMonstruos {//TODO recrear a mi modo
             opcion = orden ? "Mayor" : "Menor";
         }
         //TODO aplicar preferencia y opcion (orden)
-        Personaje[] personajesCreados = personajes;
+        Personaje[] personajesCreados = personajesBaseGeneral;
         System.out.println("Iniciando combate de grupo...");
-        personajesCreados = Combate.combateMonstruos(personajes, monstruos, personajesCreados);
+        personajesCreados = Combate.combateMonstruos(personajesBaseGeneral, monstruos, personajesCreados);
 
         System.out.println("El combate de grupo ha finalizado.");
         Guardado.guardadoPersonajes(personajesCreados);

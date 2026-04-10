@@ -21,19 +21,21 @@ import UD4.Rol.Utilidades.Util;
  */
 
 public class AppCombateSingular {
-    public static void main(String[] args) {
+    public static void main(Personaje[] personajesBaseGeneral) {
         final int CANTIDAD_COMBATIENTES = 2;
-        Personaje[] personajesGuardados = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
         System.out.println("-----------App de Combate PvsP-----------");
-        if (!Combate.validarCantCombatientes(personajesGuardados, CANTIDAD_COMBATIENTES)) {
+        if (!Combate.validarCantCombatientes(personajesBaseGeneral, CANTIDAD_COMBATIENTES)) {
             return;
         }
+        if (personajesBaseGeneral.length < CANTIDAD_COMBATIENTES) {
+            personajesBaseGeneral = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
+        }
         Personaje[] personajesEnBatalla = new Personaje[2];
-        if (personajesGuardados.length > 2) {
-            personajesEnBatalla = Creacion.seleccionarPersonajes(personajesGuardados, CANTIDAD_COMBATIENTES);
+        if (personajesBaseGeneral.length > 2) {
+            personajesEnBatalla = Creacion.seleccionarPersonajes(personajesBaseGeneral, CANTIDAD_COMBATIENTES);
         } else {
-            personajesEnBatalla[0] = personajesGuardados[0];
-            personajesEnBatalla[1] = personajesGuardados[1];
+            personajesEnBatalla[0] = personajesBaseGeneral[0];
+            personajesEnBatalla[1] = personajesBaseGeneral[1];
         }
         
         //TODO añadir efectos de armadura y armas
@@ -207,18 +209,18 @@ public class AppCombateSingular {
                 personajesEnBatalla[0].curar();
                 personajesEnBatalla[1].curar();
                 for (int i = 0; i < personajesEnBatalla.length; i++) {
-                    personajesGuardados[personajesEnBatalla[i].getId()] = personajesEnBatalla[i];
+                    personajesBaseGeneral[personajesEnBatalla[i].getId()] = personajesEnBatalla[i];
                 }
-                personajesEnBatalla = Creacion.seleccionarPersonajes(personajesGuardados, 2);
+                personajesEnBatalla = Creacion.seleccionarPersonajes(personajesBaseGeneral, 2);
                 while (personajesEnBatalla[0] == null || personajesEnBatalla[1] == null) {
                     System.out.println("No hay suficientes personajes para la batalla, selecciona al menos 2 personajes.");
-                    personajesEnBatalla = Creacion.seleccionarPersonajes(personajesGuardados, 2);
+                    personajesEnBatalla = Creacion.seleccionarPersonajes(personajesBaseGeneral, 2);
                 }
             } else {
                 batalla = false;
             }
         }
 
-        Guardado.guardadoPersonajes(personajesGuardados);
+        Guardado.guardadoPersonajes(personajesBaseGeneral);
     }
 }
