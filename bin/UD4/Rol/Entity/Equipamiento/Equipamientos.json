@@ -1,0 +1,205 @@
+{
+    "Armadura": {
+        "Casco": [
+            {
+                "nombre": "Casco de cuero",
+                "rareza": "COMMUN"
+            },
+            {
+                "nombre": "Casco de madera",
+                "rareza": "SPECIAL"
+            },
+            {
+                "nombre": "Casco de cobre",
+                "rareza": "RARE"
+            },
+            {
+                "nombre": "Casco de hierro",
+                "rareza": "EPIC"
+            },
+            {
+                "nombre": "Casco de diamante",
+                "rareza": "LEGENDARY"
+            },
+            {
+                "nombre": "Casco de adamantium",
+                "rareza": "CHAOTIC",
+                "encantamiento": "Resistencia a efectos",
+                "descripcion": "Los efectos adversos afectan un 50% menos"
+            }
+        ],
+        "Pechera": [
+            {
+                "nombre": "Pechera de cuero",
+                "rareza": "COMMUN"
+            },
+            {
+                "nombre": "Pechera de madera",
+                "rareza": "SPECIAL"
+            },
+            {
+                "nombre": "Pechera de cobre",
+                "rareza": "RARE"
+            },
+            {
+                "nombre": "Pechera de hierro",
+                "rareza": "EPIC"
+            },
+            {
+                "nombre": "Pechera de diamante",
+                "rareza": "LEGENDARY"
+            },
+            {
+                "nombre": "Pechera de adamantium",
+                "rareza": "CHAOTIC",
+                "encantamiento": "Espinas",
+                "descripcion": "Devuelves el 20% del daño recivido (no aplica a efectos)"
+            }
+        ],
+        "Pantalon": [
+            {
+                "nombre": "Pantalón de cuero",
+                "rareza": "COMMUN"
+            },
+            {
+                "nombre": "Pantalón de madera",
+                "rareza": "SPECIAL"
+            },
+            {
+                "nombre": "Pantalón de cobre",
+                "rareza": "RARE"
+            },
+            {
+                "nombre": "Pantalón de hierro",
+                "rareza": "EPIC"
+            },
+            {
+                "nombre": "Pantalón de diamante",
+                "rareza": "LEGENDARY"
+            },
+            {
+                "nombre": "Pantalón de adamantium",
+                "rareza": "CHAOTIC",
+                "encantamiento": "Bolsillo",
+                "descripcion": "Tienes un hueco más de items en la bolsa"
+            }
+        ],
+        "Botas": [
+            {
+                "nombre": "Botas de cuero",
+                "rareza": "COMMUN"
+            },
+            {
+                "nombre": "Botas de madera",
+                "rareza": "SPECIAL"
+            },
+            {
+                "nombre": "Botas de cobre",
+                "rareza": "RARE"
+            },
+            {
+                "nombre": "Botas de hierro",
+                "rareza": "EPIC"
+            },
+            {
+                "nombre": "Botas de diamante",
+                "rareza": "LEGENDARY"
+            },
+            {
+                "nombre": "Botas de adamantium",
+                "rareza": "CHAOTIC",
+                "encantamiento": "Paso veloz",
+                "descripcion": "Aumenta un 30% tu agilidad"
+            }
+        ]
+    },
+    "Arma": {
+        "Espada": [
+            {
+                "nombre": "Espada de Madera",
+                "rareza": "COMMUN",
+                "afinidad": "CORTE"
+            },
+            {
+                "nombre": "Espada de Cobre",
+                "rareza": "RARE",
+                "afinidad": "CORTE"
+            },
+            {
+                "nombre": "Espada de Hierro",
+                "rareza": "EPIC",
+                "afinidad": "CORTE"
+            },
+            {
+                "nombre": "Espada de Diamante",
+                "rareza": "LEGENDARY",
+                "afinidad": "CORTE",
+                "habilidad": "HONDA DE CORTE"
+            },
+            {
+                "nombre": "Espada de Adamantium",
+                "rareza": "CHAOTIC",
+                "afinidad": "CORTE",
+                "habilidad": "ROMPESUELOS"
+            }
+        ],
+        "Barita": [
+            {
+                "nombre": "Barita de Madera",
+                "rareza": "COMMUN",
+                "afinidad": "MAGIA"
+            },
+            {
+                "nombre": "Barita de Cobre",
+                "rareza": "RARE",
+                "afinidad": "MAGIA"
+            },
+            {
+                "nombre": "Barita de Hierro",
+                "rareza": "EPIC",
+                "afinidad": "MAGIA"
+            },
+            {
+                "nombre": "Espada de Diamante",
+                "rareza": "LEGENDARY",
+                "afinidad": "MAGIA",
+                "habilidad": "TORMENTA"
+            },
+            {
+                "nombre": "Barita de Adamantium",
+                "rareza": "CHAOTIC",
+                "afinidad": "MAGIA",
+                "habilidad": "GENKIDAMA"
+            }
+        ],
+        "Maza": [
+            {
+                "nombre": "Maza de Madera",
+                "rareza": "COMMUN",
+                "afinidad": "GOLPEO"
+            },
+            {
+                "nombre": "Maza de Cobre",
+                "rareza": "RARE",
+                "afinidad": "GOLPEO"
+            },
+            {
+                "nombre": "Maza de Hierro",
+                "rareza": "EPIC",
+                "afinidad": "GOLPEO"
+            },
+            {
+                "nombre": "Maza de Diamante",
+                "rareza": "LEGENDARY",
+                "afinidad": "GOLPEO",
+                "habilidad": "ROMPECASCOS"
+            },
+            {
+                "nombre": "Maza de Adamantium",
+                "rareza": "CHAOTIC",
+                "afinidad": "GOLPEO",
+                "habilidad": "SISMO"
+            }
+        ]
+    }
+}
