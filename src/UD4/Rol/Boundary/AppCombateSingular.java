@@ -1,6 +1,13 @@
 package UD4.Rol.Boundary;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
+
 import UD4.Rol.Control.Combate;
 import UD4.Rol.Control.Creacion;
 import UD4.Rol.Control.Guardado;
@@ -38,7 +45,7 @@ public class AppCombateSingular {
             personajesEnBatalla[1] = personajesBaseGeneral[1];
         }
         
-        //TODO añadir efectos de armadura y armas
+        //TODO sustituír arrays de efectos por la lista de cada personaje y añadir efectos de armadura y armas
         boolean batalla = true;
         while (batalla) {
             boolean turno;
@@ -51,12 +58,9 @@ public class AppCombateSingular {
                 turno = false;
             }
             boolean dosHobbit = personajesEnBatalla[0].getRaza().equals(Raza.HOBBIT) && personajesEnBatalla[1].getRaza().equals(Raza.HOBBIT);
-            byte[] turnosEfectoAccion = new byte[] {-1, -1};
-            int[][] buffEnAccion = new int[][] {{0, 0, 0, 0},{0, 0, 0, 0}};
+            //byte[] turnosEfectoAccion = new byte[] {-1, -1};
+            //int[][] buffEnAccion = new int[][] {{0, 0, 0, 0},{0, 0, 0, 0}};
             boolean[] puedeAtacar = new boolean[] {true, true};
-            boolean[] ardiendo = new boolean[] {false, false};
-            int[] contLlamas = new int[] {0, 0};
-            int[] damageFuego = new int[] {0, 0};
             while (personajesEnBatalla[0].estaVivo() && personajesEnBatalla[1].estaVivo()) {
                 byte personajeEnTurno = (byte) (turno ? 0 : 1);
                 Personaje personajeActuando = personajesEnBatalla[personajeEnTurno];
@@ -64,6 +68,26 @@ public class AppCombateSingular {
                 String accion;
                 boolean accionNoValida = true;
                 int xp = 0;
+                Set<String> efectosActIndiv = new TreeSet<>(personajeActuando.getEfectosAlterados());
+                Set<String> efectosEnemIndiv = new TreeSet<>(personajeActuando.getEfectosAlterados());
+                Iterator<String> itEfecActuando = personajeActuando.getEfectosAlterados().iterator();
+                Iterator<String> itEfecEnemigo = enemigo.getEfectosAlterados().iterator();
+                for (int i = 0; itEfecActuando.hasNext(); i++) {// TODO implementar la lista sin repetidos
+                    String efecto = itEfecActuando.next();
+                    switch (efecto) {
+                        case "QUEMADURA":
+                            damageFuego[personajeEnTurno]
+                            break;
+                        case "LENTITUD":
+                            damageFuego[personajeEnTurno]
+                            break;
+                        case "ATURDIMIENTO":
+                            damageFuego[personajeEnTurno]
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 if (contLlamas[personajeEnTurno] > 0) {
                     ardiendo[personajeEnTurno] = true;
                 } else {

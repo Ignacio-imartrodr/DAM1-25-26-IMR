@@ -279,6 +279,10 @@ public abstract class Entidad implements Comparable<Entidad> {
         return !efectosAlterados.isEmpty();
     }
 
+    public List<String> getEfectosAlterados(){
+        return efectosAlterados;
+    }
+
     public JSONObject toJsonObject() {
         JSONObject entidad = new JSONObject();
         JSONObject stats = new JSONObject();
