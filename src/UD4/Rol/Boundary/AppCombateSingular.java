@@ -97,6 +97,7 @@ public class AppCombateSingular {
                         case 1:
                             if (puedeAtacar[personajeEnTurno]) {
                                 xp = personajeActuando.atacar(enemigo);
+                                System.out.println(personajeActuando.getNombre() + "atacó a " + enemigo.getNombre());
                                 try {
                                     personajeActuando.sumarExperiencia(xp);
                                     enemigo.sumarExperiencia(xp);

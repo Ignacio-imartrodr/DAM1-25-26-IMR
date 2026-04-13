@@ -1,6 +1,9 @@
 package UD4.Rol.Entity.Entidades;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +25,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     private int id = -1;
     private Raza raza;
     private Item[] bolsa = null;
-    private Equipamiento[] equipamientoGuardado = new Equipamiento[50];
+    private List<Equipamiento> equipamientoGuardado = new ArrayList<>(50);
 
     protected int asignarBonusRaza(int stat){
         int num;
@@ -119,11 +122,11 @@ public class Personaje extends Entidad implements EquipEquipado {
             tieneBolsillo = encantamiento != null && encantamiento.equalsIgnoreCase("Bolsillo");
         }
         if (yaExistente) {
-            if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.length)) {
+            if (equipamientoGuardado == null || (equipamientoGuardado.length >= 0 && equipamientoGuardado.length <= this.equipamientoGuardado.size())) {
                 if (equipamientoGuardado != null) {
                     Util.sortArray(equipamientoGuardado);
                     for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
-                        this.equipamientoGuardado[i] = equipamientoGuardado[i];
+                        this.equipamientoGuardado.set(i, equipamientoGuardado[i]);
                     }
                 }
             } else {
@@ -318,11 +321,12 @@ public class Personaje extends Entidad implements EquipEquipado {
      * @return Equipamiento obtenido y lo guarda en {@code equipamienoGuardado} o {@code null} si el {@code equipamienoGuardado} está lleno.
      */
     public Equipamiento gachaEquipamiento(boolean esGeneral, boolean... gachaArmas){
-        for (int i = 0; i < equipamientoGuardado.length; i++) {
-            if (equipamientoGuardado[i] == null) {
+        for (int i = 0; i < equipamientoGuardado.size(); i++) {
+            if (equipamientoGuardado.get(i) == null) {
                 Equipamiento e = Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
-                equipamientoGuardado[i] = e;
-                Util.sortArray(equipamientoGuardado);
+                e.setId(i);
+                equipamientoGuardado.set(i, e);
+                equipamientoGuardado.sort(null);
                 return e;
             }
         }
@@ -333,13 +337,13 @@ public class Personaje extends Entidad implements EquipEquipado {
         int slot = equip.getId();
         if (slot != -1) {
             Equipamiento antiguo = quitarEquipamiento(slot);
-            Util.sortArray(equipamientoGuardado);
-            for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
-                if (equipamientoGuardado[i].equals(equip)) {
-                    equipamientoGuardado[i] = antiguo;
-                    Util.sortArray(equipamientoGuardado);
-                    for (int j = 0; j < equipamientoGuardado.length; j++) {
-                        equipamientoGuardado[j].setId(j);
+            equipamientoGuardado.sort(null);
+            for (int i = 0; i < equipamientoGuardado.size() && equipamientoGuardado.get(i) != null; i++) {
+                if (equipamientoGuardado.get(i).equals(equip)) {
+                    equipamientoGuardado.set(i, antiguo);
+                    equipamientoGuardado.sort(null);
+                    for (int j = 0; j < equipamientoGuardado.size(); j++) {
+                        equipamientoGuardado.get(j).setId(j); //TODO comprobar si el método actualiza la lista
                     }
                     
                     equipamientoEquipado[slot] = equip;
@@ -351,26 +355,30 @@ public class Personaje extends Entidad implements EquipEquipado {
         return false;
     }
     public void guardarEquipamiento(Equipamiento equip){
-        Arrays.copyOf(equipamientoGuardado, equipamientoGuardado.length + 1);
-        equipamientoGuardado[equipamientoGuardado.length - 1] = equip;
-        Util.sortArray(equipamientoGuardado);
-        for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
-            equipamientoGuardado[i].setId(i);
+        equipamientoGuardado.add(equip);
+        equipamientoGuardado.sort(null);
+        Iterator<Equipamiento> it = equipamientoGuardado.iterator();
+        int id = 0;
+        while (it.hasNext()) { // TODO comprobar
+            Equipamiento e = it.next();
+            e.setId(id);
+            equipamientoGuardado.set(id, e);
+            id++;
         }
     }
     public String getStringEquipamientoGuardado() {
-        Util.sortArray(equipamientoGuardado);
+        equipamientoGuardado.sort(null);
         Equipamiento[] armas;
         Equipamiento[] armaduras;
         String separador = "-----------------------\n";
         String inventario = "Equipamiento guardado\n=====================\n";
-        int lenthArmadura = equipamientoGuardado.length;
-        int lastArma = equipamientoGuardado.length;
-        for (int i = 0; i < equipamientoGuardado.length; i++) {
-            Equipamiento este = equipamientoGuardado[i];
+        int lenthArmadura = equipamientoGuardado.size();
+        int lastArma = equipamientoGuardado.size();
+        for (int i = 0; i < equipamientoGuardado.size(); i++) {
+            Equipamiento este = equipamientoGuardado.get(i);
             if (este == null) {
                 lastArma = i;
-                if (lenthArmadura == equipamientoGuardado.length) {
+                if (lenthArmadura == equipamientoGuardado.size()) {
                     lenthArmadura = i;
                 }
                 break;
@@ -380,13 +388,13 @@ public class Personaje extends Entidad implements EquipEquipado {
             }
         }
         if (lenthArmadura > 0) {
-            armaduras = Arrays.copyOf(equipamientoGuardado, lenthArmadura);
+            armaduras = Arrays.copyOf((Equipamiento[])equipamientoGuardado.toArray(), lenthArmadura);
             Arrays.sort(armaduras);
         } else {
             armaduras = new Equipamiento[0];
         }
         if (lenthArmadura - lastArma > 0) {
-            armas = Arrays.copyOfRange(equipamientoGuardado, lenthArmadura, lastArma);
+            armas = Arrays.copyOfRange((Equipamiento[])equipamientoGuardado.toArray(), lenthArmadura, lastArma);
             Arrays.sort(armas);
         } else {
             armas = new Equipamiento[0];
@@ -418,7 +426,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     }
     
     public Equipamiento[] getEquipamientoGuardado() {
-        return equipamientoGuardado;
+        return (Equipamiento[]) equipamientoGuardado.toArray();
     }
 
     @Override
@@ -441,11 +449,11 @@ public class Personaje extends Entidad implements EquipEquipado {
                 equipamientos.accumulate("Equipado", equipamientoEquipado[i].getJsonObject());
             }
         }
-        Util.sortArray(equipamientoGuardado);
+        equipamientoGuardado.sort(null);
         equipamientos.put("Guardado", new JSONArray());
-        for (int i = 0; i < equipamientoGuardado.length && equipamientoGuardado[i] != null; i++) {
-            if (equipamientoGuardado[i] != null) {
-                equipamientos.append("Guardado", equipamientoGuardado[i].getJsonObject());
+        for (int i = 0; i < equipamientoGuardado.size() && equipamientoGuardado.get(i) != null; i++) {
+            if (equipamientoGuardado.get(i) != null) {
+                equipamientos.append("Guardado", equipamientoGuardado.get(i).getJsonObject());
             }
         }
         
@@ -486,7 +494,9 @@ public class Personaje extends Entidad implements EquipEquipado {
             return false;
         if (!Arrays.equals(bolsa, other.bolsa))
             return false;
-        if (!Arrays.equals(equipamientoGuardado, other.equipamientoGuardado))
+        equipamientoGuardado.sort(null);
+        other.equipamientoGuardado.sort(null);
+        if (!equipamientoGuardado.equals(other.equipamientoGuardado))
             return false;
         if (!Arrays.equals(getEquipamientoEquipado(), other.getEquipamientoEquipado()))
             return false;

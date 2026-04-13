@@ -1,5 +1,7 @@
 package UD4.Rol.Entity.Entidades;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -18,6 +20,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     protected int puntosVida;
     protected int vidaMin;
     protected int[] minMaxRndStats;
+    protected List<String> efectosAlterados = new ArrayList<>(); // Guarda los efectos si tiene si no está vacío 
 
     protected final static int EXP_MAX = 256999;
 
@@ -254,6 +257,26 @@ public abstract class Entidad implements Comparable<Entidad> {
     
     public Equipamiento equipamientoSemiRnd(boolean esGeneral, boolean... gachaArmas){
         return Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
+    }
+
+    public boolean addEfect(String efecto){
+        if (efecto == null) {
+            return false;
+        }
+        //TODO verificar que es un efecto válido
+        this.efectosAlterados.add(efecto.toUpperCase());
+        return true;
+    }
+
+    public boolean endEfect(String efecto){
+        if (efecto == null || efectosAlterados.isEmpty()) {
+            return false;
+        }
+        return efectosAlterados.remove(efecto.toUpperCase());
+    }
+
+    public boolean hasEfect(){
+        return !efectosAlterados.isEmpty();
     }
 
     public JSONObject toJsonObject() {

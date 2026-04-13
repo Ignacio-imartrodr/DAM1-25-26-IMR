@@ -85,4 +85,31 @@ public abstract class Arma extends Equipamiento {
         }
         this.fuerza += Math.round(fuerza);
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Arma other = (Arma) obj;
+        if (afinidad == null) {
+            if (other.afinidad != null)
+                return false;
+        } else if (!afinidad.equals(other.afinidad))
+            return false;
+        if (habilidad == null) {
+            if (other.habilidad != null)
+                return false;
+        } else if (!habilidad.equals(other.habilidad))
+            return false;
+        if (fuerza != other.fuerza)
+            return false;
+        return true;
+    }
+    
 }

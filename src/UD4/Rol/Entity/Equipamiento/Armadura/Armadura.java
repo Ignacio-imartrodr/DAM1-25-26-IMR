@@ -84,4 +84,27 @@ public abstract class Armadura extends Equipamiento {
         }
         return este;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Armadura other = (Armadura) obj;
+        if (constitucion != other.constitucion)
+            return false;
+        if (encantamiento == null) {
+            if (other.encantamiento != null)
+                return false;
+        } else if (!encantamiento.equals(other.encantamiento))
+            return false;
+        return true;
+    }
+
+    
 }
