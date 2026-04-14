@@ -1,13 +1,13 @@
 package UD4.Rol.Entity.Entidades;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Others.Efecto;
 import UD4.Rol.Utilidades.EntidadException;
 
 public abstract class Entidad implements Comparable<Entidad> {
@@ -20,7 +20,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     protected int puntosVida;
     protected int vidaMin;
     protected int[] minMaxRndStats;
-    protected List<String> efectosAlterados = new ArrayList<>(); // Guarda los efectos si tiene si no está vacío 
+    protected Set<Efecto> efectosAlterados = new TreeSet<>(); // Guarda los efectos si tiene si no está vacío y sin repetidos
 
     protected final static int EXP_MAX = 256999;
 
@@ -263,36 +263,66 @@ public abstract class Entidad implements Comparable<Entidad> {
         if (efecto == null) {
             return false;
         }
-        //TODO verificar que es un efecto válido
-        this.efectosAlterados.add(efecto.toUpperCase());
+        Efecto efect;
+        try {
+            efect = new Efecto(efecto);
+        } catch (Exception e) {
+            return false;
+        }
+        if (!this.efectosAlterados.add(efect)) {
+            endEfect(efecto);
+            this.efectosAlterados.add(efect);
+        }
         return true;
     }
-
+    public boolean addEfect(Efecto efecto){
+        if (efecto == null) {
+            return false;
+        }
+        if (!this.efectosAlterados.add(efecto)) {
+            efectosAlterados.remove(efecto);
+            this.efectosAlterados.add(efecto);
+        }
+        return true;
+    }
     public boolean endEfect(String efecto){
         if (efecto == null || efectosAlterados.isEmpty()) {
             return false;
         }
-        return efectosAlterados.remove(efecto.toUpperCase());
+        Efecto efect;
+        try {
+            efect = new Efecto(efecto);
+        } catch (Exception e) {
+            return false;
+        }
+        return efectosAlterados.remove(efect);
     }
 
     public boolean hasEfect(){
         return !efectosAlterados.isEmpty();
     }
 
-    public List<String> getEfectosAlterados(){
-        return efectosAlterados;
+    public Efecto[]/*String[]*/ getEfectosAlterados(){
+        // return efectosAlterados.toArray(efectos);//TODO ver que devuelve para aplicarlo
+        Efecto[] efectos = new Efecto[efectosAlterados.size()];
+        int id = 0;
+        for (Efecto ef : efectosAlterados) {
+            efectos[id] = ef;
+            id++;
+        }
+        return efectos;
     }
 
     public JSONObject toJsonObject() {
         JSONObject entidad = new JSONObject();
         JSONObject stats = new JSONObject();
-        stats.accumulate("nombre", nombre);
-        stats.accumulate("fuerza", fuerza);
-        stats.accumulate("agilidad", agilidad);
-        stats.accumulate("constitucion", constitucion);
-        stats.accumulate("nivel", nivel);
-        stats.accumulate("experiencia", experiencia);
-        stats.accumulate("vidaMax", getVidaMax());
+        stats.put("nombre", nombre);
+        stats.put("fuerza", fuerza);
+        stats.put("agilidad", agilidad);
+        stats.put("constitucion", constitucion);
+        stats.put("nivel", nivel);
+        stats.put("experiencia", experiencia);
+        stats.put("vidaMax", getVidaMax());
         
         entidad.put("Stats", stats);
         

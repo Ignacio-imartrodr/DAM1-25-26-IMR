@@ -10,12 +10,12 @@ import UD4.Rol.Utilidades.*;
 
 public enum Items {
 
-    POCION_VIDA, BOMBA_DE_HUMO, ENREDADERAS, MECHERO;
+    BOMBA_DE_HUMO, ENREDADERAS, MECHERO, POCION_VIDA;
 
     public static Items stringToItems(String respuesta){
         Items item;
         try {
-            item = Items.valueOf(respuesta.toUpperCase().strip().replace(" ", "_"));
+            item = Items.valueOf(respuesta.strip().toUpperCase().replace(" ", "_"));
             return item;
         } catch (Exception e) {
             throw new ItemException("Item no válido.");
