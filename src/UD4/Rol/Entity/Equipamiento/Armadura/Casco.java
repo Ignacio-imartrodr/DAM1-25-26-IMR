@@ -9,7 +9,7 @@ import UD4.Rol.Utilidades.Util;
 public class Casco extends Armadura {
     final static String KEY = "Casco";
     public Casco(JSONObject casco){
-        this(casco.getString("rareza"));
+        this(casco.get("rareza").toString());
         int comparador;
         this.nombre = super.nombre = casco.getString("nombre");
         this.rareza = super.rareza = (Rareza) casco.get("rareza");
@@ -27,7 +27,7 @@ public class Casco extends Armadura {
             throw new EquipamientoException("Error con el Json de Casco");
         }
 
-        this.lvl = super.lvl= (byte) casco.get("lvl");
+        this.lvl = super.lvl= Byte.valueOf(casco.get("lvl").toString());
 
         comparador = casco.getInt("constitucion");
         if (comparador >= 1) {
@@ -35,7 +35,7 @@ public class Casco extends Armadura {
         } else {
             throw new EquipamientoException("Error con el Json de Casco");
         }
-        this.encantamiento = super.encantamiento = casco.optString("encantamiento");
+        this.encantamiento = super.encantamiento = casco.optString("encantamiento", null);
         this.objetoBase = super.objetoBase = getJsonObject();
     }
     public Casco(String rareza){

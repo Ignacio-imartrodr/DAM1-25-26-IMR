@@ -7,7 +7,6 @@ import UD4.Rol.Utilidades.EquipamientoException;
 
 public interface EquipEquipado {
     public Equipamiento[] equipamientoEquipado = new Equipamiento[5];
-
     public static boolean isFormatoCorrecto(Equipamiento[] equipamientoEquipado) {
         if (equipamientoEquipado.length != 5) {
             return false;
@@ -55,10 +54,10 @@ public interface EquipEquipado {
     default boolean setEquipado(Equipamiento equip) {
         //  Ejemplo basico a para modificar en implementación
         int slot = equip.getId();
-        if (equipamientoEquipado[slot] != null) {
+        if (getEquipamientoEquipado()[slot] != null) {
             return false;
         }
-        equipamientoEquipado[slot] = equip;
+        getEquipamientoEquipado()[slot] = equip;
         return true;
     }
 
@@ -103,7 +102,7 @@ public interface EquipEquipado {
         }
         return inventario;
     }
-    default public Equipamiento[] getEquipamientoEquipado() {
+    default public Equipamiento[] getEquipamientoEquipado(Equipamiento[] equipamientoEquipado) {
         return java.util.Arrays.copyOf(equipamientoEquipado, equipamientoEquipado.length);
     }
 }

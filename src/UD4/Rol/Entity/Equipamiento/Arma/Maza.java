@@ -11,7 +11,7 @@ public class Maza extends Arma {
     final static String KEY = "Maza";
     
     public Maza(JSONObject maza){
-        this(maza.getString("rareza"));
+        this(maza.get("rareza").toString());
         int comparador;
         this.nombre = super.nombre = maza.getString("nombre");
         this.rareza = super.rareza = (Rareza) maza.get("rareza");
@@ -29,7 +29,7 @@ public class Maza extends Arma {
             throw new EquipamientoException("Error con el Json de Maza");
         }
 
-        this.lvl = super.lvl= (byte) maza.get("lvl");
+        this.lvl = super.lvl= Byte.valueOf(maza.get("lvl").toString());
 
         comparador = maza.getInt("fuerza");
         if (comparador >= 1) {
@@ -37,7 +37,7 @@ public class Maza extends Arma {
         } else {
             throw new EquipamientoException("Error con el Json de Maza");
         }
-        this.habilidad = super.habilidad = maza.optString("habilidad");
+        this.habilidad = super.habilidad = maza.optString("habilidad", null);
         this.objetoBase = super.objetoBase = getJsonObject();
     }
     public Maza(String rareza){

@@ -1,29 +1,14 @@
 package UD4.Rol.Entity.Others;
 
-import UD4.Rol.Utilidades.EfectException;
-
 public enum Efecto {
 
-    Aturdimiento, Lentitud, Quemado;
+    ATURDIMIENTO, LENTITUD, QUEMADO;
 
     private int duration = 1;
     private int damage = 0;
 
-    public Efecto efecto(String nombre) {
-        //TODO verificar nombre
-        Efecto efecto;
-        try {
-            nombre = nombre.strip();
-            efecto = Efecto.valueOf(nombre.substring(0,1) + nombre.substring(1).toLowerCase().replace(" ", "_"));
-            return efecto;
-        } catch (Exception e) {
-            throw new EfectException("Efecto no válido.");
-        }
-    
-    }
-    
     public String getTipo() {
-        return this.name().toUpperCase();
+        return this.name();
     }
     public int getDuration() {
         return duration;
@@ -42,24 +27,13 @@ public enum Efecto {
     public void setDamage(int damage) {
         this.damage = damage;
     }
-
+    
     @Override
     public String toString() {
-        return this.name();
+        return this.name().substring(0,1) + this.name().substring(1).toLowerCase();
     }
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Efecto other = (Efecto) obj;
-        if (tipo == null) {
-            if (other.tipo != null)
-                return false;
-        } else if (!tipo.equals(other.tipo))
+    public boolean equals(Efecto other) {
+        if (!this.name().equals(other.name()))
             return false;
         return true;
     }

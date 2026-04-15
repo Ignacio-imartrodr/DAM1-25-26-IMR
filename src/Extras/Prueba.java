@@ -1,5 +1,11 @@
 package Extras;
 
+import java.util.Arrays;
+
+import UD4.Rol.Entity.Entidades.Personaje;
+import UD4.Rol.Entity.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Equipamiento.Arma.Barita;
+import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
 
 /**
  * @Author Ignacio MR
@@ -7,15 +13,18 @@ package Extras;
 public class Prueba {
     public static void main(String[] args) throws Exception {
 
-        long num;
-        int i = 0;
-        
-        num = (Math.round(Math.random() * 100))+1;
-        while ( i < 10000 || (num > 0 && num <= 100)){
-            i++;
-            num = (Math.round(Math.random() * 100))+1;
-            System.out.println(num);
+        Personaje p = new Personaje();
+        Personaje a = new Personaje();
+        Equipamiento b = new Barita(2);
+        Equipamiento c = new Casco(1);
+        p.guardarEquipamiento(b);
+        p.guardarEquipamiento(c);
+        p.guardarEquipamiento(b);
+        p.equipar(b);
+        a.guardarEquipamiento(c);
+        a.equipar(c);
 
-        }
+        System.out.println(Arrays.toString(a.getEquipamientoEquipado()));
+        System.out.println(Arrays.toString(p.getEquipamientoEquipado()));
     }
 }

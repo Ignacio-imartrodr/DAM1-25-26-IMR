@@ -10,7 +10,7 @@ public class Espada extends Arma {
     final static String KEY = "Espada";
 
     public Espada(JSONObject espada){
-        this(espada.getString("rareza"));
+        this(espada.get("rareza").toString());
         int comparador;
         this.nombre = super.nombre = espada.getString("nombre");
         this.rareza = super.rareza = (Rareza) espada.get("rareza");
@@ -28,7 +28,7 @@ public class Espada extends Arma {
             throw new EquipamientoException("Error con el Json de Espada");
         }
 
-        this.lvl = super.lvl= (byte) espada.get("lvl");
+        this.lvl = super.lvl= Byte.valueOf(espada.get("lvl").toString());
 
         comparador = espada.getInt("fuerza");
         if (comparador >= 1) {
@@ -36,7 +36,7 @@ public class Espada extends Arma {
         } else {
             throw new EquipamientoException("Error con el Json de Espada");
         }
-        this.habilidad = super.habilidad = espada.optString("habilidad");
+        this.habilidad = super.habilidad = espada.optString("habilidad", null);
         this.objetoBase = super.objetoBase = getJsonObject();
     }
     public Espada(String rareza){

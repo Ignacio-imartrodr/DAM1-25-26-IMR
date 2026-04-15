@@ -80,7 +80,7 @@ public abstract class Armadura extends Equipamiento {
         String este = super.getString();
         este += "Constitución: " + this.constitucion + "\n";
         if (getEncantamiento() != null) {
-            este += "Habilidad: " + getEncantamiento() + "\n";
+            este += "Encantamiento: " + getEncantamiento() + "\n";
         }
         return este;
     }

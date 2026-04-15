@@ -2,12 +2,11 @@ package UD4.Rol.Entity.Entidades;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Arma.*;
 import UD4.Rol.Entity.Equipamiento.Armadura.*;
@@ -337,34 +336,52 @@ public class Personaje extends Entidad implements EquipEquipado {
         int slot = equip.getId();
         if (slot != -1) {
             Equipamiento antiguo = quitarEquipamiento(slot);
-            equipamientoGuardado.sort(null);
-            for (int i = 0; i < equipamientoGuardado.size() && equipamientoGuardado.get(i) != null; i++) {
-                if (equipamientoGuardado.get(i).equals(equip)) {
-                    equipamientoGuardado.set(i, antiguo);
-                    equipamientoGuardado.sort(null);
-                    for (int j = 0; j < equipamientoGuardado.size(); j++) {
-                        equipamientoGuardado.get(j).setId(j); //TODO comprobar si el método actualiza la lista
-                    }
-                    
-                    equipamientoEquipado[slot] = equip;
-                    return true;
+            equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
+            boolean encontrado = false;
+            Iterator<Equipamiento> it = equipamientoGuardado.iterator();
+            while (it.hasNext()) {
+                Equipamiento actual = it.next();
+                if (actual != null && actual.equals(equip)) {
+                    it.remove();
+                    this.guardarEquipamiento(antiguo);
+                    equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
+                    encontrado = true;
+                    break;
                 }
             }
-            equipamientoEquipado[slot] = antiguo;
+            if (encontrado) {
+                for (int i = 0; i < equipamientoGuardado.size(); i++) {
+                    Equipamiento e = equipamientoGuardado.get(i);
+                    if (e != null) {
+                        e.setId(i);
+                    }
+                }
+                equipamientoEquipado[slot] = equip;
+                return true;
+            } else {
+                equipamientoEquipado[slot] = antiguo;
+            }
         }
         return false;
     }
-    public void guardarEquipamiento(Equipamiento equip){
-        equipamientoGuardado.add(equip);
-        equipamientoGuardado.sort(null);
-        Iterator<Equipamiento> it = equipamientoGuardado.iterator();
-        int id = 0;
-        while (it.hasNext()) { // TODO comprobar
-            Equipamiento e = it.next();
-            e.setId(id);
-            equipamientoGuardado.set(id, e);
-            id++;
+    public boolean guardarEquipamiento(Equipamiento equip){
+        if (equip == null) {
+            return false;
         }
+        try {
+            equipamientoGuardado.add((Equipamiento) equip.clone());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
+        for (int i = 0; i < equipamientoGuardado.size(); i++) {
+            Equipamiento e = equipamientoGuardado.get(i);
+            if (e != null) {
+                e.setId(i);
+            }
+        }
+        return true;
     }
     public String getStringEquipamientoGuardado() {
         equipamientoGuardado.sort(null);

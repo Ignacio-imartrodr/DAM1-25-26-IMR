@@ -10,7 +10,7 @@ import UD4.Rol.Utilidades.EquipamientoException;
 import UD4.Rol.Utilidades.RarezaException;
 import UD4.Rol.Utilidades.Util;
 
-public abstract class Equipamiento implements Comparable<Equipamiento>{
+public abstract class Equipamiento implements Comparable<Equipamiento>, Cloneable{
     //Idea: que solo se guarde el nombre, durabilidad restante, xp y nievel en el json y apartir de ahí con el Json "Equipamientos" sacas el resto
     protected int id;
     private String tipo;
@@ -30,7 +30,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             JSONObject equipamiento = (JSONObject) Util.rutaJsonToObjectJson(RUTA_EQUIPAMIENTOS, tipo);
             JSONArray objetos = equipamiento.getJSONArray(subtipo);
             objetoBase = objetos.getJSONObject(num);
-            objetoBase.accumulate("class", subtipo);
+            objetoBase.put("class", subtipo);
             this.nombre = objetoBase.getString("nombre");
             this.rareza = Rareza.StringToRareza(objetoBase.getString("rareza"));
             this.durabilidad = getDurabilidadMax();
@@ -125,6 +125,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         return durabilidadMax;
     }
     public JSONObject getJsonObject(){
+        objetoBase.put("rareza", getRareza());
         objetoBase.put("durabilidad", durabilidad);
         objetoBase.put("xp", xp);
         objetoBase.put("lvl", lvl);
@@ -141,7 +142,6 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         return este;
     }
     
-
     public void setId(int id) {
         if (id >= 0) {
             this.id = id;
@@ -350,10 +350,11 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
     }
     @Override
     public int compareTo(Equipamiento other) {
-        //Comparar por Tipo (si es null va al final)
-        int tipoComp = Integer.compare(getPrioridadTipo(this.tipo), getPrioridadTipo(other.tipo));
-        if (tipoComp != 0) { return tipoComp; }
 
+        //Comparar por Tipo (si es null va al final)
+        int tipoComp = Integer.compare(getPrioridadTipo(this.tipo), other == null ? 4 : getPrioridadTipo(other.tipo));
+        if (tipoComp != 0) { return tipoComp; }
+        
         //Si son del mismo tipo, comparar por Subtipo
         int subtipoComp = Integer.compare(getPrioridadSubtipo(this.subtipo), getPrioridadSubtipo(other.subtipo));
         if (subtipoComp != 0) { return subtipoComp; }
@@ -375,7 +376,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             case "ARMADURA" -> 1;
             case "ARMA" -> 2;
             case null -> 4;
-            default -> 3;//Tipo sin orden asignado asignado
+            default -> 3;//Tipo sin orden asignado
         };
     }
     private int getPrioridadSubtipo(String subtipo) {
@@ -427,7 +428,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
         if (objetoBase == null) {
             if (other.objetoBase != null)
                 return false;
-        } else if (!objetoBase.equals(other.objetoBase))
+        } else if (!this.getJsonObject().similar(other.getJsonObject()))//TODO arreglar
             return false;
         if (nombre == null) {
             if (other.nombre != null)
@@ -444,4 +445,45 @@ public abstract class Equipamiento implements Comparable<Equipamiento>{
             return false;
         return true;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Equipamiento e;
+        JSONObject jo = this.getJsonObject();
+        switch (subtipo.toUpperCase()) {
+            case "CASCO": {
+                e = new Casco(jo);
+                break;
+            }
+            case "PECHERA": {
+                e = new Pechera(jo);
+                break;
+            }
+            case "PANTALON": {
+                e = new Pantalon(jo);
+                break;
+            }
+            case "BOTAS": {
+                e = new Botas(jo);
+                break;
+            }
+            case "ESPADA": {
+                e = new Espada(jo);
+                break;
+            }
+            case "BARITA": {
+                e = new Barita(jo);
+                break;
+            }
+            case "MAZA": {
+                e = new Maza(jo);
+                break;
+            }
+            default: {//"Subtipo sin clone asignado asignado"
+                throw new CloneNotSupportedException("Equipamiento sin clon asignado");
+            }
+        };
+        return e;
+    }
+    
 }

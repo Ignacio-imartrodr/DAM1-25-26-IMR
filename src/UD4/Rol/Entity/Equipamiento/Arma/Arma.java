@@ -22,10 +22,10 @@ public abstract class Arma extends Equipamiento {
         this.lvl = super.lvl;
         this.fuerza = getFuerzaBase();
         this.afinidad = new Afinidad(super.objetoBase.getString("afinidad"));
-        this.habilidad = getHabilidad();
+        this.habilidad = optHabilidad();
         this.objetoBase = super.objetoBase = getJsonObject();
     }
-    private String getHabilidad() {
+    private String optHabilidad() {
         String habilidad;
         if (objetoBase.opt("habilidad") != null) {
             habilidad = objetoBase.getString("habilidad");
@@ -63,7 +63,9 @@ public abstract class Arma extends Equipamiento {
     public JSONObject getJsonObject() {
         objetoBase = super.getJsonObject();
         objetoBase.put("afinidad", afinidad);
-        objetoBase.put("habilidad", habilidad);
+        if (habilidad != null) {
+            objetoBase.put("habilidad", habilidad);
+        }
 
         return objetoBase;
     }
@@ -71,8 +73,8 @@ public abstract class Arma extends Equipamiento {
         String este = super.getString();
         este += "Fuerza: " + this.fuerza + "\n";
         este += "Afinidad: " + this.afinidad + "\n";
-        if (getHabilidad() != null) {
-            este += "Habilidad: " + getHabilidad() + "\n";
+        if (optHabilidad() != null) {
+            este += "Habilidad: " + optHabilidad() + "\n";
         }
         return este;
     }

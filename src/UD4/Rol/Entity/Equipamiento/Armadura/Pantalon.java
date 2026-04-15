@@ -10,7 +10,7 @@ public class Pantalon extends Armadura {
     final static String KEY = "Pantalon";
 
     public Pantalon(JSONObject pantalon){
-        this(pantalon.getString("rareza"));
+        this(pantalon.get("rareza").toString());
         int comparador;
         this.nombre = super.nombre = pantalon.getString("nombre");
         this.rareza = super.rareza = (Rareza) pantalon.get("rareza");
@@ -28,7 +28,7 @@ public class Pantalon extends Armadura {
             throw new EquipamientoException("Error con el Json de Pantalón");
         }
 
-        this.lvl = super.lvl= (byte) pantalon.get("lvl");
+        this.lvl = super.lvl= Byte.valueOf(pantalon.get("lvl").toString());
 
         comparador = pantalon.getInt("constitucion");
         if (comparador >= 1) {
@@ -36,7 +36,7 @@ public class Pantalon extends Armadura {
         } else {
             throw new EquipamientoException("Error con el Json de Pantalón");
         }
-        this.encantamiento = super.encantamiento = pantalon.optString("encantamiento");
+        this.encantamiento = super.encantamiento = pantalon.optString("encantamiento", null);
         this.objetoBase = super.objetoBase = getJsonObject();
     }
     public Pantalon(String rareza){

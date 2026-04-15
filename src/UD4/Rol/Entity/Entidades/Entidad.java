@@ -265,7 +265,7 @@ public abstract class Entidad implements Comparable<Entidad> {
         }
         Efecto efect;
         try {
-            efect = new Efecto(efecto);
+            efect = Efecto.valueOf(efecto.toUpperCase());
         } catch (Exception e) {
             return false;
         }
@@ -291,7 +291,7 @@ public abstract class Entidad implements Comparable<Entidad> {
         }
         Efecto efect;
         try {
-            efect = new Efecto(efecto);
+            efect = Efecto.valueOf(efecto.toUpperCase());
         } catch (Exception e) {
             return false;
         }
@@ -302,15 +302,8 @@ public abstract class Entidad implements Comparable<Entidad> {
         return !efectosAlterados.isEmpty();
     }
 
-    public Efecto[]/*String[]*/ getEfectosAlterados(){
-        // return efectosAlterados.toArray(efectos);//TODO ver que devuelve para aplicarlo
-        Efecto[] efectos = new Efecto[efectosAlterados.size()];
-        int id = 0;
-        for (Efecto ef : efectosAlterados) {
-            efectos[id] = ef;
-            id++;
-        }
-        return efectos;
+    public Efecto[] getEfectosAlterados(){
+        return efectosAlterados.toArray(new Efecto[0]);
     }
 
     public JSONObject toJsonObject() {

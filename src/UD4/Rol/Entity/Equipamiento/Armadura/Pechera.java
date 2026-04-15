@@ -9,7 +9,7 @@ import UD4.Rol.Utilidades.Util;
 public class Pechera extends Armadura {
     final static String KEY = "Pechera";
     public Pechera(JSONObject pechera){
-        this(pechera.getString("rareza"));
+        this(pechera.get("rareza").toString());
         int comparador;
         this.nombre = super.nombre = pechera.getString("nombre");
         this.rareza = super.rareza = (Rareza) pechera.get("rareza");
@@ -27,7 +27,7 @@ public class Pechera extends Armadura {
             throw new EquipamientoException("Error con el Json de Pechera");
         }
 
-        this.lvl = super.lvl= (byte) pechera.get("lvl");
+        this.lvl = super.lvl= Byte.valueOf(pechera.get("lvl").toString());
 
         comparador = pechera.getInt("constitucion");
         if (comparador >= 1) {
@@ -35,7 +35,7 @@ public class Pechera extends Armadura {
         } else {
             throw new EquipamientoException("Error con el Json de Pechera");
         }
-        this.encantamiento = super.encantamiento = pechera.optString("encantamiento");
+        this.encantamiento = super.encantamiento = pechera.optString("encantamiento", null);
         this.objetoBase = super.objetoBase = getJsonObject();
     }
     public Pechera(String rareza){

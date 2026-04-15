@@ -2,6 +2,7 @@ package UD4.Rol.Entity.Equipamiento.Arma;
 
 import java.util.Arrays;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
@@ -15,8 +16,8 @@ public class Barita extends Arma {
     int agilidad = 7;
     final static String KEY = "Barita";
 
-    public Barita(JSONObject barita){
-        this(barita.getString("rareza"));
+    public Barita(JSONObject barita) throws JSONException {
+        this(barita.get("rareza").toString());
         int comparador;
         this.nombre = super.nombre = barita.getString("nombre");
         this.rareza = super.rareza = (Rareza) barita.get("rareza");
@@ -34,7 +35,7 @@ public class Barita extends Arma {
             throw new EquipamientoException("Error con el Json de Barita");
         }
 
-        this.lvl = super.lvl= (byte) barita.get("lvl");
+        this.lvl = super.lvl= Byte.valueOf(barita.get("lvl").toString());
 
         comparador = barita.getInt("fuerza");
         if (comparador >= 1) {
@@ -42,7 +43,7 @@ public class Barita extends Arma {
         } else {
             throw new EquipamientoException("Error con el Json de Barita");
         }
-        this.habilidad = super.habilidad = barita.optString("habilidad");
+        this.habilidad = super.habilidad = barita.optString("habilidad", null);
         this.objetoBase = super.objetoBase = getJsonObject();
     }
     public Barita(String rareza){
