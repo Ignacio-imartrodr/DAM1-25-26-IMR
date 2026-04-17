@@ -24,6 +24,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     private int id = -1;
     private Raza raza;
     private Item[] bolsa = null;
+    private Equipamiento[] equipamientoEquipado = new Equipamiento[5];
     private List<Equipamiento> equipamientoGuardado = new ArrayList<>(50);
 
     protected int asignarBonusRaza(int stat){
@@ -136,12 +137,12 @@ public class Personaje extends Entidad implements EquipEquipado {
                     for (int i = 0; i < equipamientoEquipado.length; i++) {
                         if (equipamientoEquipado[i] != null) {
                             equipamientoEquipado[i].setId(i);
-                            if (!EquipEquipado.super.setEquipado(equipamientoEquipado[i])){
+                            if (!equipar(equipamientoEquipado[i])){
                                 equipamientoGuardado = Arrays.copyOf(equipamientoGuardado, equipamientoGuardado.length + 1);
-                                Equipamiento old = EquipEquipado.super.quitarEquipamiento(i);
+                                Equipamiento old = quitarEquipado(i);
                                 old.setId(equipamientoGuardado.length -1);
                                 equipamientoGuardado[equipamientoGuardado.length - 1] = old;
-                                EquipEquipado.super.setEquipado(equipamientoEquipado[i]);
+                                equipar(equipamientoEquipado[i]);
                             }
                         }
                     }
@@ -331,39 +332,94 @@ public class Personaje extends Entidad implements EquipEquipado {
         }
         return null;
     }
-    @Override
-    public boolean setEquipado(Equipamiento equip) {
-        int slot = equip.getId();
-        if (slot != -1) {
-            Equipamiento antiguo = quitarEquipamiento(slot);
-            equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
-            boolean encontrado = false;
-            Iterator<Equipamiento> it = equipamientoGuardado.iterator();
-            while (it.hasNext()) {
-                Equipamiento actual = it.next();
-                if (actual != null && actual.equals(equip)) {
-                    it.remove();
-                    this.guardarEquipamiento(antiguo);
-                    equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
-                    encontrado = true;
-                    break;
+
+    //----------------------------------------Equipamiento------------------------------------------
+    // Equipado
+    /**
+     * Asigna el id del slot al que corresponde este equipamiento o devuelve si el Equipamiento está guardado en {@code equipamientoGuardado}
+     * 
+     * @param equip Equipo a encontrar en {@code equipamientoGuardado} 
+     * @param setSlot Decide si asignar o no id del slot correspondiente para equiparlo  
+     * @return {@code false} si no se encuentra el equipamiento o no se pudo asignar el id
+     */
+    public boolean setEquipGuardadoIdSlot(Equipamiento equip, boolean setSlot){
+        boolean encontrado = false;
+        Iterator<Equipamiento> it = equipamientoGuardado.iterator();
+        while (it.hasNext()) {
+            Equipamiento actual = it.next();
+            if (actual != null && actual.equals(equip)) {
+                encontrado = true;
+                if (setSlot) {
+                    return setSlotToEquip(equip);
                 }
+                break;
             }
-            if (encontrado) {
-                for (int i = 0; i < equipamientoGuardado.size(); i++) {
-                    Equipamiento e = equipamientoGuardado.get(i);
-                    if (e != null) {
-                        e.setId(i);
-                    }
-                }
-                equipamientoEquipado[slot] = equip;
-                return true;
-            } else {
+        }
+        return encontrado;
+    }
+    @Override
+    public boolean equipar(Equipamiento equip) {
+        if (equip == null) {
+            return false;
+        }
+        int slot;
+        try {
+            slot = getSlot(equip);
+        } catch (Exception e) {
+            return false;
+        }
+        Equipamiento antiguo = quitarEquipado(slot);
+        equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
+        if (setEquipGuardadoIdSlot(equip, true)) {
+            guardarEquipamiento(antiguo);
+            equipamientoGuardado.remove(equip);
+            asignarIdGuardados();
+            equipamientoEquipado[slot] = equip;
+            return true;
+        } else {
+            if (antiguo != null) {
                 equipamientoEquipado[slot] = antiguo;
+            }
+        }
+
+        return false;
+    }
+    
+    @Override
+    public Equipamiento[] getEquipamientoEquipado() {
+        return equipamientoEquipado;
+    }
+
+
+    @Override
+    public Equipamiento quitarEquipado(int slot) throws EquipamientoException {
+        if (slot < 0 || slot >= equipamientoEquipado.length) {
+            throw new EquipamientoException("Slot inválido");
+        }
+        Equipamiento antiguo = equipamientoEquipado[slot];
+        equipamientoEquipado[slot] = null;
+        guardarEquipamiento(antiguo);
+        return antiguo;
+    }
+
+    @Override
+    public boolean quitarEquipado(Equipamiento equip) throws EquipamientoException {
+        if (equip == null) {
+            throw new EquipamientoException("No se puede quitar \"null\"");
+        }
+        for (int i = 0; i < equipamientoEquipado.length; i++) {
+            if (equipamientoEquipado[i] != null && equipamientoEquipado[i].equals(equip)) {
+                Equipamiento antiguo = equipamientoEquipado[i];
+                equipamientoEquipado[i] = null;
+                guardarEquipamiento(antiguo);
+                return true;
             }
         }
         return false;
     }
+
+
+    // Guardado
     public boolean guardarEquipamiento(Equipamiento equip){
         if (equip == null) {
             return false;
@@ -374,17 +430,11 @@ public class Personaje extends Entidad implements EquipEquipado {
             ex.printStackTrace();
             return false;
         }
-        equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
-        for (int i = 0; i < equipamientoGuardado.size(); i++) {
-            Equipamiento e = equipamientoGuardado.get(i);
-            if (e != null) {
-                e.setId(i);
-            }
-        }
+        asignarIdGuardados();
         return true;
     }
     public String getStringEquipamientoGuardado() {
-        equipamientoGuardado.sort(null);
+        equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
         Equipamiento[] armas;
         Equipamiento[] armaduras;
         String separador = "-----------------------\n";
@@ -406,13 +456,11 @@ public class Personaje extends Entidad implements EquipEquipado {
         }
         if (lenthArmadura > 0) {
             armaduras = Arrays.copyOf((Equipamiento[])equipamientoGuardado.toArray(), lenthArmadura);
-            Arrays.sort(armaduras);
         } else {
             armaduras = new Equipamiento[0];
         }
         if (lenthArmadura - lastArma > 0) {
             armas = Arrays.copyOfRange((Equipamiento[])equipamientoGuardado.toArray(), lenthArmadura, lastArma);
-            Arrays.sort(armas);
         } else {
             armas = new Equipamiento[0];
         }
@@ -443,9 +491,22 @@ public class Personaje extends Entidad implements EquipEquipado {
     }
     
     public Equipamiento[] getEquipamientoGuardado() {
-        return (Equipamiento[]) equipamientoGuardado.toArray();
+        return equipamientoGuardado.toArray(new Equipamiento[0]);
     }
 
+    public void asignarIdGuardados(){
+        equipamientoGuardado.sort(Comparator.nullsLast(Comparator.naturalOrder()));
+        for (int i = 0; i < equipamientoGuardado.size(); i++) {
+            Equipamiento e = equipamientoGuardado.get(i);
+            if (e != null) {
+                e.setId(i);
+            } else {
+                break;
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------
     @Override
     public JSONObject toJsonObject() throws EntidadException{
         JSONObject personaje = super.toJsonObject();

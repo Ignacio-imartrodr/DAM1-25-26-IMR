@@ -6,7 +6,6 @@ import UD4.Rol.Entity.Equipamiento.Armadura.*;
 import UD4.Rol.Utilidades.EquipamientoException;
 
 public interface EquipEquipado {
-    public Equipamiento[] equipamientoEquipado = new Equipamiento[5];
     public static boolean isFormatoCorrecto(Equipamiento[] equipamientoEquipado) {
         if (equipamientoEquipado.length != 5) {
             return false;
@@ -29,11 +28,24 @@ public interface EquipEquipado {
         return true;
         
     }
-    default public boolean equipar(Equipamiento equip) {
+
+    default public boolean setSlotToEquip(Equipamiento equip){
         if (equip == null) {
             return false;
         }
-        int slot = -1; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
+        int slot;
+        try {
+            slot = getSlot(equip);
+        } catch (Exception e) {
+            return false;
+        }
+        equip.setId(slot);
+        return true;
+    }
+
+    default int getSlot(Equipamiento equip) throws EquipamientoException{
+
+        int slot; // 0: Casco, 1: Pechera, 2: Pantalon, 3: Botas, 4: Arma
         if (equip instanceof Casco) {
             slot = 0;
         } else if (equip instanceof Pechera) {
@@ -45,44 +57,37 @@ public interface EquipEquipado {
         } else if (equip instanceof Arma) {
             slot = 4;
         } else {
-            return false;
+            throw new EquipamientoException("Equipamiento no equipable");
         }
-        equip.setId(slot);
-        return setEquipado(equip);
-        
+        return slot;
     }
-    default boolean setEquipado(Equipamiento equip) {
+    abstract boolean equipar(Equipamiento equip);/* {
         //  Ejemplo basico a para modificar en implementación
-        int slot = equip.getId();
-        if (getEquipamientoEquipado()[slot] != null) {
+        if (equip == null) {
             return false;
         }
-        getEquipamientoEquipado()[slot] = equip;
+        if (!setSlotToEquip(equip)) {
+            return false;
+        }
+        int slot;
+        try {
+            slot = getSlot(equip);
+        } catch (Exception e) {
+            return false;
+        }
+        if (equipamientoEquipado[slot] != null) {
+            return false;
+        }
+        equipamientoEquipado[slot] = equip;
         return true;
-    }
+    }*/
 
-    default public Equipamiento quitarEquipamiento(int slot) {
-        if (slot < 0 || slot >= equipamientoEquipado.length) {
-            throw new EquipamientoException("Slot inválido");
-        }
-        Equipamiento antiguo = equipamientoEquipado[slot];
-        equipamientoEquipado[slot] = null;
-        return antiguo;
-    }
+    abstract public Equipamiento quitarEquipado(int slot);
 
-    default public Equipamiento quitarEquipamiento(Equipamiento equip) {
-        if (equip == null) { return null; }
-        for (int i = 0; i < equipamientoEquipado.length; i++) {
-            if (equipamientoEquipado[i] != null && equipamientoEquipado[i].equals(equip)) {
-                Equipamiento antiguo = equipamientoEquipado[i];
-                equipamientoEquipado[i] = null;
-                return antiguo;
-            }
-        }
-        return null;
-    }
+    abstract public boolean quitarEquipado(Equipamiento equip);
 
     default public String getStringEquipamientoEquipado() {
+        Equipamiento[] equipamientoEquipado = getEquipamientoEquipado();
         String inventario = "Equipamiento activo:\n-------------------\n";
         for (int i = 0; i < equipamientoEquipado.length; i++) {
             String parte;
@@ -102,7 +107,5 @@ public interface EquipEquipado {
         }
         return inventario;
     }
-    default public Equipamiento[] getEquipamientoEquipado(Equipamiento[] equipamientoEquipado) {
-        return java.util.Arrays.copyOf(equipamientoEquipado, equipamientoEquipado.length);
-    }
+    abstract Equipamiento[] getEquipamientoEquipado();
 }

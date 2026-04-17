@@ -71,7 +71,7 @@ public class EquipamientoTest {
 
             System.out.println("\n========== PRUEBA 7: Quitar equipamiento ==========");
             System.out.println("Retirando casco (slot 0)...");
-            Equipamiento retirado = p.quitarEquipamiento(0);
+            Equipamiento retirado = p.quitarEquipado(0);
             System.out.println("✓ Retirado: " + (retirado != null ? retirado.getNombre() : "null"));
 
             System.out.println("\nEquipamiento actualizado:");

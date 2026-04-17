@@ -479,7 +479,7 @@ public abstract class Creacion {
                                     System.out.println("Escoge una parte con equipamiento");
                                 } else {
                                     try {
-                                        p.quitarEquipamiento(Integer.valueOf(valor) - 1);
+                                        p.quitarEquipado(Integer.valueOf(valor) - 1);
                                     } catch (Exception e) {
                                         System.out.println("Escoge una parte con equipamiento");
                                     }

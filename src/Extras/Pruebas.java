@@ -1,7 +1,5 @@
 package Extras;
 
-import java.util.Arrays;
-
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Arma.Barita;
@@ -10,7 +8,7 @@ import UD4.Rol.Entity.Equipamiento.Armadura.Casco;
 /**
  * @Author Ignacio MR
  */
-public class Prueba {
+public class Pruebas {
     public static void main(String[] args) throws Exception {
 
         Personaje p = new Personaje();
@@ -21,10 +19,14 @@ public class Prueba {
         p.guardarEquipamiento(c);
         p.guardarEquipamiento(b);
         p.equipar(b);
+        p.quitarEquipado(b);
         a.guardarEquipamiento(c);
         a.equipar(c);
+        a.equipar(b);
 
-        System.out.println(Arrays.toString(a.getEquipamientoEquipado()));
-        System.out.println(Arrays.toString(p.getEquipamientoEquipado()));
+        System.out.println(a.getStringEquipamientoEquipado());
+        System.out.println(p.getStringEquipamientoEquipado());
+
+        a.quitarEquipado(0);
     }
 }
