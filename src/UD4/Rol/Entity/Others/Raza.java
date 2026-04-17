@@ -1,6 +1,7 @@
 package UD4.Rol.Entity.Others;
 
 import UD4.Rol.Entity.Entidades.Personaje;
+import UD4.Rol.Entity.Others.Efectos.Efecto;
 import UD4.Rol.Utilidades.EntidadException;
 
 /**
@@ -24,13 +25,11 @@ public enum Raza implements Habilidades {
         return raza;
     }
     
-    public static int[] buffHabilidad(Object obj) {
-        Personaje personaje;
-        if (obj instanceof Personaje) {
-            personaje = (Personaje) obj;
-        } else {
+    public static Efecto[] buffHabilidad(Personaje personaje) {//TODO que debuelva un Efecto
+        if (personaje == null) {
             return null;
         }
+        Efecto[] efecto = null;
         int bonusFuerza = 0;
         int bonusAgilidad = 0;
         int bonusConstitucion = 0;
@@ -40,9 +39,18 @@ public enum Raza implements Habilidades {
                     bonusFuerza = personaje.getFuerza()/2;
                     bonusAgilidad = personaje.getAgilidad()/2;
                     bonusConstitucion = personaje.getConstitucion()/2;
+
+                    Integer[] bonus = new Integer[] {bonusAgilidad, bonusConstitucion, bonusFuerza};
+                    efecto = new Efecto[]{Efecto.valueOf("AGILIDAD"), Efecto.valueOf("CONSTITUCION"), Efecto.valueOf("FUERZA")};
+
+                    for (int i = 0; i < efecto.length; i++) {
+                        efecto[i].setCantEfect(bonus[i]);
+                    }
                     break;
                 case ELFO:
                     cura = -(personaje.getVidaMax()/2);
+                    efecto = new Efecto[] {Efecto.valueOf("CURA")};
+                    efecto[0].setCantEfect(cura);
                     break;
                 case ENANO:
                     break;
@@ -50,13 +58,17 @@ public enum Raza implements Habilidades {
                     break;
                 case ORCO:
                     bonusFuerza = personaje.getFuerza();
+                    efecto = new Efecto[] {Efecto.valueOf("FUERZA")};
+                    efecto[0].setCantEfect(bonusFuerza);
                     break;
                 case TROLL:
                     cura = -((personaje.getVidaMax() * 100) / 15 );
+                    efecto = new Efecto[] {Efecto.valueOf("CURA")};
+                    efecto[0].setCantEfect(cura);
+                    efecto[0].setDuration(3);
                     break;
             }
-        int[] bonus = new int[] {bonusFuerza, bonusAgilidad, bonusConstitucion, cura};
-        return bonus;
+        return efecto;
     }
     public String[] arrayBonusRaza() {
         String bonusFuerza = "x";

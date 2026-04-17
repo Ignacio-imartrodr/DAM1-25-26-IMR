@@ -12,10 +12,10 @@ import UD4.Rol.Control.Combate;
 import UD4.Rol.Control.Creacion;
 import UD4.Rol.Control.Guardado;
 import UD4.Rol.Entity.Entidades.Personaje;
-import UD4.Rol.Entity.Others.Efecto;
 import UD4.Rol.Entity.Others.Item;
 import UD4.Rol.Entity.Others.Items;
 import UD4.Rol.Entity.Others.Raza;
+import UD4.Rol.Entity.Others.Efectos.Efecto;
 import UD4.Rol.Utilidades.EntidadException;
 import UD4.Rol.Utilidades.ItemException;
 import UD4.Rol.Utilidades.Util;
@@ -75,22 +75,8 @@ public class AppCombateSingular {
                     Efecto efecto = efectosPerAct[i];
                     String nombre = efecto.getTipo();
                     switch (nombre) {
-                        case "QUEMADO":
-                            int duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
-                                perActuando.perderVida(efecto.getDamage());
-                            }
-                            break;
-                        case "LENTITUD":
-                            duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
-                                //TODO terminar
-                            }
-                            break;
                         case "ATURDIMIENTO":
-                            duration = efecto.getDuration();
+                            int duration = efecto.getDuration();
                             if (duration > 0) {
                                 efecto.setDuration(duration - 1);
                                 if (duration > 0) {
@@ -101,22 +87,59 @@ public class AppCombateSingular {
                                 //TODO terminar
                             }
                             break;
+                        case "LENTITUD":
+                            duration = efecto.getDuration();
+                            if (duration > 0) {
+                                efecto.setDuration(duration - 1);
+                                //TODO terminar
+                            }
+                            break;
+                        case "QUEMADO":
+                            duration = efecto.getDuration();
+                            if (duration > 0) {
+                                efecto.setDuration(duration - 1);
+                                perActuando.perderVida(efecto.getCantEfect());
+                            }
+                            break;
                         default:
                             break;
                     }
                     perActuando.addEfect(efecto);
                 }
-                if (contLlamas[perEnTurno] > 0) {
-                    ardiendo[perEnTurno] = true;
-                } else {
-                    ardiendo[perEnTurno] = false;
-                    damageFuego[perEnTurno] = 0;
-                }
-                if (contLlamas[1 - perEnTurno] > 0) {
-                    ardiendo[1 - perEnTurno] = true;
-                } else {
-                    ardiendo[1 - perEnTurno] = false;
-                    damageFuego[1 - perEnTurno] = 0;
+                for (int i = 0; i < efectosEnemigo.length; i++) {
+                    Efecto efecto = efectosEnemigo[i];
+                    String nombre = efecto.getTipo();
+                    switch (nombre) {
+                        case "ATURDIMIENTO":
+                            int duration = efecto.getDuration();
+                            if (duration > 0) {
+                                efecto.setDuration(duration - 1);
+                                if (duration > 0) {
+                                    perActuando.addEfect(efecto);
+                                } else {
+                                    perActuando.endEfect(nombre);
+                                }
+                                //TODO terminar
+                            }
+                            break;
+                        case "LENTITUD":
+                            duration = efecto.getDuration();
+                            if (duration > 0) {
+                                efecto.setDuration(duration - 1);
+                                //TODO terminar
+                            }
+                            break;
+                        case "QUEMADO":
+                            duration = efecto.getDuration();
+                            if (duration > 0) {
+                                efecto.setDuration(duration - 1);
+                                perActuando.perderVida(efecto.getCantEfect());
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    perActuando.addEfect(efecto);
                 }
                 System.out.println("\nTurno de " + perActuando.toString());
                 while (accionNoValida) {
@@ -171,8 +194,7 @@ public class AppCombateSingular {
                                 turnosEfectoAccion[perEnTurno] = perActuando.duracionHabilidadRaza(enemigo);
                                 if (turnosEfectoAccion[perEnTurno] == -1) {
                                     if (dosHobbit) {
-                                        System.out.println("La habilidad de raza no surte efecto");
-                                        accionNoValida = false;
+                                        System.out.println("No se puede robar la hablilidad \"Steal\"");
                                     } else {
                                         System.out.println("La habilidad no se puede utilizar durante este turno!");
                                     }

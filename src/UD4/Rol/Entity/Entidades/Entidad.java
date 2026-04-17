@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
-import UD4.Rol.Entity.Others.Efecto;
+import UD4.Rol.Entity.Others.Efectos.Efecto;
 import UD4.Rol.Utilidades.EntidadException;
 
 public abstract class Entidad implements Comparable<Entidad> {
@@ -259,22 +259,6 @@ public abstract class Entidad implements Comparable<Entidad> {
         return Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
     }
 
-    public boolean addEfect(String efecto){
-        if (efecto == null) {
-            return false;
-        }
-        Efecto efect;
-        try {
-            efect = Efecto.valueOf(efecto.toUpperCase());
-        } catch (Exception e) {
-            return false;
-        }
-        if (!this.efectosAlterados.add(efect)) {
-            endEfect(efecto);
-            this.efectosAlterados.add(efect);
-        }
-        return true;
-    }
     public boolean addEfect(Efecto efecto){
         if (efecto == null) {
             return false;
@@ -289,10 +273,14 @@ public abstract class Entidad implements Comparable<Entidad> {
         if (efecto == null || efectosAlterados.isEmpty()) {
             return false;
         }
-        Efecto efect;
-        try {
-            efect = Efecto.valueOf(efecto.toUpperCase());
-        } catch (Exception e) {
+        
+        Efecto efect = null;
+        for (Efecto ef : efectosAlterados) {
+            if (ef.getTipo().equals(efecto.strip().toUpperCase().replace(" ", "_"))) {
+                efect = ef;
+            }
+        }
+        if (efect == null) {
             return false;
         }
         return efectosAlterados.remove(efect);
