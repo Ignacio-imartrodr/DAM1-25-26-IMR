@@ -4,10 +4,13 @@ import java.util.TreeSet;
 
 public class Buff extends Efecto{
 
-    protected Buff(String tipo,boolean esEspecial){
-        tipo = tipo.strip().toUpperCase().replace(" ", "_");
-        if (esEspecial) {
-            efectos = new TreeSet<>();
+    protected Buff(String tipo, Efecto... efectosMultiples){
+        this.tipo = tipo;
+        if (efectosMultiples != null) {
+            this.efectos = new TreeSet<>();
+            for (int i = 0; i < efectosMultiples.length; i++) {
+                this.efectos.add(efectosMultiples[i]);
+            }
         }
     }
 }

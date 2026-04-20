@@ -15,6 +15,7 @@ import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Others.Item;
 import UD4.Rol.Entity.Others.Items;
 import UD4.Rol.Entity.Others.Raza;
+import UD4.Rol.Entity.Others.Efectos.Buff;
 import UD4.Rol.Entity.Others.Efectos.Efecto;
 import UD4.Rol.Utilidades.EntidadException;
 import UD4.Rol.Utilidades.ItemException;
@@ -70,76 +71,104 @@ public class AppCombateSingular {
                 Efecto[] efectosEnemigo = enemigo.getEfectosAlterados();
                 String accion;
                 boolean accionNoValida = true;
+                boolean perActAturdido = false; // crear uno para enemigo y que en true aplique debuff fuerza y agilidad (asta 0)
                 int xp = 0;
                 for (int i = 0; i < efectosPerAct.length; i++) {
                     Efecto efecto = efectosPerAct[i];
                     String nombre = efecto.getTipo();
+                    boolean finEfecto = false;
                     switch (nombre) {
                         case "ATURDIMIENTO":
                             int duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
-                                if (duration > 0) {
-                                    perActuando.addEfect(efecto);
-                                } else {
-                                    perActuando.endEfect(nombre);
-                                }
-                                //TODO terminar
+                            if (efecto.durationDown()) {
+                                perActAturdido = true;
+                            } else{
+                                finEfecto = true;
                             }
                             break;
-                        case "LENTITUD":
+                        case "AGILIDAD":
+                            if (efecto instanceof Buff) {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    //TODO aplicar efecto
+                                } else {
+                                    finEfecto = true;
+                                }
+                            } else {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    //TODO aplicar efecto
+                                } else {
+                                    finEfecto = true;
+                                }
+                            }
+                            break;
+                        case "FUERZA":
+                            if (efecto instanceof Buff) {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    //TODO aplicar efecto
+                                } else {
+                                    finEfecto = true;
+                                }
+                            } else {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    //TODO aplicar efecto
+                                } else {
+                                    finEfecto = true;
+                                }
+                            }
+                            break;
+                        case "CONSTITUCION":
+                            if (efecto instanceof Buff) {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    //TODO aplicar efecto
+                                } else {
+                                    finEfecto = true;
+                                }
+                            } else {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    //TODO aplicar efecto
+                                } else {
+                                    finEfecto = true;
+                                }
+                            }
+                            break;
+                        case "REGENERACION":
                             duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
-                                //TODO terminar
+                            if (efecto.durationDown()) {
+                                perActuando.perderVida(-efecto.getCantEfect());
+                            } else {
+                                finEfecto = true;
                             }
                             break;
                         case "QUEMADO":
                             duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
+                            if (efecto.durationDown()) {
                                 perActuando.perderVida(efecto.getCantEfect());
+                            } else {
+                                finEfecto = true;
                             }
                             break;
                         default:
                             break;
                     }
-                    perActuando.addEfect(efecto);
+                    if (finEfecto) {
+                        perActuando.endEfect(nombre);
+                    } else {
+                        perActuando.addEfect(efecto); // Esto sustituye el viejo efecto con el nuevo con menos tiempo 
+                    }
                 }
                 for (int i = 0; i < efectosEnemigo.length; i++) {
-                    Efecto efecto = efectosEnemigo[i];
-                    String nombre = efecto.getTipo();
-                    switch (nombre) {
-                        case "ATURDIMIENTO":
-                            int duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
-                                if (duration > 0) {
-                                    perActuando.addEfect(efecto);
-                                } else {
-                                    perActuando.endEfect(nombre);
-                                }
-                                //TODO terminar
-                            }
-                            break;
-                        case "LENTITUD":
-                            duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
-                                //TODO terminar
-                            }
-                            break;
-                        case "QUEMADO":
-                            duration = efecto.getDuration();
-                            if (duration > 0) {
-                                efecto.setDuration(duration - 1);
-                                perActuando.perderVida(efecto.getCantEfect());
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    perActuando.addEfect(efecto);
+                    //TODO terminar (no es solo ctr+c, ctr+v)
+                }
+                if (perActAturdido) {
+                    System.out.println("\nTurno de " + perActuando.toString());
+                    System.out.println("\n¡Pero " + perActuando.toString() + " está aturdido y pierde el turno!");
+                    continue;
                 }
                 System.out.println("\nTurno de " + perActuando.toString());
                 while (accionNoValida) {

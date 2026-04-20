@@ -4,69 +4,79 @@ import java.util.Set;
 
 import UD4.Rol.Utilidades.EfectException;
 
-public abstract class Efecto {
+public abstract class Efecto implements Comparable<Efecto> {
 
     protected String tipo;
     protected int duration;
     protected int cantEfect = 0;
     protected Set<Efecto> efectos;
 
-    private static String[] tiposEspeciales = new String[] {"FUROR_HEROICO"}; //Efectos que tienen múltiples efectos
-    private static String[] debuffs = new String[] {"ATURDIMIENTO", "CONSTITUCION", "CURA", "DEBILIDAD", "LENTITUD", "QUEMADO"};
-    private static String[] buffs = new String[] {"AGILIDAD", "ATURDIMIENTO", "CONSTITUCION", "CURA", "FUERZA", "LENTITUD", "REGENERACION"};
+    private static String[] tiposMultiples = new String[] {"ATURDIMIENTO", "FUROR_HEROICO"}; //Efectos que tienen múltiples efectos
+    private static String[] debuffs = new String[] {"AGILIDAD", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "QUEMADO"};
+    private static String[] buffs = new String[] {"AGILIDAD", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "REGENERACION"};
 
-    public static Efecto newEfecto(String tipo, int duration, int cant){
+    public static Efecto newEfecto(String tipo, int duration, boolean esBuff, Efecto... efectosMultiples){
+        boolean esMultiple = false;
+        for (int i = 0; i < tiposMultiples.length; i++) {
+            if (tipo.equals(tiposMultiples[i])) {
+                esMultiple = true;
+                break;
+            }
+        }
+        if (esMultiple && efectosMultiples != null && efectosMultiples.length > 0) {
+            return newEfecto(tipo, duration, 1, esBuff, efectosMultiples);
+        }
+        throw new EfectException("Valores invalidos para crear efecto");
+    }
+    public static Efecto newEfecto(String tipo, int duration, int cant, boolean esBuff, Efecto... efectosMultiples){
         if (duration < 1 || cant == 0) {
             throw new EfectException("Valores invalidos para crear efecto");
         }
 
         Efecto ef;
         tipo = tipo.strip().toUpperCase().replace(" ", "_");
-        boolean esEspecial = false;
-        for (int i = 0; i < tiposEspeciales.length; i++) {
-            if (tipo.equals(tiposEspeciales[i])) {
-                switch (tipo) {
-                    case "FUROR_HEROICO":
-                        esEspecial = true;
-                        break;
-                    default:
-                        esEspecial = false;
-                    break;
-                }
+        boolean esMultiple = false;
+        for (int i = 0; i < tiposMultiples.length; i++) {
+            if (tipo.equals(tiposMultiples[i])) {
+                esMultiple = true;
                 break;
             }
         }
-
-        boolean esBuff = false;
-        for (int i = 0; i < buffs.length; i++) {
-            if (tipo.equals(buffs[i])) {
-                esBuff = true;
-                break;
-            }
-        }//TODO terminar
+        if (esMultiple && (efectosMultiples == null || efectosMultiples.length < 1)) {
+            throw new EfectException("Valores invalidos para crear efecto");
+        }
         if (esBuff) {
-            try {
-                ef = new Buff(tipo, esEspecial);
-                ef.setCantEfect(cant);
-                ef.setDuration(duration);
-            } catch (Exception e) {
-                throw new EfectException("No existe este efecto");
+            for (int i = 0; i < buffs.length; i++) {
+                if (esMultiple || tipo.equals(buffs[i])) {
+                    try {
+                        ef = new Buff(tipo, esMultiple ? efectosMultiples : null);
+                        if (tipo.equals("REGENERACION")) {
+                            cant = cant * (-1);
+                        }
+                        ef.setCantEfect(cant);
+                        ef.setDuration(duration);
+                        return ef;
+                    } catch (Exception e) {
+                        throw new EfectException("No existe este buff");
+                    }
+                }
             }
+            throw new EfectException("No existe este buff");
         } else {
             for (int i = 0; i < debuffs.length; i++) {
-                if (tipo.equals(buffs[i])) {
+                if (esMultiple || tipo.equals(debuffs[i])) {
                     try {
-                        ef = new Debuff(tipo, esEspecial);
+                        ef = new Debuff(tipo, esMultiple ? efectosMultiples : null);
+                        ef.setCantEfect(cant);
+                        ef.setDuration(duration);
+                        return ef;
                     } catch (Exception a) {
-                        throw new EfectException("No existe este efecto");
+                        throw new EfectException("No existe este debuff");
                     }
-                    break;
                 }
             }
+            throw new EfectException("No existe este debuff");
         }
-        
-        
-        return ef;
     }
 
     public String getTipo() {
@@ -90,6 +100,13 @@ public abstract class Efecto {
         this.cantEfect = cant;
     }
     
+    public boolean durationDown(){
+        if (duration > 0) {
+            this.duration--;
+            return true;
+        }
+        return false;
+    }
     @Override
     public String toString() {
         String[] nom = tipo.split("_");
@@ -121,5 +138,10 @@ public abstract class Efecto {
         } else if (!tipo.equals(other.tipo))
             return false;
         return true;
+    }
+
+    @Override
+    public int compareTo(Efecto o) {
+        return this.tipo.compareTo(o.tipo);
     }
 }

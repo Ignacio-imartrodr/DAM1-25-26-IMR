@@ -25,32 +25,35 @@ public enum Raza implements Habilidades {
         return raza;
     }
     
-    public static Efecto[] buffHabilidad(Personaje personaje) {//TODO que debuelva un Efecto
+    public static Efecto buffHabilidad(Personaje personaje) {
         if (personaje == null) {
             return null;
         }
-        Efecto[] efecto = null;
+        Efecto efecto = null;
         int bonusFuerza = 0;
         int bonusAgilidad = 0;
         int bonusConstitucion = 0;
         int cura = 0;
         switch (personaje.getRaza()) {
                 case HUMANO:
+                    Efecto[] multiples;
+                    String[] nomEfects = new String[]{"AGILIDAD", "CONSTITUCION", "FUERZA"};
                     bonusFuerza = personaje.getFuerza()/2;
                     bonusAgilidad = personaje.getAgilidad()/2;
                     bonusConstitucion = personaje.getConstitucion()/2;
 
                     Integer[] bonus = new Integer[] {bonusAgilidad, bonusConstitucion, bonusFuerza};
-                    efecto = new Efecto[]{Efecto.valueOf("AGILIDAD"), Efecto.valueOf("CONSTITUCION"), Efecto.valueOf("FUERZA")};
+                    multiples = new Efecto[nomEfects.length];
 
-                    for (int i = 0; i < efecto.length; i++) {
-                        efecto[i].setCantEfect(bonus[i]);
+                    for (int i = 0; i < multiples.length; i++) {
+                        multiples[i] = Efecto.newEfecto(nomEfects[i], 2, bonus[i],true);
                     }
+
+                    efecto = Efecto.newEfecto("FUROR_HEROICO", 2, true, multiples);
                     break;
                 case ELFO:
                     cura = -(personaje.getVidaMax()/2);
-                    efecto = new Efecto[] {Efecto.valueOf("CURA")};
-                    efecto[0].setCantEfect(cura);
+                    efecto = Efecto.newEfecto("REGENERACION", 1, cura,true);
                     break;
                 case ENANO:
                     break;
@@ -58,14 +61,11 @@ public enum Raza implements Habilidades {
                     break;
                 case ORCO:
                     bonusFuerza = personaje.getFuerza();
-                    efecto = new Efecto[] {Efecto.valueOf("FUERZA")};
-                    efecto[0].setCantEfect(bonusFuerza);
+                    efecto = Efecto.newEfecto("FUERZA", 1, bonusFuerza,true);
                     break;
                 case TROLL:
                     cura = -((personaje.getVidaMax() * 100) / 15 );
-                    efecto = new Efecto[] {Efecto.valueOf("CURA")};
-                    efecto[0].setCantEfect(cura);
-                    efecto[0].setDuration(3);
+                    efecto = Efecto.newEfecto("REGENERACION", 3, cura,true);
                     break;
             }
         return efecto;
