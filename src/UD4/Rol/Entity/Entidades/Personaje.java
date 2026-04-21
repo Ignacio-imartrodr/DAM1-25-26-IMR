@@ -227,7 +227,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     }
     public byte duracionHabilidadRaza(Personaje enemigo){
         boolean haceEfecto = isHabilidadRazaActiva();
-        byte turnosEfecto = -1;
+        byte turnosEfecto;
         if (haceEfecto) {
             boolean esHobbit = getRaza().equals(Raza.HOBBIT);
             Raza habilidad = esHobbit ? enemigo.getRaza() : raza;

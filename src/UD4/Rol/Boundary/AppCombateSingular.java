@@ -71,7 +71,8 @@ public class AppCombateSingular {
                 Efecto[] efectosEnemigo = enemigo.getEfectosAlterados();
                 String accion;
                 boolean accionNoValida = true;
-                boolean perActAturdido = false; // crear uno para enemigo y que en true aplique debuff fuerza y agilidad (asta 0)
+                boolean perActAturdido = false; // crear uno para enemigo y que en true aplique debuff fuerza y agilidad (hasta 0)
+                int perActCuraEfect = 0; // crear uno para enemigo y que en true aplique debuff fuerza y agilidad (hasta 0)
                 int xp = 0;
                 for (int i = 0; i < efectosPerAct.length; i++) {
                     Efecto efecto = efectosPerAct[i];
@@ -137,10 +138,27 @@ public class AppCombateSingular {
                                 }
                             }
                             break;
+                        case "CURA_EFICACE":
+                            if (efecto instanceof Buff) {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    perActCuraEfect =+ efecto.getCantEfect();
+                                } else {
+                                    finEfecto = true;
+                                }
+                            } else {
+                                duration = efecto.getDuration();
+                                if (efecto.durationDown()) {
+                                    perActCuraEfect =- efecto.getCantEfect();
+                                } else {
+                                    finEfecto = true;
+                                }
+                            }
+                            break;
                         case "REGENERACION":
                             duration = efecto.getDuration();
                             if (efecto.durationDown()) {
-                                perActuando.perderVida(-efecto.getCantEfect());
+                                perActuando.perderVida(efecto.getCantEfect() + ((efecto.getCantEfect() * perActCuraEfect)/100));
                             } else {
                                 finEfecto = true;
                             }
@@ -172,19 +190,6 @@ public class AppCombateSingular {
                 }
                 System.out.println("\nTurno de " + perActuando.toString());
                 while (accionNoValida) {
-                    if (turnosEfectoAccion[perEnTurno] >= 0) {
-                        buffEnAccion[perEnTurno] = Raza.buffHabilidad(perActuando);
-                    }
-                    if (ardiendo[perEnTurno]) {
-                        perActuando.perderVida(damageFuego[perEnTurno]);
-                        contLlamas[perEnTurno]--;
-                    }
-                    if (ardiendo[1 - perEnTurno]) {
-                        perActuando.perderVida(damageFuego[1 - perEnTurno]);
-                        contLlamas[1 - perEnTurno]--;
-                    }
-                    perActuando.asignarBonus(buffEnAccion[perEnTurno], false);
-                    enemigo.asignarBonus(buffEnAccion[1 - perEnTurno], false);
                     System.out.println("¿Qué va a hacer? [ 1 - Atacar | 2 - Curar | 3 - " + perActuando.stringHabilidadRaza() + " | 4 - Abrir bolsa | 5 - Huir ]");
                     accion = Util.pedirPorTeclado(true);
                     switch (Integer.parseInt(accion)) {
@@ -204,15 +209,15 @@ public class AppCombateSingular {
                                     perActuando.sumarExperiencia(xpRest);
                                     enemigo.sumarExperiencia(xpRest);
                                 }
+                                if (xp == 0) {
+                                    System.out.println("El ataque falló!");
+                                } else {
+                                    System.out.println("El personaje \"" + enemigo.getNombre() + "\" recibió " + xp + " de daño!");
+                                }
+                                accionNoValida = false;
                             } else {
-                                puedeAtacar[perEnTurno] = true;
+                                System.out.print(perActuando.toString() + " no puede atacar en este turno!");
                             }
-                            if (xp == 0) {
-                                System.out.println("El ataque falló!");
-                            } else {
-                                System.out.println("El personaje \"" + enemigo.getNombre() + "\" recibió " + xp + " de daño!");
-                            }
-                            accionNoValida = false;
                             break;
                         case 2:
                             perActuando.curar();
@@ -230,7 +235,7 @@ public class AppCombateSingular {
                                 } else {
                                     if (turnosEfectoAccion[perEnTurno] == 0) {
                                         buffEnAccion[perEnTurno] = Raza.buffHabilidad(perActuando);
-                                        perActuando.asignarBonus(buffEnAccion[perEnTurno], false);
+                                        perActuando.asignarEfectos(buffEnAccion[perEnTurno], false);
                                     }
                                     accionNoValida = false;
                                 }
@@ -289,10 +294,13 @@ public class AppCombateSingular {
                     }
                 }
                 turnosEfectoAccion[perEnTurno]--;
-                perActuando.asignarBonus(buffEnAccion[perEnTurno], true);
-                enemigo.asignarBonus(buffEnAccion[1 - perEnTurno], true);
+                perActuando.asignarEfectos(buffEnAccion[perEnTurno], true);
+                enemigo.asignarEfectos(buffEnAccion[1 - perEnTurno], true);
                 if (!perActuando.isHabilidadRazaActiva()) {
                     perActuando.activarHabilidadRaza();
+                }
+                if (!puedeAtacar[perEnTurno]){
+                    puedeAtacar[perEnTurno] = true;
                 }
                 persEnBatalla[perEnTurno] = perActuando;
                 persEnBatalla[1 - perEnTurno] = enemigo;

@@ -11,6 +11,7 @@ import UD4.Rol.Utilidades.EntidadException;
 public enum Raza implements Habilidades {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
+    boolean isActiva = true;
     public static Raza stringToRaza(String respuesta){
         Raza raza = HUMANO;
         if (respuesta == null) {
@@ -166,6 +167,23 @@ public enum Raza implements Habilidades {
                     break;
             }
         return descripcion;
+    }
+
+    
+    @Override
+    public void activarHabilidad() {
+        isActiva = true;
+        
+    }
+
+    @Override
+    public boolean isHabilidadActiva() {
+        return isActiva;
+    }
+
+    @Override
+    public void quitarHabilidad() {
+        isActiva = false;
     }
 
     @Override

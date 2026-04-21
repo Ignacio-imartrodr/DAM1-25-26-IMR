@@ -29,7 +29,7 @@ public abstract class Efecto implements Comparable<Efecto> {
         throw new EfectException("Valores invalidos para crear efecto");
     }
     public static Efecto newEfecto(String tipo, int duration, int cant, boolean esBuff, Efecto... efectosMultiples){
-        if (duration < 1 || cant == 0) {
+        if (duration < 1 || cant < 0) {
             throw new EfectException("Valores invalidos para crear efecto");
         }
 
@@ -67,7 +67,10 @@ public abstract class Efecto implements Comparable<Efecto> {
                 if (esMultiple || tipo.equals(debuffs[i])) {
                     try {
                         ef = new Debuff(tipo, esMultiple ? efectosMultiples : null);
-                        ef.setCantEfect(cant);
+                        if (tipo.equals("QUEMADO")) {
+                            cant = cant * (-1);
+                        }
+                        ef.setCantEfect(cant * (-1));
                         ef.setDuration(duration);
                         return ef;
                     } catch (Exception a) {
@@ -129,13 +132,14 @@ public abstract class Efecto implements Comparable<Efecto> {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (getClass() != obj.getClass())//TODO copmprobar si distingue entre buffs y debuffs
             return false;
         Efecto other = (Efecto) obj;
-        if (tipo == null) {
+        if (tipo == null) 
             if (other.tipo != null)
                 return false;
-        } else if (!tipo.equals(other.tipo))
+        
+        if (!tipo.equals(other.tipo))
             return false;
         return true;
     }

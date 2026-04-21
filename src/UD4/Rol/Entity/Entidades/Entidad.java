@@ -1,5 +1,6 @@
 package UD4.Rol.Entity.Entidades;
 
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
@@ -7,6 +8,7 @@ import java.util.TreeSet;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
+import UD4.Rol.Entity.Others.Efectos.Buff;
 import UD4.Rol.Entity.Others.Efectos.Efecto;
 import UD4.Rol.Utilidades.EntidadException;
 
@@ -21,6 +23,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     protected int vidaMin;
     protected int[] minMaxRndStats;
     protected Set<Efecto> efectosAlterados = new TreeSet<>(); // Guarda los efectos si tiene si no está vacío y sin repetidos
+    protected boolean isAturdido = false; //TODO implementar
 
     protected final static int EXP_MAX = 256999;
 
@@ -147,16 +150,102 @@ public abstract class Entidad implements Comparable<Entidad> {
         ficha = String.format("%s%s%n%s%n%s%n%s%n%s%n%s%n%s%n", Cabecera, nombre, nivel, experiencia, puntosVida, fuerza, agilidad, constitucion);
         return ficha;
     }
+    public boolean isAturdido(){
+        return isAturdido;
+    }
 
-    public void asignarBonus(int[] bonus, boolean sustraer) {
+    public Integer aplicarEfectos() {
+        Integer resultado = null;
+        int curaEfect = 0;
+        Iterator<Efecto> it = efectosAlterados.iterator();
+        while (it.hasNext()) {
+            Efecto efecto = it.next();
+            String tipo = efecto.getTipo();
+            boolean finEfecto = false;
+            switch (tipo) {
+                case "AGILIDAD":
+                    if (efecto.durationDown()) {
+                        if (efecto instanceof Buff) {
+                            // TODO aplicar efecto
+                        } else {
+                            // TODO aplicar efecto
+                        }
+                    } else {
+                        finEfecto = true;
+                    }
+                    break;
+                case "FUERZA":
+                    if (efecto.durationDown()) {
+                        if (efecto instanceof Buff) {
+                            // TODO aplicar efecto
+                        } else {
+                            // TODO aplicar efecto
+                        }
+                    } else {
+                        finEfecto = true;
+                    }
+                    break;
+                case "CONSTITUCION":
+                    if (efecto.durationDown()) {
+                        if (efecto instanceof Buff) {
+                            // TODO aplicar efecto
+                        } else {
+                            // TODO aplicar efecto
+                        }
+                    } else {
+                        finEfecto = true;
+                    }
+                    break;
+                case "CURA_EFICACE":
+                    if (efecto.durationDown()) {
+                        if (efecto instanceof Buff) {
+                            resultado = curaEfect =+ efecto.getCantEfect();
+                        } else {
+                            resultado = curaEfect =- efecto.getCantEfect();
+                        }
+                    } else {
+                        finEfecto = true;
+                    }
+                    break;
+                case "ATURDIMIENTO":
+                    if (efecto.durationDown()) {
+                        isAturdido = true;
+                    } else {
+                        efectosAlterados.remove(efecto);
+                        isAturdido = false;
+                    }
+                    break;
+                case "REGENERACION":
+                    if (efecto.durationDown()) {
+                        perderVida(efecto.getCantEfect() + ((efecto.getCantEfect() * curaEfect) / 100));
+                    } else {
+                        finEfecto = true;
+                    }
+                    break;
+                case "QUEMADO":
+                    if (efecto.durationDown()) {
+                        perderVida(efecto.getCantEfect());
+                    } else {
+                        finEfecto = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (finEfecto) {
+                efectosAlterados.remove(efecto);
+            }
+        }
+        return resultado;
+        /*if (efectos == null || efectos.length == 0) {
+            return;
+        }
         int bonusFuerza = bonus[0];
         int bonusAgilidad = bonus[1];
         int bonusConstitucion = bonus[2];
-        int cura = bonus[3];
         fuerza += sustraer ? -bonusFuerza : bonusFuerza;
         agilidad += sustraer ? -bonusAgilidad : bonusAgilidad;
-        constitucion += sustraer ? -bonusConstitucion : bonusConstitucion;
-        perderVida(cura); // Al ser "cura" un valor negativo gana vida en vez de perderla
+        constitucion += sustraer ? -bonusConstitucion : bonusConstitucion;*/
     }
     
     protected static int generarRndMinAMax(int min, int max){
