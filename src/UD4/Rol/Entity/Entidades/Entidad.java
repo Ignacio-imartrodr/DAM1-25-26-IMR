@@ -1,5 +1,6 @@
 package UD4.Rol.Entity.Entidades;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
@@ -8,8 +9,7 @@ import java.util.TreeSet;
 import org.json.JSONObject;
 
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
-import UD4.Rol.Entity.Others.Efectos.Buff;
-import UD4.Rol.Entity.Others.Efectos.Efecto;
+import UD4.Rol.Entity.Others.Efectos.*;
 import UD4.Rol.Utilidades.EntidadException;
 
 public abstract class Entidad implements Comparable<Entidad> {
@@ -154,9 +154,8 @@ public abstract class Entidad implements Comparable<Entidad> {
         return isAturdido;
     }
 
-    public Integer aplicarEfectos() {
-        Integer resultado = null;
-        int curaEfect = 0;
+    public int aplicarEfectos() {
+        int curaEficace = 0;
         Iterator<Efecto> it = efectosAlterados.iterator();
         while (it.hasNext()) {
             Efecto efecto = it.next();
@@ -199,9 +198,9 @@ public abstract class Entidad implements Comparable<Entidad> {
                 case "CURA_EFICACE":
                     if (efecto.durationDown()) {
                         if (efecto instanceof Buff) {
-                            resultado = curaEfect =+ efecto.getCantEfect();
+                            curaEficace =+ efecto.getCantEfect();
                         } else {
-                            resultado = curaEfect =- efecto.getCantEfect();
+                            curaEficace =- efecto.getCantEfect();
                         }
                     } else {
                         finEfecto = true;
@@ -209,7 +208,7 @@ public abstract class Entidad implements Comparable<Entidad> {
                     break;
                 case "ATURDIMIENTO":
                     if (efecto.durationDown()) {
-                        isAturdido = true;
+                        isAturdido = true;//TODO terminar
                     } else {
                         efectosAlterados.remove(efecto);
                         isAturdido = false;
@@ -217,14 +216,14 @@ public abstract class Entidad implements Comparable<Entidad> {
                     break;
                 case "REGENERACION":
                     if (efecto.durationDown()) {
-                        perderVida(efecto.getCantEfect() + ((efecto.getCantEfect() * curaEfect) / 100));
+                        curar(efecto.getCantEfect() + ((efecto.getCantEfect() * curaEficace) / 100));
                     } else {
                         finEfecto = true;
                     }
                     break;
                 case "QUEMADO":
                     if (efecto.durationDown()) {
-                        perderVida(efecto.getCantEfect());
+                        curar(efecto.getCantEfect());//El efecto es negativo así que hace daño
                     } else {
                         finEfecto = true;
                     }
@@ -236,7 +235,7 @@ public abstract class Entidad implements Comparable<Entidad> {
                 efectosAlterados.remove(efecto);
             }
         }
-        return resultado;
+        return curaEficace;
         /*if (efectos == null || efectos.length == 0) {
             return;
         }
@@ -313,10 +312,22 @@ public abstract class Entidad implements Comparable<Entidad> {
             return false;
         }
     }
-    public void curar(){
+    public boolean curar(){
         if (puntosVida < getVidaMax()) {
             puntosVida = getVidaMax();
+            return true;
         }
+        return false;
+    }
+    public boolean curar(int cant){
+        if (estaVivo()) {
+            puntosVida += cant;
+            if (!estaVivo()) {
+                puntosVida = 0;
+            }
+        }
+        return estaVivo();
+        
     }
     public boolean perderVida(int puntos){
         puntosVida -= puntos;
@@ -331,7 +342,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     }
     public int atacar(Entidad enemigo){
         int puntAtaque = generarRndMinAMax(1, 100) + fuerza;
-        int puntDefensa = generarRndMinAMax(1, 100) + enemigo.agilidad;
+        int puntDefensa = generarRndMinAMax(1, 100) + (enemigo.isAturdido ? 0 : enemigo.agilidad);
         int daño = puntDefensa - puntAtaque;
         if ( daño > 0) {
             if (daño > enemigo.puntosVida) {
@@ -348,13 +359,20 @@ public abstract class Entidad implements Comparable<Entidad> {
         return Equipamiento.gachaEquipamiento(this.getNivel(), esGeneral, gachaArmas);
     }
 
-    public boolean addEfect(Efecto efecto){
+    public boolean addEfect(Efecto efecto){//TODO testear
         if (efecto == null) {
             return false;
         }
         if (!this.efectosAlterados.add(efecto)) {
-            efectosAlterados.remove(efecto);
-            this.efectosAlterados.add(efecto);
+            Iterator<Efecto> it = efectosAlterados.iterator();
+            for (Efecto ef = it.next(); it.hasNext(); ef = it.next()){
+                if (ef.equals(efecto)) {
+                    efectosAlterados.remove(efecto);
+                    this.efectosAlterados.add(Efecto.newEfecto(ef.getTipo(), efecto.getDuration(), ef.getCantEfect() + efecto.getCantEfect(), efecto instanceof Buff));
+                    return true;
+                }
+            }
+            return false;
         }
         return true;
     }
@@ -379,8 +397,8 @@ public abstract class Entidad implements Comparable<Entidad> {
         return !efectosAlterados.isEmpty();
     }
 
-    public Efecto[] getEfectosAlterados(){
-        return efectosAlterados.toArray(new Efecto[0]);
+    public String[] getEfectosAlterados(){
+        return Arrays.toString(efectosAlterados.toArray(new Efecto[0])).replace("[", "").replace("]", "").split(", ");
     }
 
     public JSONObject toJsonObject() {

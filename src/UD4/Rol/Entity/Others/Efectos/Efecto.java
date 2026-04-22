@@ -50,9 +50,6 @@ public abstract class Efecto implements Comparable<Efecto> {
                 if (esMultiple || tipo.equals(buffs[i])) {
                     try {
                         ef = new Buff(tipo, esMultiple ? efectosMultiples : null);
-                        if (tipo.equals("REGENERACION")) {
-                            cant = cant * (-1);
-                        }
                         ef.setCantEfect(cant);
                         ef.setDuration(duration);
                         return ef;
@@ -67,9 +64,6 @@ public abstract class Efecto implements Comparable<Efecto> {
                 if (esMultiple || tipo.equals(debuffs[i])) {
                     try {
                         ef = new Debuff(tipo, esMultiple ? efectosMultiples : null);
-                        if (tipo.equals("QUEMADO")) {
-                            cant = cant * (-1);
-                        }
                         ef.setCantEfect(cant * (-1));
                         ef.setDuration(duration);
                         return ef;

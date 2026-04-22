@@ -1,6 +1,7 @@
 package UD4.Rol.Boundary;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -67,123 +68,13 @@ public class AppCombateSingular {
                 byte perEnTurno = (byte) (turno ? 0 : 1);
                 Personaje perActuando = persEnBatalla[perEnTurno];
                 Personaje enemigo = persEnBatalla[1 - perEnTurno];
-                Efecto[] efectosPerAct = perActuando.getEfectosAlterados();
-                Efecto[] efectosEnemigo = enemigo.getEfectosAlterados();
                 String accion;
                 boolean accionNoValida = true;
-                boolean perActAturdido = false; // crear uno para enemigo y que en true aplique debuff fuerza y agilidad (hasta 0)
-                int perActCuraEfect = 0; // crear uno para enemigo y que en true aplique debuff fuerza y agilidad (hasta 0)
+                int perActCuraEfect = perActuando.aplicarEfectos();//TODO aplicar
+                int enemigoCuraEfect = enemigo.aplicarEfectos();//TODO aplicar
                 int xp = 0;
-                for (int i = 0; i < efectosPerAct.length; i++) {
-                    Efecto efecto = efectosPerAct[i];
-                    String nombre = efecto.getTipo();
-                    boolean finEfecto = false;
-                    switch (nombre) {
-                        case "ATURDIMIENTO":
-                            int duration = efecto.getDuration();
-                            if (efecto.durationDown()) {
-                                perActAturdido = true;
-                            } else{
-                                finEfecto = true;
-                            }
-                            break;
-                        case "AGILIDAD":
-                            if (efecto instanceof Buff) {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    //TODO aplicar efecto
-                                } else {
-                                    finEfecto = true;
-                                }
-                            } else {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    //TODO aplicar efecto
-                                } else {
-                                    finEfecto = true;
-                                }
-                            }
-                            break;
-                        case "FUERZA":
-                            if (efecto instanceof Buff) {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    //TODO aplicar efecto
-                                } else {
-                                    finEfecto = true;
-                                }
-                            } else {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    //TODO aplicar efecto
-                                } else {
-                                    finEfecto = true;
-                                }
-                            }
-                            break;
-                        case "CONSTITUCION":
-                            if (efecto instanceof Buff) {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    //TODO aplicar efecto
-                                } else {
-                                    finEfecto = true;
-                                }
-                            } else {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    //TODO aplicar efecto
-                                } else {
-                                    finEfecto = true;
-                                }
-                            }
-                            break;
-                        case "CURA_EFICACE":
-                            if (efecto instanceof Buff) {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    perActCuraEfect =+ efecto.getCantEfect();
-                                } else {
-                                    finEfecto = true;
-                                }
-                            } else {
-                                duration = efecto.getDuration();
-                                if (efecto.durationDown()) {
-                                    perActCuraEfect =- efecto.getCantEfect();
-                                } else {
-                                    finEfecto = true;
-                                }
-                            }
-                            break;
-                        case "REGENERACION":
-                            duration = efecto.getDuration();
-                            if (efecto.durationDown()) {
-                                perActuando.perderVida(efecto.getCantEfect() + ((efecto.getCantEfect() * perActCuraEfect)/100));
-                            } else {
-                                finEfecto = true;
-                            }
-                            break;
-                        case "QUEMADO":
-                            duration = efecto.getDuration();
-                            if (efecto.durationDown()) {
-                                perActuando.perderVida(efecto.getCantEfect());
-                            } else {
-                                finEfecto = true;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    if (finEfecto) {
-                        perActuando.endEfect(nombre);
-                    } else {
-                        perActuando.addEfect(efecto); // Esto sustituye el viejo efecto con el nuevo con menos tiempo 
-                    }
-                }
-                for (int i = 0; i < efectosEnemigo.length; i++) {
-                    //TODO terminar (no es solo ctr+c, ctr+v)
-                }
-                if (perActAturdido) {
+                
+                if (perActuando.isAturdido()) {
                     System.out.println("\nTurno de " + perActuando.toString());
                     System.out.println("\n¡Pero " + perActuando.toString() + " está aturdido y pierde el turno!");
                     continue;
@@ -225,15 +116,14 @@ public class AppCombateSingular {
                             break;
                         case 3:
                             if (perActuando.isHabilidadRazaActiva()) {
-                                turnosEfectoAccion[perEnTurno] = perActuando.duracionHabilidadRaza(enemigo);
-                                if (turnosEfectoAccion[perEnTurno] == -1) {
+                                if (perActuando.duracionHabilidadRaza(enemigo) == -1) {
                                     if (dosHobbit) {
                                         System.out.println("No se puede robar la hablilidad \"Steal\"");
                                     } else {
                                         System.out.println("La habilidad no se puede utilizar durante este turno!");
                                     }
                                 } else {
-                                    if (turnosEfectoAccion[perEnTurno] == 0) {
+                                    if (turnosEfectoAccion[perEnTurno] == 0) {//TODO terminar
                                         buffEnAccion[perEnTurno] = Raza.buffHabilidad(perActuando);
                                         perActuando.asignarEfectos(buffEnAccion[perEnTurno], false);
                                     }
@@ -259,10 +149,9 @@ public class AppCombateSingular {
                             accion = bolsa.substring(ubNomObjetoPos, ubNomObjetoPos + bolsa.substring(ubNomObjetoPos).indexOf(" ("));
                             try {
                                 Item objeto = new Item(accion);
-                                perActuando.usarObjeto(ubNomObjeto);
                                 switch (Items.stringToItems(objeto.getNombre())) {
                                     case POCION_VIDA:
-                                        perActuando.perderVida(-objeto.getSanar());
+                                        perActuando.curar((objeto.getSanar() + Combate.efectoCuraEficace(objeto.getSanar(), perActCuraEfect)));
                                         break;
                                     case BOMBA_DE_HUMO:
                                         puedeAtacar[1 - perEnTurno] = false;
@@ -271,17 +160,18 @@ public class AppCombateSingular {
                                         enemigo.quitarHabilidadRaza();
                                         break;
                                     case MECHERO:
-                                        damageFuego[1 - perEnTurno] += objeto.getDamage();
-                                        contLlamas[1 - perEnTurno] = objeto.getDuracion();
-                                        break;
+                                        if (!enemigo.addEfect(Efecto.newEfecto("Quemado", objeto.getDuracion(), objeto.getDamage(), false))){
+                                            throw new ItemException("Error añadiendo el efecto");
+                                        }
                                     default:
                                         throw new ItemException("Item sin acción asignada.");
                                 }
                                 System.out.println("Usaste \"" + objeto.getNombre() + "\"!");
+                                perActuando.usarObjeto(ubNomObjeto);
+                                accionNoValida = false;
                             } catch (Exception e) {
                                 System.out.println("Saliendo de la bolsa...");
                             }
-                            accionNoValida = false;
                             break;
                         case 5:
                             perActuando.perderVida(perActuando.getPuntosVida());
@@ -293,9 +183,6 @@ public class AppCombateSingular {
                             break;
                     }
                 }
-                turnosEfectoAccion[perEnTurno]--;
-                perActuando.asignarEfectos(buffEnAccion[perEnTurno], true);
-                enemigo.asignarEfectos(buffEnAccion[1 - perEnTurno], true);
                 if (!perActuando.isHabilidadRazaActiva()) {
                     perActuando.activarHabilidadRaza();
                 }

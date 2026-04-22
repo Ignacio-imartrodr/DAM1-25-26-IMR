@@ -10,6 +10,10 @@ import UD4.Rol.Utilidades.Util;
 public class Combate {
     public static final String PREFERENCIAS_ATAQUE = "1 - Vida\n2 - Ataque\n4 - Agilidad";
     
+    public static int efectoCuraEficace(int cura, int curaEficace){
+        return (cura * curaEficace) / 100;
+    }
+
     public static boolean validarCantCombatientes(Personaje[] personajesBaseGeneral, int fightersNeeded){
         while (personajesBaseGeneral.length < fightersNeeded) {
             System.out.println("No hay suficientes personajes guardados para jugar");
@@ -53,7 +57,7 @@ public class Combate {
                 }
                 if (opción == 0) {
                     heroe.curar();
-                    System.out.println(heroe.getNombre() + " se ha curado a " + heroe.getPuntosVida() + " de vida.");
+                    System.out.println(heroe.getNombre() + " se ha curado hasta " + heroe.getPuntosVida() + " de vida.");
                 } else {
                     int idx = opción - 1;
                     if (idx >= 0 && idx < monstruos.length && monstruos[idx] != null && monstruos[idx].estaVivo()) {
