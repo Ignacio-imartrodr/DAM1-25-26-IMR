@@ -148,13 +148,13 @@ public enum Raza implements Habilidades {
         String descripcion = "";
         switch (this) {
                 case HUMANO:
-                    descripcion = "Furor Heróico (buffea todas sus estadisticas en un 50% hasta terminar proximo turno)";
+                    descripcion = "Buffea todas sus estadisticas en un 50% hasta terminar proximo turno";
                     break;
                 case ELFO:
-                    descripcion = "Madre naturaleza (Añade a los puntos de vida el 50% de vida máx)";
+                    descripcion = "Añade a los puntos de vida el 50% de vida máx";
                     break;
                 case ENANO:
-                    descripcion = "Crear (Fabrica un objeto aleatorio)";
+                    descripcion = "Fabrica un objeto aleatorio";
                     break;
                 case HOBBIT:
                     descripcion = "Roba la habillidad de raza de su enemigo por un turno";

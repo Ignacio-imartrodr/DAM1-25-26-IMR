@@ -1,13 +1,6 @@
 package UD4.Rol.Boundary;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 
 import UD4.Rol.Control.Combate;
 import UD4.Rol.Control.Creacion;
@@ -16,7 +9,6 @@ import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Others.Item;
 import UD4.Rol.Entity.Others.Items;
 import UD4.Rol.Entity.Others.Raza;
-import UD4.Rol.Entity.Others.Efectos.Buff;
 import UD4.Rol.Entity.Others.Efectos.Efecto;
 import UD4.Rol.Utilidades.EntidadException;
 import UD4.Rol.Utilidades.ItemException;
@@ -70,8 +62,8 @@ public class AppCombateSingular {
                 Personaje enemigo = persEnBatalla[1 - perEnTurno];
                 String accion;
                 boolean accionNoValida = true;
-                int perActCuraEfect = perActuando.aplicarEfectos();//TODO aplicar
-                int enemigoCuraEfect = enemigo.aplicarEfectos();//TODO aplicar
+                boolean habilidadUsed = false;
+                int curaEfect = perActuando.aplicarEfectos();//TODO aplicar
                 int xp = 0;
                 
                 if (perActuando.isAturdido()) {
@@ -87,7 +79,7 @@ public class AppCombateSingular {
                         case 1:
                             if (puedeAtacar[perEnTurno]) {
                                 xp = perActuando.atacar(enemigo);
-                                System.out.println(perActuando.getNombre() + "atacó a " + enemigo.getNombre());
+                                System.out.println(perActuando.getNombre() + " atacó a " + enemigo.getNombre());
                                 try {
                                     perActuando.sumarExperiencia(xp);
                                     enemigo.sumarExperiencia(xp);
@@ -111,26 +103,21 @@ public class AppCombateSingular {
                             }
                             break;
                         case 2:
-                            perActuando.curar();
+                            perActuando.curar((perActuando.getVidaMax() - perActuando.getPuntosVida()) + (curaEfect > 0 ? 0 : curaEfect));
                             accionNoValida = false;
                             break;
                         case 3:
-                            if (perActuando.isHabilidadRazaActiva()) {
-                                if (perActuando.duracionHabilidadRaza(enemigo) == -1) {
-                                    if (dosHobbit) {
-                                        System.out.println("No se puede robar la hablilidad \"Steal\"");
-                                    } else {
-                                        System.out.println("La habilidad no se puede utilizar durante este turno!");
-                                    }
+                            if (!perActuando.useHabilidadRaza(enemigo)) {
+                                if (dosHobbit) {
+                                    System.out.println("No se puede robar la hablilidad \"Steal\"");
                                 } else {
-                                    if (turnosEfectoAccion[perEnTurno] == 0) {//TODO terminar
-                                        buffEnAccion[perEnTurno] = Raza.buffHabilidad(perActuando);
-                                        perActuando.asignarEfectos(buffEnAccion[perEnTurno], false);
-                                    }
-                                    accionNoValida = false;
+                                    System.out.println("La habilidad no se puede utilizar durante este turno!");
                                 }
                             } else {
-                                System.out.println("La habilidad no se puede utilizar durante este turno!");
+                                perActuando.addEfect(Raza.buffHabilidad(perActuando));
+                                perActuando.quitarHabilidadRaza();
+                                habilidadUsed = true;
+                                accionNoValida = false;
                             }
                             break;
                         case 4:
@@ -151,7 +138,7 @@ public class AppCombateSingular {
                                 Item objeto = new Item(accion);
                                 switch (Items.stringToItems(objeto.getNombre())) {
                                     case POCION_VIDA:
-                                        perActuando.curar((objeto.getSanar() + Combate.efectoCuraEficace(objeto.getSanar(), perActCuraEfect)));
+                                        perActuando.curar((objeto.getSanar() + Combate.efectoCuraEficace(objeto.getSanar(), curaEfect)));
                                         break;
                                     case BOMBA_DE_HUMO:
                                         puedeAtacar[1 - perEnTurno] = false;
@@ -183,7 +170,7 @@ public class AppCombateSingular {
                             break;
                     }
                 }
-                if (!perActuando.isHabilidadRazaActiva()) {
+                if (!perActuando.isHabilidadRazaActiva() && !habilidadUsed) {
                     perActuando.activarHabilidadRaza();
                 }
                 if (!puedeAtacar[perEnTurno]){

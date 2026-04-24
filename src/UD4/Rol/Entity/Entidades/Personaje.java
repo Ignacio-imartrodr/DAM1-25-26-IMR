@@ -225,60 +225,61 @@ public class Personaje extends Entidad implements EquipEquipado {
     public void activarHabilidadRaza(){
         this.raza.activarHabilidad();
     }
-    public byte duracionHabilidadRaza(Personaje enemigo){
+    public boolean useHabilidadRaza(Personaje enemigo){
         boolean haceEfecto = isHabilidadRazaActiva();
-        byte turnosEfecto;
         if (haceEfecto) {
             boolean esHobbit = getRaza().equals(Raza.HOBBIT);
             Raza habilidad = esHobbit ? enemigo.getRaza() : raza;
             switch (habilidad) {
-                    case HUMANO:
-                        turnosEfecto = 1;
-                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                        
-                    case ELFO:
-                        turnosEfecto = 1;
-                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                        break;
-                    case ENANO:
-                        boolean bolsaLlena = true;
-                        for (Item item : bolsa) {
-                            if (item == null) {
-                                bolsaLlena = false;
+                case HUMANO:
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    haceEfecto = true;
+                    break;            
+                case ELFO:
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    haceEfecto = true;
+                    break;
+                case ENANO:
+                    boolean bolsaLlena = true;
+                    for (Item item : bolsa) {
+                        if (item == null) {
+                            bolsaLlena = false;
+                            break;
+                        }
+                    }
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    if (bolsaLlena) {
+                        return false;
+                    } else {
+                        Item itemRnd = Items.getItemRnd();
+                        for (int i = 0; i < bolsa.length; i++) {
+                            if (bolsa[i] == null) {
+                                bolsa[i] = itemRnd;
                                 break;
                             }
                         }
-                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                        if (bolsaLlena) {
-                            return -1;
-                        } else {
-                            Item itemRnd = Items.getItemRnd();
-                            for (int i = 0; i < bolsa.length; i++) {
-                                if (bolsa[i] == null) {
-                                    bolsa[i] = itemRnd;
-                                    break;
-                                }
-                            }
-                            Util.sortArray(bolsa);
-                            System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
-                        }
-                        break;
-                    case HOBBIT:
-                        haceEfecto = false;
-                        break;
-                    case ORCO:
-                        turnosEfecto = 0;
-                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                        break;
-                    case TROLL:
-                        turnosEfecto = 3;
-                        if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                        break;
-                    default:
-                        throw new EntidadException("Error con la habilidad de raza");
-                }
+                        Util.sortArray(bolsa);
+                        System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
+                    }
+                    haceEfecto = true;
+                    break;
+                case HOBBIT:
+                    haceEfecto = false;
+                    break;
+                case ORCO:
+                    //TODO aplicar daño y probar
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    haceEfecto = true;
+                    break;
+                case TROLL:
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    haceEfecto = true;
+                    break;
+                default:
+                    throw new EntidadException("Error con la habilidad de raza");
+            }
         }
-        return haceEfecto ? turnosEfecto : -1;
+        return haceEfecto;
     }
     public String stringHabilidadRaza(){
         String nombreYHabilidad = this.raza.getHabilidad();

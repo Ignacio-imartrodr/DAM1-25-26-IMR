@@ -1,7 +1,5 @@
 package Extras;
 
-import java.util.Arrays;
-
 import UD4.Rol.Entity.Entidades.Personaje;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
 import UD4.Rol.Entity.Equipamiento.Arma.Barita;
@@ -28,8 +26,6 @@ public class Pruebas {
         a.guardarEquipamiento(c);
         a.equipar(c);
         a.equipar(b);
-        String[] has = p.getEfectosAlterados();
-        int pos = Arrays.binarySearch(p.getEfectosAlterados(), "Quemado");
         System.out.println(a.getStringEquipamientoEquipado());
         System.out.println(p.getStringEquipamientoEquipado());
 
