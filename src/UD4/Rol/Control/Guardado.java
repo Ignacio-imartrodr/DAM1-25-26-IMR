@@ -94,7 +94,9 @@ public class Guardado {
                                         persJO = personaje.toJsonObject();
                                     }
                                     if (persBaseGeneral.opt(personaje.getId()) == null || !(persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("nombre").equals(persJO.getJSONObject("Stats").getString("nombre")) && persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("raza").equals(persJO.getJSONObject("Stats").getString("raza")))) {
-                                        Util.writeToJson(rutaFichero, true, "Personajes", null, persJO);
+                                        if(!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)){
+                                            System.out.println("Error guardando el personaje en el Json");//TODO revisar
+                                        }
                                         idErr++;
                                     } else if (!(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
                                         Util.overrideJson(rutaFichero, new Object[]{"Personaje", personaje.getId()}, persJO);

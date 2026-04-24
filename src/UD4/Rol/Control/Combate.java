@@ -17,7 +17,7 @@ public class Combate {
     public static boolean validarCantCombatientes(Personaje[] personajesBaseGeneral, int fightersNeeded){
         while (personajesBaseGeneral.length < fightersNeeded) {
             System.out.println("No hay suficientes personajes guardados para jugar");
-            if (Util.escogerOpcion("S", "n", "Quieres ejecutar la app de creación de Personajes para añadir más?")) {
+            if (Util.escogerOpcion("S", "n", "Quieres ejecutar la app de creación de Personajes para añadir más? (S/n)")) {
                 System.out.println("_______________________________________________________");
                 AppCreaPersonaje.main(personajesBaseGeneral);
                 System.out.println("_______________________________________________________");
@@ -115,13 +115,6 @@ public class Combate {
             }
         }
         return personajesCreados;
-    }
-
-   
-
-    public static void combateGrupo(Personaje[] equipo0, Personaje[] equipo1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'combateGrupo'");
     }
 }
 

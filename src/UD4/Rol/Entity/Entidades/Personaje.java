@@ -179,6 +179,7 @@ public class Personaje extends Entidad implements EquipEquipado {
             }
             Util.sortArray(this.bolsa);
         }
+        this.puntosVida = this.getVidaMax();
     }
     
     
@@ -267,7 +268,9 @@ public class Personaje extends Entidad implements EquipEquipado {
                     haceEfecto = false;
                     break;
                 case ORCO:
-                    //TODO aplicar daño y probar
+                    this.fuerza = fuerza*2;
+                    this.atacar(enemigo);
+                    this.fuerza = fuerza/2;
                     if (esHobbit) { enemigo.quitarHabilidadRaza(); }
                     haceEfecto = true;
                     break;

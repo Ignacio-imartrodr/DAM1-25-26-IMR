@@ -23,7 +23,7 @@ public abstract class Entidad implements Comparable<Entidad> {
     protected int vidaMin;
     protected int[] minMaxRndStats;
     protected Set<Efecto> efectosAlterados = new TreeSet<>(); // Guarda los efectos si tiene si no está vacío y sin repetidos
-    protected boolean isAturdido = false; //TODO implementar
+    protected boolean isAturdido = false;
 
     protected final static int EXP_MAX = 256999;
 
@@ -341,16 +341,19 @@ public abstract class Entidad implements Comparable<Entidad> {
         return vivo;
     }
     public int atacar(Entidad enemigo){
-        int puntAtaque = generarRndMinAMax(1, 100) + fuerza;
-        int puntDefensa = generarRndMinAMax(1, 100) + (enemigo.isAturdido ? 0 : enemigo.agilidad);
-        int daño = puntDefensa - puntAtaque;
-        if ( daño > 0) {
-            if (daño > enemigo.puntosVida) {
-                daño = enemigo.puntosVida;
+        int daño = 0;
+        if (!isAturdido) {
+            int puntAtaque = generarRndMinAMax(1, 100) + fuerza;
+            int puntDefensa = generarRndMinAMax(1, 100) + (enemigo.isAturdido ? 0 : enemigo.agilidad);
+            daño = puntAtaque - puntDefensa;
+            if ( daño > 0) {
+                if (daño > enemigo.puntosVida) {
+                    daño = enemigo.puntosVida;
+                }
+                enemigo.perderVida(daño);
+            } else {
+                daño = 0;
             }
-            enemigo.perderVida(daño);
-        } else {
-            daño = 0;
         }
         return daño;
     }

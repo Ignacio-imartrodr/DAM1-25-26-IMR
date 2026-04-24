@@ -12,8 +12,8 @@ import UD4.Rol.Entity.Others.Efectos.Efecto;
 public class Pruebas {
     public static void main(String[] args) throws Exception {
         
-        Personaje p = new Personaje();
-        Personaje a = new Personaje();
+        Personaje p = new Personaje("p","Orco");
+        Personaje a = new Personaje("a","Troll");
         Equipamiento b = new Barita(2);
         Equipamiento c = new Casco(1);
         p.addEfect(Efecto.newEfecto("Quemado", 2, 3, false));
@@ -26,6 +26,9 @@ public class Pruebas {
         a.guardarEquipamiento(c);
         a.equipar(c);
         a.equipar(b);
+        p.useHabilidadRaza(a);
+        a.curar();
+        p.atacar(a);
         System.out.println(a.getStringEquipamientoEquipado());
         System.out.println(p.getStringEquipamientoEquipado());
 

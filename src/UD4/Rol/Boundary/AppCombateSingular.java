@@ -23,9 +23,10 @@ import UD4.Rol.Utilidades.Util;
  */
 
 public class AppCombateSingular {
-    public static void main(Personaje[] personajesBaseGeneral) {
+    public static void main(String[] args) {
         final int CANTIDAD_COMBATIENTES = 2;
         System.out.println("-----------App de Combate PvsP-----------");
+        Personaje[] personajesBaseGeneral = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
         if (!Combate.validarCantCombatientes(personajesBaseGeneral, CANTIDAD_COMBATIENTES)) {
             return;
         }
