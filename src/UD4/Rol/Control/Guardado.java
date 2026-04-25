@@ -24,13 +24,32 @@ public class Guardado {
                         personaje.setId(idErr);
                         persJO = personaje.toJsonObject();
                     }
-                    if (persBaseGeneral.opt(personaje.getId()) == null 
-                        || !(persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("nombre").equals(persJO.getJSONObject("Stats").getString("nombre")) 
-                        && persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("raza").equals(persJO.getJSONObject("Stats").getString("raza")))) {
-                        Util.writeToJson(rutaFichero, true, "Personajes", null, persJO);
-                        idErr++;
-                    } else if (!(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
-                        Util.overrideJson(rutaFichero, new Object[]{"Personaje", personaje.getId()}, persJO);
+                    String guardadoNombre = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
+                    guardadoNombre = guardadoNombre == null ? "" : guardadoNombre;
+                    String guardadoRaza = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
+                    guardadoRaza = guardadoNombre == null ? "" : guardadoRaza;
+                    if (persBaseGeneral.opt(personaje.getId()) == null) {
+                        if (!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)) {
+                            System.out.println("Error guardando el personaje en el Json");
+                        } else {
+                            idErr++;
+                        }
+                    } else if (guardadoNombre.equals(personaje.getNombre()) && guardadoRaza.equals(personaje.getRaza())
+                            && !(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
+                        Util.overrideJson(rutaFichero, new Object[] {"Personaje", personaje.getId() }, persJO);
+                    } else {
+                        System.out.println("Parece que quieres sobre escribir al personaje " + guardadoNombre + " de Raza: \"" + guardadoRaza + "\"" + " por " + personaje.getNombre() + " de Raza: " + guardadoRaza);
+                        if (!Util.escogerOpcion("N", "s", "Quieres sobre escribir la información del anterior y guardar el nuevo? (s/N)")) {
+                            Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId() }, persJO);
+                        } else {
+                            if (Util.escogerOpcion("S", "n", "Quieres guardarlo como un nuevo personaje? (S/n)")) {
+                                personaje.setId(idErr);
+                                Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId() }, persJO);
+                                idErr++;
+                            } else {
+                                System.out.println("Personaje \"" + personaje.getNombre() + "\" no guardado");
+                            }
+                        }
                     }
                     /* Ignorar
                         ----CODIGO DESCARTADO POR AGRUPACION DE INFORMACION EN "BaseGeneral.json"----
@@ -82,7 +101,7 @@ public class Guardado {
                     rutaFichero = RUTA_BASE_GENERAL;
                     if (!(rutaFichero == null)) {
                         if (rutaFichero.endsWith(".json")) {
-                            JSONArray persBaseGeneral = (JSONArray) Util.rutaJsonToObjectJson(RUTA_BASE_GENERAL,"Personajes");
+                            JSONArray persBaseGeneral = (JSONArray) Util.rutaJsonToObjectJson(rutaFichero,"Personajes");
                             int idErr = persBaseGeneral.length();
                             JSONObject persJO = null;
                             for (Personaje personaje : personajesCreados) {
@@ -93,13 +112,31 @@ public class Guardado {
                                         personaje.setId(idErr);
                                         persJO = personaje.toJsonObject();
                                     }
-                                    if (persBaseGeneral.opt(personaje.getId()) == null || !(persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("nombre").equals(persJO.getJSONObject("Stats").getString("nombre")) && persBaseGeneral.getJSONObject(personaje.getId()).getJSONObject("Stats").getString("raza").equals(persJO.getJSONObject("Stats").getString("raza")))) {
-                                        if(!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)){
-                                            System.out.println("Error guardando el personaje en el Json");//TODO revisar
+                                    String guardadoNombre = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
+                                    guardadoNombre = guardadoNombre == null ? "" : guardadoNombre;
+                                    String guardadoRaza = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
+                                    guardadoRaza = guardadoNombre == null ? "" : guardadoRaza;
+                                    if (persBaseGeneral.opt(personaje.getId()) == null) {
+                                        if (!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)) {
+                                            System.out.println("Error guardando el personaje en el Json");// TODO testear
                                         }
                                         idErr++;
-                                    } else if (!(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
-                                        Util.overrideJson(rutaFichero, new Object[]{"Personaje", personaje.getId()}, persJO);
+                                    } else if (guardadoNombre.equals(personaje.getNombre()) && guardadoRaza.equals(personaje.getRaza())
+                                                && !(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
+                                        Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId()}, persJO);
+                                    } else {
+                                        System.out.println("Parece que quieres sobre escribir al personaje " + guardadoNombre + " de Raza: \"" + guardadoRaza + "\"" + " por " + personaje.getNombre() + " de Raza: " + guardadoRaza);
+                                        if (!Util.escogerOpcion("N", "s", "Quieres sobre escribir la información del anterior y guardar el nuevo? (s/N)")) {
+                                            Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId()}, persJO);
+                                        } else {
+                                            if (Util.escogerOpcion("S", "n", "Quieres guardarlo como un nuevo personaje? (S/n)")) {
+                                                personaje.setId(idErr);
+                                                Util.overrideJson(rutaFichero, new Object[] {"Personaje", personaje.getId()}, persJO);
+                                                idErr++;
+                                            } else {
+                                                System.out.println("Personaje \"" + personaje.getNombre() + "\" no guardado");
+                                            }
+                                        }
                                     }
                                 }
                             }

@@ -140,6 +140,65 @@
                 {},
                 {}
             ]
+        },
+        {
+            "Stats": {
+                "raza": "ORCO",
+                "agilidad": 47,
+                "experiencia": 0,
+                "nombre": "P",
+                "fuerza": 101,
+                "constitucion": 13,
+                "nivel": 1,
+                "vidaMax": 63
+            },
+            "Equipamientos": {
+                "Equipado": [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {}
+                ],
+                "Guardado": [
+                    {
+                        "lvl": -128,
+                        "durabilidad": 4000,
+                        "xp": 0,
+                        "nombre": "Casco de madera",
+                        "rareza": "SPECIAL",
+                        "class": "Casco",
+                        "constitucion": 50
+                    },
+                    {
+                        "afinidad": "Magia",
+                        "lvl": -128,
+                        "agilidad": 7,
+                        "durabilidad": 7000,
+                        "xp": 0,
+                        "nombre": "Barita de Hierro",
+                        "rareza": "EPIC",
+                        "class": "Barita",
+                        "fuerza": 54
+                    },
+                    {
+                        "afinidad": "Magia",
+                        "lvl": -128,
+                        "agilidad": 7,
+                        "durabilidad": 7000,
+                        "xp": 0,
+                        "nombre": "Barita de Hierro",
+                        "rareza": "EPIC",
+                        "class": "Barita",
+                        "fuerza": 54
+                    }
+                ]
+            },
+            "Bolsa": [
+                "Bomba de humo",
+                "Enredaderas",
+                "Enredaderas"
+            ]
         }
     ]
 }

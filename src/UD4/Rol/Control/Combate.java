@@ -19,7 +19,7 @@ public class Combate {
             System.out.println("No hay suficientes personajes guardados para jugar");
             if (Util.escogerOpcion("S", "n", "Quieres ejecutar la app de creación de Personajes para añadir más? (S/n)")) {
                 System.out.println("_______________________________________________________");
-                AppCreaPersonaje.main(personajesBaseGeneral);
+                AppCreaPersonaje.main();
                 System.out.println("_______________________________________________________");
                 personajesBaseGeneral = Creacion.getPersonajesFromJson(Guardado.RUTA_BASE_GENERAL);
             } else {
@@ -27,9 +27,6 @@ public class Combate {
             }
         }
         return true;
-    }
-    public static Personaje[] combateSingular(Personaje[] personajesEnBatalla, Personaje[] personajesCreados, int numCombatientes) {
-        return personajesCreados;
     }
 
     public static Personaje[] combateMonstruos(Personaje[] personajes, Monstruo[] monstruos, Personaje[] personajesCreados) {//TODO revisar

@@ -57,7 +57,7 @@ public class AppCreaPersonaje {
             }
         }
     }
-    public static void main(String[] args) {
+    public static void main() {
         Personaje[] personajesNuevos;
         Personaje[] temp;
         for (boolean fin = false; !fin;) {

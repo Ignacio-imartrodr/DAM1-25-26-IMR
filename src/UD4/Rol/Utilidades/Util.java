@@ -1033,7 +1033,7 @@ public abstract class Util {
      *                defecto.
      * @param opcion2 : El valor {@code String} introducido.
      * @return {@code true} if
-     *         {@code respuesta.equals(opcion1) || respuesta.equals("-1")},
+     *         {@code respuesta.equals(opcion1) || respuesta == null},
      *         {@code false} if {@code respuesta.equeals(opcion2)}.
      */
     public static boolean escogerOpcion(String opcion1, String opcion2, String pregunta) {
