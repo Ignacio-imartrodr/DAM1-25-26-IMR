@@ -112,16 +112,14 @@ public class Guardado {
                                         personaje.setId(idErr);
                                         persJO = personaje.toJsonObject();
                                     }
-                                    String guardadoNombre = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
-                                    guardadoNombre = guardadoNombre == null ? "" : guardadoNombre;
-                                    String guardadoRaza = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
-                                    guardadoRaza = guardadoNombre == null ? "" : guardadoRaza;
+                                    String guardadoNombre = personaje.getId() >= idErr ? null : persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
+                                    String guardadoRaza = personaje.getId() >= idErr ? null : persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
                                     if (persBaseGeneral.opt(personaje.getId()) == null) {
                                         if (!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)) {
                                             System.out.println("Error guardando el personaje en el Json");// TODO testear
                                         }
                                         idErr++;
-                                    } else if (guardadoNombre.equals(personaje.getNombre()) && guardadoRaza.equals(personaje.getRaza())
+                                    } else if (guardadoNombre.equals(personaje.getNombre()) && guardadoRaza.equals(personaje.getRaza().name())
                                                 && !(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
                                         Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId()}, persJO);
                                     } else {
