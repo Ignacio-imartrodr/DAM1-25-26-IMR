@@ -16,7 +16,7 @@ public class Combate {
 
     public static boolean validarCantCombatientes(Personaje[] personajesBaseGeneral, int fightersNeeded){
         while (personajesBaseGeneral.length < fightersNeeded) {
-            System.out.println("No hay suficientes personajes guardados para jugar");
+            System.out.println("No hay suficientes personajes guardados para combatir");
             if (Util.escogerOpcion("S", "n", "Quieres ejecutar la app de creación de Personajes para añadir más? (S/n)")) {
                 System.out.println("_______________________________________________________");
                 AppCreaPersonaje.main();

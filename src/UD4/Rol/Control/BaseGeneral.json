@@ -3,159 +3,62 @@
         {
             "Stats": {
                 "raza": "HUMANO",
-                "agilidad": 16,
+                "agilidad": 66,
                 "experiencia": 0,
-                "nombre": "a",
-                "fuerza": 51,
-                "constitucion": 77,
+                "nombre": "Ç",
+                "fuerza": 90,
+                "constitucion": 30,
                 "nivel": 1,
-                "vidaMax": 127
+                "vidaMax": 80
             },
             "Equipamientos": {
                 "Equipado": [
                     {},
-                    {
-                        "nombre": "Pechera de madera",
-                        "rareza": "RARE",
-                        "nivel": 1,
-                        "xp": 0,
-                        "class":"Pechera"
-                    },
-                    {
-                        "nombre": "Pantalón de madera",
-                        "rareza": "RARE",
-                        "nivel": 1,
-                        "xp": 0,
-                        "class":"Pantalon"
-                    },
                     {},
-                    {
-                        "nombre": "Espada de Madera",
-                        "rareza": "COMMUN",
-                        "nivel": 1,
-                        "xp": 0,
-                        "afinidad": "CORTE"
-                    }
+                    {},
+                    {},
+                    {}
                 ],
-                "Guardado": [
-                    {
-                        "nombre": "Pechera de madera",
-                        "rareza": "RARE",
-                        "nivel": 1,
-                        "xp": 0,
-                        "class":"Pechera"
-                    },
-                    {
-                        "nombre": "Pantalón de madera",
-                        "rareza": "RARE",
-                        "nivel": 1,
-                        "xp": 0,
-                        "class":"Pantalon"
-                    },
-                    {
-                        "nombre": "Espada de Madera",
-                        "rareza": "COMMUN",
-                        "nivel": 1,
-                        "xp": 0,
-                        "afinidad": "CORTE"
-                    },
-                    {
-                        "nombre": "Espada de Madera",
-                        "rareza": "COMMUN",
-                        "nivel": 1,
-                        "xp": 0,
-                        "afinidad": "CORTE"
-                    }
-                ]
+                "Guardado": []
             },
             "Bolsa": [
-                {
-                    "nombre": "ENREDADERAS"
-                },
-                {},
-                {}
+                "Enredaderas",
+                "Enredaderas",
+                "Mechero"
             ]
         },
         {
             "Stats": {
                 "raza": "HUMANO",
-                "agilidad": 16,
+                "agilidad": 49,
                 "experiencia": 0,
-                "nombre": "a",
-                "fuerza": 51,
-                "constitucion": 77,
+                "nombre": "A",
+                "fuerza": 88,
+                "constitucion": 65,
                 "nivel": 1,
-                "vidaMax": 127
+                "vidaMax": 115
             },
             "Equipamientos": {
                 "Equipado": [
                     {},
-                    {
-                        "nombre": "Pechera de madera",
-                        "rareza": "RARE",
-                        "nivel": 1,
-                        "xp": 0,
-                        "class":"Pechera"
-                    },
-                    {
-                        "nombre": "Pantalón de adamantium",
-                        "rareza": "CHAOTIC",
-                        "nivel":1,
-                        "xp":0,
-                        "encantamiento": "Bolsillo",
-                        "descripcion": "Tienes un hueco más de items en la bolsa",
-                        "class":"Pantalon"
-                    },
                     {},
-                    {
-                        "nombre": "Espada de Madera",
-                        "rareza": "COMMUN",
-                        "nivel": 1,
-                        "xp": 0,
-                        "afinidad": "CORTE"
-                    }
+                    {},
+                    {},
+                    {}
                 ],
-                "Guardado": [
-                    {
-                        "nombre": "Pechera de madera",
-                        "rareza": "RARE",
-                        "nivel": 1,
-                        "xp": 0,
-                        "class":"Pechera"
-                    },
-                    {
-                        "nombre": "Pantalón de madera",
-                        "rareza": "RARE",
-                        "nivel": 1,
-                        "xp": 0,
-                        "class":"Pantalon"
-                    },
-                    {
-                        "nombre": "Espada de Madera",
-                        "rareza": "COMMUN",
-                        "nivel": 1,
-                        "xp": 0,
-                        "afinidad": "CORTE"
-                    },
-                    {
-                        "nombre": "Espada de Madera",
-                        "rareza": "COMMUN",
-                        "nivel": 1,
-                        "xp": 0,
-                        "afinidad": "CORTE"
-                    }
-                ]
+                "Guardado": []
             },
             "Bolsa": [
-                {},
-                {},
-                {},
-                {}
+                "Bomba de humo",
+                "Bomba de humo",
+                "Enredaderas"
             ]
         }
     ],
     "Invocacion": [
         "Nada aún",
-        {"mensaje": "todabía por pensar si crear e implementar"}
+        {
+            "mensaje": "todabía por pensar si crear e implementar"
+        }
     ]
 }

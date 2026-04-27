@@ -113,7 +113,7 @@ public abstract class Creacion {
                 equipamientoEquipado = new Equipamiento[equipadoJson.length()];
                 for (int j = 0; j < equipadoJson.length(); j++) {
                     JSONObject equip = equipadoJson.optJSONObject(j);
-                    if (equip != null) {
+                    if (equip != null && !equip.isEmpty()) {
                         try {
                             equipamientoEquipado[j] = Equipamiento.newEquipamiento(equip);
                         } catch (Exception e) {

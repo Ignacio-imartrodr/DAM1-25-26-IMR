@@ -4,7 +4,7 @@ import java.util.Set;
 
 import UD4.Rol.Utilidades.EfectException;
 
-public abstract class Efecto implements Comparable<Efecto> {
+public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar para hacer bien que sea abstracto
 
     protected String tipo;
     protected int duration;

@@ -24,17 +24,19 @@ public class Guardado {
                         personaje.setId(idErr);
                         persJO = personaje.toJsonObject();
                     }
-                    String guardadoNombre = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
-                    guardadoNombre = guardadoNombre == null ? "" : guardadoNombre;
-                    String guardadoRaza = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
-                    guardadoRaza = guardadoNombre == null ? "" : guardadoRaza;
+                    String guardadoNombre = null;
+                    String guardadoRaza = null;
+                    if (personaje.getId() >= idErr && personaje.getId() < 0) {
+                        guardadoNombre = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
+                        guardadoRaza = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
+                    }
                     if (persBaseGeneral.opt(personaje.getId()) == null) {
                         if (!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)) {
                             System.out.println("Error guardando el personaje en el Json");
                         } else {
                             idErr++;
                         }
-                    } else if (guardadoNombre.equals(personaje.getNombre()) && guardadoRaza.equals(personaje.getRaza())
+                    } else if (guardadoNombre.equals(personaje.getNombre()) && guardadoRaza.equals(personaje.getRaza().name())
                             && !(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
                         Util.overrideJson(rutaFichero, new Object[] {"Personaje", personaje.getId() }, persJO);
                     } else {
@@ -105,35 +107,42 @@ public class Guardado {
                             int idErr = persBaseGeneral.length();
                             JSONObject persJO = null;
                             for (Personaje personaje : personajesCreados) {
-                                if (!(personaje == null)) {
-                                    try {
-                                        persJO = personaje.toJsonObject();
-                                    } catch (Exception e) {
-                                        personaje.setId(idErr);
-                                        persJO = personaje.toJsonObject();
+                                if (personaje == null) {
+                                    continue;
+                                }
+                                try {
+                                    persJO = personaje.toJsonObject();
+                                } catch (Exception e) {
+                                    personaje.setId(idErr);
+                                    persJO = personaje.toJsonObject();
+                                }
+                                String guardadoNombre = null;
+                                String guardadoRaza = null;
+                                if (personaje.getId() >= idErr && personaje.getId() < 0) {
+                                    guardadoNombre = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
+                                    guardadoRaza = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
+                                }
+                                if (persBaseGeneral.opt(personaje.getId()) == null) {
+                                    if (!Util.writeToJson(rutaFichero, true, null, new Object[] { "Personajes" }, persJO)) {
+                                        System.out.println("Error guardando el personaje en el Json");// TODO testear
                                     }
-                                    String guardadoNombre = personaje.getId() >= idErr ? null : persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("nombre");
-                                    String guardadoRaza = personaje.getId() >= idErr ? null : persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
-                                    if (persBaseGeneral.opt(personaje.getId()) == null) {
-                                        if (!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)) {
-                                            System.out.println("Error guardando el personaje en el Json");// TODO testear
-                                        }
-                                        idErr++;
-                                    } else if (guardadoNombre.equals(personaje.getNombre()) && guardadoRaza.equals(personaje.getRaza().name())
-                                                && !(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
-                                        Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId()}, persJO);
+                                    idErr++;
+                                } else if (guardadoNombre.equals(personaje.getNombre())
+                                        && guardadoRaza.equals(personaje.getRaza().name())
+                                        && !(Creacion.getPersonajeFromJsonObject(persBaseGeneral.getJSONObject(personaje.getId())).equals(personaje))) {
+                                    Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId() },
+                                            persJO);
+                                } else {
+                                    System.out.println("Parece que quieres sobre escribir al personaje " + guardadoNombre + " de Raza: " + guardadoRaza + " por " + personaje.getNombre() + " de Raza: " + personaje.getRaza().name());
+                                    if (!Util.escogerOpcion("N", "s", "Quieres sobre escribir la información del anterior y guardar el nuevo? (s/N)")) {
+                                        Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId() }, persJO);
                                     } else {
-                                        System.out.println("Parece que quieres sobre escribir al personaje " + guardadoNombre + " de Raza: \"" + guardadoRaza + "\"" + " por " + personaje.getNombre() + " de Raza: " + guardadoRaza);
-                                        if (!Util.escogerOpcion("N", "s", "Quieres sobre escribir la información del anterior y guardar el nuevo? (s/N)")) {
-                                            Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId()}, persJO);
+                                        if (Util.escogerOpcion("S", "n", "Quieres guardarlo como un nuevo personaje? (S/n)")) {
+                                            personaje.setId(idErr);
+                                            Util.overrideJson(rutaFichero, new Object[] { "Personaje", personaje.getId() }, persJO);
+                                            idErr++;
                                         } else {
-                                            if (Util.escogerOpcion("S", "n", "Quieres guardarlo como un nuevo personaje? (S/n)")) {
-                                                personaje.setId(idErr);
-                                                Util.overrideJson(rutaFichero, new Object[] {"Personaje", personaje.getId()}, persJO);
-                                                idErr++;
-                                            } else {
-                                                System.out.println("Personaje \"" + personaje.getNombre() + "\" no guardado");
-                                            }
+                                            System.out.println("Personaje \"" + personaje.getNombre() + "\" no guardado");
                                         }
                                     }
                                 }

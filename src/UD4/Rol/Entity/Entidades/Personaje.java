@@ -198,11 +198,15 @@ public class Personaje extends Entidad implements EquipEquipado {
     }
     public String getStringBolsa(){
         Util.sortArray(this.bolsa);
-        String inventario = "Objetos disponibles:\n";
+        String cabecera;
+        String inventario = cabecera = "Objetos disponibles:\n";
         for (int i = 0, cant = 0 , id = 1; i < bolsa.length && !(bolsa[i] == null); cant--, i += cant, i++) {
             cant = Items.cantidadItem(bolsa, bolsa[i]);
             inventario += id + " - " + bolsa[i].getNombre() + " (" + cant + ") (" + bolsa[i].getDescription() + ")\n";
             id++;
+        }
+        if (inventario.equals(cabecera)) {
+            return null;
         }
         return inventario;
         /* Mostrar todos

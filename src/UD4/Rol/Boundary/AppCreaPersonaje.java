@@ -18,6 +18,10 @@ import UD4.Rol.Utilidades.*;
 public class AppCreaPersonaje {
     
     private static void modificarPersonagesArray(Personaje[] personajesArray){
+        if (personajesArray == null || personajesArray.length == 0) {
+            System.out.println("No hay personajes que modificar");
+            return;
+        }
         for (boolean salir = false; !salir;) {
             Arrays.sort(personajesArray);
             int posPers = -1;

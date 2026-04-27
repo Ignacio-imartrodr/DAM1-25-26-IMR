@@ -37,6 +37,7 @@ public class AppCombateSingular {
         if (personajesBaseGeneral.length > 2) {
             persEnBatalla = Creacion.seleccionarPersonajes(personajesBaseGeneral, CANTIDAD_COMBATIENTES);
         } else {
+            System.out.println("Se escogieron los dos únicos pesonajes disponibles.");
             persEnBatalla[0] = personajesBaseGeneral[0];
             persEnBatalla[1] = personajesBaseGeneral[1];
         }
@@ -104,7 +105,9 @@ public class AppCombateSingular {
                             }
                             break;
                         case 2:
-                            perActuando.curar((perActuando.getVidaMax() - perActuando.getPuntosVida()) + (curaEfect > 0 ? 0 : curaEfect));
+                            int cura = (perActuando.getVidaMax() - perActuando.getPuntosVida()) + (curaEfect > 0 ? 0 : curaEfect);
+                            perActuando.curar(cura);
+                            System.out.println(perActuando.getNombre() + " se curó " + cura + "de vida!");
                             accionNoValida = false;
                             break;
                         case 3:
@@ -123,6 +126,11 @@ public class AppCombateSingular {
                             break;
                         case 4:
                             String bolsa = perActuando.getStringBolsa();
+                            if (bolsa == null) {
+                                System.out.println("No tienes objetos disponibles!");
+                                System.out.println("Saliendo de la bolsa...");
+                                break;
+                            }
                             System.out.println(bolsa);
                             System.out.println("Escoge Objeto (número de la izquierda) u otro número para cambiar de opción: ");
                             accion = Util.pedirPorTeclado(true);
