@@ -11,8 +11,8 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
     protected int cantEfect = 0;
     protected Set<Efecto> efectos;
 
-    private static String[] tiposMultiples = new String[] {"ATURDIMIENTO", "FUROR_HEROICO"}; //Efectos que tienen múltiples efectos
-    private static String[] debuffs = new String[] {"AGILIDAD", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "QUEMADO"};
+    private static String[] tiposMultiples = new String[] {"FUROR_HEROICO"}; //Efectos que tienen múltiples efectos
+    private static String[] debuffs = new String[] {"AGILIDAD", "ATURDIMIENTO", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "QUEMADO"};
     private static String[] buffs = new String[] {"AGILIDAD", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "REGENERACION"};
 
     public static Efecto newEfecto(String tipo, int duration, boolean esBuff, Efecto... efectosMultiples){

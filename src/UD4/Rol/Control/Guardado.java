@@ -31,7 +31,7 @@ public class Guardado {
                         guardadoRaza = persBaseGeneral.optJSONObject(personaje.getId()).optJSONObject("Stats").optString("raza");
                     }
                     if (persBaseGeneral.opt(personaje.getId()) == null) {
-                        if (!Util.writeToJson(rutaFichero, true, "Personajes", null, persJO)) {
+                        if (!Util.writeToJson(rutaFichero, true, null, new Object[] {"Personajes"}, persJO)) {
                             System.out.println("Error guardando el personaje en el Json");
                         } else {
                             idErr++;
