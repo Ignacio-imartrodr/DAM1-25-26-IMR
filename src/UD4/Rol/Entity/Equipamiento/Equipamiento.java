@@ -428,7 +428,7 @@ public abstract class Equipamiento implements Comparable<Equipamiento>, Cloneabl
         if (objetoBase == null) {
             if (other.objetoBase != null)
                 return false;
-        } else if (!this.getJsonObject().similar(other.getJsonObject()))//TODO arreglar
+        } else if (!this.getJsonObject().similar(other.getJsonObject()))//TODO testear
             return false;
         if (nombre == null) {
             if (other.nombre != null)

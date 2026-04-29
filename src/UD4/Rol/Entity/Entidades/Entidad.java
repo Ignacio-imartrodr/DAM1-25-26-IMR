@@ -208,9 +208,9 @@ public abstract class Entidad implements Comparable<Entidad> {
                     break;
                 case "ATURDIMIENTO":
                     if (efecto.durationDown()) {
-                        isAturdido = true;//TODO terminar
+                        isAturdido = true;
                     } else {
-                        efectosAlterados.remove(efecto);
+                        finEfecto = true;
                         isAturdido = false;
                     }
                     break;
@@ -320,11 +320,9 @@ public abstract class Entidad implements Comparable<Entidad> {
         return false;
     }
     public boolean curar(int cant){
-        if (estaVivo()) {
-            puntosVida += cant;
-            if (!estaVivo()) {
-                puntosVida = 0;
-            }
+        puntosVida += cant;
+        if (!estaVivo()) {
+            puntosVida = 0;
         }
         return estaVivo();
         
@@ -368,11 +366,23 @@ public abstract class Entidad implements Comparable<Entidad> {
         }
         if (!this.efectosAlterados.add(efecto)) {
             Iterator<Efecto> it = efectosAlterados.iterator();
-            for (Efecto ef = it.next(); it.hasNext(); ef = it.next()){
+            for (; it.hasNext();){
+                Efecto ef = it.next();
                 if (ef.equals(efecto)) {
-                    efectosAlterados.remove(efecto);
-                    this.efectosAlterados.add(Efecto.newEfecto(ef.getTipo(), efecto.getDuration(), ef.getCantEfect() + efecto.getCantEfect(), efecto instanceof Buff));
-                    return true;
+                    if (ef.isMultiple()) {
+                        Efecto[] efMulOld = ef.getEfectosMultiples().toArray(new Efecto[0]);
+                        Efecto[] efMulNew = efecto.getEfectosMultiples().toArray(new Efecto[0]);
+                        for (int i = 0; i < efMulNew.length; i++) {
+                            try {
+                                efMulNew[i] = Efecto.newEfecto(efMulOld[i].getTipo(), efMulNew[i].getDuration(), efMulOld[i].getCantEfect() + efMulNew[i].getCantEfect(), efMulNew[i] instanceof Buff);
+                            } catch (Exception e) {}
+                        }
+                        efectosAlterados.remove(efecto);
+                        return this.efectosAlterados.add(Efecto.newEfecto(ef.getTipo(), efecto.getDuration(), ef.getCantEfect() + efecto.getCantEfect(), efecto instanceof Buff, efMulNew));
+                    } else {
+                        efectosAlterados.remove(efecto);
+                        return this.efectosAlterados.add(Efecto.newEfecto(ef.getTipo(), efecto.getDuration(), ef.getCantEfect() + efecto.getCantEfect(), efecto instanceof Buff));
+                    }
                 }
             }
             return false;

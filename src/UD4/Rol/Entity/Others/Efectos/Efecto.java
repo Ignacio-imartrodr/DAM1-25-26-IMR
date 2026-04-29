@@ -9,16 +9,16 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
     protected String tipo;
     protected int duration;
     protected int cantEfect = 0;
-    protected Set<Efecto> efectos;
+    protected Set<Efecto> efectosMultiples = null;
 
-    private static String[] tiposMultiples = new String[] {"FUROR_HEROICO"}; //Efectos que tienen múltiples efectos
-    private static String[] debuffs = new String[] {"AGILIDAD", "ATURDIMIENTO", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "QUEMADO"};
-    private static String[] buffs = new String[] {"AGILIDAD", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "REGENERACION"};
+    private final static String[] TIPOS_MULTIPLES = new String[] {"FUROR_HEROICO"}; //Efectos que tienen múltiples efectos
+    private final static String[] DEBUFFS = new String[] {"AGILIDAD", "ATURDIMIENTO", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "QUEMADO"};
+    private final static String[] BUFFS = new String[] {"AGILIDAD", "CONSTITUCION", "CURA_EFICACE", "FUERZA", "REGENERACION"};
 
     public static Efecto newEfecto(String tipo, int duration, boolean esBuff, Efecto... efectosMultiples){
         boolean esMultiple = false;
-        for (int i = 0; i < tiposMultiples.length; i++) {
-            if (tipo.equals(tiposMultiples[i])) {
+        for (int i = 0; i < TIPOS_MULTIPLES.length; i++) {
+            if (tipo.equals(TIPOS_MULTIPLES[i])) {
                 esMultiple = true;
                 break;
             }
@@ -36,8 +36,8 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
         Efecto ef;
         tipo = tipo.strip().toUpperCase().replace(" ", "_");
         boolean esMultiple = false;
-        for (int i = 0; i < tiposMultiples.length; i++) {
-            if (tipo.equals(tiposMultiples[i])) {
+        for (int i = 0; i < TIPOS_MULTIPLES.length; i++) {
+            if (tipo.equals(TIPOS_MULTIPLES[i])) {
                 esMultiple = true;
                 break;
             }
@@ -46,8 +46,8 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
             throw new EfectException("Valores invalidos para crear efecto");
         }
         if (esBuff) {
-            for (int i = 0; i < buffs.length; i++) {
-                if (esMultiple || tipo.equals(buffs[i])) {
+            for (int i = 0; i < BUFFS.length; i++) {
+                if (esMultiple || tipo.equals(BUFFS[i])) {
                     try {
                         ef = new Buff(tipo, esMultiple ? efectosMultiples : null);
                         ef.setCantEfect(cant);
@@ -60,8 +60,8 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
             }
             throw new EfectException("No existe este buff");
         } else {
-            for (int i = 0; i < debuffs.length; i++) {
-                if (esMultiple || tipo.equals(debuffs[i])) {
+            for (int i = 0; i < DEBUFFS.length; i++) {
+                if (esMultiple || tipo.equals(DEBUFFS[i])) {
                     try {
                         ef = new Debuff(tipo, esMultiple ? efectosMultiples : null);
                         ef.setCantEfect(cant * (-1));
@@ -85,6 +85,9 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
     public int getCantEfect() {
         return cantEfect;
     }
+    public Set<Efecto> getEfectosMultiples(){
+        return efectosMultiples;
+    }
 
     private boolean setDuration(int duration) {
         if (duration < 0) {
@@ -104,6 +107,15 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
         }
         return false;
     }
+    public boolean isMultiple(){
+        for (String string : TIPOS_MULTIPLES) {
+            if (this.tipo.equals(string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         String[] nom = tipo.split("_");
@@ -126,7 +138,7 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())//TODO copmprobar si distingue entre buffs y debuffs
+        if (getClass() != obj.getClass())//TODO comprobar si distingue entre buffs y debuffs
             return false;
         Efecto other = (Efecto) obj;
         if (tipo == null) 
@@ -140,6 +152,10 @@ public abstract class Efecto implements Comparable<Efecto> {//TODO refactorizar 
 
     @Override
     public int compareTo(Efecto o) {
+        int comp = Integer.compare(this instanceof Buff ? 2 : 1, o instanceof Buff ? 2 : 1);
+        if (comp != 0) {
+            return comp; }
+        
         return this.tipo.compareTo(o.tipo);
     }
 }

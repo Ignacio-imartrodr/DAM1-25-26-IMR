@@ -24,27 +24,8 @@ public class Personaje extends Entidad implements EquipEquipado {
     private int id = -1;
     private Raza raza;
     private Item[] bolsa = null;
-    private Equipamiento[] equipamientoEquipado = new Equipamiento[5];
-    private List<Equipamiento> equipamientoGuardado = new ArrayList<>(50);
-
-    protected int asignarBonusRaza(int stat){
-        int num;
-        switch (stat) {
-            case 0 ->num = super.fuerza;
-            case 1 ->num = super.agilidad;
-            case 2 ->num = super.constitucion;
-            default -> throw new EntidadException("Stat rng no existente");
-        };
-        String[] bonus = raza.arrayBonusRaza();
-        int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
-        if (num + bonusStat < 1) {
-            num = 1;
-        } else {
-            num += bonusStat;
-        }
-        return num;
-    }
-    
+    private Equipamiento[] equipamientoEquipado = new Equipamiento[5];                      //TODO cambiar por un inventario con Map 
+    private List<Equipamiento> equipamientoGuardado = new ArrayList<>(50);  //^^
     
     /**
      * Crea un objeto sin entregarle parametros.
@@ -190,13 +171,44 @@ public class Personaje extends Entidad implements EquipEquipado {
             throw new EntidadException("Id invalida");
         }
     }
-    public int getId(){
+    public int getId() {
         return this.id;
     }
+
     public Raza getRaza() {
         return raza;
     }
-    public String getStringBolsa(){
+    protected int asignarBonusRaza(int stat){
+        int num;
+        switch (stat) {
+            case 0 ->num = super.fuerza;
+            case 1 ->num = super.agilidad;
+            case 2 ->num = super.constitucion;
+            default -> throw new EntidadException("Stat rng no existente");
+        };
+        String[] bonus = raza.arrayBonusRaza();
+        int bonusStat = bonus[stat].equals("x") ? 0 : Integer.parseInt(bonus[stat]);
+        if (num + bonusStat < 1) {
+            num = 1;
+        } else {
+            num += bonusStat;
+        }
+        return num;
+    }
+    
+    public String getFicha(){
+        String ficha = getFicha("Personaje");
+        String nombreRaza = this.raza.toString();
+        ficha += "\nRaza: " + nombreRaza;
+        return ficha;
+    }
+
+    //----------------- Bolsa -------------------
+    public Item[] getBolsa() {
+        return bolsa;
+    }
+
+    public String getStringBolsa() {
         Util.sortArray(this.bolsa);
         String cabecera;
         String inventario = cabecera = "Objetos disponibles:\n";
@@ -215,88 +227,6 @@ public class Personaje extends Entidad implements EquipEquipado {
                 inventario += "-" + item.getNombre() + "\n";
             }
         }*/
-    }
-    public Item[] getBolsa() {
-        return bolsa;
-    }
-    
-    public boolean isHabilidadRazaActiva() {
-        return this.raza.isHabilidadActiva();
-    }
-
-    public void quitarHabilidadRaza(){
-        this.raza.quitarHabilidad();
-    }
-    public void activarHabilidadRaza(){
-        this.raza.activarHabilidad();
-    }
-    public boolean useHabilidadRaza(Personaje enemigo){
-        boolean haceEfecto = isHabilidadRazaActiva();
-        if (haceEfecto) {
-            boolean esHobbit = getRaza().equals(Raza.HOBBIT);
-            Raza habilidad = esHobbit ? enemigo.getRaza() : raza;
-            switch (habilidad) {
-                case HUMANO:
-                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                    haceEfecto = true;
-                    break;            
-                case ELFO:
-                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                    haceEfecto = true;
-                    break;
-                case ENANO:
-                    boolean bolsaLlena = true;
-                    for (Item item : bolsa) {
-                        if (item == null) {
-                            bolsaLlena = false;
-                            break;
-                        }
-                    }
-                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                    if (bolsaLlena) {
-                        return false;
-                    } else {
-                        Item itemRnd = Items.getItemRnd();
-                        for (int i = 0; i < bolsa.length; i++) {
-                            if (bolsa[i] == null) {
-                                bolsa[i] = itemRnd;
-                                break;
-                            }
-                        }
-                        Util.sortArray(bolsa);
-                        System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
-                    }
-                    haceEfecto = true;
-                    break;
-                case HOBBIT:
-                    haceEfecto = false;
-                    break;
-                case ORCO:
-                    this.fuerza = fuerza*2;
-                    this.atacar(enemigo);
-                    this.fuerza = fuerza/2;
-                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                    haceEfecto = true;
-                    break;
-                case TROLL:
-                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
-                    haceEfecto = true;
-                    break;
-                default:
-                    throw new EntidadException("Error con la habilidad de raza");
-            }
-        }
-        return haceEfecto;
-    }
-    public String stringHabilidadRaza(){
-        String nombreYHabilidad = this.raza.getHabilidad();
-        return nombreYHabilidad;
-    }
-    public String getFicha(){
-        String ficha = getFicha("Personaje");
-        String nombreRaza = this.raza.toString();
-        ficha += "\nRaza: " + nombreRaza;
-        return ficha;
     }
     
     public boolean usarObjeto(int pos) {
@@ -322,6 +252,82 @@ public class Personaje extends Entidad implements EquipEquipado {
         }
         return fueUsado;
     }
+
+    //------------------------------- Habilidad Raza ----------------------------
+    public boolean isHabilidadRazaActiva() {
+        return this.raza.isHabilidadActiva();
+    }
+    public boolean HabilidadRazaHaveCoolDown() {
+        return this.raza.getCoolDown() > 0;
+    }
+    public void setCoolDownHabilidadRaza() {
+        this.raza.setCoolDown();
+    }
+    public void quitarHabilidadRaza(){
+        this.raza.quitarHab();
+    }
+    public void activarHabilidadRaza(){
+        this.raza.activarHab();
+    }
+    public boolean useHabilidadRaza(Personaje enemigo){
+        boolean haceEfecto = isHabilidadRazaActiva();
+        if (haceEfecto) {
+            boolean esHobbit = getRaza().equals(Raza.HOBBIT);
+            Raza habilidad = esHobbit ? enemigo.getRaza() : raza;
+            switch (habilidad) {
+                case HUMANO:
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    break;            
+                case ELFO:
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    break;
+                case ENANO:
+                    boolean bolsaLlena = true;
+                    for (Item item : bolsa) {
+                        if (item == null) {
+                            bolsaLlena = false;
+                            break;
+                        }
+                    }
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    if (bolsaLlena) {
+                        haceEfecto = false;
+                    } else {
+                        Item itemRnd = Items.getItemRnd();
+                        for (int i = 0; i < bolsa.length; i++) {
+                            if (bolsa[i] == null) {
+                                bolsa[i] = itemRnd;
+                                break;
+                            }
+                        }
+                        Util.sortArray(bolsa);
+                        System.out.println("Obtuviste \"" + itemRnd.getNombre() + "\"!");
+                    }
+                    break;
+                case HOBBIT:
+                    haceEfecto = false;
+                    break;
+                case ORCO:
+                    this.fuerza = fuerza*2;
+                    this.atacar(enemigo);
+                    this.fuerza = fuerza/2;
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    break;
+                case TROLL:
+                    if (esHobbit) { enemigo.quitarHabilidadRaza(); }
+                    break;
+                default:
+                    throw new EntidadException("Error con la habilidad de raza");
+            }
+        }
+        return haceEfecto;
+    }
+    public String stringHabilidadRaza(){
+        String nombreYHabilidad = this.raza.getHabilidad();
+        return nombreYHabilidad;
+    }
+    
+    //----------------------------------------Equipamiento------------------------------------------
     /**
      * 
      * @param esGeneral {@code true} para cualquier equipamiento, {@code false} para escoger entre armas y armaduras.
@@ -341,7 +347,6 @@ public class Personaje extends Entidad implements EquipEquipado {
         return null;
     }
 
-    //----------------------------------------Equipamiento------------------------------------------
     // Equipado
     /**
      * Asigna el id del slot al que corresponde este equipamiento o devuelve si el Equipamiento está guardado en {@code equipamientoGuardado}
@@ -514,7 +519,7 @@ public class Personaje extends Entidad implements EquipEquipado {
         }
     }
 
-    //------------------------------------------------------------------------------------------------
+    //---------------------------------------------- Otros Override --------------------------------------------------
     @Override
     public JSONObject toJsonObject() throws EntidadException{
         JSONObject personaje = super.toJsonObject();

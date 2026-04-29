@@ -11,7 +11,9 @@ import UD4.Rol.Utilidades.EntidadException;
 public enum Raza implements Habilidades {
     HUMANO, ELFO, ENANO, HOBBIT, ORCO, TROLL;
 
-    boolean isActiva = true;
+    boolean isHabActiva = true;
+    int coolDown = 0;
+
     public static Raza stringToRaza(String respuesta){
         Raza raza = HUMANO;
         if (respuesta == null) {
@@ -169,21 +171,71 @@ public enum Raza implements Habilidades {
         return descripcion;
     }
 
+    @Override
+    public boolean countDown(){
+        if (coolDown > 0) {
+            coolDown--;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @return CoolDown restante
+     */
+    @Override
+    public int getCoolDown(){
+        return coolDown;
+    }
+
+    @Override
+    public int setCoolDown() {
+        switch (this) {
+                case HUMANO:
+                    coolDown = 5;
+                    break;
+                case ELFO:
+                    coolDown = 3;
+                    break;
+                case ENANO:
+                    coolDown = 2;
+                    break;
+                case HOBBIT:
+                    coolDown = 4;
+                    break;
+                case ORCO:
+                    coolDown = 3;
+                    break;
+                case TROLL:
+                    coolDown = 5;
+                    break;
+                default:
+                    coolDown = 0;
+                    break;
+            }
+        return coolDown;
+    }
     
     @Override
-    public void activarHabilidad() {
-        isActiva = true;
+    public void activarHab() {
+        isHabActiva = true;
         
     }
 
     @Override
     public boolean isHabilidadActiva() {
-        return isActiva;
+        if (isHabActiva) {
+            if (countDown()) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void quitarHabilidad() {
-        isActiva = false;
+    public void quitarHab() {
+        isHabActiva = false;
     }
 
     @Override

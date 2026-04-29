@@ -24,7 +24,7 @@ public class Item implements Comparable<Item>{
 
             case BOMBA_DE_HUMO: // Te hace esquivar el proximo ataque
                 this.tieneHabilidadExtra = true;
-                this.description = "El enemigo falla el próximo ataque";
+                this.description = "El enemigo no puede atacar en su próximo turno";
                 break;
 
             case ENREDADERAS: // Bloquea la habilidad de raza del oponente 1 turno
