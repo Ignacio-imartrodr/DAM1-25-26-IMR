@@ -3,8 +3,12 @@ package UD4.Rol.Entity.Entidades;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import UD4.Rol.Entity.Equipamiento.Equipamiento;
@@ -24,6 +28,7 @@ public class Personaje extends Entidad implements EquipEquipado {
     private int id = -1;
     private Raza raza;
     private Item[] bolsa = null;
+    private Map<String, Object> inventario = new HashMap<>(2);
     private Equipamiento[] equipamientoEquipado = new Equipamiento[5];                      //TODO cambiar por un inventario con Map 
     private List<Equipamiento> equipamientoGuardado = new ArrayList<>(50);  //^^
     
@@ -161,6 +166,9 @@ public class Personaje extends Entidad implements EquipEquipado {
             Util.sortArray(this.bolsa);
         }
         this.puntosVida = this.getVidaMax();
+        Entry<String, Object> a;
+        inventario.put("Equipado", bolsa);//TODO hacer bien e investigar
+        inventario.entrySet();
     }
     
     
