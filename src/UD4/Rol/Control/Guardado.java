@@ -110,7 +110,7 @@ public class Guardado {
                                 if (personaje == null) {
                                     continue;
                                 }
-                                try {
+                                try {//TODO arreglar error, un nuevo personaje aparece con id 0 en vez de -1 o idErr
                                     persJO = personaje.toJsonObject();
                                 } catch (Exception e) {
                                     personaje.setId(idErr);

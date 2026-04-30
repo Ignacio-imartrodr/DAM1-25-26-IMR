@@ -3,11 +3,8 @@ package UD4.Rol.Entity.Entidades;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,9 +25,9 @@ public class Personaje extends Entidad implements EquipEquipado {
     private int id = -1;
     private Raza raza;
     private Item[] bolsa = null;
-    private Map<String, Object> inventario = new HashMap<>(2);
-    private Equipamiento[] equipamientoEquipado = new Equipamiento[5];                      //TODO cambiar por un inventario con Map 
-    private List<Equipamiento> equipamientoGuardado = new ArrayList<>(50);  //^^
+    private Equipamiento[] equipamientoEquipado = new Equipamiento[5];
+    private List<Equipamiento> equipamientoGuardado = new ArrayList<>();
+    //TODO crear un inventario con Map(LinkedHashMap)
     
     /**
      * Crea un objeto sin entregarle parametros.
@@ -166,9 +163,6 @@ public class Personaje extends Entidad implements EquipEquipado {
             Util.sortArray(this.bolsa);
         }
         this.puntosVida = this.getVidaMax();
-        Entry<String, Object> a;
-        inventario.put("Equipado", bolsa);//TODO hacer bien e investigar
-        inventario.entrySet();
     }
     
     
@@ -530,13 +524,14 @@ public class Personaje extends Entidad implements EquipEquipado {
     //---------------------------------------------- Otros Override --------------------------------------------------
     @Override
     public JSONObject toJsonObject() throws EntidadException{
+        if (id < 0) {
+            throw new EntidadException("Es necesario asignar la id según la posicion del personaje en la BaseGeneral");
+        }
         JSONObject personaje = super.toJsonObject();
         
         JSONObject stats = personaje.getJSONObject("Stats");
         stats.accumulate("raza", this.raza);
-        if (id < 0) {
-            throw new EntidadException("Es necesario asignar la id según la posicion del personaje en la BaseGeneral");
-        }
+        
         personaje.put("Stats", stats);
         
         JSONObject equipamientos = new JSONObject();
