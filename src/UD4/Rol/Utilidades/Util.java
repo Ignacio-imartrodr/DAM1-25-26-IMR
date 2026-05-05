@@ -109,7 +109,7 @@ public abstract class Util {
         try {
             Object objectJson;
             String text = readFileToString(ruta);
-            String jsonPointer = getJsonPointer(keysToUb);
+            String jsonPointer = getJsonPointer(keysToUb); 
 
             JSONObject jo;
             JSONArray ja;

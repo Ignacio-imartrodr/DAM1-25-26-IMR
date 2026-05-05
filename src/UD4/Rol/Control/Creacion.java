@@ -1,6 +1,8 @@
 package UD4.Rol.Control;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -58,9 +60,61 @@ public abstract class Creacion {
         }
         return personajesSelec;
     }
+    public static Personaje[] seleccionarPersonajes(List<Personaje> personajes, int cantidadASeleccionar) {
+        if (cantidadASeleccionar < 1 || personajes.size() == 0 || personajes == null || personajes.size() < cantidadASeleccionar) {
+            return null;
+        }
+        if (personajes.size() == cantidadASeleccionar) {
+            return personajes.toArray(new Personaje[0]);
+        }
+        Personaje[] personajesSelec = new Personaje[cantidadASeleccionar];
+        boolean esSiguiente = true;
+        Integer[] skip = new Integer[] {-1};
+        for (int i = -1, cantGuardada = 0; cantGuardada < cantidadASeleccionar;) {
+            if (esSiguiente) {
+                if (i == personajes.size() - 1) {
+                    i = 0;
+                } else {
+                    i++;
+                }
+            } else {
+                if (i == 0) {
+                    i = personajes.size() - 1;
+                } else {
+                    i--;
+                }
+            }
+            if (Arrays.binarySearch(skip, i) < 0) {// Esto previene que se seleccione más de una vez el mismo personaje
+                System.out.println(personajes.get(i).getFicha());
+                if (Util.escogerOpcion("S", "n", "¿Quieres seleccionar este personaje? (S/n): ")) {
+                    personajesSelec[cantGuardada] = personajes.get(i);
+                    cantGuardada++;
+                    skip = Arrays.copyOf(skip, skip.length + 1);
+                    skip[skip.length - 1] = i;
+                }
+            }
+            if (cantGuardada < personajesSelec.length) {
+                esSiguiente = Util.escogerOpcion("S", "a", "Siguiente personaje o anterior? (S/a): ");
+            }
+        }
+        return personajesSelec;
+    }
+
     public static String getStringPersonajes(Personaje[] personajes) {
         String texto;
         if (personajes != null && personajes.length > 0) {
+            texto = "\nPersonajes:\n";
+            for (Personaje personaje : personajes) {
+                texto += personaje.getFicha() + "\n________________________\n";
+            }
+        } else {
+            texto = "\nNo hay Personajes disponibles\n";
+        }
+        return texto;
+    }
+    public static String getStringPersonajes(List<Personaje> personajes) {
+        String texto;
+        if (personajes != null && personajes.size() > 0) {
             texto = "\nPersonajes:\n";
             for (Personaje personaje : personajes) {
                 texto += personaje.getFicha() + "\n________________________\n";
@@ -285,22 +339,20 @@ public abstract class Creacion {
             return null;
         }
 
-        
-        Personaje[] personajes = new Personaje[0];
+        List<Personaje> personajes = new ArrayList<>();
         for (int i = 0; i < personajesJson.length(); i++) {
             Personaje p = getPersonajeFromJsonObject(personajesJson.optJSONObject(i));
             if (p != null) {
                 if (esBaseGeneral) {
                     p.setId(i);
                 }
-                personajes = Arrays.copyOf(personajes, personajes.length + 1);
-                personajes[personajes.length - 1] = p;
+                personajes.add(p);
             } else {
                 //La función "getPersonajeFromJsonObject" lanza un System.err.println con la causa del error por el que se ignora al personaje
                 System.err.println("Por lo que se ignoró el Personaje " + i);
             }
         }
-        return personajes;
+        return personajes.toArray(new Personaje[0]);
     }
     /*Ignorar
         --------------Descartada temporalmente--------------
@@ -358,23 +410,21 @@ public abstract class Creacion {
     }
 
     public static Personaje[] pedirPersonajes() {
-        Personaje[] personajesNuevos = new Personaje[0];
+        List<Personaje> personajesNuevos = new ArrayList<>();
         boolean seguir = true;
         while (seguir) {
             if (Util.escogerOpcion("s", "n", "¿Quieres crear un nuevo personaje? (S/n)")) {
-                Personaje personaje = new Personaje();
-                personaje = crearPersonaje();
+                Personaje personaje = crearPersonaje();
                 System.out.println(personaje.getFicha());
                 if (Util.escogerOpcion("s", "n", "¿Es el personaje correcto? (S/n)")) {
-                    personajesNuevos = Arrays.copyOf(personajesNuevos, personajesNuevos.length + 1);
-                    personajesNuevos[personajesNuevos.length - 1] = personaje;
+                    personajesNuevos.add(personaje);
                 }
             } else {
                 System.out.println();
                 seguir = false;
             }
         }
-        return personajesNuevos;
+        return personajesNuevos.toArray(new Personaje[0]);
 
     }
     private static Personaje crearPersonaje(){
@@ -503,6 +553,51 @@ public abstract class Creacion {
                 throw new EntidadException();
         }
         return p;
+    }
+    
+    public static void modificarPersonagesArray(Personaje[] personajesArray){
+        if (personajesArray == null || personajesArray.length == 0) {
+            System.out.println("No hay personajes que modificar");
+            return;
+        }
+        for (boolean salir = false; !salir;) {
+            Arrays.sort(personajesArray);
+            int posPers = -1;
+            getStringPersonajes(personajesArray);
+            System.out.println();
+            if (Util.escogerOpcion("S", "n", "¿Quieres modificar algúno de estos personajes? (S/n)")) {
+                Personaje persSelec = seleccionarPersonajes(personajesArray, 1)[0];
+                posPers = Arrays.binarySearch(personajesArray, persSelec);
+                boolean modificar;
+                do {
+                    System.out.println(persSelec.getFicha());
+                    if (Util.escogerOpcion("S", "n", "¿Quieres modificar este personaje? (S/n)")) {
+                        modificar = true;
+                        System.out.print("¿Que valor quieres modificar?");
+                        System.out.println("Nombre, raza, fuerza, agilidad, constitucion, nivel, experiencia o equipamiento");
+                        String valor = Util.pedirPorTeclado(false);
+                        if (valor != null) {
+                            try {
+                                persSelec = modPersonaje(valor, persSelec);
+                                if (persSelec == null) {
+                                    System.out.println("No se puede modificar el equipamiento equipado de este personaje ya que no tiene equipamiento guardado");
+                                } else {
+                                    personajesArray[posPers] = persSelec;
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Valor no válido.");
+                            }
+                        } else {
+                            System.out.println("Introduce un valor válido.");
+                        }
+                    } else {
+                        modificar = false;
+                    }
+                } while (modificar);
+            } else {
+                salir = true;
+            }
+        }
     }
     public static void main(String[] args) {
         Personaje p = new Personaje("Prueba3");

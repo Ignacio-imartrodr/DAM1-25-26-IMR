@@ -94,7 +94,6 @@ public class Personaje extends Entidad implements EquipEquipado {
         this.fuerza = super.fuerza = asignarBonusRaza(0);
         this.agilidad = super.agilidad = asignarBonusRaza(1);
         this.constitucion = super.constitucion = asignarBonusRaza(2);
-        this.id = -1;
 
         if (bolsa != null) {
             Util.sortArray(bolsa);
