@@ -40,16 +40,14 @@ public class Conversor extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        final int WIDTH = 200;
-        final int HIGHT = 200;
 
-        TITULO.setMinWidth(WIDTH);
-        TITULO.setAlignment(Pos.CENTER_LEFT);
+        TITULO.setAlignment(Pos.CENTER);
 
         conversChoiceBox = new ChoiceBox<>();
         conversChoiceBox.getItems().addAll("Libra - Kg", "Euro - Dolar", "Milla - Km");
         conversChoiceBox.setValue("Milla - Km");
-        conversChoiceBox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> escogerConversor(newValue));
+        conversChoiceBox.getSelectionModel().selectedItemProperty()
+                .addListener((v, oldValue, newValue) -> escogerConversor(newValue));
 
         swapCheckBox = new CheckBox("Alternar conversión");
 
@@ -63,7 +61,7 @@ public class Conversor extends Application {
         resultado = new Label();
 
         VBox root = new VBox(TITULO, conversChoiceBox, swapCheckBox, num1, btn, resultado);
-        Scene scene = new Scene(root, WIDTH, HIGHT);
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
