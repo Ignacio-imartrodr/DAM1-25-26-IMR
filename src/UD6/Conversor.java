@@ -8,7 +8,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -31,7 +33,7 @@ public class Conversor extends Application {
     final double MILLA_TO_KM = 0.4535924;
     double conversor = MILLA_TO_KM;
 
-    final Label TITULO = new Label("CONVERSOR DE UNIDADES");
+    Label titulo;
     ChoiceBox<String> conversChoiceBox;
     CheckBox swapCheckBox;
     TextField num1;
@@ -40,8 +42,9 @@ public class Conversor extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        TITULO.setAlignment(Pos.CENTER);
+        titulo = new Label("CONVERSOR DE UNIDADES");
+        titulo.setAlignment(Pos.CENTER);
+        titulo.setTextAlignment(TextAlignment.CENTER);
 
         conversChoiceBox = new ChoiceBox<>();
         conversChoiceBox.getItems().addAll("Libra - Kg", "Euro - Dolar", "Milla - Km");
@@ -59,8 +62,8 @@ public class Conversor extends Application {
         btn.setOnAction(e -> convertir());
 
         resultado = new Label();
-
-        VBox root = new VBox(TITULO, conversChoiceBox, swapCheckBox, num1, btn, resultado);
+        HBox selectionBox = new HBox(conversChoiceBox, swapCheckBox);
+        VBox root = new VBox(titulo, selectionBox, num1, btn, resultado);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
