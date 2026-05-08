@@ -70,16 +70,10 @@ public class Conversor extends Application {
     }
 
     private void checkNum(TextField tF) {
-        boolean esDouble;
         String text = tF.getText();
+        Character lastChar = text.charAt(text.length() - 1);
         if (!text.isEmpty()) {
-            try {
-                Double.parseDouble(text);
-                esDouble = true;
-            } catch (NumberFormatException e) {
-                esDouble = false;
-            }
-            if (!esDouble) {
+            if (!Character.isDigit(lastChar) && !(text.length() == 1 && lastChar == '-')) {
                 tF.deletePreviousChar();
             }
         }
