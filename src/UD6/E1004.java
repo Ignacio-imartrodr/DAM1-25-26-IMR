@@ -68,7 +68,10 @@ public class E1004 {
             try {
                 num = Double.parseDouble(d);
                 doubles.add(num);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                System.err.println("El archivo solo debe contener números reales para ejecutar esta función");
+                return;
+            }
         }
         
         Double sumatoria = 0.;
