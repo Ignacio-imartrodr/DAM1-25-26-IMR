@@ -2,7 +2,6 @@ package UD6;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 
@@ -33,13 +32,18 @@ public class E1008 extends Application {
     public void start(Stage primaryStage) throws Exception {
         lbl = new Label("Escoge el archivo a duplicar");
 
+        /*FileChooser elector = new FileChooser();
+        elector.showOpenDialog(primaryStage);
+        File archivo = elector.getInitialDirectory();*/
+        
         Button selc = new Button("Seleccionar archivo");
         selc.setOnAction(e -> escogerRuta(primaryStage));
 
         Button copy = new Button("Duplicar archivo");
-        selc.setOnAction(o -> pulsarBtnDuplicar());
+        copy.setOnAction(o -> pulsarBtnDuplicar());
 
         res = new Label();
+
 
         VBox root = new VBox(lbl, selc, copy, res);
         Scene scene = new Scene(root, 500, 200);
@@ -61,24 +65,21 @@ public class E1008 extends Application {
         }
         try (
             BufferedReader in = new BufferedReader(new FileReader(ruta));
-            BufferedWriter writer = new BufferedWriter(new FileWriter("copia_de_" + nomArchOrig));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("copia_de_" + nomArchOrig + ".txt"));
                 ){
             writer.write(in.readAllAsString());
+            in.close();
+            writer.close();
         } catch (Exception e) {
             return false;
         }
         return true;
     }
-    private void escogerRuta() {
-        Stage stage = new Stage(); //TODO estoo hay que revisarlo
+    private void escogerRuta(Stage stage) {
         FileChooser elector = new FileChooser();
-        stage.show();
-        File archivo = elector.showOpenDialog(stage);
-        ruta = archivo.getAbsolutePath();
-        String[] partes = ruta.split("[\\/]");
-        nomArchOrig = partes[partes.length - 1];
-        lbl.setText("Archivo escogido: " + nomArchOrig);
-
+        ruta = elector.showOpenDialog(stage).getAbsolutePath();
+        nomArchOrig = ruta.substring(ruta.lastIndexOf("\\") + 1, ruta.lastIndexOf("."));
+        lbl.setText("Archivo escogido: " + nomArchOrig + "\nCon ruta: " + ruta);
     }
     public static void main(String[] args) {
         launch(args);
