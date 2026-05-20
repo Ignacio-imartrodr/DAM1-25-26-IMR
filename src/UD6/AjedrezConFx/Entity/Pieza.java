@@ -31,7 +31,18 @@ public abstract class Pieza {
         return posicion;
     }
     
-    abstract boolean validarMovimiento(String ini, String dest);
+    public static boolean isPosIni(int col, int fila){
+        if (fila == 0 || fila == 1 || fila == 6 || fila == 7) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isPosIni(Byte[] posicion){
+        return isPosIni(posicion[0], posicion[1]);
+    }
+
+    abstract boolean validarMovimientoIndiv(String ini, String dest);
     final public boolean isBlanca() {
         return color;
     }

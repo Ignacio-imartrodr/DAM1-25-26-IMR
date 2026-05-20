@@ -14,6 +14,11 @@ public class ControlTablero {
         {0, 1, 0, 1, 0, 1, 0, 1},
         {1, 0, 1, 0, 1, 0, 1, 0}
     };
+    private static final char[][] ORDEN_PIEZAS = new char[][]{
+        {'t', 'c', 'a', 'q', 'r', 'a', 'c', 't'},
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}
+    };
+
     public static GridPane tableroEnBlanco(){
         GridPane gP = new GridPane();
         for (int i = 0; i < ControlTablero.TABLERO_EN_BLANCO.length; i++) {
@@ -33,13 +38,11 @@ public class ControlTablero {
     public static GridPane inizializarTablero(){
         GridPane gP = tableroEnBlanco();
 
-        for (int i = 0; i < gP.getColumnCount(); i++) {
-            for (int j = 0; j < gP.getRowCount(); j++) {
-                
-                gP.getChildren().forEach(null);
-
-            }
+        for (int i = 0,k = 0; i < ORDEN_PIEZAS.length; i++) {
+            for (int j = 0; i < ORDEN_PIEZAS.length; j++, k++) {
+            ((Label) gP.getChildren().get(k)).setText("");
         }
+        
         return gP;
     }
 }
