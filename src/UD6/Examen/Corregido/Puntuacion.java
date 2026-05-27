@@ -1,4 +1,4 @@
-package UD6.Examen;
+package UD6.Examen.Corregido;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

@@ -1,0 +1,22 @@
+package UD6.Examen.Corregido;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+
+public class PuntosControler {
+
+    @FXML
+    private Button BotonAdd;
+
+    @FXML
+    private ListView<?> ListaPuntuaciones;
+
+    @FXML
+    private TextField TxtNombre;
+
+    @FXML
+    private TextField TxtPuntos;
+
+}

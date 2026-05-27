@@ -1,4 +1,4 @@
-package UD6.Examen;
+package UD6.Examen.Entregado;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,7 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
+//import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -106,7 +106,7 @@ public class Codec extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FileChooser selec = new FileChooser();
+        //FileChooser selec = new FileChooser();
         Button filButton = new Button("Seleccionar archivo");
 
         Button btn = new Button("Ejecutar");

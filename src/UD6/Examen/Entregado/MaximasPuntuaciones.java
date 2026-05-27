@@ -1,4 +1,4 @@
-package UD6.Examen;
+package UD6.Examen.Entregado;
 
 import java.io.EOFException;
 import java.io.FileInputStream;

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 
-import UD6.Examen.Puntuacion;
+import UD6.Examen.Corregido.Puntuacion;
 
 public class FicheroBinarioEscribir {
     public static void main(String[] args) {
@@ -29,7 +29,5 @@ public class FicheroBinarioEscribir {
             System.out.println("Error Entrada/Salida");
             e.printStackTrace();
         }
-
-        
     }
 }
