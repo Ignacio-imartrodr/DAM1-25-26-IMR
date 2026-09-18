@@ -1,0 +1,3 @@
+Juan Perez: 85,00
+Maria Lopez: 85,00
+Carlos Garcia: 75,00
