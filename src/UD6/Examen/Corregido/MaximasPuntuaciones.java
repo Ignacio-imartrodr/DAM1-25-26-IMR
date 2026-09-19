@@ -71,6 +71,6 @@ public class MaximasPuntuaciones extends Application {
     }
     public static void main(String[] args) {
         ListView<Puntuacion> list = new ListView<>();
-        list.getItems().iterator()
+        list.getItems().iterator();
     }
 }
