@@ -56,6 +56,24 @@ public class Empregado {
         }
     }
 
+    public String getNome() {
+        if (!comprobar()) {
+            return nome;
+        }
+        return null;
+    }
+
+
+    public String getApelido() {
+        return apelido;
+    }
+
+
+    public double getSoldo() {
+        return soldo;
+    }
+
+
 
     // Métodos privados
 

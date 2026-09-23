@@ -21,8 +21,22 @@ public class AppInventario {
 
     public static List<Producto> leerBin(String rutaArchivo) {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(rutaArchivo));) {
-
-            List<Producto> listP = (List<Producto>) in.readObject(); 
+            Object a = in.readObject();
+            List<Producto> listP = new ArrayList<>();
+            try {
+                if (a instanceof List<?>) {
+                    for (Object producto : (List<?>) a) {
+                        if (producto instanceof Producto) {
+                            listP.add((Producto) producto);
+                        } else {
+                            listP.add(null);
+                        }
+                    }
+                } else {
+                    listP = null;
+                }
+            } catch (Exception e) {}
+             
             return listP;
 
         } catch (FileNotFoundException e) {
