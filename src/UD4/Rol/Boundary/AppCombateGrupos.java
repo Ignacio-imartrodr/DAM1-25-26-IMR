@@ -7,6 +7,6 @@ public class AppCombateGrupos{
     public static void main(String[] args) {
         Personaje[] equipo0 = null;
         Personaje[] equipo1 = null;
-        Combate.combateGrupo(equipo0, equipo1);
+            //Combate.combateGrupo(equipo0, equipo1);
     }
 }

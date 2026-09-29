@@ -64,10 +64,12 @@ public abstract class Creacion {
         if (cantidadASeleccionar < 1 || personajes.size() == 0 || personajes == null || personajes.size() < cantidadASeleccionar) {
             return null;
         }
-        if (personajes.size() == cantidadASeleccionar) {
-            return personajes.toArray(new Personaje[0]);
+        Personaje[] pers = personajes.toArray(new Personaje[0]);
+        if (pers.length == cantidadASeleccionar) {
+            return pers;
         }
-        Personaje[] personajesSelec = new Personaje[cantidadASeleccionar];
+        return seleccionarPersonajes(pers, cantidadASeleccionar);
+        /*Personaje[] personajesSelec = new Personaje[cantidadASeleccionar];
         boolean esSiguiente = true;
         Integer[] skip = new Integer[] {-1};
         for (int i = -1, cantGuardada = 0; cantGuardada < cantidadASeleccionar;) {
@@ -97,7 +99,7 @@ public abstract class Creacion {
                 esSiguiente = Util.escogerOpcion("S", "a", "Siguiente personaje o anterior? (S/a): ");
             }
         }
-        return personajesSelec;
+        return personajesSelec;*/
     }
 
     public static String getStringPersonajes(Personaje[] personajes) {
@@ -427,7 +429,7 @@ public abstract class Creacion {
         return personajesNuevos.toArray(new Personaje[0]);
 
     }
-    private static Personaje crearPersonaje(){
+    public static Personaje crearPersonaje(){
         Personaje personaje;
         System.out.print("Nombre del personaje: ");
         String nombre = Util.pedirPorTeclado(false);

@@ -14,14 +14,23 @@ public class AppCombateMonstruos {//TODO recrear a mi modo
 
         System.out.println("------------App de Combate Personaje vs Monstruo------------");
 
-
-        Combate.validarCantCombatientes(personajesBaseGeneral, );
+        int cantPersonajes = 1;
+        while (!Combate.validarCantCombatientes(personajesBaseGeneral, cantPersonajes)) {
+            System.out.println("Personajes insuficientes");
+            Personaje p = Creacion.crearPersonaje();
+            Personaje[] personajes = new Personaje[personajesBaseGeneral.length + 1];
+            for (int i = 0; i < personajesBaseGeneral.length; i++) {
+                personajes[i] = personajesBaseGeneral[i];
+            }
+            personajes[personajesBaseGeneral.length] = p;
+            personajesBaseGeneral = personajes;
+        }
 
         int cantidadMonstruos = -1;
         int nivelMonstruos = -1;
         String opcion = null;
         while (opcion == null) {
-            System.out.print("¿Cuántos monstruos van a enfrentar?: ");
+            System.out.print("¿Cuántos monstruos va a enfrentar?: ");
             opcion = Util.pedirPorTeclado(true);
 
             if (opcion == null) { continue; }
